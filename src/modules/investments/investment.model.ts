@@ -5,8 +5,10 @@ export interface IInvestment extends Document {
     investor: Types.ObjectId; // reference to User
     farm: Types.ObjectId | IFarm; // populated
     amount: number;
-    roi: number;              // percentage
+    roi: number;              
     durationMonths: number;
+    roiPaid: boolean;
+    roiStripeTransferId?: string;
     status: "pending" | "completed" | "cancelled";
     createdAt: Date;
 
@@ -20,6 +22,8 @@ const InvestmentSchema = new Schema<IInvestment>(
         farm: { type: Schema.Types.ObjectId, ref: "Farm", required: true },
         amount: { type: Number, required: true },
         roi: { type: Number, required: true },
+        roiPaid: { type: Boolean, default: false },
+        roiStripeTransferId: { type: String },
         durationMonths: { type: Number, required: true },
         status: { type: String, enum: ["pending", "completed", "cancelled"], default: "pending" },
     },
