@@ -1,13 +1,18 @@
 import { Schema, model, Document } from "mongoose";
 
 interface IWebhookEvent extends Document {
-  stripeEventId: string;
+  paystackEventId: string;
+  eventType: string;
   processedAt: Date;
 }
 
 const WebhookEventSchema = new Schema<IWebhookEvent>({
-  stripeEventId: { type: String, required: true, unique: true },
+  paystackEventId: { type: String, required: true, unique: true },
+  eventType: { type: String, required: true },
   processedAt: { type: Date, default: Date.now },
 });
 
-export const WebhookEvent = model<IWebhookEvent>("WebhookEvent", WebhookEventSchema);
+export const WebhookEvent = model<IWebhookEvent>(
+  "WebhookEvent",
+  WebhookEventSchema,
+);

@@ -10,6 +10,7 @@ export interface IUser extends Document {
     photo?: string;
     isVerified: boolean;
     comparePassword(candidate: string): Promise<boolean>;
+    createdAt: Date;
 }
 
 const UserSchema = new Schema<IUser>(
@@ -21,6 +22,7 @@ const UserSchema = new Schema<IUser>(
         country: { type: String },
         photo: { type: String },
         isVerified: { type: Boolean, default: false },
+        createdAt: { type: Date, default: Date.now },
     },
     { timestamps: true }
 );
