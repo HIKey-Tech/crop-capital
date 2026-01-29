@@ -9,27 +9,349 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TransactionsRouteImport } from './routes/transactions'
+import { Route as NewsRouteImport } from './routes/news'
+import { Route as MyInvestmentsRouteImport } from './routes/my-investments'
+import { Route as DiscoverRouteImport } from './routes/discover'
+import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminIndexRouteImport } from './routes/admin/index'
+import { Route as PaymentCallbackRouteImport } from './routes/payment.callback'
+import { Route as FarmIdRouteImport } from './routes/farm.$id'
+import { Route as AdminTransactionsRouteImport } from './routes/admin/transactions'
+import { Route as AdminReportsRouteImport } from './routes/admin/reports'
+import { Route as AdminInvestorsRouteImport } from './routes/admin/investors'
+import { Route as AdminFarmsRouteImport } from './routes/admin/farms'
+import { Route as AdminFarmNewRouteImport } from './routes/admin/farm.new'
 
-export interface FileRoutesByFullPath {}
-export interface FileRoutesByTo {}
+const TransactionsRoute = TransactionsRouteImport.update({
+  id: '/transactions',
+  path: '/transactions',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NewsRoute = NewsRouteImport.update({
+  id: '/news',
+  path: '/news',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MyInvestmentsRoute = MyInvestmentsRouteImport.update({
+  id: '/my-investments',
+  path: '/my-investments',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DiscoverRoute = DiscoverRouteImport.update({
+  id: '/discover',
+  path: '/discover',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/admin/',
+  path: '/admin/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PaymentCallbackRoute = PaymentCallbackRouteImport.update({
+  id: '/payment/callback',
+  path: '/payment/callback',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FarmIdRoute = FarmIdRouteImport.update({
+  id: '/farm/$id',
+  path: '/farm/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminTransactionsRoute = AdminTransactionsRouteImport.update({
+  id: '/admin/transactions',
+  path: '/admin/transactions',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminReportsRoute = AdminReportsRouteImport.update({
+  id: '/admin/reports',
+  path: '/admin/reports',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminInvestorsRoute = AdminInvestorsRouteImport.update({
+  id: '/admin/investors',
+  path: '/admin/investors',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminFarmsRoute = AdminFarmsRouteImport.update({
+  id: '/admin/farms',
+  path: '/admin/farms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminFarmNewRoute = AdminFarmNewRouteImport.update({
+  id: '/admin/farm/new',
+  path: '/admin/farm/new',
+  getParentRoute: () => rootRouteImport,
+} as any)
+
+export interface FileRoutesByFullPath {
+  '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/dashboard': typeof DashboardRoute
+  '/discover': typeof DiscoverRoute
+  '/my-investments': typeof MyInvestmentsRoute
+  '/news': typeof NewsRoute
+  '/transactions': typeof TransactionsRoute
+  '/admin/farms': typeof AdminFarmsRoute
+  '/admin/investors': typeof AdminInvestorsRoute
+  '/admin/reports': typeof AdminReportsRoute
+  '/admin/transactions': typeof AdminTransactionsRoute
+  '/farm/$id': typeof FarmIdRoute
+  '/payment/callback': typeof PaymentCallbackRoute
+  '/admin': typeof AdminIndexRoute
+  '/admin/farm/new': typeof AdminFarmNewRoute
+}
+export interface FileRoutesByTo {
+  '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/dashboard': typeof DashboardRoute
+  '/discover': typeof DiscoverRoute
+  '/my-investments': typeof MyInvestmentsRoute
+  '/news': typeof NewsRoute
+  '/transactions': typeof TransactionsRoute
+  '/admin/farms': typeof AdminFarmsRoute
+  '/admin/investors': typeof AdminInvestorsRoute
+  '/admin/reports': typeof AdminReportsRoute
+  '/admin/transactions': typeof AdminTransactionsRoute
+  '/farm/$id': typeof FarmIdRoute
+  '/payment/callback': typeof PaymentCallbackRoute
+  '/admin': typeof AdminIndexRoute
+  '/admin/farm/new': typeof AdminFarmNewRoute
+}
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/dashboard': typeof DashboardRoute
+  '/discover': typeof DiscoverRoute
+  '/my-investments': typeof MyInvestmentsRoute
+  '/news': typeof NewsRoute
+  '/transactions': typeof TransactionsRoute
+  '/admin/farms': typeof AdminFarmsRoute
+  '/admin/investors': typeof AdminInvestorsRoute
+  '/admin/reports': typeof AdminReportsRoute
+  '/admin/transactions': typeof AdminTransactionsRoute
+  '/farm/$id': typeof FarmIdRoute
+  '/payment/callback': typeof PaymentCallbackRoute
+  '/admin/': typeof AdminIndexRoute
+  '/admin/farm/new': typeof AdminFarmNewRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: never
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/dashboard'
+    | '/discover'
+    | '/my-investments'
+    | '/news'
+    | '/transactions'
+    | '/admin/farms'
+    | '/admin/investors'
+    | '/admin/reports'
+    | '/admin/transactions'
+    | '/farm/$id'
+    | '/payment/callback'
+    | '/admin'
+    | '/admin/farm/new'
   fileRoutesByTo: FileRoutesByTo
-  to: never
-  id: '__root__'
+  to:
+    | '/'
+    | '/auth'
+    | '/dashboard'
+    | '/discover'
+    | '/my-investments'
+    | '/news'
+    | '/transactions'
+    | '/admin/farms'
+    | '/admin/investors'
+    | '/admin/reports'
+    | '/admin/transactions'
+    | '/farm/$id'
+    | '/payment/callback'
+    | '/admin'
+    | '/admin/farm/new'
+  id:
+    | '__root__'
+    | '/'
+    | '/auth'
+    | '/dashboard'
+    | '/discover'
+    | '/my-investments'
+    | '/news'
+    | '/transactions'
+    | '/admin/farms'
+    | '/admin/investors'
+    | '/admin/reports'
+    | '/admin/transactions'
+    | '/farm/$id'
+    | '/payment/callback'
+    | '/admin/'
+    | '/admin/farm/new'
   fileRoutesById: FileRoutesById
 }
-export interface RootRouteChildren {}
-
-declare module '@tanstack/react-router' {
-  interface FileRoutesByPath {}
+export interface RootRouteChildren {
+  IndexRoute: typeof IndexRoute
+  AuthRoute: typeof AuthRoute
+  DashboardRoute: typeof DashboardRoute
+  DiscoverRoute: typeof DiscoverRoute
+  MyInvestmentsRoute: typeof MyInvestmentsRoute
+  NewsRoute: typeof NewsRoute
+  TransactionsRoute: typeof TransactionsRoute
+  AdminFarmsRoute: typeof AdminFarmsRoute
+  AdminInvestorsRoute: typeof AdminInvestorsRoute
+  AdminReportsRoute: typeof AdminReportsRoute
+  AdminTransactionsRoute: typeof AdminTransactionsRoute
+  FarmIdRoute: typeof FarmIdRoute
+  PaymentCallbackRoute: typeof PaymentCallbackRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+  AdminFarmNewRoute: typeof AdminFarmNewRoute
 }
 
-const rootRouteChildren: RootRouteChildren = {}
+declare module '@tanstack/react-router' {
+  interface FileRoutesByPath {
+    '/transactions': {
+      id: '/transactions'
+      path: '/transactions'
+      fullPath: '/transactions'
+      preLoaderRoute: typeof TransactionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/news': {
+      id: '/news'
+      path: '/news'
+      fullPath: '/news'
+      preLoaderRoute: typeof NewsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/my-investments': {
+      id: '/my-investments'
+      path: '/my-investments'
+      fullPath: '/my-investments'
+      preLoaderRoute: typeof MyInvestmentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/discover': {
+      id: '/discover'
+      path: '/discover'
+      fullPath: '/discover'
+      preLoaderRoute: typeof DiscoverRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/': {
+      id: '/admin/'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/payment/callback': {
+      id: '/payment/callback'
+      path: '/payment/callback'
+      fullPath: '/payment/callback'
+      preLoaderRoute: typeof PaymentCallbackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/farm/$id': {
+      id: '/farm/$id'
+      path: '/farm/$id'
+      fullPath: '/farm/$id'
+      preLoaderRoute: typeof FarmIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/transactions': {
+      id: '/admin/transactions'
+      path: '/admin/transactions'
+      fullPath: '/admin/transactions'
+      preLoaderRoute: typeof AdminTransactionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/reports': {
+      id: '/admin/reports'
+      path: '/admin/reports'
+      fullPath: '/admin/reports'
+      preLoaderRoute: typeof AdminReportsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/investors': {
+      id: '/admin/investors'
+      path: '/admin/investors'
+      fullPath: '/admin/investors'
+      preLoaderRoute: typeof AdminInvestorsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/farms': {
+      id: '/admin/farms'
+      path: '/admin/farms'
+      fullPath: '/admin/farms'
+      preLoaderRoute: typeof AdminFarmsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/farm/new': {
+      id: '/admin/farm/new'
+      path: '/admin/farm/new'
+      fullPath: '/admin/farm/new'
+      preLoaderRoute: typeof AdminFarmNewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+  }
+}
+
+const rootRouteChildren: RootRouteChildren = {
+  IndexRoute: IndexRoute,
+  AuthRoute: AuthRoute,
+  DashboardRoute: DashboardRoute,
+  DiscoverRoute: DiscoverRoute,
+  MyInvestmentsRoute: MyInvestmentsRoute,
+  NewsRoute: NewsRoute,
+  TransactionsRoute: TransactionsRoute,
+  AdminFarmsRoute: AdminFarmsRoute,
+  AdminInvestorsRoute: AdminInvestorsRoute,
+  AdminReportsRoute: AdminReportsRoute,
+  AdminTransactionsRoute: AdminTransactionsRoute,
+  FarmIdRoute: FarmIdRoute,
+  PaymentCallbackRoute: PaymentCallbackRoute,
+  AdminIndexRoute: AdminIndexRoute,
+  AdminFarmNewRoute: AdminFarmNewRoute,
+}
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()

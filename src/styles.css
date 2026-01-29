@@ -1,7 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');
 
-
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @theme {
   /* Core */
@@ -96,12 +95,26 @@
     --ayf-gold-500: 45 93% 47%;
     --ayf-gold-100: 45 93% 90%;
 
-    --gradient-primary: linear-gradient(135deg, hsl(142 64% 32%) 0%, hsl(142 64% 40%) 100%);
-    --gradient-card: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(220 14% 98%) 100%);
+    --gradient-primary: linear-gradient(
+      135deg,
+      hsl(142 64% 32%) 0%,
+      hsl(142 64% 40%) 100%
+    );
+    --gradient-card: linear-gradient(
+      180deg,
+      hsl(0 0% 100%) 0%,
+      hsl(220 14% 98%) 100%
+    );
 
-    --shadow-card: 0 1px 3px 0 hsl(220 20% 10% / 0.05), 0 1px 2px -1px hsl(220 20% 10% / 0.05);
-    --shadow-card-hover: 0 4px 6px -1px hsl(220 20% 10% / 0.08), 0 2px 4px -2px hsl(220 20% 10% / 0.08);
-    --shadow-lg: 0 10px 15px -3px hsl(220 20% 10% / 0.08), 0 4px 6px -4px hsl(220 20% 10% / 0.08);
+    --shadow-card:
+      0 1px 3px 0 hsl(220 20% 10% / 0.05),
+      0 1px 2px -1px hsl(220 20% 10% / 0.05);
+    --shadow-card-hover:
+      0 4px 6px -1px hsl(220 20% 10% / 0.08),
+      0 2px 4px -2px hsl(220 20% 10% / 0.08);
+    --shadow-lg:
+      0 10px 15px -3px hsl(220 20% 10% / 0.08),
+      0 4px 6px -4px hsl(220 20% 10% / 0.08);
   }
 
   .dark {
