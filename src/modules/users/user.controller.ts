@@ -49,6 +49,66 @@ export const getUsers = async (
   }
 };
 
+// Get single user by ID with investments (admin only)
+export const getUserById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
+  try {
+    const { id } = req.params;
+    const user = await User.findById(id).select("-password");
+
+    if (!user) {
+      res.status(404).json({ success: false, message: "User not found" });
+      return;
+    }
+
+    // Get user's investments
+    const investments = await Investment.find({
+      investor: user._id,
+    }).populate("farm");
+
+    const totalInvested = investments
+      .filter((inv) => inv.status === "completed")
+      .reduce((sum, inv) => sum + inv.amount, 0);
+
+    const activeInvestments = investments.filter(
+      (inv) => inv.status === "completed" && !inv.roiPaid,
+    ).length;
+
+    res.status(200).json({
+      success: true,
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        country: user.country,
+        photo: user.photo,
+        isVerified: user.isVerified,
+        role: user.role,
+        createdAt: user.createdAt,
+        totalInvested,
+        activeInvestments,
+      },
+      investments: investments.map((inv) => ({
+        _id: inv._id,
+        farm: inv.farm,
+        amount: inv.amount,
+        status: inv.status,
+        roi: inv.roi,
+        projectedReturn: inv.projectedReturn(),
+        durationMonths: inv.durationMonths,
+        roiPaid: inv.roiPaid,
+        createdAt: inv.createdAt,
+        updatedAt: inv.updatedAt,
+      })),
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 // Get user statistics (admin only)
 export const getUserStats = async (
   req: Request,

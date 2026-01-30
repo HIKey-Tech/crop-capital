@@ -5,6 +5,7 @@ import {
   investInFarm,
   getMyInvestments,
   getAllInvestments,
+  getInvestmentById,
   completeInvestment,
   verifyPayment,
 } from "./investment.controller";
@@ -17,6 +18,9 @@ router.get("/me", protect, restrictTo("investor"), getMyInvestments);
 
 // Admin: get all investments
 router.get("/", protect, restrictTo("admin"), getAllInvestments);
+
+// Get single investment by ID (investor sees own, admin sees all)
+router.get("/:id", protect, getInvestmentById);
 
 // Verify payment after Paystack callback
 router.get("/verify/:reference", protect, verifyPayment);

@@ -77,3 +77,34 @@ export const resetPassword = async (token: string, newPassword: string) => {
 
   return { message: "Password reset successful" };
 };
+
+export const updateUserProfile = async (
+  userId: string,
+  data: { name?: string; country?: string; photo?: string },
+) => {
+  const user = await User.findById(userId);
+  if (!user) throw new Error("User not found");
+
+  if (data.name) user.name = data.name;
+  if (data.country) user.country = data.country;
+  if (data.photo) user.photo = data.photo;
+
+  await user.save();
+  return user;
+};
+
+export const updateUserPassword = async (
+  userId: string,
+  currentPassword: string,
+  newPassword: string,
+) => {
+  const user = await User.findById(userId);
+  if (!user) throw new Error("User not found");
+
+  const isMatch = await user.comparePassword(currentPassword);
+  if (!isMatch) throw new Error("Current password is incorrect");
+
+  user.password = newPassword;
+  await user.save();
+  return user;
+};

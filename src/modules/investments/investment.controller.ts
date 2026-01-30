@@ -208,6 +208,53 @@ export const getMyInvestments = async (
   }
 };
 
+// Get single investment by ID
+export const getInvestmentById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const investment = await Investment.findById(req.params.id).populate(
+      "farm",
+    );
+
+    if (!investment) {
+      return next(new AppError("Investment not found", 404));
+    }
+
+    // Check ownership: investor can only see their own, admin can see all
+    const user = req.user!;
+    if (
+      user.role !== "admin" &&
+      investment.investor.toString() !== user._id.toString()
+    ) {
+      return next(
+        new AppError("You do not have permission to view this investment", 403),
+      );
+    }
+
+    res.json({
+      success: true,
+      investment: {
+        _id: investment._id,
+        farm: investment.farm,
+        amount: investment.amount,
+        status: investment.status,
+        roi: investment.roi,
+        projectedReturn: investment.projectedReturn(),
+        durationMonths: investment.durationMonths,
+        roiPaid: investment.roiPaid,
+        createdAt: investment.createdAt,
+        updatedAt: investment.updatedAt,
+      },
+    });
+  } catch (err: unknown) {
+    const error = err as Error;
+    next(new AppError(error.message, 400));
+  }
+};
+
 // Admin: get all investments
 export const getAllInvestments = async (
   req: Request,
