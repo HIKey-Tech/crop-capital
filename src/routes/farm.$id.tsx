@@ -20,16 +20,7 @@ import { Input } from '@/components/ui/input'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Label } from '@/components/ui/label'
 import { useFarm, useInvest } from '@/hooks'
-
-// Helper functions
-function formatFullCurrency(value: number): string {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(value)
-}
+import { formatCurrency } from '@/lib/format-currency'
 
 function calculateFundingProgress(current: number, target: number): number {
   if (target <= 0) return 0
@@ -85,7 +76,7 @@ function FarmDetailsPage() {
   const handleInvest = async () => {
     if (amount < farm.minimumInvestment) {
       toast.error(
-        `Minimum investment is ${formatFullCurrency(farm.minimumInvestment)}`,
+        `Minimum investment is ${formatCurrency(farm.minimumInvestment)}`,
       )
       return
     }
@@ -105,7 +96,7 @@ function FarmDetailsPage() {
         })
 
         setTimeout(() => {
-          navigate({ to: '/my-investments' })
+          navigate({ to: "/investments" })
         }, 1500)
       }
     } catch (err) {
@@ -315,7 +306,7 @@ function FarmDetailsPage() {
                     <InvestmentDetail
                       icon={DollarSign}
                       label="Min. Invest"
-                      value={formatFullCurrency(farm.minimumInvestment)}
+                      value={formatCurrency(farm.minimumInvestment)}
                     />
                     <InvestmentDetail
                       icon={TrendingUp}
@@ -412,7 +403,7 @@ function FarmDetailsPage() {
                     <Target className="w-3 h-3" /> Funding Goal
                   </p>
                   <p className="font-medium text-foreground">
-                    {formatFullCurrency(farm.investmentGoal)}
+                    {formatCurrency(farm.investmentGoal)}
                   </p>
                 </div>
               </div>
@@ -445,8 +436,8 @@ function FarmDetailsPage() {
                   )}
                 </div>
                 <p className="text-xs text-muted-foreground mt-1.5">
-                  {formatFullCurrency(farm.fundedAmount)} of{' '}
-                  {formatFullCurrency(farm.investmentGoal)}
+                  {formatCurrency(farm.fundedAmount)} of{' '}
+                  {formatCurrency(farm.investmentGoal)}
                 </p>
               </div>
 

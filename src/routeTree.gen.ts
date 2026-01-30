@@ -9,40 +9,88 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as WalletRouteImport } from './routes/wallet'
 import { Route as TransactionsRouteImport } from './routes/transactions'
+import { Route as TermsRouteImport } from './routes/terms'
+import { Route as SupportRouteImport } from './routes/support'
+import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as OnboardingRouteImport } from './routes/onboarding'
+import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as NewsRouteImport } from './routes/news'
-import { Route as MyInvestmentsRouteImport } from './routes/my-investments'
 import { Route as DiscoverRouteImport } from './routes/discover'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as InvestmentsIndexRouteImport } from './routes/investments/index'
 import { Route as AuthIndexRouteImport } from './routes/auth.index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
+import { Route as SettingsSecurityRouteImport } from './routes/settings/security'
+import { Route as SettingsProfileRouteImport } from './routes/settings/profile'
+import { Route as SettingsNotificationsRouteImport } from './routes/settings/notifications'
 import { Route as PaymentCallbackRouteImport } from './routes/payment.callback'
+import { Route as InvestmentsIdRouteImport } from './routes/investments/$id'
 import { Route as FarmIdRouteImport } from './routes/farm.$id'
+import { Route as AuthVerifyEmailRouteImport } from './routes/auth/verify-email'
 import { Route as AuthSignUpRouteImport } from './routes/auth.sign-up'
 import { Route as AuthSignInRouteImport } from './routes/auth.sign-in'
 import { Route as AuthResetPasswordRouteImport } from './routes/auth.reset-password'
 import { Route as AuthForgotPasswordRouteImport } from './routes/auth.forgot-password'
 import { Route as AdminTransactionsRouteImport } from './routes/admin/transactions'
 import { Route as AdminReportsRouteImport } from './routes/admin/reports'
+import { Route as AdminPayoutsRouteImport } from './routes/admin/payouts'
+import { Route as AdminKycRouteImport } from './routes/admin/kyc'
 import { Route as AdminInvestorsRouteImport } from './routes/admin/investors'
 import { Route as AdminFarmsRouteImport } from './routes/admin/farms'
+import { Route as FarmsIdInvestRouteImport } from './routes/farms/$id.invest'
+import { Route as AdminUsersIdRouteImport } from './routes/admin/users/$id'
 import { Route as AdminFarmNewRouteImport } from './routes/admin/farm.new'
+import { Route as AdminFarmsIdEditRouteImport } from './routes/admin/farms.$id.edit'
+import { Route as AdminFarmsIdAnalyticsRouteImport } from './routes/admin/farms.$id.analytics'
 
+const WalletRoute = WalletRouteImport.update({
+  id: '/wallet',
+  path: '/wallet',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TransactionsRoute = TransactionsRouteImport.update({
   id: '/transactions',
   path: '/transactions',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SupportRoute = SupportRouteImport.update({
+  id: '/support',
+  path: '/support',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardingRoute = OnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NotificationsRoute = NotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const NewsRoute = NewsRouteImport.update({
   id: '/news',
   path: '/news',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MyInvestmentsRoute = MyInvestmentsRouteImport.update({
-  id: '/my-investments',
-  path: '/my-investments',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DiscoverRoute = DiscoverRouteImport.update({
@@ -65,6 +113,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const InvestmentsIndexRoute = InvestmentsIndexRouteImport.update({
+  id: '/investments/',
+  path: '/investments/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthIndexRoute = AuthIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -75,15 +128,40 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   path: '/admin/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SettingsSecurityRoute = SettingsSecurityRouteImport.update({
+  id: '/security',
+  path: '/security',
+  getParentRoute: () => SettingsRoute,
+} as any)
+const SettingsProfileRoute = SettingsProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => SettingsRoute,
+} as any)
+const SettingsNotificationsRoute = SettingsNotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
+  getParentRoute: () => SettingsRoute,
+} as any)
 const PaymentCallbackRoute = PaymentCallbackRouteImport.update({
   id: '/payment/callback',
   path: '/payment/callback',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InvestmentsIdRoute = InvestmentsIdRouteImport.update({
+  id: '/investments/$id',
+  path: '/investments/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FarmIdRoute = FarmIdRouteImport.update({
   id: '/farm/$id',
   path: '/farm/$id',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthVerifyEmailRoute = AuthVerifyEmailRouteImport.update({
+  id: '/verify-email',
+  path: '/verify-email',
+  getParentRoute: () => AuthRoute,
 } as any)
 const AuthSignUpRoute = AuthSignUpRouteImport.update({
   id: '/sign-up',
@@ -115,6 +193,16 @@ const AdminReportsRoute = AdminReportsRouteImport.update({
   path: '/admin/reports',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminPayoutsRoute = AdminPayoutsRouteImport.update({
+  id: '/admin/payouts',
+  path: '/admin/payouts',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminKycRoute = AdminKycRouteImport.update({
+  id: '/admin/kyc',
+  path: '/admin/kyc',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminInvestorsRoute = AdminInvestorsRouteImport.update({
   id: '/admin/investors',
   path: '/admin/investors',
@@ -125,10 +213,30 @@ const AdminFarmsRoute = AdminFarmsRouteImport.update({
   path: '/admin/farms',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FarmsIdInvestRoute = FarmsIdInvestRouteImport.update({
+  id: '/farms/$id/invest',
+  path: '/farms/$id/invest',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminUsersIdRoute = AdminUsersIdRouteImport.update({
+  id: '/admin/users/$id',
+  path: '/admin/users/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminFarmNewRoute = AdminFarmNewRouteImport.update({
   id: '/admin/farm/new',
   path: '/admin/farm/new',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AdminFarmsIdEditRoute = AdminFarmsIdEditRouteImport.update({
+  id: '/$id/edit',
+  path: '/$id/edit',
+  getParentRoute: () => AdminFarmsRoute,
+} as any)
+const AdminFarmsIdAnalyticsRoute = AdminFarmsIdAnalyticsRouteImport.update({
+  id: '/$id/analytics',
+  path: '/$id/analytics',
+  getParentRoute: () => AdminFarmsRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -136,43 +244,79 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRouteWithChildren
   '/dashboard': typeof DashboardRoute
   '/discover': typeof DiscoverRoute
-  '/my-investments': typeof MyInvestmentsRoute
   '/news': typeof NewsRoute
+  '/notifications': typeof NotificationsRoute
+  '/onboarding': typeof OnboardingRoute
+  '/privacy': typeof PrivacyRoute
+  '/settings': typeof SettingsRouteWithChildren
+  '/support': typeof SupportRoute
+  '/terms': typeof TermsRoute
   '/transactions': typeof TransactionsRoute
-  '/admin/farms': typeof AdminFarmsRoute
+  '/wallet': typeof WalletRoute
+  '/admin/farms': typeof AdminFarmsRouteWithChildren
   '/admin/investors': typeof AdminInvestorsRoute
+  '/admin/kyc': typeof AdminKycRoute
+  '/admin/payouts': typeof AdminPayoutsRoute
   '/admin/reports': typeof AdminReportsRoute
   '/admin/transactions': typeof AdminTransactionsRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/auth/sign-in': typeof AuthSignInRoute
   '/auth/sign-up': typeof AuthSignUpRoute
+  '/auth/verify-email': typeof AuthVerifyEmailRoute
   '/farm/$id': typeof FarmIdRoute
+  '/investments/$id': typeof InvestmentsIdRoute
   '/payment/callback': typeof PaymentCallbackRoute
+  '/settings/notifications': typeof SettingsNotificationsRoute
+  '/settings/profile': typeof SettingsProfileRoute
+  '/settings/security': typeof SettingsSecurityRoute
   '/admin': typeof AdminIndexRoute
   '/auth/': typeof AuthIndexRoute
+  '/investments': typeof InvestmentsIndexRoute
   '/admin/farm/new': typeof AdminFarmNewRoute
+  '/admin/users/$id': typeof AdminUsersIdRoute
+  '/farms/$id/invest': typeof FarmsIdInvestRoute
+  '/admin/farms/$id/analytics': typeof AdminFarmsIdAnalyticsRoute
+  '/admin/farms/$id/edit': typeof AdminFarmsIdEditRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
   '/discover': typeof DiscoverRoute
-  '/my-investments': typeof MyInvestmentsRoute
   '/news': typeof NewsRoute
+  '/notifications': typeof NotificationsRoute
+  '/onboarding': typeof OnboardingRoute
+  '/privacy': typeof PrivacyRoute
+  '/settings': typeof SettingsRouteWithChildren
+  '/support': typeof SupportRoute
+  '/terms': typeof TermsRoute
   '/transactions': typeof TransactionsRoute
-  '/admin/farms': typeof AdminFarmsRoute
+  '/wallet': typeof WalletRoute
+  '/admin/farms': typeof AdminFarmsRouteWithChildren
   '/admin/investors': typeof AdminInvestorsRoute
+  '/admin/kyc': typeof AdminKycRoute
+  '/admin/payouts': typeof AdminPayoutsRoute
   '/admin/reports': typeof AdminReportsRoute
   '/admin/transactions': typeof AdminTransactionsRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/auth/sign-in': typeof AuthSignInRoute
   '/auth/sign-up': typeof AuthSignUpRoute
+  '/auth/verify-email': typeof AuthVerifyEmailRoute
   '/farm/$id': typeof FarmIdRoute
+  '/investments/$id': typeof InvestmentsIdRoute
   '/payment/callback': typeof PaymentCallbackRoute
+  '/settings/notifications': typeof SettingsNotificationsRoute
+  '/settings/profile': typeof SettingsProfileRoute
+  '/settings/security': typeof SettingsSecurityRoute
   '/admin': typeof AdminIndexRoute
   '/auth': typeof AuthIndexRoute
+  '/investments': typeof InvestmentsIndexRoute
   '/admin/farm/new': typeof AdminFarmNewRoute
+  '/admin/users/$id': typeof AdminUsersIdRoute
+  '/farms/$id/invest': typeof FarmsIdInvestRoute
+  '/admin/farms/$id/analytics': typeof AdminFarmsIdAnalyticsRoute
+  '/admin/farms/$id/edit': typeof AdminFarmsIdEditRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -180,22 +324,40 @@ export interface FileRoutesById {
   '/auth': typeof AuthRouteWithChildren
   '/dashboard': typeof DashboardRoute
   '/discover': typeof DiscoverRoute
-  '/my-investments': typeof MyInvestmentsRoute
   '/news': typeof NewsRoute
+  '/notifications': typeof NotificationsRoute
+  '/onboarding': typeof OnboardingRoute
+  '/privacy': typeof PrivacyRoute
+  '/settings': typeof SettingsRouteWithChildren
+  '/support': typeof SupportRoute
+  '/terms': typeof TermsRoute
   '/transactions': typeof TransactionsRoute
-  '/admin/farms': typeof AdminFarmsRoute
+  '/wallet': typeof WalletRoute
+  '/admin/farms': typeof AdminFarmsRouteWithChildren
   '/admin/investors': typeof AdminInvestorsRoute
+  '/admin/kyc': typeof AdminKycRoute
+  '/admin/payouts': typeof AdminPayoutsRoute
   '/admin/reports': typeof AdminReportsRoute
   '/admin/transactions': typeof AdminTransactionsRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/auth/sign-in': typeof AuthSignInRoute
   '/auth/sign-up': typeof AuthSignUpRoute
+  '/auth/verify-email': typeof AuthVerifyEmailRoute
   '/farm/$id': typeof FarmIdRoute
+  '/investments/$id': typeof InvestmentsIdRoute
   '/payment/callback': typeof PaymentCallbackRoute
+  '/settings/notifications': typeof SettingsNotificationsRoute
+  '/settings/profile': typeof SettingsProfileRoute
+  '/settings/security': typeof SettingsSecurityRoute
   '/admin/': typeof AdminIndexRoute
   '/auth/': typeof AuthIndexRoute
+  '/investments/': typeof InvestmentsIndexRoute
   '/admin/farm/new': typeof AdminFarmNewRoute
+  '/admin/users/$id': typeof AdminUsersIdRoute
+  '/farms/$id/invest': typeof FarmsIdInvestRoute
+  '/admin/farms/$id/analytics': typeof AdminFarmsIdAnalyticsRoute
+  '/admin/farms/$id/edit': typeof AdminFarmsIdEditRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -204,65 +366,119 @@ export interface FileRouteTypes {
     | '/auth'
     | '/dashboard'
     | '/discover'
-    | '/my-investments'
     | '/news'
+    | '/notifications'
+    | '/onboarding'
+    | '/privacy'
+    | '/settings'
+    | '/support'
+    | '/terms'
     | '/transactions'
+    | '/wallet'
     | '/admin/farms'
     | '/admin/investors'
+    | '/admin/kyc'
+    | '/admin/payouts'
     | '/admin/reports'
     | '/admin/transactions'
     | '/auth/forgot-password'
     | '/auth/reset-password'
     | '/auth/sign-in'
     | '/auth/sign-up'
+    | '/auth/verify-email'
     | '/farm/$id'
+    | '/investments/$id'
     | '/payment/callback'
+    | '/settings/notifications'
+    | '/settings/profile'
+    | '/settings/security'
     | '/admin'
     | '/auth/'
+    | '/investments'
     | '/admin/farm/new'
+    | '/admin/users/$id'
+    | '/farms/$id/invest'
+    | '/admin/farms/$id/analytics'
+    | '/admin/farms/$id/edit'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/dashboard'
     | '/discover'
-    | '/my-investments'
     | '/news'
+    | '/notifications'
+    | '/onboarding'
+    | '/privacy'
+    | '/settings'
+    | '/support'
+    | '/terms'
     | '/transactions'
+    | '/wallet'
     | '/admin/farms'
     | '/admin/investors'
+    | '/admin/kyc'
+    | '/admin/payouts'
     | '/admin/reports'
     | '/admin/transactions'
     | '/auth/forgot-password'
     | '/auth/reset-password'
     | '/auth/sign-in'
     | '/auth/sign-up'
+    | '/auth/verify-email'
     | '/farm/$id'
+    | '/investments/$id'
     | '/payment/callback'
+    | '/settings/notifications'
+    | '/settings/profile'
+    | '/settings/security'
     | '/admin'
     | '/auth'
+    | '/investments'
     | '/admin/farm/new'
+    | '/admin/users/$id'
+    | '/farms/$id/invest'
+    | '/admin/farms/$id/analytics'
+    | '/admin/farms/$id/edit'
   id:
     | '__root__'
     | '/'
     | '/auth'
     | '/dashboard'
     | '/discover'
-    | '/my-investments'
     | '/news'
+    | '/notifications'
+    | '/onboarding'
+    | '/privacy'
+    | '/settings'
+    | '/support'
+    | '/terms'
     | '/transactions'
+    | '/wallet'
     | '/admin/farms'
     | '/admin/investors'
+    | '/admin/kyc'
+    | '/admin/payouts'
     | '/admin/reports'
     | '/admin/transactions'
     | '/auth/forgot-password'
     | '/auth/reset-password'
     | '/auth/sign-in'
     | '/auth/sign-up'
+    | '/auth/verify-email'
     | '/farm/$id'
+    | '/investments/$id'
     | '/payment/callback'
+    | '/settings/notifications'
+    | '/settings/profile'
+    | '/settings/security'
     | '/admin/'
     | '/auth/'
+    | '/investments/'
     | '/admin/farm/new'
+    | '/admin/users/$id'
+    | '/farms/$id/invest'
+    | '/admin/farms/$id/analytics'
+    | '/admin/farms/$id/edit'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -270,21 +486,40 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRouteWithChildren
   DashboardRoute: typeof DashboardRoute
   DiscoverRoute: typeof DiscoverRoute
-  MyInvestmentsRoute: typeof MyInvestmentsRoute
   NewsRoute: typeof NewsRoute
+  NotificationsRoute: typeof NotificationsRoute
+  OnboardingRoute: typeof OnboardingRoute
+  PrivacyRoute: typeof PrivacyRoute
+  SettingsRoute: typeof SettingsRouteWithChildren
+  SupportRoute: typeof SupportRoute
+  TermsRoute: typeof TermsRoute
   TransactionsRoute: typeof TransactionsRoute
-  AdminFarmsRoute: typeof AdminFarmsRoute
+  WalletRoute: typeof WalletRoute
+  AdminFarmsRoute: typeof AdminFarmsRouteWithChildren
   AdminInvestorsRoute: typeof AdminInvestorsRoute
+  AdminKycRoute: typeof AdminKycRoute
+  AdminPayoutsRoute: typeof AdminPayoutsRoute
   AdminReportsRoute: typeof AdminReportsRoute
   AdminTransactionsRoute: typeof AdminTransactionsRoute
   FarmIdRoute: typeof FarmIdRoute
+  InvestmentsIdRoute: typeof InvestmentsIdRoute
   PaymentCallbackRoute: typeof PaymentCallbackRoute
   AdminIndexRoute: typeof AdminIndexRoute
+  InvestmentsIndexRoute: typeof InvestmentsIndexRoute
   AdminFarmNewRoute: typeof AdminFarmNewRoute
+  AdminUsersIdRoute: typeof AdminUsersIdRoute
+  FarmsIdInvestRoute: typeof FarmsIdInvestRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/wallet': {
+      id: '/wallet'
+      path: '/wallet'
+      fullPath: '/wallet'
+      preLoaderRoute: typeof WalletRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/transactions': {
       id: '/transactions'
       path: '/transactions'
@@ -292,18 +527,53 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TransactionsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/support': {
+      id: '/support'
+      path: '/support'
+      fullPath: '/support'
+      preLoaderRoute: typeof SupportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/onboarding': {
+      id: '/onboarding'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof OnboardingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/notifications': {
+      id: '/notifications'
+      path: '/notifications'
+      fullPath: '/notifications'
+      preLoaderRoute: typeof NotificationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/news': {
       id: '/news'
       path: '/news'
       fullPath: '/news'
       preLoaderRoute: typeof NewsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/my-investments': {
-      id: '/my-investments'
-      path: '/my-investments'
-      fullPath: '/my-investments'
-      preLoaderRoute: typeof MyInvestmentsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/discover': {
@@ -334,6 +604,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/investments/': {
+      id: '/investments/'
+      path: '/investments'
+      fullPath: '/investments'
+      preLoaderRoute: typeof InvestmentsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/auth/': {
       id: '/auth/'
       path: '/'
@@ -348,11 +625,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/settings/security': {
+      id: '/settings/security'
+      path: '/security'
+      fullPath: '/settings/security'
+      preLoaderRoute: typeof SettingsSecurityRouteImport
+      parentRoute: typeof SettingsRoute
+    }
+    '/settings/profile': {
+      id: '/settings/profile'
+      path: '/profile'
+      fullPath: '/settings/profile'
+      preLoaderRoute: typeof SettingsProfileRouteImport
+      parentRoute: typeof SettingsRoute
+    }
+    '/settings/notifications': {
+      id: '/settings/notifications'
+      path: '/notifications'
+      fullPath: '/settings/notifications'
+      preLoaderRoute: typeof SettingsNotificationsRouteImport
+      parentRoute: typeof SettingsRoute
+    }
     '/payment/callback': {
       id: '/payment/callback'
       path: '/payment/callback'
       fullPath: '/payment/callback'
       preLoaderRoute: typeof PaymentCallbackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/investments/$id': {
+      id: '/investments/$id'
+      path: '/investments/$id'
+      fullPath: '/investments/$id'
+      preLoaderRoute: typeof InvestmentsIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/farm/$id': {
@@ -361,6 +666,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/farm/$id'
       preLoaderRoute: typeof FarmIdRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/auth/verify-email': {
+      id: '/auth/verify-email'
+      path: '/verify-email'
+      fullPath: '/auth/verify-email'
+      preLoaderRoute: typeof AuthVerifyEmailRouteImport
+      parentRoute: typeof AuthRoute
     }
     '/auth/sign-up': {
       id: '/auth/sign-up'
@@ -404,6 +716,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminReportsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/payouts': {
+      id: '/admin/payouts'
+      path: '/admin/payouts'
+      fullPath: '/admin/payouts'
+      preLoaderRoute: typeof AdminPayoutsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/kyc': {
+      id: '/admin/kyc'
+      path: '/admin/kyc'
+      fullPath: '/admin/kyc'
+      preLoaderRoute: typeof AdminKycRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/investors': {
       id: '/admin/investors'
       path: '/admin/investors'
@@ -418,12 +744,40 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminFarmsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/farms/$id/invest': {
+      id: '/farms/$id/invest'
+      path: '/farms/$id/invest'
+      fullPath: '/farms/$id/invest'
+      preLoaderRoute: typeof FarmsIdInvestRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/users/$id': {
+      id: '/admin/users/$id'
+      path: '/admin/users/$id'
+      fullPath: '/admin/users/$id'
+      preLoaderRoute: typeof AdminUsersIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/farm/new': {
       id: '/admin/farm/new'
       path: '/admin/farm/new'
       fullPath: '/admin/farm/new'
       preLoaderRoute: typeof AdminFarmNewRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/admin/farms/$id/edit': {
+      id: '/admin/farms/$id/edit'
+      path: '/$id/edit'
+      fullPath: '/admin/farms/$id/edit'
+      preLoaderRoute: typeof AdminFarmsIdEditRouteImport
+      parentRoute: typeof AdminFarmsRoute
+    }
+    '/admin/farms/$id/analytics': {
+      id: '/admin/farms/$id/analytics'
+      path: '/$id/analytics'
+      fullPath: '/admin/farms/$id/analytics'
+      preLoaderRoute: typeof AdminFarmsIdAnalyticsRouteImport
+      parentRoute: typeof AdminFarmsRoute
     }
   }
 }
@@ -433,6 +787,7 @@ interface AuthRouteChildren {
   AuthResetPasswordRoute: typeof AuthResetPasswordRoute
   AuthSignInRoute: typeof AuthSignInRoute
   AuthSignUpRoute: typeof AuthSignUpRoute
+  AuthVerifyEmailRoute: typeof AuthVerifyEmailRoute
   AuthIndexRoute: typeof AuthIndexRoute
 }
 
@@ -441,27 +796,70 @@ const AuthRouteChildren: AuthRouteChildren = {
   AuthResetPasswordRoute: AuthResetPasswordRoute,
   AuthSignInRoute: AuthSignInRoute,
   AuthSignUpRoute: AuthSignUpRoute,
+  AuthVerifyEmailRoute: AuthVerifyEmailRoute,
   AuthIndexRoute: AuthIndexRoute,
 }
 
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
+
+interface SettingsRouteChildren {
+  SettingsNotificationsRoute: typeof SettingsNotificationsRoute
+  SettingsProfileRoute: typeof SettingsProfileRoute
+  SettingsSecurityRoute: typeof SettingsSecurityRoute
+}
+
+const SettingsRouteChildren: SettingsRouteChildren = {
+  SettingsNotificationsRoute: SettingsNotificationsRoute,
+  SettingsProfileRoute: SettingsProfileRoute,
+  SettingsSecurityRoute: SettingsSecurityRoute,
+}
+
+const SettingsRouteWithChildren = SettingsRoute._addFileChildren(
+  SettingsRouteChildren,
+)
+
+interface AdminFarmsRouteChildren {
+  AdminFarmsIdAnalyticsRoute: typeof AdminFarmsIdAnalyticsRoute
+  AdminFarmsIdEditRoute: typeof AdminFarmsIdEditRoute
+}
+
+const AdminFarmsRouteChildren: AdminFarmsRouteChildren = {
+  AdminFarmsIdAnalyticsRoute: AdminFarmsIdAnalyticsRoute,
+  AdminFarmsIdEditRoute: AdminFarmsIdEditRoute,
+}
+
+const AdminFarmsRouteWithChildren = AdminFarmsRoute._addFileChildren(
+  AdminFarmsRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRoute: AuthRouteWithChildren,
   DashboardRoute: DashboardRoute,
   DiscoverRoute: DiscoverRoute,
-  MyInvestmentsRoute: MyInvestmentsRoute,
   NewsRoute: NewsRoute,
+  NotificationsRoute: NotificationsRoute,
+  OnboardingRoute: OnboardingRoute,
+  PrivacyRoute: PrivacyRoute,
+  SettingsRoute: SettingsRouteWithChildren,
+  SupportRoute: SupportRoute,
+  TermsRoute: TermsRoute,
   TransactionsRoute: TransactionsRoute,
-  AdminFarmsRoute: AdminFarmsRoute,
+  WalletRoute: WalletRoute,
+  AdminFarmsRoute: AdminFarmsRouteWithChildren,
   AdminInvestorsRoute: AdminInvestorsRoute,
+  AdminKycRoute: AdminKycRoute,
+  AdminPayoutsRoute: AdminPayoutsRoute,
   AdminReportsRoute: AdminReportsRoute,
   AdminTransactionsRoute: AdminTransactionsRoute,
   FarmIdRoute: FarmIdRoute,
+  InvestmentsIdRoute: InvestmentsIdRoute,
   PaymentCallbackRoute: PaymentCallbackRoute,
   AdminIndexRoute: AdminIndexRoute,
+  InvestmentsIndexRoute: InvestmentsIndexRoute,
   AdminFarmNewRoute: AdminFarmNewRoute,
+  AdminUsersIdRoute: AdminUsersIdRoute,
+  FarmsIdInvestRoute: FarmsIdInvestRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

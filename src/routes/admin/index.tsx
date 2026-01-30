@@ -7,7 +7,7 @@ import {
   Trash2,
   TrendingUp,
 } from 'lucide-react'
-import type {ColumnDef} from '@tanstack/react-table';
+import type { ColumnDef } from '@tanstack/react-table'
 
 import type { Farm } from '@/types'
 import { DashboardLayout } from '@/components/layout/dashboard-layout'
@@ -16,19 +16,11 @@ import { DataTable } from '@/components/data-table'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { useFarms } from '@/hooks'
+import { formatCurrency } from '@/lib/format-currency'
 
 export const Route = createFileRoute('/admin/')({
   component: AdminDashboardPage,
 })
-
-function formatFullCurrency(value: number): string {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(value)
-}
 
 const columns: Array<ColumnDef<Farm>> = [
   {
@@ -57,7 +49,7 @@ const columns: Array<ColumnDef<Farm>> = [
     header: 'Goal',
     cell: ({ getValue }) => (
       <span className="font-medium">
-        {formatFullCurrency(getValue() as number)}
+        {formatCurrency(getValue() as number)}
       </span>
     ),
   },
@@ -164,7 +156,7 @@ function AdminDashboardPage() {
           />
           <StatsCard
             label="Total Funding Goal"
-            value={formatFullCurrency(totalFunding)}
+            value={formatCurrency(totalFunding)}
             icon={<Coins className="w-4 h-4 text-primary" />}
           />
           <StatsCard

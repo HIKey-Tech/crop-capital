@@ -1,12 +1,15 @@
 import { Link, useLocation } from '@tanstack/react-router'
 import {
+  Bell,
   FileBarChart,
   FolderOpen,
   LayoutDashboard,
   Newspaper,
   Receipt,
   Search,
+  Settings,
   Users,
+  Wallet,
   X,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -19,10 +22,13 @@ interface SidebarProps {
 
 const investorNavItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/my-investments', label: 'My Investment', icon: FolderOpen },
+  { href: '/investments', label: 'My Investments', icon: FolderOpen },
+  { href: '/wallet', label: 'Wallet', icon: Wallet },
   { href: '/transactions', label: 'Transactions', icon: Receipt },
   { href: '/discover', label: 'Discover Farms', icon: Search },
   { href: '/news', label: 'News & Updates', icon: Newspaper },
+  { href: '/notifications', label: 'Notifications', icon: Bell },
+  { href: '/settings', label: 'Settings', icon: Settings },
 ]
 
 const adminNavItems = [
@@ -30,6 +36,8 @@ const adminNavItems = [
   { href: '/admin/farms', label: 'Farms', icon: FolderOpen },
   { href: '/admin/investors', label: 'Investors', icon: Users },
   { href: '/admin/transactions', label: 'Transactions', icon: Receipt },
+  { href: '/admin/payouts', label: 'Payouts', icon: Wallet },
+  { href: '/admin/kyc', label: 'KYC Review', icon: FileBarChart },
   { href: '/admin/reports', label: 'Reports', icon: FileBarChart },
 ]
 

@@ -7,6 +7,7 @@ interface StatsCardProps {
   trend?: string
   trendLabel?: string
   icon?: React.ReactNode
+  description?: string
   className?: string
 }
 
@@ -16,6 +17,7 @@ export function StatsCard({
   trend,
   trendLabel,
   icon,
+  description,
   className,
 }: StatsCardProps) {
   const isPositive = trend?.startsWith('+')
@@ -49,6 +51,9 @@ export function StatsCard({
             {trendLabel}
           </span>
         </span>
+      )}
+      {description && (
+        <p className="mt-1 text-xs text-muted-foreground">{description}</p>
       )}
     </div>
   )

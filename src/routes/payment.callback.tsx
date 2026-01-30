@@ -82,7 +82,7 @@ function PaymentCallbackPage() {
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Button
-              onClick={() => navigate({ to: '/my-investments' })}
+              onClick={() => navigate({ to: '/investments' })}
               className="btn-primary-gradient"
             >
               View My Investments

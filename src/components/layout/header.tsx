@@ -67,8 +67,8 @@ export function Header({
               </div>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="justify-center text-primary">
-              View all notifications
+            <DropdownMenuItem className="justify-center text-primary" asChild>
+              <Link to="/notifications">View all notifications</Link>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -85,19 +85,19 @@ export function Header({
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-48">
-            <DropdownMenuItem>
-              <Link to="/dashboard" className="w-full">
+            <DropdownMenuItem asChild>
+              <Link to="/settings/profile" className="w-full">
                 Profile Settings
               </Link>
             </DropdownMenuItem>
-            <DropdownMenuItem>
+            <DropdownMenuItem asChild>
               <Link to="/admin" className="w-full">
                 Admin Dashboard
               </Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-destructive">
-              <Link to="/auth" className="w-full">
+            <DropdownMenuItem className="text-destructive" asChild>
+              <Link to="/auth/sign-in" className="w-full">
                 Sign Out
               </Link>
             </DropdownMenuItem>

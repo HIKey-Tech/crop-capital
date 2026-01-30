@@ -84,23 +84,52 @@ This is a **crowdfunding/investment platform for agricultural projects (farms)**
 
 ---
 
-## What Needs to Be Done
+## 🚫 Missing Screens
 
-1. **🔄 Replace Stripe with Paystack** - The payment.service.ts currently uses Stripe. Paystack supports Nigerian Naira (NGN) and other African currencies.
+Based on my analysis, here are the **missing screens** for the AYF Agro platform:
 
-2. **🔗 Connect Frontend to Backend** - Frontend is using mock data; needs proper API integration with TanStack Query.
+### **User/Investor Screens**
 
-3. **🚀 Deployment Configuration**
-   - Backend → **Render** (need environment setup, build commands)
-   - Frontend → **Vercel** (Vite config is ready)
+1. **Profile/Settings Page** - Edit personal info, change password, notification preferences
+2. **Email Verification Page** - For confirming email after registration
+3. **Wallet/Portfolio Page** - Detailed breakdown of all investments, ROI history, total portfolio value
+4. **Farm Edit Page (Admin)** - Edit existing farm details (only "new farm" exists)
+5. **Investment History Details** - Individual investment details page (timeline, documents, updates)
+6. **Notifications Center** - In-app notifications for investments, ROI payouts, farm updates
+7. **Help/FAQ/Support Page** - Contact form, frequently asked questions
+8. **Terms & Conditions/Privacy Policy** - Legal pages (required for production)
 
-4. **🔧 Complete Features** - Webhook handling, ROI payout automation, email notifications, etc.
+### **Admin Screens**
 
----
+1. **Farm Edit Page** - `/admin/farms/:id/edit` (only create exists)
+2. **User Details Page** - `/admin/investors/:id` (view/edit individual investor)
+3. **Farm Analytics** - Detailed analytics per farm (investment breakdown, investor list)
+4. **ROI Payout Management** - Manual trigger/view ROI payment history
+5. **Admin User Management** - Promote/demote users, manage admin roles (backend exists but no UI)
+6. **Email Campaigns** - Send updates/newsletters to investors
+7. **Withdrawal Requests** - If investors can withdraw before maturity
+8. **KYC/Verification Requests** - Review investor verification documents
 
-Ready to start working! What would you like to tackle first?
+### **Missing Features on Existing Screens**
 
-- Migrate payments from Stripe to **Paystack**?
-- Set up **API integration** in the frontend?
-- Configure **deployment** for Render/Vercel?
-- Something else?
+- **Dashboard**: No portfolio allocation chart, no recent activity feed
+- **Discover**: Missing filters (by location, ROI, duration, status), no search bar
+- **Farm Details**: Missing farm documents/contracts, no investor comments/Q&A
+- **My Investments**: No download statements, no detailed ROI breakdown
+- **Transactions**: Missing export to CSV/PDF, no payment receipt download
+- **Admin Reports**: Charts exist but no data export functionality
+
+### **Payment/Onboarding**
+
+- **Investment Checkout Flow** - Multi-step payment with Paystack integration
+- **KYC Upload Page** - For investor verification (if required)
+- **Welcome/Onboarding Screens** - First-time user tutorial
+
+### **Critical Missing Pieces**
+
+- ❌ **404 Page** - Not found error page
+- ❌ **Error Boundary UI** - For handling app crashes
+- ❌ **Loading/Skeleton States** - Many pages missing proper loading states
+- ❌ **Empty States** - When user has no investments/farms
+
+Would you like me to prioritize and implement any of these screens?

@@ -78,6 +78,11 @@ export interface InvestmentsListResponse {
   investments: Array<Investment>
 }
 
+export interface InvestmentDetailResponse {
+  success: boolean
+  investment: Investment
+}
+
 export interface FarmsListResponse {
   success: boolean
   farms: Array<Farm>
@@ -132,6 +137,16 @@ export interface UsersListResponse {
   success: boolean
   count: number
   users: Array<UserWithStats>
+}
+
+export interface UserDetailResponse {
+  success: boolean
+  user: UserWithStats & {
+    photo?: string
+    role: string
+    activeInvestments: number
+  }
+  investments: Array<Investment>
 }
 
 export interface UserStatsResponse {

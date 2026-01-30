@@ -4,10 +4,12 @@ import type {
   FarmResponse,
   FarmsListResponse,
   InvestRequest,
+  InvestmentDetailResponse,
   InvestmentResponse,
   InvestmentsListResponse,
   LoginRequest,
   RegisterRequest,
+  UserDetailResponse,
   UserStatsResponse,
   UsersListResponse,
 } from '@/types'
@@ -97,6 +99,34 @@ export const authApi = {
   getMe: async () => {
     return request<{ success: boolean; user: AuthResponse['user'] }>('/auth/me')
   },
+
+  updateProfile: async (data: {
+    name?: string
+    country?: string
+    photo?: string
+  }) => {
+    return request<{
+      success: boolean
+      message: string
+      user: AuthResponse['user']
+    }>('/auth/update-profile', {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    })
+  },
+
+  updatePassword: async (data: {
+    currentPassword: string
+    newPassword: string
+  }) => {
+    return request<{ success: boolean; message: string }>(
+      '/auth/update-password',
+      {
+        method: 'PATCH',
+        body: JSON.stringify(data),
+      },
+    )
+  },
 }
 
 // Farms API
@@ -153,6 +183,10 @@ export const investmentsApi = {
     return request<InvestmentsListResponse>('/investments')
   },
 
+  getById: async (id: string): Promise<InvestmentDetailResponse> => {
+    return request<InvestmentDetailResponse>(`/investments/${id}`)
+  },
+
   invest: async (data: InvestRequest): Promise<InvestmentResponse> => {
     return request<InvestmentResponse>('/investments', {
       method: 'POST',
@@ -173,6 +207,10 @@ export const investmentsApi = {
 export const usersApi = {
   getAll: async (): Promise<UsersListResponse> => {
     return request<UsersListResponse>('/users')
+  },
+
+  getById: async (id: string): Promise<UserDetailResponse> => {
+    return request<UserDetailResponse>(`/users/${id}`)
   },
 
   getStats: async (): Promise<UserStatsResponse> => {
