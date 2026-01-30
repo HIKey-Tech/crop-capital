@@ -8,8 +8,8 @@ import type {
   InvestmentsListResponse,
   LoginRequest,
   RegisterRequest,
-  UsersListResponse,
   UserStatsResponse,
+  UsersListResponse,
 } from '@/types'
 
 const API_BASE_URL =
@@ -147,6 +147,10 @@ export const farmsApi = {
 export const investmentsApi = {
   getMyInvestments: async (): Promise<InvestmentsListResponse> => {
     return request<InvestmentsListResponse>('/investments/me')
+  },
+
+  getAllInvestments: async (): Promise<InvestmentsListResponse> => {
+    return request<InvestmentsListResponse>('/investments')
   },
 
   invest: async (data: InvestRequest): Promise<InvestmentResponse> => {

@@ -23,7 +23,7 @@ function LandingPage() {
               </span>
             </div>
             <span className="text-lg font-bold text-foreground">
-              African Youth Forum
+              Africa Youth Forum
             </span>
           </Link>
 
@@ -200,7 +200,7 @@ function LandingPage() {
               </span>
             </div>
             <span className="text-sm text-muted-foreground">
-              © 2024 African Youth Forum. All rights reserved.
+              © 2024 Africa Youth Forum. All rights reserved.
             </span>
           </div>
           <div className="flex gap-6 text-sm text-muted-foreground">

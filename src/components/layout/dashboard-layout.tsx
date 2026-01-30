@@ -21,7 +21,7 @@ export function DashboardLayout({
         onClose={() => setSidebarOpen(false)}
       />
 
-      <div className="lg:pl-[220px]">
+      <div className="lg:pl-55">
         <Header onMenuClick={() => setSidebarOpen(true)} />
         <main className="p-6">{children}</main>
       </div>

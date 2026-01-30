@@ -19,8 +19,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Input } from '@/components/ui/input'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Label } from '@/components/ui/label'
-import { useFarm } from '@/hooks/use-farms'
-import { useInvest } from '@/hooks/use-investments'
+import { useFarm, useInvest } from '@/hooks'
 
 // Helper functions
 function formatFullCurrency(value: number): string {
@@ -240,7 +239,7 @@ function FarmDetailsPage() {
     value: string
   }) {
     return (
-      <div className="flex flex-col items-center gap-0.5 min-w-[95px]">
+      <div className="flex flex-col items-center gap-0.5 min-w-23.75">
         <div className="rounded-full bg-muted flex items-center justify-center h-9 w-9 mb-1 border border-border">
           <Icon className="w-5 h-5 text-primary" />
         </div>

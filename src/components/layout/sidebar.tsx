@@ -53,7 +53,7 @@ export function Sidebar({
 
       <aside
         className={cn(
-          'fixed left-0 top-0 z-50 h-full w-[220px] bg-sidebar border-r border-sidebar-border flex flex-col transition-transform duration-300 lg:translate-x-0',
+          'fixed left-0 top-0 z-50 h-full w-55 bg-sidebar border-r border-sidebar-border flex flex-col transition-transform duration-300 lg:translate-x-0',
           isOpen ? 'translate-x-0' : '-translate-x-full',
         )}
       >
@@ -67,7 +67,7 @@ export function Sidebar({
             </div>
             <div className="flex flex-col">
               <span className="text-sm font-semibold text-foreground leading-tight">
-                African Youth
+                Africa Youth
               </span>
               <span className="text-sm font-semibold text-primary leading-tight">
                 Forum
@@ -106,7 +106,7 @@ export function Sidebar({
         {/* Footer */}
         <div className="px-5 py-4 border-t border-sidebar-border">
           <p className="text-xs text-muted-foreground">
-            © 2024 African Youth Forum
+            © 2024 Africa Youth Forum
           </p>
         </div>
       </aside>

@@ -4,8 +4,7 @@ import { Coins, FolderOpen, TrendingUp } from 'lucide-react'
 import { DashboardLayout } from '@/components/layout/dashboard-layout'
 import { FarmCard } from '@/components/dashboard/farm-card'
 import { StatsCard } from '@/components/dashboard/stats-card'
-import { useFarms } from '@/hooks/use-farms'
-import { useMyInvestments } from '@/hooks/use-investments'
+import { useFarms, useMyInvestments } from '@/hooks'
 import { formatCurrency } from '@/lib/format-currency'
 
 export const Route = createFileRoute('/dashboard')({

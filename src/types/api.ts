@@ -17,6 +17,7 @@ export interface Farm {
   name: string
   location: string
   image: string
+  imagePublicId: string
   investmentGoal: number
   minimumInvestment: number
   roi: number
@@ -30,6 +31,7 @@ export interface Farm {
 export interface FarmUpdate {
   stage: string
   image?: string
+  imagePublicId?: string
   date: string
 }
 

@@ -1,4 +1,4 @@
-import type { Investment, Farm } from '@/types'
+import type { Farm, Investment } from '@/types'
 
 // Helper to compute derived investment values
 function computeInvestmentMetrics(investment: Investment, _farm: Farm) {
@@ -79,7 +79,7 @@ export function InvestmentCard({ investment }: InvestmentCardProps) {
 
   return (
     <div className="rounded-xl overflow-hidden border border-border bg-white transition-shadow duration-300 group">
-      <div className="relative aspect-[16/10] overflow-hidden">
+      <div className="relative aspect-16/10 overflow-hidden">
         <img
           src={farm.image}
           alt={farm.name}

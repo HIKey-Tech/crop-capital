@@ -3,7 +3,7 @@ import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { CheckCircle, Loader2, XCircle } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
-import { useVerifyPayment } from '@/hooks/use-investments'
+import { useVerifyPayment } from '@/hooks'
 
 interface PaymentCallbackSearch {
   reference?: string

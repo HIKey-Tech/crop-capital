@@ -1,13 +1,18 @@
 import { useState } from 'react'
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import { useForm } from '@mantine/form'
+import { zodResolver } from 'mantine-form-zod-resolver'
 import { Plus, XCircle } from 'lucide-react'
+import { toast } from 'sonner'
 
+import type { CreateFarmInput } from '@/api/farms/schema'
 import { DashboardLayout } from '@/components/layout/dashboard-layout'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-
-import farmPalmTrees from '@/assets/farm-palm-trees.jpg'
+import { useCreateFarm } from '@/hooks'
+import { createFarmSchema } from '@/api/farms/schema'
+import { fileToBase64 } from '@/lib/file-utils'
 
 export const Route = createFileRoute('/admin/farm/new')({
   component: AddNewInvestment,
@@ -19,34 +24,35 @@ interface ImagePreview {
 }
 
 function AddNewInvestment() {
-  const [form, setForm] = useState({
-    opportunityName: '',
-    location: '',
-    productType: '',
-    description: '',
-    targetAmount: '',
-    projectedRoi: '',
-    investmentDuration: '',
-    plantingLocation: '',
-    minInvestment: '',
-    size: '',
-    harvestTime: '',
+  const [images, setImages] = useState<Array<ImagePreview>>([])
+  const [imageFile, setImageFile] = useState<File | null>(null)
+  const [isUploading, setIsUploading] = useState(false)
+  const navigate = useNavigate()
+  const createFarm = useCreateFarm()
+
+  const form = useForm<CreateFarmInput>({
+    mode: 'uncontrolled',
+    initialValues: {
+      name: '',
+      location: '',
+      image: '',
+      investmentGoal: 0,
+      minimumInvestment: 0,
+      roi: 0,
+      durationMonths: 0,
+    },
+    validate: zodResolver(createFarmSchema),
   })
 
-  const [images, setImages] = useState<Array<ImagePreview>>([
-    { id: 1, url: farmPalmTrees },
-    { id: 2, url: farmPalmTrees },
-  ])
-
-  function handleChange(
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) {
-    setForm({ ...form, [e.target.name]: e.target.value })
-  }
-
   function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
-    if (!e.target.files) return
+    if (!e.target.files || e.target.files.length === 0) return
     const files = Array.from(e.target.files)
+
+    // Store the first file for upload
+    if (!imageFile && files[0]) {
+      setImageFile(files[0])
+    }
+
     const newImgs = files.map((file, idx) => ({
       id: Date.now() + idx,
       url: URL.createObjectURL(file),
@@ -56,11 +62,35 @@ function AddNewInvestment() {
 
   function handleRemoveImage(id: number) {
     setImages((imgs) => imgs.filter((img) => img.id !== id))
+    setImageFile(null)
   }
 
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    alert('Opportunity Created!')
+  async function handleSubmit(values: CreateFarmInput) {
+    if (!imageFile) {
+      toast.error('Please upload at least one farm image')
+      return
+    }
+
+    try {
+      setIsUploading(true)
+
+      // Convert image to base64
+      const base64Image = await fileToBase64(imageFile)
+
+      // Create farm with base64 image
+      await createFarm.mutateAsync({
+        ...values,
+        image: base64Image,
+      })
+
+      toast.success('Farm opportunity created successfully!')
+      navigate({ to: '/admin/farms' })
+    } catch (error) {
+      console.error('Failed to create farm:', error)
+      toast.error('Failed to create farm. Please try again.')
+    } finally {
+      setIsUploading(false)
+    }
   }
 
   return (
@@ -71,7 +101,7 @@ function AddNewInvestment() {
         </h1>
         <form
           className="space-y-0 bg-white rounded-2xl border border-border shadow-sm"
-          onSubmit={handleSubmit}
+          onSubmit={form.onSubmit(handleSubmit)}
         >
           <div className="p-8 pb-4 md:pb-4">
             {/* Section: Basic Information */}
@@ -79,23 +109,27 @@ function AddNewInvestment() {
               <h2 className="text-lg font-semibold text-foreground mb-6 border-b border-border pb-2">
                 Basic Information
               </h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <Label
-                    htmlFor="opportunityName"
+                    htmlFor="name"
                     className="mb-2 block font-medium tracking-tight"
                   >
                     Opportunity Name
                   </Label>
                   <Input
-                    id="opportunityName"
-                    name="opportunityName"
-                    value={form.opportunityName}
-                    onChange={handleChange}
+                    id="name"
                     placeholder="Green Palm Trees Farm"
                     className="bg-accent"
                     required
+                    key={form.key('name')}
+                    {...form.getInputProps('name')}
                   />
+                  {form.errors.name && (
+                    <p className="text-sm text-red-600 mt-1">
+                      {form.errors.name}
+                    </p>
+                  )}
                 </div>
                 <div>
                   <Label
@@ -106,56 +140,18 @@ function AddNewInvestment() {
                   </Label>
                   <Input
                     id="location"
-                    name="location"
-                    value={form.location}
-                    onChange={handleChange}
                     placeholder="Monrovia, Liberia"
                     className="bg-accent"
                     required
+                    key={form.key('location')}
+                    {...form.getInputProps('location')}
                   />
+                  {form.errors.location && (
+                    <p className="text-sm text-red-600 mt-1">
+                      {form.errors.location}
+                    </p>
+                  )}
                 </div>
-                <div>
-                  <Label
-                    htmlFor="productType"
-                    className="mb-2 block font-medium tracking-tight"
-                  >
-                    Product Type
-                  </Label>
-                  <Input
-                    id="productType"
-                    name="productType"
-                    value={form.productType}
-                    onChange={handleChange}
-                    placeholder="Palm Nuts"
-                    className="bg-accent"
-                    required
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Section: Description */}
-            <div className="mb-10">
-              <h2 className="text-lg font-semibold text-foreground mb-3">
-                Description
-              </h2>
-              <div>
-                <Label
-                  htmlFor="description"
-                  className="mb-2 block font-medium tracking-tight"
-                >
-                  Opportunity Description
-                </Label>
-                <textarea
-                  id="description"
-                  name="description"
-                  value={form.description}
-                  onChange={handleChange}
-                  rows={4}
-                  className="min-h-[96px] block w-full border border-border rounded-lg px-3 py-2 text-base text-foreground resize-vertical mb-1"
-                  placeholder="Describe your opportunity here…"
-                  required
-                />
               </div>
             </div>
 
@@ -167,27 +163,31 @@ function AddNewInvestment() {
               <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
                 <div>
                   <Label
-                    htmlFor="targetAmount"
+                    htmlFor="investmentGoal"
                     className="mb-2 block font-medium tracking-tight"
                   >
                     Target Amount
                   </Label>
                   <Input
-                    id="targetAmount"
-                    name="targetAmount"
+                    id="investmentGoal"
                     type="number"
                     inputMode="decimal"
                     min="0"
-                    value={form.targetAmount}
-                    onChange={handleChange}
                     placeholder="50,000"
                     className="bg-accent"
                     required
+                    key={form.key('investmentGoal')}
+                    {...form.getInputProps('investmentGoal')}
                   />
+                  {form.errors.investmentGoal && (
+                    <p className="text-sm text-red-600 mt-1">
+                      {form.errors.investmentGoal}
+                    </p>
+                  )}
                 </div>
                 <div>
                   <Label
-                    htmlFor="projectedRoi"
+                    htmlFor="roi"
                     className="mb-2 block font-medium tracking-tight"
                   >
                     Projected ROI{' '}
@@ -196,21 +196,26 @@ function AddNewInvestment() {
                     </span>
                   </Label>
                   <Input
-                    id="projectedRoi"
-                    name="projectedRoi"
+                    id="roi"
                     type="number"
                     inputMode="decimal"
                     min="0"
-                    value={form.projectedRoi}
-                    onChange={handleChange}
+                    max="100"
                     placeholder="15"
                     className="bg-accent"
                     required
+                    key={form.key('roi')}
+                    {...form.getInputProps('roi')}
                   />
+                  {form.errors.roi && (
+                    <p className="text-sm text-red-600 mt-1">
+                      {form.errors.roi}
+                    </p>
+                  )}
                 </div>
                 <div>
                   <Label
-                    htmlFor="investmentDuration"
+                    htmlFor="durationMonths"
                     className="mb-2 block font-medium tracking-tight"
                   >
                     Duration{' '}
@@ -219,90 +224,45 @@ function AddNewInvestment() {
                     </span>
                   </Label>
                   <Input
-                    id="investmentDuration"
-                    name="investmentDuration"
+                    id="durationMonths"
                     type="number"
                     inputMode="decimal"
                     min="0"
-                    value={form.investmentDuration}
-                    onChange={handleChange}
                     placeholder="6"
                     className="bg-accent"
                     required
+                    key={form.key('durationMonths')}
+                    {...form.getInputProps('durationMonths')}
                   />
+                  {form.errors.durationMonths && (
+                    <p className="text-sm text-red-600 mt-1">
+                      {form.errors.durationMonths}
+                    </p>
+                  )}
                 </div>
                 <div>
                   <Label
-                    htmlFor="plantingLocation"
-                    className="mb-2 block font-medium tracking-tight"
-                  >
-                    Planting Location
-                  </Label>
-                  <Input
-                    id="plantingLocation"
-                    name="plantingLocation"
-                    value={form.plantingLocation}
-                    onChange={handleChange}
-                    placeholder="Volta Region, Ghana"
-                    className="bg-accent"
-                    required
-                  />
-                </div>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div>
-                  <Label
-                    htmlFor="minInvestment"
+                    htmlFor="minimumInvestment"
                     className="mb-2 block font-medium tracking-tight"
                   >
                     Min Investment
                   </Label>
                   <Input
-                    id="minInvestment"
-                    name="minInvestment"
+                    id="minimumInvestment"
                     type="number"
                     inputMode="decimal"
                     min="0"
-                    value={form.minInvestment}
-                    onChange={handleChange}
                     placeholder="100"
                     className="bg-accent"
                     required
+                    key={form.key('minimumInvestment')}
+                    {...form.getInputProps('minimumInvestment')}
                   />
-                </div>
-                <div>
-                  <Label
-                    htmlFor="size"
-                    className="mb-2 block font-medium tracking-tight"
-                  >
-                    Size
-                  </Label>
-                  <Input
-                    id="size"
-                    name="size"
-                    value={form.size}
-                    onChange={handleChange}
-                    placeholder="in acres"
-                    className="bg-accent"
-                    required
-                  />
-                </div>
-                <div>
-                  <Label
-                    htmlFor="harvestTime"
-                    className="mb-2 block font-medium tracking-tight"
-                  >
-                    Harvest Time
-                  </Label>
-                  <Input
-                    id="harvestTime"
-                    name="harvestTime"
-                    value={form.harvestTime}
-                    onChange={handleChange}
-                    placeholder="October 2024"
-                    className="bg-accent"
-                    required
-                  />
+                  {form.errors.minimumInvestment && (
+                    <p className="text-sm text-red-600 mt-1">
+                      {form.errors.minimumInvestment}
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
@@ -360,9 +320,12 @@ function AddNewInvestment() {
             <div className="flex justify-end pt-6 border-t border-border">
               <Button
                 type="submit"
-                className="h-12 px-10 text-base font-semibold bg-primary text-white border border-primary rounded-lg hover:bg-primary/90 active:bg-primary/80 focus:outline-none shadow"
+                disabled={isUploading || createFarm.isPending}
+                className="h-12 px-10 text-base font-semibold bg-primary text-white border border-primary rounded-lg hover:bg-primary/90 active:bg-primary/80 focus:outline-none shadow disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Create Opportunity
+                {isUploading || createFarm.isPending
+                  ? 'Creating...'
+                  : 'Create Opportunity'}
               </Button>
             </div>
           </div>

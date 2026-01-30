@@ -1,25 +1,17 @@
 import { Link } from '@tanstack/react-router'
-
 import type { Farm } from '@/types'
+
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { calculateFundingProgress } from '@/lib/farm-utils'
 
-interface FarmCardProps {
-  farm: Farm
-  variant?: 'default' | 'compact'
-}
-
-// Enhanced InfoPill for bolder contrast and spacing tweaks
-function InfoPill({
-  label,
-  value,
-  bold,
-}: {
+interface InfoPillProps {
   label: string
   value: string | number
   bold?: boolean
-}) {
+}
+
+function InfoPill({ label, value, bold }: InfoPillProps) {
   return (
     <span
       className={`inline-flex items-center px-3 py-1 rounded-md ${
@@ -40,6 +32,11 @@ function InfoPill({
       )}
     </span>
   )
+}
+
+interface FarmCardProps {
+  farm: Farm
+  variant?: 'default' | 'compact'
 }
 
 export function FarmCard({ farm, variant = 'default' }: FarmCardProps) {
@@ -87,7 +84,7 @@ export function FarmCard({ farm, variant = 'default' }: FarmCardProps) {
 
   return (
     <div className="card-elevated rounded-xl overflow-hidden border border-border bg-white transition-shadow duration-300 group">
-      <div className="relative aspect-[16/10] overflow-hidden">
+      <div className="relative aspect-16/10 overflow-hidden">
         <img
           src={farm.image}
           alt={farm.name}

@@ -5,7 +5,7 @@ import { Search } from 'lucide-react'
 import { DashboardLayout } from '@/components/layout/dashboard-layout'
 import { FarmCard } from '@/components/dashboard/farm-card'
 import { Input } from '@/components/ui/input'
-import { useFarms } from '@/hooks/use-farms'
+import { useFarms } from '@/hooks'
 
 export const Route = createFileRoute('/discover')({
   component: DiscoverPage,

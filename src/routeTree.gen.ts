@@ -16,9 +16,14 @@ import { Route as DiscoverRouteImport } from './routes/discover'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthIndexRouteImport } from './routes/auth.index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as PaymentCallbackRouteImport } from './routes/payment.callback'
 import { Route as FarmIdRouteImport } from './routes/farm.$id'
+import { Route as AuthSignUpRouteImport } from './routes/auth.sign-up'
+import { Route as AuthSignInRouteImport } from './routes/auth.sign-in'
+import { Route as AuthResetPasswordRouteImport } from './routes/auth.reset-password'
+import { Route as AuthForgotPasswordRouteImport } from './routes/auth.forgot-password'
 import { Route as AdminTransactionsRouteImport } from './routes/admin/transactions'
 import { Route as AdminReportsRouteImport } from './routes/admin/reports'
 import { Route as AdminInvestorsRouteImport } from './routes/admin/investors'
@@ -60,6 +65,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthIndexRoute = AuthIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthRoute,
+} as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/admin/',
   path: '/admin/',
@@ -74,6 +84,26 @@ const FarmIdRoute = FarmIdRouteImport.update({
   id: '/farm/$id',
   path: '/farm/$id',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthSignUpRoute = AuthSignUpRouteImport.update({
+  id: '/sign-up',
+  path: '/sign-up',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthSignInRoute = AuthSignInRouteImport.update({
+  id: '/sign-in',
+  path: '/sign-in',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthResetPasswordRoute = AuthResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthForgotPasswordRoute = AuthForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
+  getParentRoute: () => AuthRoute,
 } as any)
 const AdminTransactionsRoute = AdminTransactionsRouteImport.update({
   id: '/admin/transactions',
@@ -103,7 +133,7 @@ const AdminFarmNewRoute = AdminFarmNewRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/auth': typeof AuthRoute
+  '/auth': typeof AuthRouteWithChildren
   '/dashboard': typeof DashboardRoute
   '/discover': typeof DiscoverRoute
   '/my-investments': typeof MyInvestmentsRoute
@@ -113,14 +143,18 @@ export interface FileRoutesByFullPath {
   '/admin/investors': typeof AdminInvestorsRoute
   '/admin/reports': typeof AdminReportsRoute
   '/admin/transactions': typeof AdminTransactionsRoute
+  '/auth/forgot-password': typeof AuthForgotPasswordRoute
+  '/auth/reset-password': typeof AuthResetPasswordRoute
+  '/auth/sign-in': typeof AuthSignInRoute
+  '/auth/sign-up': typeof AuthSignUpRoute
   '/farm/$id': typeof FarmIdRoute
   '/payment/callback': typeof PaymentCallbackRoute
   '/admin': typeof AdminIndexRoute
+  '/auth/': typeof AuthIndexRoute
   '/admin/farm/new': typeof AdminFarmNewRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/auth': typeof AuthRoute
   '/dashboard': typeof DashboardRoute
   '/discover': typeof DiscoverRoute
   '/my-investments': typeof MyInvestmentsRoute
@@ -130,15 +164,20 @@ export interface FileRoutesByTo {
   '/admin/investors': typeof AdminInvestorsRoute
   '/admin/reports': typeof AdminReportsRoute
   '/admin/transactions': typeof AdminTransactionsRoute
+  '/auth/forgot-password': typeof AuthForgotPasswordRoute
+  '/auth/reset-password': typeof AuthResetPasswordRoute
+  '/auth/sign-in': typeof AuthSignInRoute
+  '/auth/sign-up': typeof AuthSignUpRoute
   '/farm/$id': typeof FarmIdRoute
   '/payment/callback': typeof PaymentCallbackRoute
   '/admin': typeof AdminIndexRoute
+  '/auth': typeof AuthIndexRoute
   '/admin/farm/new': typeof AdminFarmNewRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/auth': typeof AuthRoute
+  '/auth': typeof AuthRouteWithChildren
   '/dashboard': typeof DashboardRoute
   '/discover': typeof DiscoverRoute
   '/my-investments': typeof MyInvestmentsRoute
@@ -148,9 +187,14 @@ export interface FileRoutesById {
   '/admin/investors': typeof AdminInvestorsRoute
   '/admin/reports': typeof AdminReportsRoute
   '/admin/transactions': typeof AdminTransactionsRoute
+  '/auth/forgot-password': typeof AuthForgotPasswordRoute
+  '/auth/reset-password': typeof AuthResetPasswordRoute
+  '/auth/sign-in': typeof AuthSignInRoute
+  '/auth/sign-up': typeof AuthSignUpRoute
   '/farm/$id': typeof FarmIdRoute
   '/payment/callback': typeof PaymentCallbackRoute
   '/admin/': typeof AdminIndexRoute
+  '/auth/': typeof AuthIndexRoute
   '/admin/farm/new': typeof AdminFarmNewRoute
 }
 export interface FileRouteTypes {
@@ -167,14 +211,18 @@ export interface FileRouteTypes {
     | '/admin/investors'
     | '/admin/reports'
     | '/admin/transactions'
+    | '/auth/forgot-password'
+    | '/auth/reset-password'
+    | '/auth/sign-in'
+    | '/auth/sign-up'
     | '/farm/$id'
     | '/payment/callback'
     | '/admin'
+    | '/auth/'
     | '/admin/farm/new'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/auth'
     | '/dashboard'
     | '/discover'
     | '/my-investments'
@@ -184,9 +232,14 @@ export interface FileRouteTypes {
     | '/admin/investors'
     | '/admin/reports'
     | '/admin/transactions'
+    | '/auth/forgot-password'
+    | '/auth/reset-password'
+    | '/auth/sign-in'
+    | '/auth/sign-up'
     | '/farm/$id'
     | '/payment/callback'
     | '/admin'
+    | '/auth'
     | '/admin/farm/new'
   id:
     | '__root__'
@@ -201,15 +254,20 @@ export interface FileRouteTypes {
     | '/admin/investors'
     | '/admin/reports'
     | '/admin/transactions'
+    | '/auth/forgot-password'
+    | '/auth/reset-password'
+    | '/auth/sign-in'
+    | '/auth/sign-up'
     | '/farm/$id'
     | '/payment/callback'
     | '/admin/'
+    | '/auth/'
     | '/admin/farm/new'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AuthRoute: typeof AuthRoute
+  AuthRoute: typeof AuthRouteWithChildren
   DashboardRoute: typeof DashboardRoute
   DiscoverRoute: typeof DiscoverRoute
   MyInvestmentsRoute: typeof MyInvestmentsRoute
@@ -276,6 +334,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auth/': {
+      id: '/auth/'
+      path: '/'
+      fullPath: '/auth/'
+      preLoaderRoute: typeof AuthIndexRouteImport
+      parentRoute: typeof AuthRoute
+    }
     '/admin/': {
       id: '/admin/'
       path: '/admin'
@@ -296,6 +361,34 @@ declare module '@tanstack/react-router' {
       fullPath: '/farm/$id'
       preLoaderRoute: typeof FarmIdRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/auth/sign-up': {
+      id: '/auth/sign-up'
+      path: '/sign-up'
+      fullPath: '/auth/sign-up'
+      preLoaderRoute: typeof AuthSignUpRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/auth/sign-in': {
+      id: '/auth/sign-in'
+      path: '/sign-in'
+      fullPath: '/auth/sign-in'
+      preLoaderRoute: typeof AuthSignInRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/auth/reset-password': {
+      id: '/auth/reset-password'
+      path: '/reset-password'
+      fullPath: '/auth/reset-password'
+      preLoaderRoute: typeof AuthResetPasswordRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/auth/forgot-password': {
+      id: '/auth/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/auth/forgot-password'
+      preLoaderRoute: typeof AuthForgotPasswordRouteImport
+      parentRoute: typeof AuthRoute
     }
     '/admin/transactions': {
       id: '/admin/transactions'
@@ -335,9 +428,27 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthRouteChildren {
+  AuthForgotPasswordRoute: typeof AuthForgotPasswordRoute
+  AuthResetPasswordRoute: typeof AuthResetPasswordRoute
+  AuthSignInRoute: typeof AuthSignInRoute
+  AuthSignUpRoute: typeof AuthSignUpRoute
+  AuthIndexRoute: typeof AuthIndexRoute
+}
+
+const AuthRouteChildren: AuthRouteChildren = {
+  AuthForgotPasswordRoute: AuthForgotPasswordRoute,
+  AuthResetPasswordRoute: AuthResetPasswordRoute,
+  AuthSignInRoute: AuthSignInRoute,
+  AuthSignUpRoute: AuthSignUpRoute,
+  AuthIndexRoute: AuthIndexRoute,
+}
+
+const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AuthRoute: AuthRoute,
+  AuthRoute: AuthRouteWithChildren,
   DashboardRoute: DashboardRoute,
   DiscoverRoute: DiscoverRoute,
   MyInvestmentsRoute: MyInvestmentsRoute,

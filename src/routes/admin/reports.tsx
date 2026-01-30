@@ -1,29 +1,13 @@
-import { useState } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
-import {
-  Activity,
-  Banknote,
-  ChevronLeft,
-  ChevronRight,
-  ListChecks,
-  Mail,
-  Phone,
-  Search,
-  TrendingUp,
-  Users,
-} from 'lucide-react'
+import { Activity, Banknote, ListChecks, TrendingUp, Users } from 'lucide-react'
+import type {ColumnDef} from '@tanstack/react-table';
 
+import type { UserWithStats } from '@/types'
 import { DashboardLayout } from '@/components/layout/dashboard-layout'
 import { StatsCard } from '@/components/dashboard/stats-card'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table'
-import { cn } from '@/lib/utils'
+import { DataTable } from '@/components/data-table'
+import { useFarms, useUserStats, useUsers } from '@/hooks'
+import { formatDate } from '@/lib/format-date'
 
 export const Route = createFileRoute('/admin/reports')({
   component: AdminReportsPage,
@@ -33,143 +17,75 @@ function formatCurrency(num: number) {
   return '₦' + num.toLocaleString('en-NG', { minimumFractionDigits: 0 })
 }
 
-const stats = [
+const topInvestorColumns: Array<ColumnDef<UserWithStats>> = [
   {
-    label: 'Total Amount Invested',
-    value: formatCurrency(50420000),
-    icon: <Banknote className="w-4 h-4 text-primary" />,
-    trend: '+5%',
-    trendLabel: 'from last month',
+    accessorKey: 'name',
+    header: 'Name',
+    cell: ({ row }) => (
+      <span className="font-medium text-foreground flex gap-2 items-center">
+        <span className="rounded bg-primary/10 px-2 py-1 text-xs font-bold text-primary">
+          #{row.index + 1}
+        </span>
+        {row.original.name}
+      </span>
+    ),
   },
   {
-    label: 'Total Investors',
-    value: '424',
-    icon: <Users className="w-4 h-4 text-primary" />,
-    trend: '+12',
-    trendLabel: 'new this month',
+    accessorKey: 'email',
+    header: 'Email',
+    cell: ({ getValue }) => (
+      <span className="text-muted-foreground truncate">
+        {getValue() as string}
+      </span>
+    ),
   },
   {
-    label: 'Opportunities Created',
-    value: '17',
-    icon: <ListChecks className="w-4 h-4 text-primary" />,
-    trend: '+2',
-    trendLabel: 'new this month',
+    accessorKey: 'totalInvested',
+    header: 'Total Invested',
+    cell: ({ getValue }) => <span>{formatCurrency(getValue() as number)}</span>,
   },
   {
-    label: 'Platform Revenue',
-    value: formatCurrency(2249000),
-    icon: <Activity className="w-4 h-4 text-primary" />,
-    trend: '+3%',
-    trendLabel: 'from last month',
-  },
-]
-
-const topInvestorsSeed = [
-  {
-    id: 1,
-    name: 'Bolaji Ibukun',
-    email: 'bolaji@domain.com',
-    phone: '+234 8011 320 999',
-    invested: 9700000,
-    projects: 5,
-  },
-  {
-    id: 2,
-    name: 'Sarah Knox',
-    email: 'sarah@domain.com',
-    phone: '+234 9030 444 127',
-    invested: 8300000,
-    projects: 4,
-  },
-  {
-    id: 3,
-    name: 'Adeoye Mutiu',
-    email: 'adeoye@domain.com',
-    phone: '+234 8125 902 341',
-    invested: 7100000,
-    projects: 3,
-  },
-  {
-    id: 4,
-    name: 'Sarah Akin',
-    email: 'sakin@domain.com',
-    phone: '+234 8909 934 188',
-    invested: 4800000,
-    projects: 2,
-  },
-  {
-    id: 5,
-    name: 'Yusuf Bola',
-    email: 'ybola@domain.com',
-    phone: '+234 7012 129 881',
-    invested: 3990000,
-    projects: 2,
+    accessorKey: 'activeProjects',
+    header: 'Projects',
+    cell: ({ getValue }) => <span>{getValue() as number}</span>,
   },
 ]
-
-const recentActivities = [
-  {
-    id: 1,
-    time: '2024-06-15 09:54',
-    type: 'New Investment',
-    details: '₦1,200,000 by Sarah Knox (Wheat Rolls Valley)',
-    icon: <Banknote className="w-4 h-4 text-green-600" />,
-    color: 'bg-green-100',
-  },
-  {
-    id: 2,
-    time: '2024-06-14 15:23',
-    type: 'ROI Paid',
-    details: '₦320,000 to Adeoye Mutiu (Cassava Plantation Co.)',
-    icon: <Activity className="w-4 h-4 text-blue-600" />,
-    color: 'bg-blue-100',
-  },
-  {
-    id: 3,
-    time: '2024-06-13 18:21',
-    type: 'New Investor',
-    details: 'Chika Eze joined platform',
-    icon: <Users className="w-4 h-4 text-primary" />,
-    color: 'bg-primary/10',
-  },
-  {
-    id: 4,
-    time: '2024-06-13 11:11',
-    type: 'Investment Withdrawal',
-    details: '₦200,000 withdrawn by Yusuf Bola',
-    icon: <TrendingUp className="w-4 h-4 text-yellow-700" />,
-    color: 'bg-yellow-100',
-  },
-]
-
-const PAGE_SIZE = 3
 
 function AdminReportsPage() {
-  const [investorSearch, setInvestorSearch] = useState('')
-  const [page, setPage] = useState(1)
+  const { data: usersData, isLoading: usersLoading } = useUsers()
+  const { data: statsData, isLoading: statsLoading } = useUserStats()
+  const { data: farmsData, isLoading: farmsLoading } = useFarms()
 
-  const filteredInvestors = topInvestorsSeed.filter((inv) =>
-    [inv.name, inv.email, inv.phone]
-      .join(' ')
-      .toLowerCase()
-      .includes(investorSearch.toLowerCase()),
-  )
+  const users = usersData?.users ?? []
+  const stats = statsData?.stats
+  const farms = farmsData?.farms ?? []
 
-  const totalPages = Math.ceil(filteredInvestors.length / PAGE_SIZE)
-  const pagedInvestors = filteredInvestors.slice(
-    (page - 1) * PAGE_SIZE,
-    page * PAGE_SIZE,
-  )
+  const isLoading = usersLoading || statsLoading || farmsLoading
 
-  function handleSearch(e: React.ChangeEvent<HTMLInputElement>) {
-    setInvestorSearch(e.target.value)
-    setPage(1)
-  }
+  // Sort users by totalInvested descending to get top investors
+  const topInvestors = [...users]
+    .sort((a, b) => b.totalInvested - a.totalInvested)
+    .slice(0, 10)
+
+  // Calculate stats from real data
+  const totalAmountInvested =
+    stats?.totalVolume ?? users.reduce((sum, u) => sum + u.totalInvested, 0)
+  const totalInvestors = stats?.totalUsers ?? users.length
+  const opportunitiesCreated = farms.length
+  // Platform revenue could be a percentage of total invested (e.g., 5%)
+  const platformRevenue = Math.round(totalAmountInvested * 0.05)
+
+  // Recent activity - derive from farms and users data
+  const recentUsers = [...users]
+    .sort(
+      (a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+    )
+    .slice(0, 4)
 
   return (
     <DashboardLayout userRole="admin">
       <div className="max-w-screen-2xl mx-auto px-4 mb-10 animate-fade-in space-y-8">
-        {/* Page header & hierarchy */}
         <header className="pt-6 pb-2 flex flex-col gap-1">
           <span className="text-xs text-muted-foreground">Admin » Reports</span>
           <h1 className="text-3xl font-bold text-foreground tracking-tight">
@@ -180,184 +96,115 @@ function AdminReportsPage() {
           </p>
         </header>
 
-        {/* Stats summary cards */}
         <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {stats.map((stat) => (
-            <div
-              key={stat.label}
-              tabIndex={0}
-              aria-label={stat.label}
-              className="transition ring-primary/15 focus-visible:ring-4 focus-visible:outline-none hover:shadow-md duration-150"
-            >
-              <StatsCard
-                label={stat.label}
-                value={stat.value}
-                icon={stat.icon}
-                trend={stat.trend}
-                trendLabel={stat.trendLabel}
-              />
-            </div>
-          ))}
+          <StatsCard
+            label="Total Amount Invested"
+            value={formatCurrency(totalAmountInvested)}
+            icon={<Banknote className="w-4 h-4 text-primary" />}
+          />
+          <StatsCard
+            label="Total Investors"
+            value={totalInvestors.toString()}
+            icon={<Users className="w-4 h-4 text-primary" />}
+          />
+          <StatsCard
+            label="Opportunities Created"
+            value={opportunitiesCreated.toString()}
+            icon={<ListChecks className="w-4 h-4 text-primary" />}
+          />
+          <StatsCard
+            label="Platform Revenue"
+            value={formatCurrency(platformRevenue)}
+            icon={<Activity className="w-4 h-4 text-primary" />}
+          />
         </section>
 
         <div className="flex flex-col lg:flex-row gap-8">
-          {/* Top Investors Table with search and pagination */}
-          <section className="flex-1 bg-card rounded-xl border border-border overflow-x-auto">
-            <header className="px-6 py-4 border-b border-border flex items-center justify-between gap-2 flex-wrap">
+          <section className="flex-1 bg-card rounded-xl border border-border overflow-hidden">
+            <header className="px-6 py-4 border-b border-border">
               <h2 className="text-lg font-bold tracking-tight text-foreground">
                 Top Investors
               </h2>
-              <div className="flex items-center gap-2">
-                <div className="relative">
-                  <span className="absolute left-2 top-2 text-muted-foreground">
-                    <Search className="w-4 h-4" />
-                  </span>
-                  <input
-                    type="text"
-                    placeholder="Search by name, email, or phone"
-                    value={investorSearch}
-                    onChange={handleSearch}
-                    className="border border-border rounded-lg py-1.5 pl-8 pr-2 text-sm bg-background focus:outline-none focus:border-primary transition w-48"
-                    aria-label="Search investors"
-                  />
-                </div>
-              </div>
             </header>
-            <Table className="w-full min-w-[700px]">
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="w-44">Name</TableHead>
-                  <TableHead className="w-40">Email</TableHead>
-                  <TableHead className="w-32">Phone</TableHead>
-                  <TableHead className="w-32 text-center">
-                    Total Invested
-                  </TableHead>
-                  <TableHead className="w-24 text-center">Projects</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {pagedInvestors.length > 0 ? (
-                  pagedInvestors.map((inv, idx) => (
-                    <TableRow
-                      key={inv.id}
-                      className={cn(
-                        'border-t border-border group transition hover:bg-muted/30',
-                        idx % 2 === 1 ? 'bg-muted/10' : '',
-                      )}
-                    >
-                      <TableCell className="font-medium text-foreground flex gap-2 items-center">
-                        <span className="rounded bg-primary/10 px-2 py-1 text-xs font-bold text-primary">
-                          #{inv.id}
-                        </span>
-                        {inv.name}
-                      </TableCell>
-                      <TableCell className="text-muted-foreground flex items-center gap-1">
-                        <Mail className="w-4 h-4 inline-block text-muted-foreground/60" />
-                        <span className="truncate">{inv.email}</span>
-                      </TableCell>
-                      <TableCell className="text-muted-foreground flex items-center gap-1">
-                        <Phone className="w-4 h-4 inline-block text-muted-foreground/60" />
-                        <span className="truncate">{inv.phone}</span>
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {formatCurrency(inv.invested)}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {inv.projects}
-                      </TableCell>
-                    </TableRow>
-                  ))
-                ) : (
-                  <TableRow>
-                    <TableCell
-                      colSpan={5}
-                      className="text-center py-8 text-muted-foreground"
-                    >
-                      No investors found.
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-            {/* Pagination Controls */}
-            {totalPages > 1 && (
-              <footer className="px-6 py-3 flex gap-4 items-center justify-end border-t border-border bg-muted/20 rounded-b-xl">
-                <button
-                  onClick={() => setPage(page - 1)}
-                  disabled={page === 1}
-                  className={cn(
-                    'rounded-lg px-2.5 py-1 text-sm font-semibold border border-border hover:bg-muted transition disabled:opacity-60 disabled:cursor-not-allowed',
-                  )}
-                  aria-label="Previous page"
-                >
-                  <ChevronLeft className="w-4 h-4" />
-                </button>
-                <span className="text-xs text-muted-foreground">
-                  Page {page} of {totalPages}
-                </span>
-                <button
-                  onClick={() => setPage(page + 1)}
-                  disabled={page === totalPages}
-                  className={cn(
-                    'rounded-lg px-2.5 py-1 text-sm font-semibold border border-border hover:bg-muted transition disabled:opacity-60 disabled:cursor-not-allowed',
-                  )}
-                  aria-label="Next page"
-                >
-                  <ChevronRight className="w-4 h-4" />
-                </button>
-              </footer>
-            )}
+            <div className="p-4">
+              <DataTable
+                columns={topInvestorColumns}
+                data={topInvestors}
+                loading={isLoading}
+                searchPlaceholder="Search investors..."
+                pageSize={5}
+                enableColumnVisibility={false}
+              />
+            </div>
           </section>
 
-          {/* Recent Activity Feed */}
           <section className="w-full max-w-md lg:max-w-xs shrink-0 bg-card rounded-xl border border-border">
             <header className="px-6 py-4 border-b border-border">
               <h2 className="text-lg font-bold tracking-tight text-foreground">
                 Recent Activity
               </h2>
             </header>
-            <ul className="divide-y divide-border">
-              {recentActivities.length > 0 ? (
-                recentActivities.map((a, idx) => (
-                  <li
-                    key={a.id}
-                    tabIndex={0}
-                    className={cn(
-                      'px-6 py-4 flex items-start gap-4 group transition hover:bg-muted/30 focus-visible:ring-2 ring-primary/30 focus:outline-none',
-                      a.color || '',
-                    )}
-                    style={{ animation: `slide-up 400ms ${idx * 40}ms both` }}
-                  >
-                    <span
-                      className={cn(
-                        'mt-1 shrink-0 rounded-full border border-border p-1.5',
-                        a.color || 'bg-muted',
-                      )}
+            {isLoading ? (
+              <div className="p-6 text-center text-muted-foreground">
+                Loading...
+              </div>
+            ) : (
+              <ul className="divide-y divide-border">
+                {recentUsers.length > 0 ? (
+                  recentUsers.map((user, idx) => (
+                    <li
+                      key={user._id}
+                      className="px-6 py-4 flex items-start gap-4 group transition hover:bg-muted/30"
+                      style={{ animation: `slide-up 400ms ${idx * 40}ms both` }}
                     >
-                      {a.icon ? a.icon : <TrendingUp className="w-4 h-4" />}
+                      <span className="mt-1 shrink-0 rounded-full border border-border p-1.5 bg-primary/10">
+                        <Users className="w-4 h-4 text-primary" />
+                      </span>
+                      <div className="flex-1">
+                        <div className="text-xs text-muted-foreground mb-1">
+                          {formatDate(user.createdAt, { dateStyle: 'medium' })}
+                        </div>
+                        <div className="font-medium text-foreground">
+                          New Investor
+                        </div>
+                        <div className="text-sm text-muted-foreground">
+                          {user.name} joined the platform
+                        </div>
+                      </div>
+                    </li>
+                  ))
+                ) : (
+                  <li className="py-6 text-center text-muted-foreground">
+                    No activity to show.
+                  </li>
+                )}
+
+                {farms.slice(0, 2).map((farm, idx) => (
+                  <li
+                    key={farm._id}
+                    className="px-6 py-4 flex items-start gap-4 group transition hover:bg-muted/30"
+                    style={{
+                      animation: `slide-up 400ms ${(recentUsers.length + idx) * 40}ms both`,
+                    }}
+                  >
+                    <span className="mt-1 shrink-0 rounded-full border border-border p-1.5 bg-green-100">
+                      <TrendingUp className="w-4 h-4 text-green-600" />
                     </span>
                     <div className="flex-1">
                       <div className="text-xs text-muted-foreground mb-1">
-                        {new Date(a.time).toLocaleString(undefined, {
-                          dateStyle: 'medium',
-                          timeStyle: 'short',
-                        })}
+                        {formatDate(farm.createdAt, { dateStyle: 'medium' })}
                       </div>
                       <div className="font-medium text-foreground">
-                        {a.type}
+                        New Opportunity
                       </div>
                       <div className="text-sm text-muted-foreground">
-                        {a.details}
+                        {farm.name} was created
                       </div>
                     </div>
                   </li>
-                ))
-              ) : (
-                <li className="py-6 text-center text-muted-foreground">
-                  No activity to show.
-                </li>
-              )}
-            </ul>
+                ))}
+              </ul>
+            )}
           </section>
         </div>
       </div>

@@ -8,12 +8,21 @@ export const investmentKeys = {
   all: ['investments'] as const,
   lists: () => [...investmentKeys.all, 'list'] as const,
   myInvestments: () => [...investmentKeys.lists(), 'mine'] as const,
+  allInvestments: () => [...investmentKeys.lists(), 'all'] as const,
 }
 
 export function useMyInvestments() {
   return useQuery({
     queryKey: investmentKeys.myInvestments(),
     queryFn: () => investmentsApi.getMyInvestments(),
+    staleTime: 1000 * 60 * 2, // 2 minutes
+  })
+}
+
+export function useAllInvestments() {
+  return useQuery({
+    queryKey: investmentKeys.allInvestments(),
+    queryFn: () => investmentsApi.getAllInvestments(),
     staleTime: 1000 * 60 * 2, // 2 minutes
   })
 }
