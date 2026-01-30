@@ -1,30 +1,79 @@
 import { User } from "../users/user.model";
 import jwt from "jsonwebtoken";
-import { ENV } from "../../config/env";
+import crypto from "crypto";
+import { ENV } from "@/config/env";
+import { sendEmail } from "@/utils/email";
 
 export const createToken = (userId: string, role: string) => {
-    return jwt.sign({ id: userId, role }, ENV.JWT_SECRET, {
-        expiresIn: "15m"
-    });
+  return jwt.sign({ id: userId, role }, ENV.JWT_SECRET, {
+    expiresIn: "15m",
+  });
 };
 
 export const createRefreshToken = (userId: string) => {
-    return jwt.sign({ id: userId }, ENV.JWT_SECRET, {
-        expiresIn: "7d"
-    });
+  return jwt.sign({ id: userId }, ENV.JWT_SECRET, {
+    expiresIn: "7d",
+  });
 };
 
-export const signupUser = async (name: string, email: string, password: string, role = "investor") => {
-    const existing = await User.findOne({ email });
-    if (existing) throw new Error("Email already registered");
-    const user = await User.create({ name, email, password, role });
-    return user;
+export const signupUser = async (
+  name: string,
+  email: string,
+  password: string,
+) => {
+  const existing = await User.findOne({ email });
+  if (existing) throw new Error("Email already registered");
+  const user = await User.create({ name, email, password, role: "investor" });
+  return user;
 };
 
 export const loginUser = async (email: string, password: string) => {
-    const user = await User.findOne({ email });
-    if (!user) throw new Error("Invalid email or password");
-    const isMatch = await user.comparePassword(password);
-    if (!isMatch) throw new Error("Invalid email or password");
-    return user;
+  const user = await User.findOne({ email });
+  if (!user) throw new Error("Invalid email or password");
+  const isMatch = await user.comparePassword(password);
+  if (!isMatch) throw new Error("Invalid email or password");
+  return user;
+};
+export const forgotPassword = async (email: string) => {
+  const user = await User.findOne({ email });
+  if (!user) throw new Error("No account found with that email");
+
+  // Generate reset token
+  const resetToken = crypto.randomBytes(32).toString("hex");
+  user.passwordResetToken = crypto
+    .createHash("sha256")
+    .update(resetToken)
+    .digest("hex");
+  user.passwordResetExpires = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+  await user.save();
+
+  // Send email
+  const resetUrl = `${ENV.FRONTEND_URL}/auth/reset-password?token=${resetToken}`;
+  const html = `
+        <h1>Password Reset Request</h1>
+        <p>You requested a password reset. Click the link below to reset your password:</p>
+        <a href="${resetUrl}">Reset Password</a>
+        <p>This link will expire in 10 minutes.</p>
+        <p>If you didn't request this, please ignore this email.</p>
+    `;
+
+  await sendEmail(user.email, "Password Reset Request", html);
+  return { message: "Password reset email sent" };
+};
+
+export const resetPassword = async (token: string, newPassword: string) => {
+  const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+  const user = await User.findOne({
+    passwordResetToken: hashedToken,
+    passwordResetExpires: { $gt: Date.now() },
+  });
+
+  if (!user) throw new Error("Invalid or expired reset token");
+
+  user.password = newPassword;
+  user.passwordResetToken = undefined;
+  user.passwordResetExpires = undefined;
+  await user.save();
+
+  return { message: "Password reset successful" };
 };

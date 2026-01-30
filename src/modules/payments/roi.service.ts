@@ -1,4 +1,4 @@
-import { ENV } from "../../config/env";
+import { ENV } from "@/config/env";
 import { IInvestment } from "../investments/investment.model";
 
 const PAYSTACK_BASE_URL = "https://api.paystack.co";

@@ -5,8 +5,8 @@ import {
   initializeTransaction,
   verifyTransaction,
 } from "../payments/payment.service";
-import { AppError } from "../../utils/AppError";
-import { sendEmail } from "../../utils/email";
+import { AppError } from "@/utils/AppError";
+import { sendEmail } from "@/utils/email";
 
 // Investor: make investment
 export const investInFarm = async (
@@ -196,7 +196,42 @@ export const getMyInvestments = async (
       roi: inv.roi,
       projectedReturn: inv.projectedReturn(),
       durationMonths: inv.durationMonths,
+      roiPaid: inv.roiPaid,
       createdAt: inv.createdAt,
+      updatedAt: inv.updatedAt,
+    }));
+
+    res.json({ success: true, investments: data });
+  } catch (err: unknown) {
+    const error = err as Error;
+    next(new AppError(error.message, 400));
+  }
+};
+
+// Admin: get all investments
+export const getAllInvestments = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const investments = await Investment.find()
+      .populate("farm")
+      .populate("investor", "name email");
+
+    // Add projected return for each investment
+    const data = investments.map((inv) => ({
+      _id: inv._id,
+      investor: inv.investor,
+      farm: inv.farm,
+      amount: inv.amount,
+      status: inv.status,
+      roi: inv.roi,
+      projectedReturn: inv.projectedReturn(),
+      durationMonths: inv.durationMonths,
+      roiPaid: inv.roiPaid,
+      createdAt: inv.createdAt,
+      updatedAt: inv.updatedAt,
     }));
 
     res.json({ success: true, investments: data });

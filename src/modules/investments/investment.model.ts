@@ -12,6 +12,7 @@ export interface IInvestment extends Document {
   paystackAccessCode?: string;
   status: "pending" | "completed" | "cancelled";
   createdAt: Date;
+  updatedAt: Date;
 
   // Calculate projected return
   projectedReturn(): number;

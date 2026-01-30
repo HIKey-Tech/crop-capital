@@ -3,7 +3,7 @@ import { validateWebhookSignature } from "./payment.service";
 import { Investment } from "../investments/investment.model";
 import { Farm, IFarm } from "../farms/farm.model";
 import { User } from "../users/user.model";
-import { sendEmail } from "../../utils/email";
+import { sendEmail } from "@/utils/email";
 import { WebhookEvent } from "./webhookEvent.model";
 
 interface PaystackWebhookEvent {

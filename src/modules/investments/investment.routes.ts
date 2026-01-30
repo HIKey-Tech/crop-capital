@@ -1,9 +1,10 @@
 import { Router } from "express";
-import { protect } from "../../middlewares/auth.middleware";
-import { restrictTo } from "../../middlewares/role.middleware";
+import { protect } from "@/middlewares/auth.middleware";
+import { restrictTo } from "@/middlewares/role.middleware";
 import {
   investInFarm,
   getMyInvestments,
+  getAllInvestments,
   completeInvestment,
   verifyPayment,
 } from "./investment.controller";
@@ -13,6 +14,9 @@ const router = Router();
 // Investor: invest in farm
 router.post("/", protect, restrictTo("investor"), investInFarm);
 router.get("/me", protect, restrictTo("investor"), getMyInvestments);
+
+// Admin: get all investments
+router.get("/", protect, restrictTo("admin"), getAllInvestments);
 
 // Verify payment after Paystack callback
 router.get("/verify/:reference", protect, verifyPayment);

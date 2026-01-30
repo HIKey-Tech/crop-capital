@@ -1,5 +1,5 @@
 import crypto from "crypto";
-import { ENV } from "../../config/env";
+import { ENV } from "@/config/env";
 
 const PAYSTACK_BASE_URL = "https://api.paystack.co";
 

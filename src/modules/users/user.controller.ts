@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { User } from "./user.model";
 import { Investment } from "../investments/investment.model";
+import { promoteToAdmin, demoteFromAdmin } from "./user.service";
 
 // Get all users (admin only)
 export const getUsers = async (
@@ -77,6 +78,56 @@ export const getUserStats = async (
         verifiedUsers,
         totalVolume,
         activeInvestors: activeInvestorIds.length,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Promote user to admin (admin only)
+export const promoteUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
+  try {
+    const { id } = req.params;
+    const user = await promoteToAdmin(id);
+
+    res.status(200).json({
+      success: true,
+      message: "User promoted to admin successfully",
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Demote admin to investor (admin only)
+export const demoteUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
+  try {
+    const { id } = req.params;
+    const user = await demoteFromAdmin(id);
+
+    res.status(200).json({
+      success: true,
+      message: "User demoted to investor successfully",
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
       },
     });
   } catch (error) {
