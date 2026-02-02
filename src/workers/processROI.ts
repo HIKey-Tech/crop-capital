@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { ENV } from "../config/env";
+import { MONGO_URI } from "@/config/env";
 
 import {
   Investment,
@@ -9,7 +9,7 @@ import { payROI } from "../modules/payments/roi.service";
 import cron from "node-cron";
 
 mongoose
-  .connect(ENV.MONGO_URI)
+  .connect(MONGO_URI)
   .then(() => console.log("MongoDB connected"))
   .catch((err) => console.error(err));
 

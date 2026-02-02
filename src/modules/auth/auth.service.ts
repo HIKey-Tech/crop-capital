@@ -1,17 +1,17 @@
 import { User } from "../users/user.model";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
-import { ENV } from "@/config/env";
+import { FRONTEND_URL, JWT_SECRET } from "@/config/env";
 import { sendEmail } from "@/utils/email";
 
 export const createToken = (userId: string, role: string) => {
-  return jwt.sign({ id: userId, role }, ENV.JWT_SECRET, {
-    expiresIn: "15m",
+  return jwt.sign({ id: userId, role }, JWT_SECRET, {
+    expiresIn: "7d",
   });
 };
 
 export const createRefreshToken = (userId: string) => {
-  return jwt.sign({ id: userId }, ENV.JWT_SECRET, {
+  return jwt.sign({ id: userId }, JWT_SECRET, {
     expiresIn: "7d",
   });
 };
@@ -20,10 +20,17 @@ export const signupUser = async (
   name: string,
   email: string,
   password: string,
+  country: string,
 ) => {
   const existing = await User.findOne({ email });
   if (existing) throw new Error("Email already registered");
-  const user = await User.create({ name, email, password, role: "investor" });
+  const user = await User.create({
+    name,
+    email,
+    password,
+    role: "investor",
+    country,
+  });
   return user;
 };
 
@@ -48,7 +55,7 @@ export const forgotPassword = async (email: string) => {
   await user.save();
 
   // Send email
-  const resetUrl = `${ENV.FRONTEND_URL}/auth/reset-password?token=${resetToken}`;
+  const resetUrl = `${FRONTEND_URL}/auth/reset-password?token=${resetToken}`;
   const html = `
         <h1>Password Reset Request</h1>
         <p>You requested a password reset. Click the link below to reset your password:</p>

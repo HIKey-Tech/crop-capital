@@ -17,8 +17,9 @@ export const signup = async (
   next: NextFunction,
 ) => {
   try {
-    const { name, email, password } = req.body;
-    const user = await signupUser(name, email, password);
+    const { name, email, password, country } = req.body;
+
+    const user = await signupUser(name, email, password, country);
     const token = createToken(user.id, user.role);
     const refreshToken = createRefreshToken(user.id);
     res.status(201).json({ success: true, token, refreshToken, user });

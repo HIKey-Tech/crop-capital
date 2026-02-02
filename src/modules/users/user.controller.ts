@@ -145,6 +145,45 @@ export const getUserStats = async (
   }
 };
 
+// Get investor dashboard stats
+export const getMyDashboardStats = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
+  try {
+    const userId = req.user?._id;
+
+    // Get all completed investments for this user
+    const investments = await Investment.find({
+      investor: userId,
+      status: "completed",
+    });
+
+    // Calculate total invested
+    const totalInvested = investments.reduce((sum, inv) => sum + inv.amount, 0);
+
+    // Calculate active projects (completed status but ROI not paid yet)
+    const activeProjects = investments.filter((inv) => !inv.roiPaid).length;
+
+    // Calculate ROI earned (only from investments where ROI has been paid)
+    const roiEarned = investments
+      .filter((inv) => inv.roiPaid)
+      .reduce((sum, inv) => sum + (inv.projectedReturn() - inv.amount), 0);
+
+    res.status(200).json({
+      success: true,
+      stats: {
+        totalInvested,
+        activeProjects,
+        roiEarned,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 // Promote user to admin (admin only)
 export const promoteUser = async (
   req: Request,
@@ -189,6 +228,104 @@ export const demoteUser = async (
         email: user.email,
         role: user.role,
       },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Add farm to watchlist
+export const addToWatchlist = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
+  try {
+    const userId = req.user?._id;
+    const { farmId } = req.body;
+
+    if (!farmId) {
+      res.status(400).json({ success: false, message: "Farm ID is required" });
+      return;
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+      res.status(404).json({ success: false, message: "User not found" });
+      return;
+    }
+
+    // Check if already in watchlist
+    if (user.watchlist.includes(farmId)) {
+      res.status(400).json({
+        success: false,
+        message: "Farm already in watchlist",
+      });
+      return;
+    }
+
+    user.watchlist.push(farmId);
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Farm added to watchlist",
+      watchlist: user.watchlist,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Remove farm from watchlist
+export const removeFromWatchlist = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
+  try {
+    const userId = req.user?._id;
+    const { farmId } = req.params;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      res.status(404).json({ success: false, message: "User not found" });
+      return;
+    }
+
+    user.watchlist = user.watchlist.filter(
+      (id) => id.toString() !== farmId.toString(),
+    );
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Farm removed from watchlist",
+      watchlist: user.watchlist,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Get user's watchlist
+export const getWatchlist = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
+  try {
+    const userId = req.user?._id;
+
+    const user = await User.findById(userId).populate("watchlist");
+    if (!user) {
+      res.status(404).json({ success: false, message: "User not found" });
+      return;
+    }
+
+    res.status(200).json({
+      success: true,
+      watchlist: user.watchlist,
     });
   } catch (error) {
     next(error);

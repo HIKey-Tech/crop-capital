@@ -9,6 +9,7 @@ export interface IUser extends Document {
   country?: string;
   photo?: string;
   isVerified: boolean;
+  watchlist: mongoose.Types.ObjectId[];
   passwordResetToken?: string;
   passwordResetExpires?: Date;
   comparePassword(candidate: string): Promise<boolean>;
@@ -24,6 +25,7 @@ const UserSchema = new Schema<IUser>(
     country: { type: String },
     photo: { type: String },
     isVerified: { type: Boolean, default: false },
+    watchlist: [{ type: Schema.Types.ObjectId, ref: "Farm", default: [] }],
     passwordResetToken: { type: String },
     passwordResetExpires: { type: Date },
     createdAt: { type: Date, default: Date.now },

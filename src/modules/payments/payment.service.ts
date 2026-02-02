@@ -1,5 +1,5 @@
 import crypto from "crypto";
-import { ENV } from "@/config/env";
+import { FRONTEND_URL, PAYSTACK_SECRET_KEY } from "@/config/env";
 
 const PAYSTACK_BASE_URL = "https://api.paystack.co";
 
@@ -62,7 +62,7 @@ export async function initializeTransaction(
   const response = await fetch(`${PAYSTACK_BASE_URL}/transaction/initialize`, {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${ENV.PAYSTACK_SECRET_KEY}`,
+      Authorization: `Bearer ${PAYSTACK_SECRET_KEY}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
@@ -70,7 +70,7 @@ export async function initializeTransaction(
       amount: Math.round(amount * 100), // Paystack expects kobo (subunit)
       currency,
       reference: generateReference(),
-      callback_url: callbackUrl || `${ENV.FRONTEND_URL}/payment/callback`,
+      callback_url: callbackUrl || `${FRONTEND_URL}/payment/callback`,
       metadata,
       channels: ["card", "bank", "ussd", "bank_transfer"],
     }),
@@ -98,7 +98,7 @@ export async function verifyTransaction(
     {
       method: "GET",
       headers: {
-        Authorization: `Bearer ${ENV.PAYSTACK_SECRET_KEY}`,
+        Authorization: `Bearer ${PAYSTACK_SECRET_KEY}`,
       },
     },
   );
@@ -121,7 +121,7 @@ export function validateWebhookSignature(
   signature: string,
 ): boolean {
   const hash = crypto
-    .createHmac("sha512", ENV.PAYSTACK_SECRET_KEY)
+    .createHmac("sha512", PAYSTACK_SECRET_KEY)
     .update(payload)
     .digest("hex");
   return hash === signature;

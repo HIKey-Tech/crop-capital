@@ -1,4 +1,4 @@
-import { ENV } from "@/config/env";
+import { PAYSTACK_SECRET_KEY } from "@/config/env";
 import { IInvestment } from "../investments/investment.model";
 
 const PAYSTACK_BASE_URL = "https://api.paystack.co";
@@ -41,7 +41,7 @@ export async function createTransferRecipient(
   const response = await fetch(`${PAYSTACK_BASE_URL}/transferrecipient`, {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${ENV.PAYSTACK_SECRET_KEY}`,
+      Authorization: `Bearer ${PAYSTACK_SECRET_KEY}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify(recipient),
@@ -68,7 +68,7 @@ export async function initiateTransfer(
   const response = await fetch(`${PAYSTACK_BASE_URL}/transfer`, {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${ENV.PAYSTACK_SECRET_KEY}`,
+      Authorization: `Bearer ${PAYSTACK_SECRET_KEY}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify({

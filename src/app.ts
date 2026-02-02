@@ -8,12 +8,35 @@ import farmRoutes from "./modules/farms/farm.routes";
 import investmentRoutes from "./modules/investments/investment.routes";
 import userRoutes from "./modules/users/user.routes";
 import { paystackWebhook } from "./modules/payments/payment.webhook";
+import { FRONTEND_URL } from "./config/env";
+import { portNumbers } from "get-port";
 
 const app = express();
+const portRange = Array.from(portNumbers(3000, 3100));
+const ports = portRange.map((port) => `http://localhost:${port}`);
+
+const corsOptions = {
+  origin: [FRONTEND_URL].concat(ports).filter(Boolean),
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: [
+    "Content-Type",
+    "Authorization",
+    "X-Requested-With",
+    "Accept",
+  ],
+  exposedHeaders: ["Content-Range", "X-Content-Range", "Content-Length"],
+  maxAge: 600,
+};
+
+app.use(cors(corsOptions));
 
 /* Security */
-app.use(helmet());
-app.use(cors({ origin: true, credentials: true }));
+app.use(
+  helmet({
+    crossOriginResourcePolicy: { policy: "cross-origin" },
+  }),
+);
 
 app.use(
   rateLimit({
