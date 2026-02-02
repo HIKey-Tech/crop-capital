@@ -114,7 +114,7 @@ export function Sidebar({
         {/* Footer */}
         <div className="px-5 py-4 border-t border-sidebar-border">
           <p className="text-xs text-muted-foreground">
-            © 2024 Africa Youth Forum
+            © {new Date().getFullYear()} Africa Youth Forum
           </p>
         </div>
       </aside>

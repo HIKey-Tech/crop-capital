@@ -95,13 +95,13 @@ function LandingPage() {
 
           {/* Hero Image */}
           <div className="mt-16 relative">
-            <div className="aspect-[21/9] rounded-2xl overflow-hidden shadow-ayf-lg">
+            <div className="aspect-7/3 rounded-2xl overflow-hidden shadow-ayf-lg">
               <img
                 src={farmPalmTrees}
                 alt="African palm tree farm"
                 className="w-full h-full object-cover"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-foreground/30 to-transparent" />
+              <div className="absolute inset-0 bg-linear-to-t from-foreground/30 to-transparent" />
             </div>
 
             {/* Floating Stats */}
@@ -200,17 +200,18 @@ function LandingPage() {
               </span>
             </div>
             <span className="text-sm text-muted-foreground">
-              © 2024 Africa Youth Forum. All rights reserved.
+              © {new Date().getFullYear()} Africa Youth Forum. All rights
+              reserved.
             </span>
           </div>
           <div className="flex gap-6 text-sm text-muted-foreground">
-            <a href="#" className="hover:text-foreground">
+            <a href="/privacy" className="hover:text-foreground">
               Privacy Policy
             </a>
-            <a href="#" className="hover:text-foreground">
+            <a href="/terms" className="hover:text-foreground">
               Terms of Service
             </a>
-            <a href="#" className="hover:text-foreground">
+            <a href="/support" className="hover:text-foreground">
               Contact
             </a>
           </div>

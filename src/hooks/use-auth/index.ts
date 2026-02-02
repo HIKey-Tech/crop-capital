@@ -53,3 +53,22 @@ export function useLogout() {
     },
   })
 }
+
+export function useUpdateProfile() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (data: { name?: string; country?: string; photo?: string }) =>
+      authApi.updateProfile(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: authKeys.me() })
+    },
+  })
+}
+
+export function useUpdatePassword() {
+  return useMutation({
+    mutationFn: (data: { currentPassword: string; newPassword: string }) =>
+      authApi.updatePassword(data),
+  })
+}

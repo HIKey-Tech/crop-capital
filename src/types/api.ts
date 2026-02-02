@@ -1,5 +1,3 @@
-// API Types - matching backend models
-
 export interface User {
   _id: string
   name: string
@@ -51,7 +49,6 @@ export interface Investment {
   updatedAt: string
 }
 
-// API Response types
 export interface ApiResponse<T> {
   success: boolean
   message?: string
@@ -61,6 +58,7 @@ export interface ApiResponse<T> {
 export interface AuthResponse {
   success: boolean
   token: string
+  refreshToken: string
   user: User
 }
 
@@ -93,7 +91,6 @@ export interface FarmResponse {
   farm: Farm
 }
 
-// Request types
 export interface LoginRequest {
   email: string
   password: string

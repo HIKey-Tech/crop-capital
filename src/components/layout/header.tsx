@@ -1,5 +1,5 @@
 import { Bell, Menu, User } from 'lucide-react'
-import { Link } from '@tanstack/react-router'
+import { Link, useRouteContext } from '@tanstack/react-router'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -9,18 +9,22 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { useNotifications } from '@/hooks'
 
 interface HeaderProps {
-  userName?: string
-  notificationCount?: number
   onMenuClick?: () => void
 }
 
-export function Header({
-  userName = 'Bami',
-  notificationCount = 9,
-  onMenuClick,
-}: HeaderProps) {
+export function Header({ onMenuClick }: HeaderProps) {
+  const { user } = useRouteContext({ from: '/_authenticated' })
+  const { notifications, unreadCount } = useNotifications()
+
+  // Get the 2 most recent notifications for the dropdown
+  const recentNotifications = notifications.slice(0, 2)
+
+  // Extract first name from full name
+  const firstName = user.name.split(' ')[0] || 'User'
+
   return (
     <header className="h-16 bg-card border-b border-border flex items-center justify-between px-6">
       <div className="flex items-center gap-4">
@@ -30,7 +34,7 @@ export function Header({
         >
           <Menu className="w-5 h-5" />
         </button>
-        <h1 className="text-2xl font-bold text-foreground">Hi, {userName}</h1>
+        <h1 className="text-2xl font-bold text-foreground">Hi, {firstName}</h1>
       </div>
 
       <div className="flex items-center gap-3">
@@ -39,9 +43,9 @@ export function Header({
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon" className="relative">
               <Bell className="w-5 h-5" />
-              {notificationCount > 0 && (
+              {unreadCount > 0 && (
                 <span className="absolute -top-1 -right-1 w-5 h-5 bg-destructive text-destructive-foreground text-xs font-bold rounded-full flex items-center justify-center">
-                  {notificationCount > 9 ? '9+' : notificationCount}
+                  {unreadCount > 9 ? '9+' : unreadCount}
                 </span>
               )}
             </Button>
@@ -50,23 +54,25 @@ export function Header({
             <div className="px-3 py-2 border-b border-border">
               <p className="font-semibold">Notifications</p>
             </div>
-            <DropdownMenuItem className="py-3">
-              <div className="flex flex-col gap-1">
-                <p className="text-sm font-medium">Investment Confirmed</p>
-                <p className="text-xs text-muted-foreground">
-                  Your investment in Green Palm Trees Farm is confirmed.
-                </p>
+            {recentNotifications.length > 0 ? (
+              <>
+                {recentNotifications.map((notif) => (
+                  <DropdownMenuItem key={notif.id} className="py-3">
+                    <div className="flex flex-col gap-1">
+                      <p className="text-sm font-medium">{notif.title}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {notif.message}
+                      </p>
+                    </div>
+                  </DropdownMenuItem>
+                ))}
+                <DropdownMenuSeparator />
+              </>
+            ) : (
+              <div className="py-4 px-3 text-center text-sm text-muted-foreground">
+                No notifications yet
               </div>
-            </DropdownMenuItem>
-            <DropdownMenuItem className="py-3">
-              <div className="flex flex-col gap-1">
-                <p className="text-sm font-medium">ROI Payout</p>
-                <p className="text-xs text-muted-foreground">
-                  You received $500 ROI from Wheat Farm.
-                </p>
-              </div>
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
+            )}
             <DropdownMenuItem className="justify-center text-primary" asChild>
               <Link to="/notifications">View all notifications</Link>
             </DropdownMenuItem>

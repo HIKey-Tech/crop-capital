@@ -14,10 +14,16 @@ import type {
   UsersListResponse,
 } from '@/types'
 
-const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api'
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
 
-class ApiError extends Error {
+if (!API_BASE_URL) {
+  console.error('❌ VITE_API_BASE_URL is not defined!')
+  console.error('Environment variables:', import.meta.env)
+} else {
+  console.log('✅ API_BASE_URL:', API_BASE_URL)
+}
+
+export class ApiError extends Error {
   constructor(
     public status: number,
     message: string,
@@ -27,38 +33,44 @@ class ApiError extends Error {
   }
 }
 
-function getAuthToken(): string | null {
+export function getAuthToken(): string | null {
   return localStorage.getItem('token')
 }
 
-function setAuthToken(token: string): void {
+export function setAuthToken(token: string): void {
   localStorage.setItem('token', token)
 }
 
-function clearAuthToken(): void {
-  localStorage.removeItem('token')
+export function getRefreshToken(): string | null {
+  return localStorage.getItem('refreshToken')
 }
 
-async function request<T>(
+export function setRefreshToken(token: string): void {
+  localStorage.setItem('refreshToken', token)
+}
+
+export function clearAuthToken(): void {
+  localStorage.removeItem('token')
+  localStorage.removeItem('refreshToken')
+}
+
+export async function request<T>(
   endpoint: string,
   options: RequestInit = {},
 ): Promise<T> {
   const token = getAuthToken()
 
-  const headers: HeadersInit = {
+  const headers: Record<string, string> = {
     'Content-Type': 'application/json',
-    ...options.headers,
+    ...(options.headers as Record<string, string>),
   }
 
   if (token) {
-    ;(headers as Record<string, string>)['Authorization'] = `Bearer ${token}`
+    headers.Authorization = `Bearer ${token}`
   }
 
-  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-    ...options,
-    headers,
-  })
-
+  const url = `${API_BASE_URL}${endpoint}`
+  const response = await fetch(url, { ...options, headers })
   const data = await response.json()
 
   if (!response.ok) {
@@ -78,16 +90,22 @@ export const authApi = {
     if (response.token) {
       setAuthToken(response.token)
     }
+    if (response.refreshToken) {
+      setRefreshToken(response.refreshToken)
+    }
     return response
   },
 
   register: async (data: RegisterRequest): Promise<AuthResponse> => {
-    const response = await request<AuthResponse>('/auth/register', {
+    const response = await request<AuthResponse>('/auth/signup', {
       method: 'POST',
       body: JSON.stringify(data),
     })
     if (response.token) {
       setAuthToken(response.token)
+    }
+    if (response.refreshToken) {
+      setRefreshToken(response.refreshToken)
     }
     return response
   },
@@ -201,6 +219,17 @@ export const investmentsApi = {
       `/investments/verify/${reference}`,
     )
   },
+
+  completeInvestment: async (
+    id: string,
+  ): Promise<{ success: boolean; message: string }> => {
+    return request<{ success: boolean; message: string }>(
+      `/investments/${id}/complete`,
+      {
+        method: 'POST',
+      },
+    )
+  },
 }
 
 // Users API (Admin)
@@ -216,7 +245,37 @@ export const usersApi = {
   getStats: async (): Promise<UserStatsResponse> => {
     return request<UserStatsResponse>('/users/stats')
   },
-}
 
-// Export utilities
-export { ApiError, clearAuthToken, getAuthToken, setAuthToken }
+  getDashboardStats: async (): Promise<{
+    success: boolean
+    stats: {
+      totalInvested: number
+      activeProjects: number
+      roiEarned: number
+    }
+  }> => {
+    return request('/users/dashboard-stats')
+  },
+
+  promoteUser: async (
+    id: string,
+  ): Promise<{ success: boolean; message: string; user: object }> => {
+    return request<{ success: boolean; message: string; user: object }>(
+      `/users/${id}/promote`,
+      {
+        method: 'PATCH',
+      },
+    )
+  },
+
+  demoteUser: async (
+    id: string,
+  ): Promise<{ success: boolean; message: string; user: object }> => {
+    return request<{ success: boolean; message: string; user: object }>(
+      `/users/${id}/demote`,
+      {
+        method: 'PATCH',
+      },
+    )
+  },
+}

@@ -1,24 +1,29 @@
-import { Outlet, createRootRoute } from '@tanstack/react-router'
-import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
-import { TanStackDevtools } from '@tanstack/react-devtools'
+import { Outlet, createRootRouteWithContext } from '@tanstack/react-router'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
 import appCss from '../styles.css?url'
+import type { User } from '@/types'
+
 import { Toaster as Sonner } from '@/components/ui/sonner'
 import { TooltipProvider } from '@/components/ui/tooltip'
-import { AuthProvider } from '@/contexts/auth-context'
-
+import { NotFound } from '@/components/not-found'
 
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 1000 * 60 * 2, // 2 minutes
+      staleTime: 1000 * 60 * 5, // 5 minutes
       retry: 1,
+      refetchOnWindowFocus: false, // Don't refetch on window focus
     },
   },
 })
 
-export const Route = createRootRoute({
+interface RootContext {
+  queryClient: QueryClient
+  user?: User
+}
+
+export const Route = createRootRouteWithContext<RootContext>()({
   head: () => ({
     meta: [
       {
@@ -34,29 +39,22 @@ export const Route = createRootRoute({
     ],
     links: [{ rel: 'stylesheet', href: appCss }],
   }),
+  beforeLoad: () => {
+    return {
+      queryClient,
+    }
+  },
   component: RootComponent,
+  notFoundComponent: NotFound,
 })
 
 function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <TooltipProvider>
-          <Sonner />
-          <Outlet />
-          <TanStackDevtools
-            config={{
-              position: 'bottom-right',
-            }}
-            plugins={[
-              {
-                name: 'Tanstack Router',
-                render: <TanStackRouterDevtoolsPanel />,
-              },
-            ]}
-          />
-        </TooltipProvider>
-      </AuthProvider>
+      <TooltipProvider>
+        <Sonner />
+        <Outlet />
+      </TooltipProvider>
     </QueryClientProvider>
   )
 }

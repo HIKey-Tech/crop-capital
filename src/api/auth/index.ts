@@ -1,8 +1,8 @@
 import { authResponseSchema, getMeResponseSchema } from './schema'
 import type { LoginInput, RegisterInput } from './schema'
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api'
-const TOKEN_KEY = 'auth_token'
+const API_URL = import.meta.env.VITE_API_BASE_URL
+const TOKEN_KEY = 'token'
 
 // Helper functions for token management
 export function getAuthToken(): string | null {
@@ -36,7 +36,7 @@ export async function login(data: LoginInput) {
 }
 
 export async function register(data: RegisterInput) {
-  const response = await fetch(`${API_URL}/auth/register`, {
+  const response = await fetch(`${API_URL}/auth/signup`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),

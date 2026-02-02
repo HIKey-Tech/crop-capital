@@ -83,7 +83,7 @@ export function FarmCard({ farm, variant = 'default' }: FarmCardProps) {
   }
 
   return (
-    <div className="card-elevated rounded-xl overflow-hidden border border-border bg-white transition-shadow duration-300 group">
+    <div className="card-elevated rounded-xl overflow-hidden border border-border bg-white transition-shadow duration-300 group h-full flex flex-col">
       <div className="relative aspect-16/10 overflow-hidden">
         <img
           src={farm.image}
@@ -92,7 +92,7 @@ export function FarmCard({ farm, variant = 'default' }: FarmCardProps) {
         />
         <div className="absolute top-3 left-3 z-10">{statusBadge[status]}</div>
       </div>
-      <div className="p-4 pb-3">
+      <div className="p-4 pb-3 flex-1 flex flex-col">
         <div className="flex items-center justify-between mb-1">
           <h3 className="font-semibold text-2xl leading-snug text-foreground mb-1">
             {farm.name}
@@ -104,7 +104,7 @@ export function FarmCard({ farm, variant = 'default' }: FarmCardProps) {
           <InfoPill value={`${farm.durationMonths}`} label="Months" bold />
         </div>
 
-        <div className="mb-3">
+        <div className="mb-3 flex-1 flex flex-col justify-end">
           <div className="flex items-center justify-between text-xs font-medium mb-1">
             <span className="uppercase tracking-wider text-[#A6A6A6]">
               Funding
@@ -113,20 +113,11 @@ export function FarmCard({ farm, variant = 'default' }: FarmCardProps) {
           </div>
           <div className="w-full h-2.5 rounded-full bg-[#F0F0F0] overflow-hidden relative">
             <div
-              className="h-full rounded-full transition-all duration-500"
+              className="h-full rounded-full bg-primary transition-all duration-500"
               style={{
                 width: `${progress}%`,
-                backgroundColor: '#FFC72C',
               }}
-            ></div>
-            <div
-              className="absolute -top-1 h-4 w-4 rounded-full border-2 border-white bg-[#FFC72C] transition-all duration-500"
-              style={{
-                left: `calc(${progress}% - 8px)`,
-                opacity: progress > 5 ? 1 : 0,
-                zIndex: 2,
-              }}
-            ></div>
+            />
           </div>
         </div>
 
@@ -142,7 +133,12 @@ export function FarmCard({ farm, variant = 'default' }: FarmCardProps) {
               </span>
             </Button>
           </Link>
-          <Link to="/farm/$id" params={{ id: farm._id }} className="w-1/2">
+          <Link
+            to="/farm/$id"
+            params={{ id: farm._id }}
+            search={{ invest: true }}
+            className="w-1/2"
+          >
             <Button
               className="w-full h-11 bg-[#218641] text-white font-bold rounded-lg transition-colors hover:brightness-110 focus:outline-none text-base"
               type="button"

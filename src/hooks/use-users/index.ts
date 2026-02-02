@@ -6,6 +6,7 @@ export const userKeys = {
   all: ['users'] as const,
   lists: () => [...userKeys.all, 'list'] as const,
   stats: () => [...userKeys.all, 'stats'] as const,
+  dashboardStats: () => [...userKeys.all, 'dashboard-stats'] as const,
   detail: (id: string) => [...userKeys.all, 'detail', id] as const,
 }
 
@@ -30,6 +31,14 @@ export function useUserStats() {
   return useQuery({
     queryKey: userKeys.stats(),
     queryFn: () => usersApi.getStats(),
+    staleTime: 1000 * 60 * 2, // 2 minutes
+  })
+}
+
+export function useDashboardStats() {
+  return useQuery({
+    queryKey: userKeys.dashboardStats(),
+    queryFn: () => usersApi.getDashboardStats(),
     staleTime: 1000 * 60 * 2, // 2 minutes
   })
 }

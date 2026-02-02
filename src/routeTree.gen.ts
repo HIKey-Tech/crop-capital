@@ -9,55 +9,47 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as WalletRouteImport } from './routes/wallet'
-import { Route as TransactionsRouteImport } from './routes/transactions'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as SupportRouteImport } from './routes/support'
-import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
-import { Route as NotificationsRouteImport } from './routes/notifications'
-import { Route as NewsRouteImport } from './routes/news'
-import { Route as DiscoverRouteImport } from './routes/discover'
-import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as InvestmentsIndexRouteImport } from './routes/investments/index'
-import { Route as AuthIndexRouteImport } from './routes/auth.index'
-import { Route as AdminIndexRouteImport } from './routes/admin/index'
-import { Route as SettingsSecurityRouteImport } from './routes/settings/security'
-import { Route as SettingsProfileRouteImport } from './routes/settings/profile'
-import { Route as SettingsNotificationsRouteImport } from './routes/settings/notifications'
-import { Route as PaymentCallbackRouteImport } from './routes/payment.callback'
-import { Route as InvestmentsIdRouteImport } from './routes/investments/$id'
-import { Route as FarmIdRouteImport } from './routes/farm.$id'
+import { Route as AuthIndexRouteImport } from './routes/auth/index'
 import { Route as AuthVerifyEmailRouteImport } from './routes/auth/verify-email'
-import { Route as AuthSignUpRouteImport } from './routes/auth.sign-up'
-import { Route as AuthSignInRouteImport } from './routes/auth.sign-in'
-import { Route as AuthResetPasswordRouteImport } from './routes/auth.reset-password'
-import { Route as AuthForgotPasswordRouteImport } from './routes/auth.forgot-password'
-import { Route as AdminTransactionsRouteImport } from './routes/admin/transactions'
-import { Route as AdminReportsRouteImport } from './routes/admin/reports'
-import { Route as AdminPayoutsRouteImport } from './routes/admin/payouts'
-import { Route as AdminKycRouteImport } from './routes/admin/kyc'
-import { Route as AdminInvestorsRouteImport } from './routes/admin/investors'
-import { Route as AdminFarmsRouteImport } from './routes/admin/farms'
-import { Route as FarmsIdInvestRouteImport } from './routes/farms/$id.invest'
-import { Route as AdminUsersIdRouteImport } from './routes/admin/users/$id'
-import { Route as AdminFarmNewRouteImport } from './routes/admin/farm.new'
-import { Route as AdminFarmsIdEditRouteImport } from './routes/admin/farms.$id.edit'
-import { Route as AdminFarmsIdAnalyticsRouteImport } from './routes/admin/farms.$id.analytics'
+import { Route as AuthenticatedNewsRouteImport } from './routes/_authenticated/news'
+import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as AuthenticatedSettingsRouteRouteImport } from './routes/_authenticated/settings/route'
+import { Route as AuthSignUpIndexRouteImport } from './routes/auth/sign-up/index'
+import { Route as AuthSignInIndexRouteImport } from './routes/auth/sign-in/index'
+import { Route as AuthResetPasswordIndexRouteImport } from './routes/auth/reset-password/index'
+import { Route as AuthForgotPasswordIndexRouteImport } from './routes/auth/forgot-password/index'
+import { Route as AuthenticatedWalletIndexRouteImport } from './routes/_authenticated/wallet/index'
+import { Route as AuthenticatedTransactionsIndexRouteImport } from './routes/_authenticated/transactions/index'
+import { Route as AuthenticatedSettingsIndexRouteImport } from './routes/_authenticated/settings/index'
+import { Route as AuthenticatedNotificationsIndexRouteImport } from './routes/_authenticated/notifications/index'
+import { Route as AuthenticatedInvestmentsIndexRouteImport } from './routes/_authenticated/investments/index'
+import { Route as AuthenticatedDiscoverIndexRouteImport } from './routes/_authenticated/discover/index'
+import { Route as AuthenticatedDashboardIndexRouteImport } from './routes/_authenticated/dashboard/index'
+import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
+import { Route as AuthenticatedSettingsSecurityRouteImport } from './routes/_authenticated/settings/security'
+import { Route as AuthenticatedSettingsNotificationsRouteImport } from './routes/_authenticated/settings/notifications'
+import { Route as AuthenticatedPaymentCallbackRouteImport } from './routes/_authenticated/payment/callback'
+import { Route as AuthenticatedInvestmentsIdRouteImport } from './routes/_authenticated/investments/$id'
+import { Route as AuthenticatedFarmIdRouteImport } from './routes/_authenticated/farm/$id'
+import { Route as AuthenticatedAdminTransactionsRouteImport } from './routes/_authenticated/admin/transactions'
+import { Route as AuthenticatedAdminReportsRouteImport } from './routes/_authenticated/admin/reports'
+import { Route as AuthenticatedAdminPayoutsRouteImport } from './routes/_authenticated/admin/payouts'
+import { Route as AuthenticatedAdminKycRouteImport } from './routes/_authenticated/admin/kyc'
+import { Route as AuthenticatedAdminInvestorsRouteImport } from './routes/_authenticated/admin/investors'
+import { Route as AuthenticatedAdminFarmsRouteImport } from './routes/_authenticated/admin/farms'
+import { Route as AuthenticatedFarmsIdInvestRouteImport } from './routes/_authenticated/farms/$id/invest'
+import { Route as AuthenticatedAdminUsersIdRouteImport } from './routes/_authenticated/admin/users/$id'
+import { Route as AuthenticatedAdminFarmNewRouteImport } from './routes/_authenticated/admin/farm.new'
+import { Route as AuthenticatedAdminFarmsIdEditRouteImport } from './routes/_authenticated/admin/farms.$id.edit'
+import { Route as AuthenticatedAdminFarmsIdAnalyticsRouteImport } from './routes/_authenticated/admin/farms.$id.analytics'
 
-const WalletRoute = WalletRouteImport.update({
-  id: '/wallet',
-  path: '/wallet',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TransactionsRoute = TransactionsRouteImport.update({
-  id: '/transactions',
-  path: '/transactions',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
   path: '/terms',
@@ -66,11 +58,6 @@ const TermsRoute = TermsRouteImport.update({
 const SupportRoute = SupportRouteImport.update({
   id: '/support',
   path: '/support',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SettingsRoute = SettingsRouteImport.update({
-  id: '/settings',
-  path: '/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PrivacyRoute = PrivacyRouteImport.update({
@@ -83,29 +70,13 @@ const OnboardingRoute = OnboardingRouteImport.update({
   path: '/onboarding',
   getParentRoute: () => rootRouteImport,
 } as any)
-const NotificationsRoute = NotificationsRouteImport.update({
-  id: '/notifications',
-  path: '/notifications',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const NewsRoute = NewsRouteImport.update({
-  id: '/news',
-  path: '/news',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DiscoverRoute = DiscoverRouteImport.update({
-  id: '/discover',
-  path: '/discover',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DashboardRoute = DashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -113,288 +84,352 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const InvestmentsIndexRoute = InvestmentsIndexRouteImport.update({
-  id: '/investments/',
-  path: '/investments/',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AuthIndexRoute = AuthIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AuthRoute,
-} as any)
-const AdminIndexRoute = AdminIndexRouteImport.update({
-  id: '/admin/',
-  path: '/admin/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SettingsSecurityRoute = SettingsSecurityRouteImport.update({
-  id: '/security',
-  path: '/security',
-  getParentRoute: () => SettingsRoute,
-} as any)
-const SettingsProfileRoute = SettingsProfileRouteImport.update({
-  id: '/profile',
-  path: '/profile',
-  getParentRoute: () => SettingsRoute,
-} as any)
-const SettingsNotificationsRoute = SettingsNotificationsRouteImport.update({
-  id: '/notifications',
-  path: '/notifications',
-  getParentRoute: () => SettingsRoute,
-} as any)
-const PaymentCallbackRoute = PaymentCallbackRouteImport.update({
-  id: '/payment/callback',
-  path: '/payment/callback',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const InvestmentsIdRoute = InvestmentsIdRouteImport.update({
-  id: '/investments/$id',
-  path: '/investments/$id',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FarmIdRoute = FarmIdRouteImport.update({
-  id: '/farm/$id',
-  path: '/farm/$id',
-  getParentRoute: () => rootRouteImport,
 } as any)
 const AuthVerifyEmailRoute = AuthVerifyEmailRouteImport.update({
   id: '/verify-email',
   path: '/verify-email',
   getParentRoute: () => AuthRoute,
 } as any)
-const AuthSignUpRoute = AuthSignUpRouteImport.update({
-  id: '/sign-up',
-  path: '/sign-up',
+const AuthenticatedNewsRoute = AuthenticatedNewsRouteImport.update({
+  id: '/news',
+  path: '/news',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedSettingsRouteRoute =
+  AuthenticatedSettingsRouteRouteImport.update({
+    id: '/settings',
+    path: '/settings',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthSignUpIndexRoute = AuthSignUpIndexRouteImport.update({
+  id: '/sign-up/',
+  path: '/sign-up/',
   getParentRoute: () => AuthRoute,
 } as any)
-const AuthSignInRoute = AuthSignInRouteImport.update({
-  id: '/sign-in',
-  path: '/sign-in',
+const AuthSignInIndexRoute = AuthSignInIndexRouteImport.update({
+  id: '/sign-in/',
+  path: '/sign-in/',
   getParentRoute: () => AuthRoute,
 } as any)
-const AuthResetPasswordRoute = AuthResetPasswordRouteImport.update({
-  id: '/reset-password',
-  path: '/reset-password',
+const AuthResetPasswordIndexRoute = AuthResetPasswordIndexRouteImport.update({
+  id: '/reset-password/',
+  path: '/reset-password/',
   getParentRoute: () => AuthRoute,
 } as any)
-const AuthForgotPasswordRoute = AuthForgotPasswordRouteImport.update({
-  id: '/forgot-password',
-  path: '/forgot-password',
+const AuthForgotPasswordIndexRoute = AuthForgotPasswordIndexRouteImport.update({
+  id: '/forgot-password/',
+  path: '/forgot-password/',
   getParentRoute: () => AuthRoute,
 } as any)
-const AdminTransactionsRoute = AdminTransactionsRouteImport.update({
-  id: '/admin/transactions',
-  path: '/admin/transactions',
-  getParentRoute: () => rootRouteImport,
+const AuthenticatedWalletIndexRoute =
+  AuthenticatedWalletIndexRouteImport.update({
+    id: '/wallet/',
+    path: '/wallet/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedTransactionsIndexRoute =
+  AuthenticatedTransactionsIndexRouteImport.update({
+    id: '/transactions/',
+    path: '/transactions/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedSettingsIndexRoute =
+  AuthenticatedSettingsIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedSettingsRouteRoute,
+  } as any)
+const AuthenticatedNotificationsIndexRoute =
+  AuthenticatedNotificationsIndexRouteImport.update({
+    id: '/notifications/',
+    path: '/notifications/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedInvestmentsIndexRoute =
+  AuthenticatedInvestmentsIndexRouteImport.update({
+    id: '/investments/',
+    path: '/investments/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedDiscoverIndexRoute =
+  AuthenticatedDiscoverIndexRouteImport.update({
+    id: '/discover/',
+    path: '/discover/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedDashboardIndexRoute =
+  AuthenticatedDashboardIndexRouteImport.update({
+    id: '/dashboard/',
+    path: '/dashboard/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthenticatedAdminRoute,
 } as any)
-const AdminReportsRoute = AdminReportsRouteImport.update({
-  id: '/admin/reports',
-  path: '/admin/reports',
-  getParentRoute: () => rootRouteImport,
+const AuthenticatedSettingsSecurityRoute =
+  AuthenticatedSettingsSecurityRouteImport.update({
+    id: '/security',
+    path: '/security',
+    getParentRoute: () => AuthenticatedSettingsRouteRoute,
+  } as any)
+const AuthenticatedSettingsNotificationsRoute =
+  AuthenticatedSettingsNotificationsRouteImport.update({
+    id: '/notifications',
+    path: '/notifications',
+    getParentRoute: () => AuthenticatedSettingsRouteRoute,
+  } as any)
+const AuthenticatedPaymentCallbackRoute =
+  AuthenticatedPaymentCallbackRouteImport.update({
+    id: '/payment/callback',
+    path: '/payment/callback',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedInvestmentsIdRoute =
+  AuthenticatedInvestmentsIdRouteImport.update({
+    id: '/investments/$id',
+    path: '/investments/$id',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedFarmIdRoute = AuthenticatedFarmIdRouteImport.update({
+  id: '/farm/$id',
+  path: '/farm/$id',
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const AdminPayoutsRoute = AdminPayoutsRouteImport.update({
-  id: '/admin/payouts',
-  path: '/admin/payouts',
-  getParentRoute: () => rootRouteImport,
+const AuthenticatedAdminTransactionsRoute =
+  AuthenticatedAdminTransactionsRouteImport.update({
+    id: '/transactions',
+    path: '/transactions',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminReportsRoute =
+  AuthenticatedAdminReportsRouteImport.update({
+    id: '/reports',
+    path: '/reports',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminPayoutsRoute =
+  AuthenticatedAdminPayoutsRouteImport.update({
+    id: '/payouts',
+    path: '/payouts',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminKycRoute = AuthenticatedAdminKycRouteImport.update({
+  id: '/kyc',
+  path: '/kyc',
+  getParentRoute: () => AuthenticatedAdminRoute,
 } as any)
-const AdminKycRoute = AdminKycRouteImport.update({
-  id: '/admin/kyc',
-  path: '/admin/kyc',
-  getParentRoute: () => rootRouteImport,
+const AuthenticatedAdminInvestorsRoute =
+  AuthenticatedAdminInvestorsRouteImport.update({
+    id: '/investors',
+    path: '/investors',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminFarmsRoute = AuthenticatedAdminFarmsRouteImport.update({
+  id: '/farms',
+  path: '/farms',
+  getParentRoute: () => AuthenticatedAdminRoute,
 } as any)
-const AdminInvestorsRoute = AdminInvestorsRouteImport.update({
-  id: '/admin/investors',
-  path: '/admin/investors',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminFarmsRoute = AdminFarmsRouteImport.update({
-  id: '/admin/farms',
-  path: '/admin/farms',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FarmsIdInvestRoute = FarmsIdInvestRouteImport.update({
-  id: '/farms/$id/invest',
-  path: '/farms/$id/invest',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminUsersIdRoute = AdminUsersIdRouteImport.update({
-  id: '/admin/users/$id',
-  path: '/admin/users/$id',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminFarmNewRoute = AdminFarmNewRouteImport.update({
-  id: '/admin/farm/new',
-  path: '/admin/farm/new',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminFarmsIdEditRoute = AdminFarmsIdEditRouteImport.update({
-  id: '/$id/edit',
-  path: '/$id/edit',
-  getParentRoute: () => AdminFarmsRoute,
-} as any)
-const AdminFarmsIdAnalyticsRoute = AdminFarmsIdAnalyticsRouteImport.update({
-  id: '/$id/analytics',
-  path: '/$id/analytics',
-  getParentRoute: () => AdminFarmsRoute,
-} as any)
+const AuthenticatedFarmsIdInvestRoute =
+  AuthenticatedFarmsIdInvestRouteImport.update({
+    id: '/farms/$id/invest',
+    path: '/farms/$id/invest',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedAdminUsersIdRoute =
+  AuthenticatedAdminUsersIdRouteImport.update({
+    id: '/users/$id',
+    path: '/users/$id',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminFarmNewRoute =
+  AuthenticatedAdminFarmNewRouteImport.update({
+    id: '/farm/new',
+    path: '/farm/new',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminFarmsIdEditRoute =
+  AuthenticatedAdminFarmsIdEditRouteImport.update({
+    id: '/$id/edit',
+    path: '/$id/edit',
+    getParentRoute: () => AuthenticatedAdminFarmsRoute,
+  } as any)
+const AuthenticatedAdminFarmsIdAnalyticsRoute =
+  AuthenticatedAdminFarmsIdAnalyticsRouteImport.update({
+    id: '/$id/analytics',
+    path: '/$id/analytics',
+    getParentRoute: () => AuthenticatedAdminFarmsRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRouteWithChildren
-  '/dashboard': typeof DashboardRoute
-  '/discover': typeof DiscoverRoute
-  '/news': typeof NewsRoute
-  '/notifications': typeof NotificationsRoute
   '/onboarding': typeof OnboardingRoute
   '/privacy': typeof PrivacyRoute
-  '/settings': typeof SettingsRouteWithChildren
   '/support': typeof SupportRoute
   '/terms': typeof TermsRoute
-  '/transactions': typeof TransactionsRoute
-  '/wallet': typeof WalletRoute
-  '/admin/farms': typeof AdminFarmsRouteWithChildren
-  '/admin/investors': typeof AdminInvestorsRoute
-  '/admin/kyc': typeof AdminKycRoute
-  '/admin/payouts': typeof AdminPayoutsRoute
-  '/admin/reports': typeof AdminReportsRoute
-  '/admin/transactions': typeof AdminTransactionsRoute
-  '/auth/forgot-password': typeof AuthForgotPasswordRoute
-  '/auth/reset-password': typeof AuthResetPasswordRoute
-  '/auth/sign-in': typeof AuthSignInRoute
-  '/auth/sign-up': typeof AuthSignUpRoute
+  '/settings': typeof AuthenticatedSettingsRouteRouteWithChildren
+  '/admin': typeof AuthenticatedAdminRouteWithChildren
+  '/news': typeof AuthenticatedNewsRoute
   '/auth/verify-email': typeof AuthVerifyEmailRoute
-  '/farm/$id': typeof FarmIdRoute
-  '/investments/$id': typeof InvestmentsIdRoute
-  '/payment/callback': typeof PaymentCallbackRoute
-  '/settings/notifications': typeof SettingsNotificationsRoute
-  '/settings/profile': typeof SettingsProfileRoute
-  '/settings/security': typeof SettingsSecurityRoute
-  '/admin': typeof AdminIndexRoute
   '/auth/': typeof AuthIndexRoute
-  '/investments': typeof InvestmentsIndexRoute
-  '/admin/farm/new': typeof AdminFarmNewRoute
-  '/admin/users/$id': typeof AdminUsersIdRoute
-  '/farms/$id/invest': typeof FarmsIdInvestRoute
-  '/admin/farms/$id/analytics': typeof AdminFarmsIdAnalyticsRoute
-  '/admin/farms/$id/edit': typeof AdminFarmsIdEditRoute
+  '/admin/farms': typeof AuthenticatedAdminFarmsRouteWithChildren
+  '/admin/investors': typeof AuthenticatedAdminInvestorsRoute
+  '/admin/kyc': typeof AuthenticatedAdminKycRoute
+  '/admin/payouts': typeof AuthenticatedAdminPayoutsRoute
+  '/admin/reports': typeof AuthenticatedAdminReportsRoute
+  '/admin/transactions': typeof AuthenticatedAdminTransactionsRoute
+  '/farm/$id': typeof AuthenticatedFarmIdRoute
+  '/investments/$id': typeof AuthenticatedInvestmentsIdRoute
+  '/payment/callback': typeof AuthenticatedPaymentCallbackRoute
+  '/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
+  '/settings/security': typeof AuthenticatedSettingsSecurityRoute
+  '/admin/': typeof AuthenticatedAdminIndexRoute
+  '/dashboard': typeof AuthenticatedDashboardIndexRoute
+  '/discover': typeof AuthenticatedDiscoverIndexRoute
+  '/investments': typeof AuthenticatedInvestmentsIndexRoute
+  '/notifications': typeof AuthenticatedNotificationsIndexRoute
+  '/settings/': typeof AuthenticatedSettingsIndexRoute
+  '/transactions': typeof AuthenticatedTransactionsIndexRoute
+  '/wallet': typeof AuthenticatedWalletIndexRoute
+  '/auth/forgot-password': typeof AuthForgotPasswordIndexRoute
+  '/auth/reset-password': typeof AuthResetPasswordIndexRoute
+  '/auth/sign-in': typeof AuthSignInIndexRoute
+  '/auth/sign-up': typeof AuthSignUpIndexRoute
+  '/admin/farm/new': typeof AuthenticatedAdminFarmNewRoute
+  '/admin/users/$id': typeof AuthenticatedAdminUsersIdRoute
+  '/farms/$id/invest': typeof AuthenticatedFarmsIdInvestRoute
+  '/admin/farms/$id/analytics': typeof AuthenticatedAdminFarmsIdAnalyticsRoute
+  '/admin/farms/$id/edit': typeof AuthenticatedAdminFarmsIdEditRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/dashboard': typeof DashboardRoute
-  '/discover': typeof DiscoverRoute
-  '/news': typeof NewsRoute
-  '/notifications': typeof NotificationsRoute
   '/onboarding': typeof OnboardingRoute
   '/privacy': typeof PrivacyRoute
-  '/settings': typeof SettingsRouteWithChildren
   '/support': typeof SupportRoute
   '/terms': typeof TermsRoute
-  '/transactions': typeof TransactionsRoute
-  '/wallet': typeof WalletRoute
-  '/admin/farms': typeof AdminFarmsRouteWithChildren
-  '/admin/investors': typeof AdminInvestorsRoute
-  '/admin/kyc': typeof AdminKycRoute
-  '/admin/payouts': typeof AdminPayoutsRoute
-  '/admin/reports': typeof AdminReportsRoute
-  '/admin/transactions': typeof AdminTransactionsRoute
-  '/auth/forgot-password': typeof AuthForgotPasswordRoute
-  '/auth/reset-password': typeof AuthResetPasswordRoute
-  '/auth/sign-in': typeof AuthSignInRoute
-  '/auth/sign-up': typeof AuthSignUpRoute
+  '/news': typeof AuthenticatedNewsRoute
   '/auth/verify-email': typeof AuthVerifyEmailRoute
-  '/farm/$id': typeof FarmIdRoute
-  '/investments/$id': typeof InvestmentsIdRoute
-  '/payment/callback': typeof PaymentCallbackRoute
-  '/settings/notifications': typeof SettingsNotificationsRoute
-  '/settings/profile': typeof SettingsProfileRoute
-  '/settings/security': typeof SettingsSecurityRoute
-  '/admin': typeof AdminIndexRoute
   '/auth': typeof AuthIndexRoute
-  '/investments': typeof InvestmentsIndexRoute
-  '/admin/farm/new': typeof AdminFarmNewRoute
-  '/admin/users/$id': typeof AdminUsersIdRoute
-  '/farms/$id/invest': typeof FarmsIdInvestRoute
-  '/admin/farms/$id/analytics': typeof AdminFarmsIdAnalyticsRoute
-  '/admin/farms/$id/edit': typeof AdminFarmsIdEditRoute
+  '/admin/farms': typeof AuthenticatedAdminFarmsRouteWithChildren
+  '/admin/investors': typeof AuthenticatedAdminInvestorsRoute
+  '/admin/kyc': typeof AuthenticatedAdminKycRoute
+  '/admin/payouts': typeof AuthenticatedAdminPayoutsRoute
+  '/admin/reports': typeof AuthenticatedAdminReportsRoute
+  '/admin/transactions': typeof AuthenticatedAdminTransactionsRoute
+  '/farm/$id': typeof AuthenticatedFarmIdRoute
+  '/investments/$id': typeof AuthenticatedInvestmentsIdRoute
+  '/payment/callback': typeof AuthenticatedPaymentCallbackRoute
+  '/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
+  '/settings/security': typeof AuthenticatedSettingsSecurityRoute
+  '/admin': typeof AuthenticatedAdminIndexRoute
+  '/dashboard': typeof AuthenticatedDashboardIndexRoute
+  '/discover': typeof AuthenticatedDiscoverIndexRoute
+  '/investments': typeof AuthenticatedInvestmentsIndexRoute
+  '/notifications': typeof AuthenticatedNotificationsIndexRoute
+  '/settings': typeof AuthenticatedSettingsIndexRoute
+  '/transactions': typeof AuthenticatedTransactionsIndexRoute
+  '/wallet': typeof AuthenticatedWalletIndexRoute
+  '/auth/forgot-password': typeof AuthForgotPasswordIndexRoute
+  '/auth/reset-password': typeof AuthResetPasswordIndexRoute
+  '/auth/sign-in': typeof AuthSignInIndexRoute
+  '/auth/sign-up': typeof AuthSignUpIndexRoute
+  '/admin/farm/new': typeof AuthenticatedAdminFarmNewRoute
+  '/admin/users/$id': typeof AuthenticatedAdminUsersIdRoute
+  '/farms/$id/invest': typeof AuthenticatedFarmsIdInvestRoute
+  '/admin/farms/$id/analytics': typeof AuthenticatedAdminFarmsIdAnalyticsRoute
+  '/admin/farms/$id/edit': typeof AuthenticatedAdminFarmsIdEditRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRouteWithChildren
-  '/dashboard': typeof DashboardRoute
-  '/discover': typeof DiscoverRoute
-  '/news': typeof NewsRoute
-  '/notifications': typeof NotificationsRoute
   '/onboarding': typeof OnboardingRoute
   '/privacy': typeof PrivacyRoute
-  '/settings': typeof SettingsRouteWithChildren
   '/support': typeof SupportRoute
   '/terms': typeof TermsRoute
-  '/transactions': typeof TransactionsRoute
-  '/wallet': typeof WalletRoute
-  '/admin/farms': typeof AdminFarmsRouteWithChildren
-  '/admin/investors': typeof AdminInvestorsRoute
-  '/admin/kyc': typeof AdminKycRoute
-  '/admin/payouts': typeof AdminPayoutsRoute
-  '/admin/reports': typeof AdminReportsRoute
-  '/admin/transactions': typeof AdminTransactionsRoute
-  '/auth/forgot-password': typeof AuthForgotPasswordRoute
-  '/auth/reset-password': typeof AuthResetPasswordRoute
-  '/auth/sign-in': typeof AuthSignInRoute
-  '/auth/sign-up': typeof AuthSignUpRoute
+  '/_authenticated/settings': typeof AuthenticatedSettingsRouteRouteWithChildren
+  '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
+  '/_authenticated/news': typeof AuthenticatedNewsRoute
   '/auth/verify-email': typeof AuthVerifyEmailRoute
-  '/farm/$id': typeof FarmIdRoute
-  '/investments/$id': typeof InvestmentsIdRoute
-  '/payment/callback': typeof PaymentCallbackRoute
-  '/settings/notifications': typeof SettingsNotificationsRoute
-  '/settings/profile': typeof SettingsProfileRoute
-  '/settings/security': typeof SettingsSecurityRoute
-  '/admin/': typeof AdminIndexRoute
   '/auth/': typeof AuthIndexRoute
-  '/investments/': typeof InvestmentsIndexRoute
-  '/admin/farm/new': typeof AdminFarmNewRoute
-  '/admin/users/$id': typeof AdminUsersIdRoute
-  '/farms/$id/invest': typeof FarmsIdInvestRoute
-  '/admin/farms/$id/analytics': typeof AdminFarmsIdAnalyticsRoute
-  '/admin/farms/$id/edit': typeof AdminFarmsIdEditRoute
+  '/_authenticated/admin/farms': typeof AuthenticatedAdminFarmsRouteWithChildren
+  '/_authenticated/admin/investors': typeof AuthenticatedAdminInvestorsRoute
+  '/_authenticated/admin/kyc': typeof AuthenticatedAdminKycRoute
+  '/_authenticated/admin/payouts': typeof AuthenticatedAdminPayoutsRoute
+  '/_authenticated/admin/reports': typeof AuthenticatedAdminReportsRoute
+  '/_authenticated/admin/transactions': typeof AuthenticatedAdminTransactionsRoute
+  '/_authenticated/farm/$id': typeof AuthenticatedFarmIdRoute
+  '/_authenticated/investments/$id': typeof AuthenticatedInvestmentsIdRoute
+  '/_authenticated/payment/callback': typeof AuthenticatedPaymentCallbackRoute
+  '/_authenticated/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
+  '/_authenticated/settings/security': typeof AuthenticatedSettingsSecurityRoute
+  '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
+  '/_authenticated/dashboard/': typeof AuthenticatedDashboardIndexRoute
+  '/_authenticated/discover/': typeof AuthenticatedDiscoverIndexRoute
+  '/_authenticated/investments/': typeof AuthenticatedInvestmentsIndexRoute
+  '/_authenticated/notifications/': typeof AuthenticatedNotificationsIndexRoute
+  '/_authenticated/settings/': typeof AuthenticatedSettingsIndexRoute
+  '/_authenticated/transactions/': typeof AuthenticatedTransactionsIndexRoute
+  '/_authenticated/wallet/': typeof AuthenticatedWalletIndexRoute
+  '/auth/forgot-password/': typeof AuthForgotPasswordIndexRoute
+  '/auth/reset-password/': typeof AuthResetPasswordIndexRoute
+  '/auth/sign-in/': typeof AuthSignInIndexRoute
+  '/auth/sign-up/': typeof AuthSignUpIndexRoute
+  '/_authenticated/admin/farm/new': typeof AuthenticatedAdminFarmNewRoute
+  '/_authenticated/admin/users/$id': typeof AuthenticatedAdminUsersIdRoute
+  '/_authenticated/farms/$id/invest': typeof AuthenticatedFarmsIdInvestRoute
+  '/_authenticated/admin/farms/$id/analytics': typeof AuthenticatedAdminFarmsIdAnalyticsRoute
+  '/_authenticated/admin/farms/$id/edit': typeof AuthenticatedAdminFarmsIdEditRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/auth'
-    | '/dashboard'
-    | '/discover'
-    | '/news'
-    | '/notifications'
     | '/onboarding'
     | '/privacy'
-    | '/settings'
     | '/support'
     | '/terms'
-    | '/transactions'
-    | '/wallet'
+    | '/settings'
+    | '/admin'
+    | '/news'
+    | '/auth/verify-email'
+    | '/auth/'
     | '/admin/farms'
     | '/admin/investors'
     | '/admin/kyc'
     | '/admin/payouts'
     | '/admin/reports'
     | '/admin/transactions'
-    | '/auth/forgot-password'
-    | '/auth/reset-password'
-    | '/auth/sign-in'
-    | '/auth/sign-up'
-    | '/auth/verify-email'
     | '/farm/$id'
     | '/investments/$id'
     | '/payment/callback'
     | '/settings/notifications'
-    | '/settings/profile'
     | '/settings/security'
-    | '/admin'
-    | '/auth/'
+    | '/admin/'
+    | '/dashboard'
+    | '/discover'
     | '/investments'
+    | '/notifications'
+    | '/settings/'
+    | '/transactions'
+    | '/wallet'
+    | '/auth/forgot-password'
+    | '/auth/reset-password'
+    | '/auth/sign-in'
+    | '/auth/sign-up'
     | '/admin/farm/new'
     | '/admin/users/$id'
     | '/farms/$id/invest'
@@ -403,37 +438,36 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/dashboard'
-    | '/discover'
-    | '/news'
-    | '/notifications'
     | '/onboarding'
     | '/privacy'
-    | '/settings'
     | '/support'
     | '/terms'
-    | '/transactions'
-    | '/wallet'
+    | '/news'
+    | '/auth/verify-email'
+    | '/auth'
     | '/admin/farms'
     | '/admin/investors'
     | '/admin/kyc'
     | '/admin/payouts'
     | '/admin/reports'
     | '/admin/transactions'
-    | '/auth/forgot-password'
-    | '/auth/reset-password'
-    | '/auth/sign-in'
-    | '/auth/sign-up'
-    | '/auth/verify-email'
     | '/farm/$id'
     | '/investments/$id'
     | '/payment/callback'
     | '/settings/notifications'
-    | '/settings/profile'
     | '/settings/security'
     | '/admin'
-    | '/auth'
+    | '/dashboard'
+    | '/discover'
     | '/investments'
+    | '/notifications'
+    | '/settings'
+    | '/transactions'
+    | '/wallet'
+    | '/auth/forgot-password'
+    | '/auth/reset-password'
+    | '/auth/sign-in'
+    | '/auth/sign-up'
     | '/admin/farm/new'
     | '/admin/users/$id'
     | '/farms/$id/invest'
@@ -442,91 +476,59 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/_authenticated'
     | '/auth'
-    | '/dashboard'
-    | '/discover'
-    | '/news'
-    | '/notifications'
     | '/onboarding'
     | '/privacy'
-    | '/settings'
     | '/support'
     | '/terms'
-    | '/transactions'
-    | '/wallet'
-    | '/admin/farms'
-    | '/admin/investors'
-    | '/admin/kyc'
-    | '/admin/payouts'
-    | '/admin/reports'
-    | '/admin/transactions'
-    | '/auth/forgot-password'
-    | '/auth/reset-password'
-    | '/auth/sign-in'
-    | '/auth/sign-up'
+    | '/_authenticated/settings'
+    | '/_authenticated/admin'
+    | '/_authenticated/news'
     | '/auth/verify-email'
-    | '/farm/$id'
-    | '/investments/$id'
-    | '/payment/callback'
-    | '/settings/notifications'
-    | '/settings/profile'
-    | '/settings/security'
-    | '/admin/'
     | '/auth/'
-    | '/investments/'
-    | '/admin/farm/new'
-    | '/admin/users/$id'
-    | '/farms/$id/invest'
-    | '/admin/farms/$id/analytics'
-    | '/admin/farms/$id/edit'
+    | '/_authenticated/admin/farms'
+    | '/_authenticated/admin/investors'
+    | '/_authenticated/admin/kyc'
+    | '/_authenticated/admin/payouts'
+    | '/_authenticated/admin/reports'
+    | '/_authenticated/admin/transactions'
+    | '/_authenticated/farm/$id'
+    | '/_authenticated/investments/$id'
+    | '/_authenticated/payment/callback'
+    | '/_authenticated/settings/notifications'
+    | '/_authenticated/settings/security'
+    | '/_authenticated/admin/'
+    | '/_authenticated/dashboard/'
+    | '/_authenticated/discover/'
+    | '/_authenticated/investments/'
+    | '/_authenticated/notifications/'
+    | '/_authenticated/settings/'
+    | '/_authenticated/transactions/'
+    | '/_authenticated/wallet/'
+    | '/auth/forgot-password/'
+    | '/auth/reset-password/'
+    | '/auth/sign-in/'
+    | '/auth/sign-up/'
+    | '/_authenticated/admin/farm/new'
+    | '/_authenticated/admin/users/$id'
+    | '/_authenticated/farms/$id/invest'
+    | '/_authenticated/admin/farms/$id/analytics'
+    | '/_authenticated/admin/farms/$id/edit'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRouteWithChildren
-  DashboardRoute: typeof DashboardRoute
-  DiscoverRoute: typeof DiscoverRoute
-  NewsRoute: typeof NewsRoute
-  NotificationsRoute: typeof NotificationsRoute
   OnboardingRoute: typeof OnboardingRoute
   PrivacyRoute: typeof PrivacyRoute
-  SettingsRoute: typeof SettingsRouteWithChildren
   SupportRoute: typeof SupportRoute
   TermsRoute: typeof TermsRoute
-  TransactionsRoute: typeof TransactionsRoute
-  WalletRoute: typeof WalletRoute
-  AdminFarmsRoute: typeof AdminFarmsRouteWithChildren
-  AdminInvestorsRoute: typeof AdminInvestorsRoute
-  AdminKycRoute: typeof AdminKycRoute
-  AdminPayoutsRoute: typeof AdminPayoutsRoute
-  AdminReportsRoute: typeof AdminReportsRoute
-  AdminTransactionsRoute: typeof AdminTransactionsRoute
-  FarmIdRoute: typeof FarmIdRoute
-  InvestmentsIdRoute: typeof InvestmentsIdRoute
-  PaymentCallbackRoute: typeof PaymentCallbackRoute
-  AdminIndexRoute: typeof AdminIndexRoute
-  InvestmentsIndexRoute: typeof InvestmentsIndexRoute
-  AdminFarmNewRoute: typeof AdminFarmNewRoute
-  AdminUsersIdRoute: typeof AdminUsersIdRoute
-  FarmsIdInvestRoute: typeof FarmsIdInvestRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/wallet': {
-      id: '/wallet'
-      path: '/wallet'
-      fullPath: '/wallet'
-      preLoaderRoute: typeof WalletRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/transactions': {
-      id: '/transactions'
-      path: '/transactions'
-      fullPath: '/transactions'
-      preLoaderRoute: typeof TransactionsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/terms': {
       id: '/terms'
       path: '/terms'
@@ -539,13 +541,6 @@ declare module '@tanstack/react-router' {
       path: '/support'
       fullPath: '/support'
       preLoaderRoute: typeof SupportRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/settings': {
-      id: '/settings'
-      path: '/settings'
-      fullPath: '/settings'
-      preLoaderRoute: typeof SettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/privacy': {
@@ -562,39 +557,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OnboardingRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/notifications': {
-      id: '/notifications'
-      path: '/notifications'
-      fullPath: '/notifications'
-      preLoaderRoute: typeof NotificationsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/news': {
-      id: '/news'
-      path: '/news'
-      fullPath: '/news'
-      preLoaderRoute: typeof NewsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/discover': {
-      id: '/discover'
-      path: '/discover'
-      fullPath: '/discover'
-      preLoaderRoute: typeof DiscoverRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/dashboard': {
-      id: '/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof DashboardRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/auth': {
       id: '/auth'
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -604,68 +578,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/investments/': {
-      id: '/investments/'
-      path: '/investments'
-      fullPath: '/investments'
-      preLoaderRoute: typeof InvestmentsIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/auth/': {
       id: '/auth/'
       path: '/'
       fullPath: '/auth/'
       preLoaderRoute: typeof AuthIndexRouteImport
       parentRoute: typeof AuthRoute
-    }
-    '/admin/': {
-      id: '/admin/'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof AdminIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/settings/security': {
-      id: '/settings/security'
-      path: '/security'
-      fullPath: '/settings/security'
-      preLoaderRoute: typeof SettingsSecurityRouteImport
-      parentRoute: typeof SettingsRoute
-    }
-    '/settings/profile': {
-      id: '/settings/profile'
-      path: '/profile'
-      fullPath: '/settings/profile'
-      preLoaderRoute: typeof SettingsProfileRouteImport
-      parentRoute: typeof SettingsRoute
-    }
-    '/settings/notifications': {
-      id: '/settings/notifications'
-      path: '/notifications'
-      fullPath: '/settings/notifications'
-      preLoaderRoute: typeof SettingsNotificationsRouteImport
-      parentRoute: typeof SettingsRoute
-    }
-    '/payment/callback': {
-      id: '/payment/callback'
-      path: '/payment/callback'
-      fullPath: '/payment/callback'
-      preLoaderRoute: typeof PaymentCallbackRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/investments/$id': {
-      id: '/investments/$id'
-      path: '/investments/$id'
-      fullPath: '/investments/$id'
-      preLoaderRoute: typeof InvestmentsIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/farm/$id': {
-      id: '/farm/$id'
-      path: '/farm/$id'
-      fullPath: '/farm/$id'
-      preLoaderRoute: typeof FarmIdRouteImport
-      parentRoute: typeof rootRouteImport
     }
     '/auth/verify-email': {
       id: '/auth/verify-email'
@@ -674,192 +592,352 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthVerifyEmailRouteImport
       parentRoute: typeof AuthRoute
     }
-    '/auth/sign-up': {
-      id: '/auth/sign-up'
+    '/_authenticated/news': {
+      id: '/_authenticated/news'
+      path: '/news'
+      fullPath: '/news'
+      preLoaderRoute: typeof AuthenticatedNewsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/settings': {
+      id: '/_authenticated/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AuthenticatedSettingsRouteRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/auth/sign-up/': {
+      id: '/auth/sign-up/'
       path: '/sign-up'
       fullPath: '/auth/sign-up'
-      preLoaderRoute: typeof AuthSignUpRouteImport
+      preLoaderRoute: typeof AuthSignUpIndexRouteImport
       parentRoute: typeof AuthRoute
     }
-    '/auth/sign-in': {
-      id: '/auth/sign-in'
+    '/auth/sign-in/': {
+      id: '/auth/sign-in/'
       path: '/sign-in'
       fullPath: '/auth/sign-in'
-      preLoaderRoute: typeof AuthSignInRouteImport
+      preLoaderRoute: typeof AuthSignInIndexRouteImport
       parentRoute: typeof AuthRoute
     }
-    '/auth/reset-password': {
-      id: '/auth/reset-password'
+    '/auth/reset-password/': {
+      id: '/auth/reset-password/'
       path: '/reset-password'
       fullPath: '/auth/reset-password'
-      preLoaderRoute: typeof AuthResetPasswordRouteImport
+      preLoaderRoute: typeof AuthResetPasswordIndexRouteImport
       parentRoute: typeof AuthRoute
     }
-    '/auth/forgot-password': {
-      id: '/auth/forgot-password'
+    '/auth/forgot-password/': {
+      id: '/auth/forgot-password/'
       path: '/forgot-password'
       fullPath: '/auth/forgot-password'
-      preLoaderRoute: typeof AuthForgotPasswordRouteImport
+      preLoaderRoute: typeof AuthForgotPasswordIndexRouteImport
       parentRoute: typeof AuthRoute
     }
-    '/admin/transactions': {
-      id: '/admin/transactions'
-      path: '/admin/transactions'
+    '/_authenticated/wallet/': {
+      id: '/_authenticated/wallet/'
+      path: '/wallet'
+      fullPath: '/wallet'
+      preLoaderRoute: typeof AuthenticatedWalletIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/transactions/': {
+      id: '/_authenticated/transactions/'
+      path: '/transactions'
+      fullPath: '/transactions'
+      preLoaderRoute: typeof AuthenticatedTransactionsIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/settings/': {
+      id: '/_authenticated/settings/'
+      path: '/'
+      fullPath: '/settings/'
+      preLoaderRoute: typeof AuthenticatedSettingsIndexRouteImport
+      parentRoute: typeof AuthenticatedSettingsRouteRoute
+    }
+    '/_authenticated/notifications/': {
+      id: '/_authenticated/notifications/'
+      path: '/notifications'
+      fullPath: '/notifications'
+      preLoaderRoute: typeof AuthenticatedNotificationsIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/investments/': {
+      id: '/_authenticated/investments/'
+      path: '/investments'
+      fullPath: '/investments'
+      preLoaderRoute: typeof AuthenticatedInvestmentsIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/discover/': {
+      id: '/_authenticated/discover/'
+      path: '/discover'
+      fullPath: '/discover'
+      preLoaderRoute: typeof AuthenticatedDiscoverIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/dashboard/': {
+      id: '/_authenticated/dashboard/'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthenticatedDashboardIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/admin/': {
+      id: '/_authenticated/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/settings/security': {
+      id: '/_authenticated/settings/security'
+      path: '/security'
+      fullPath: '/settings/security'
+      preLoaderRoute: typeof AuthenticatedSettingsSecurityRouteImport
+      parentRoute: typeof AuthenticatedSettingsRouteRoute
+    }
+    '/_authenticated/settings/notifications': {
+      id: '/_authenticated/settings/notifications'
+      path: '/notifications'
+      fullPath: '/settings/notifications'
+      preLoaderRoute: typeof AuthenticatedSettingsNotificationsRouteImport
+      parentRoute: typeof AuthenticatedSettingsRouteRoute
+    }
+    '/_authenticated/payment/callback': {
+      id: '/_authenticated/payment/callback'
+      path: '/payment/callback'
+      fullPath: '/payment/callback'
+      preLoaderRoute: typeof AuthenticatedPaymentCallbackRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/investments/$id': {
+      id: '/_authenticated/investments/$id'
+      path: '/investments/$id'
+      fullPath: '/investments/$id'
+      preLoaderRoute: typeof AuthenticatedInvestmentsIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/farm/$id': {
+      id: '/_authenticated/farm/$id'
+      path: '/farm/$id'
+      fullPath: '/farm/$id'
+      preLoaderRoute: typeof AuthenticatedFarmIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/admin/transactions': {
+      id: '/_authenticated/admin/transactions'
+      path: '/transactions'
       fullPath: '/admin/transactions'
-      preLoaderRoute: typeof AdminTransactionsRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedAdminTransactionsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
     }
-    '/admin/reports': {
-      id: '/admin/reports'
-      path: '/admin/reports'
+    '/_authenticated/admin/reports': {
+      id: '/_authenticated/admin/reports'
+      path: '/reports'
       fullPath: '/admin/reports'
-      preLoaderRoute: typeof AdminReportsRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedAdminReportsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
     }
-    '/admin/payouts': {
-      id: '/admin/payouts'
-      path: '/admin/payouts'
+    '/_authenticated/admin/payouts': {
+      id: '/_authenticated/admin/payouts'
+      path: '/payouts'
       fullPath: '/admin/payouts'
-      preLoaderRoute: typeof AdminPayoutsRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedAdminPayoutsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
     }
-    '/admin/kyc': {
-      id: '/admin/kyc'
-      path: '/admin/kyc'
+    '/_authenticated/admin/kyc': {
+      id: '/_authenticated/admin/kyc'
+      path: '/kyc'
       fullPath: '/admin/kyc'
-      preLoaderRoute: typeof AdminKycRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedAdminKycRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
     }
-    '/admin/investors': {
-      id: '/admin/investors'
-      path: '/admin/investors'
+    '/_authenticated/admin/investors': {
+      id: '/_authenticated/admin/investors'
+      path: '/investors'
       fullPath: '/admin/investors'
-      preLoaderRoute: typeof AdminInvestorsRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedAdminInvestorsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
     }
-    '/admin/farms': {
-      id: '/admin/farms'
-      path: '/admin/farms'
+    '/_authenticated/admin/farms': {
+      id: '/_authenticated/admin/farms'
+      path: '/farms'
       fullPath: '/admin/farms'
-      preLoaderRoute: typeof AdminFarmsRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedAdminFarmsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
     }
-    '/farms/$id/invest': {
-      id: '/farms/$id/invest'
+    '/_authenticated/farms/$id/invest': {
+      id: '/_authenticated/farms/$id/invest'
       path: '/farms/$id/invest'
       fullPath: '/farms/$id/invest'
-      preLoaderRoute: typeof FarmsIdInvestRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedFarmsIdInvestRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/admin/users/$id': {
-      id: '/admin/users/$id'
-      path: '/admin/users/$id'
+    '/_authenticated/admin/users/$id': {
+      id: '/_authenticated/admin/users/$id'
+      path: '/users/$id'
       fullPath: '/admin/users/$id'
-      preLoaderRoute: typeof AdminUsersIdRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedAdminUsersIdRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
     }
-    '/admin/farm/new': {
-      id: '/admin/farm/new'
-      path: '/admin/farm/new'
+    '/_authenticated/admin/farm/new': {
+      id: '/_authenticated/admin/farm/new'
+      path: '/farm/new'
       fullPath: '/admin/farm/new'
-      preLoaderRoute: typeof AdminFarmNewRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedAdminFarmNewRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
     }
-    '/admin/farms/$id/edit': {
-      id: '/admin/farms/$id/edit'
+    '/_authenticated/admin/farms/$id/edit': {
+      id: '/_authenticated/admin/farms/$id/edit'
       path: '/$id/edit'
       fullPath: '/admin/farms/$id/edit'
-      preLoaderRoute: typeof AdminFarmsIdEditRouteImport
-      parentRoute: typeof AdminFarmsRoute
+      preLoaderRoute: typeof AuthenticatedAdminFarmsIdEditRouteImport
+      parentRoute: typeof AuthenticatedAdminFarmsRoute
     }
-    '/admin/farms/$id/analytics': {
-      id: '/admin/farms/$id/analytics'
+    '/_authenticated/admin/farms/$id/analytics': {
+      id: '/_authenticated/admin/farms/$id/analytics'
       path: '/$id/analytics'
       fullPath: '/admin/farms/$id/analytics'
-      preLoaderRoute: typeof AdminFarmsIdAnalyticsRouteImport
-      parentRoute: typeof AdminFarmsRoute
+      preLoaderRoute: typeof AuthenticatedAdminFarmsIdAnalyticsRouteImport
+      parentRoute: typeof AuthenticatedAdminFarmsRoute
     }
   }
 }
 
+interface AuthenticatedSettingsRouteRouteChildren {
+  AuthenticatedSettingsNotificationsRoute: typeof AuthenticatedSettingsNotificationsRoute
+  AuthenticatedSettingsSecurityRoute: typeof AuthenticatedSettingsSecurityRoute
+  AuthenticatedSettingsIndexRoute: typeof AuthenticatedSettingsIndexRoute
+}
+
+const AuthenticatedSettingsRouteRouteChildren: AuthenticatedSettingsRouteRouteChildren =
+  {
+    AuthenticatedSettingsNotificationsRoute:
+      AuthenticatedSettingsNotificationsRoute,
+    AuthenticatedSettingsSecurityRoute: AuthenticatedSettingsSecurityRoute,
+    AuthenticatedSettingsIndexRoute: AuthenticatedSettingsIndexRoute,
+  }
+
+const AuthenticatedSettingsRouteRouteWithChildren =
+  AuthenticatedSettingsRouteRoute._addFileChildren(
+    AuthenticatedSettingsRouteRouteChildren,
+  )
+
+interface AuthenticatedAdminFarmsRouteChildren {
+  AuthenticatedAdminFarmsIdAnalyticsRoute: typeof AuthenticatedAdminFarmsIdAnalyticsRoute
+  AuthenticatedAdminFarmsIdEditRoute: typeof AuthenticatedAdminFarmsIdEditRoute
+}
+
+const AuthenticatedAdminFarmsRouteChildren: AuthenticatedAdminFarmsRouteChildren =
+  {
+    AuthenticatedAdminFarmsIdAnalyticsRoute:
+      AuthenticatedAdminFarmsIdAnalyticsRoute,
+    AuthenticatedAdminFarmsIdEditRoute: AuthenticatedAdminFarmsIdEditRoute,
+  }
+
+const AuthenticatedAdminFarmsRouteWithChildren =
+  AuthenticatedAdminFarmsRoute._addFileChildren(
+    AuthenticatedAdminFarmsRouteChildren,
+  )
+
+interface AuthenticatedAdminRouteChildren {
+  AuthenticatedAdminFarmsRoute: typeof AuthenticatedAdminFarmsRouteWithChildren
+  AuthenticatedAdminInvestorsRoute: typeof AuthenticatedAdminInvestorsRoute
+  AuthenticatedAdminKycRoute: typeof AuthenticatedAdminKycRoute
+  AuthenticatedAdminPayoutsRoute: typeof AuthenticatedAdminPayoutsRoute
+  AuthenticatedAdminReportsRoute: typeof AuthenticatedAdminReportsRoute
+  AuthenticatedAdminTransactionsRoute: typeof AuthenticatedAdminTransactionsRoute
+  AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
+  AuthenticatedAdminFarmNewRoute: typeof AuthenticatedAdminFarmNewRoute
+  AuthenticatedAdminUsersIdRoute: typeof AuthenticatedAdminUsersIdRoute
+}
+
+const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
+  AuthenticatedAdminFarmsRoute: AuthenticatedAdminFarmsRouteWithChildren,
+  AuthenticatedAdminInvestorsRoute: AuthenticatedAdminInvestorsRoute,
+  AuthenticatedAdminKycRoute: AuthenticatedAdminKycRoute,
+  AuthenticatedAdminPayoutsRoute: AuthenticatedAdminPayoutsRoute,
+  AuthenticatedAdminReportsRoute: AuthenticatedAdminReportsRoute,
+  AuthenticatedAdminTransactionsRoute: AuthenticatedAdminTransactionsRoute,
+  AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
+  AuthenticatedAdminFarmNewRoute: AuthenticatedAdminFarmNewRoute,
+  AuthenticatedAdminUsersIdRoute: AuthenticatedAdminUsersIdRoute,
+}
+
+const AuthenticatedAdminRouteWithChildren =
+  AuthenticatedAdminRoute._addFileChildren(AuthenticatedAdminRouteChildren)
+
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedSettingsRouteRoute: typeof AuthenticatedSettingsRouteRouteWithChildren
+  AuthenticatedAdminRoute: typeof AuthenticatedAdminRouteWithChildren
+  AuthenticatedNewsRoute: typeof AuthenticatedNewsRoute
+  AuthenticatedFarmIdRoute: typeof AuthenticatedFarmIdRoute
+  AuthenticatedInvestmentsIdRoute: typeof AuthenticatedInvestmentsIdRoute
+  AuthenticatedPaymentCallbackRoute: typeof AuthenticatedPaymentCallbackRoute
+  AuthenticatedDashboardIndexRoute: typeof AuthenticatedDashboardIndexRoute
+  AuthenticatedDiscoverIndexRoute: typeof AuthenticatedDiscoverIndexRoute
+  AuthenticatedInvestmentsIndexRoute: typeof AuthenticatedInvestmentsIndexRoute
+  AuthenticatedNotificationsIndexRoute: typeof AuthenticatedNotificationsIndexRoute
+  AuthenticatedTransactionsIndexRoute: typeof AuthenticatedTransactionsIndexRoute
+  AuthenticatedWalletIndexRoute: typeof AuthenticatedWalletIndexRoute
+  AuthenticatedFarmsIdInvestRoute: typeof AuthenticatedFarmsIdInvestRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedSettingsRouteRoute: AuthenticatedSettingsRouteRouteWithChildren,
+  AuthenticatedAdminRoute: AuthenticatedAdminRouteWithChildren,
+  AuthenticatedNewsRoute: AuthenticatedNewsRoute,
+  AuthenticatedFarmIdRoute: AuthenticatedFarmIdRoute,
+  AuthenticatedInvestmentsIdRoute: AuthenticatedInvestmentsIdRoute,
+  AuthenticatedPaymentCallbackRoute: AuthenticatedPaymentCallbackRoute,
+  AuthenticatedDashboardIndexRoute: AuthenticatedDashboardIndexRoute,
+  AuthenticatedDiscoverIndexRoute: AuthenticatedDiscoverIndexRoute,
+  AuthenticatedInvestmentsIndexRoute: AuthenticatedInvestmentsIndexRoute,
+  AuthenticatedNotificationsIndexRoute: AuthenticatedNotificationsIndexRoute,
+  AuthenticatedTransactionsIndexRoute: AuthenticatedTransactionsIndexRoute,
+  AuthenticatedWalletIndexRoute: AuthenticatedWalletIndexRoute,
+  AuthenticatedFarmsIdInvestRoute: AuthenticatedFarmsIdInvestRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 interface AuthRouteChildren {
-  AuthForgotPasswordRoute: typeof AuthForgotPasswordRoute
-  AuthResetPasswordRoute: typeof AuthResetPasswordRoute
-  AuthSignInRoute: typeof AuthSignInRoute
-  AuthSignUpRoute: typeof AuthSignUpRoute
   AuthVerifyEmailRoute: typeof AuthVerifyEmailRoute
   AuthIndexRoute: typeof AuthIndexRoute
+  AuthForgotPasswordIndexRoute: typeof AuthForgotPasswordIndexRoute
+  AuthResetPasswordIndexRoute: typeof AuthResetPasswordIndexRoute
+  AuthSignInIndexRoute: typeof AuthSignInIndexRoute
+  AuthSignUpIndexRoute: typeof AuthSignUpIndexRoute
 }
 
 const AuthRouteChildren: AuthRouteChildren = {
-  AuthForgotPasswordRoute: AuthForgotPasswordRoute,
-  AuthResetPasswordRoute: AuthResetPasswordRoute,
-  AuthSignInRoute: AuthSignInRoute,
-  AuthSignUpRoute: AuthSignUpRoute,
   AuthVerifyEmailRoute: AuthVerifyEmailRoute,
   AuthIndexRoute: AuthIndexRoute,
+  AuthForgotPasswordIndexRoute: AuthForgotPasswordIndexRoute,
+  AuthResetPasswordIndexRoute: AuthResetPasswordIndexRoute,
+  AuthSignInIndexRoute: AuthSignInIndexRoute,
+  AuthSignUpIndexRoute: AuthSignUpIndexRoute,
 }
 
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 
-interface SettingsRouteChildren {
-  SettingsNotificationsRoute: typeof SettingsNotificationsRoute
-  SettingsProfileRoute: typeof SettingsProfileRoute
-  SettingsSecurityRoute: typeof SettingsSecurityRoute
-}
-
-const SettingsRouteChildren: SettingsRouteChildren = {
-  SettingsNotificationsRoute: SettingsNotificationsRoute,
-  SettingsProfileRoute: SettingsProfileRoute,
-  SettingsSecurityRoute: SettingsSecurityRoute,
-}
-
-const SettingsRouteWithChildren = SettingsRoute._addFileChildren(
-  SettingsRouteChildren,
-)
-
-interface AdminFarmsRouteChildren {
-  AdminFarmsIdAnalyticsRoute: typeof AdminFarmsIdAnalyticsRoute
-  AdminFarmsIdEditRoute: typeof AdminFarmsIdEditRoute
-}
-
-const AdminFarmsRouteChildren: AdminFarmsRouteChildren = {
-  AdminFarmsIdAnalyticsRoute: AdminFarmsIdAnalyticsRoute,
-  AdminFarmsIdEditRoute: AdminFarmsIdEditRoute,
-}
-
-const AdminFarmsRouteWithChildren = AdminFarmsRoute._addFileChildren(
-  AdminFarmsRouteChildren,
-)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRouteWithChildren,
-  DashboardRoute: DashboardRoute,
-  DiscoverRoute: DiscoverRoute,
-  NewsRoute: NewsRoute,
-  NotificationsRoute: NotificationsRoute,
   OnboardingRoute: OnboardingRoute,
   PrivacyRoute: PrivacyRoute,
-  SettingsRoute: SettingsRouteWithChildren,
   SupportRoute: SupportRoute,
   TermsRoute: TermsRoute,
-  TransactionsRoute: TransactionsRoute,
-  WalletRoute: WalletRoute,
-  AdminFarmsRoute: AdminFarmsRouteWithChildren,
-  AdminInvestorsRoute: AdminInvestorsRoute,
-  AdminKycRoute: AdminKycRoute,
-  AdminPayoutsRoute: AdminPayoutsRoute,
-  AdminReportsRoute: AdminReportsRoute,
-  AdminTransactionsRoute: AdminTransactionsRoute,
-  FarmIdRoute: FarmIdRoute,
-  InvestmentsIdRoute: InvestmentsIdRoute,
-  PaymentCallbackRoute: PaymentCallbackRoute,
-  AdminIndexRoute: AdminIndexRoute,
-  InvestmentsIndexRoute: InvestmentsIndexRoute,
-  AdminFarmNewRoute: AdminFarmNewRoute,
-  AdminUsersIdRoute: AdminUsersIdRoute,
-  FarmsIdInvestRoute: FarmsIdInvestRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
