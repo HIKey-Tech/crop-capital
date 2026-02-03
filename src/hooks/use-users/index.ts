@@ -1,27 +1,19 @@
 import { useQuery } from '@tanstack/react-query'
 
-import { usersApi } from '@/lib/api-client'
-
-export const userKeys = {
-  all: ['users'] as const,
-  lists: () => [...userKeys.all, 'list'] as const,
-  stats: () => [...userKeys.all, 'stats'] as const,
-  dashboardStats: () => [...userKeys.all, 'dashboard-stats'] as const,
-  detail: (id: string) => [...userKeys.all, 'detail', id] as const,
-}
+import { api } from '@/lib/api-builder'
 
 export function useUsers() {
   return useQuery({
-    queryKey: userKeys.lists(),
-    queryFn: () => usersApi.getAll(),
+    queryKey: api.users.list.$use(),
+    queryFn: () => api.$use.users.list(),
     staleTime: 1000 * 60 * 2, // 2 minutes
   })
 }
 
 export function useUser(id: string) {
   return useQuery({
-    queryKey: userKeys.detail(id),
-    queryFn: () => usersApi.getById(id),
+    queryKey: api.users.detail.$use(id),
+    queryFn: () => api.$use.users.detail(id),
     staleTime: 1000 * 60 * 2, // 2 minutes
     enabled: !!id,
   })
@@ -29,16 +21,16 @@ export function useUser(id: string) {
 
 export function useUserStats() {
   return useQuery({
-    queryKey: userKeys.stats(),
-    queryFn: () => usersApi.getStats(),
+    queryKey: api.users.stats.$use(),
+    queryFn: () => api.$use.users.stats(),
     staleTime: 1000 * 60 * 2, // 2 minutes
   })
 }
 
 export function useDashboardStats() {
   return useQuery({
-    queryKey: userKeys.dashboardStats(),
-    queryFn: () => usersApi.getDashboardStats(),
+    queryKey: api.users.dashboardStats.$use(),
+    queryFn: () => api.$use.users.dashboardStats(),
     staleTime: 1000 * 60 * 2, // 2 minutes
   })
 }

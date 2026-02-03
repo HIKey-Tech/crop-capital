@@ -5,10 +5,10 @@ import {
   redirect,
 } from '@tanstack/react-router'
 import { useState } from 'react'
-import { authApi, getAuthToken } from '@/lib/api-client'
+import { getAuthToken } from '@/lib/api-client'
 import { Sidebar } from '@/components/layout/sidebar'
 import { Header } from '@/components/layout/header'
-import { authKeys } from '@/hooks/use-auth'
+import { api } from '@/lib/api-builder'
 
 export const Route = createFileRoute('/_authenticated')({
   beforeLoad: async ({ location, context }) => {
@@ -26,8 +26,8 @@ export const Route = createFileRoute('/_authenticated')({
     // Use ensureQueryData to leverage React Query cache
     try {
       const response = await context.queryClient.ensureQueryData({
-        queryKey: authKeys.me(),
-        queryFn: () => authApi.getMe(),
+        queryKey: api.auth.me.$use(),
+        queryFn: () => api.$use.auth.me(),
         staleTime: 1000 * 60 * 5, // 5 minutes
       })
       return { user: response.user }
@@ -36,7 +36,8 @@ export const Route = createFileRoute('/_authenticated')({
       if (isRedirect(error)) throw error
 
       // Auth check failed (network error, token invalid, etc.) - redirect to login
-      authApi.logout()
+      localStorage.removeItem('token')
+      localStorage.removeItem('refreshToken')
       throw redirect({
         to: '/auth/sign-in',
         search: {

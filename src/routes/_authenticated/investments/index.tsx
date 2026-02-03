@@ -20,12 +20,11 @@ function MyInvestmentsPage() {
   const {
     data: watchlistData,
     isLoading: watchlistLoading,
-    error: watchlistError,
   } = useWatchlist()
 
   const investments = data?.investments ?? []
   const activeInvestments = investments.filter(
-    (i) => i.status === 'pending' || i.status === 'completed',
+    ({ status }) => status === 'pending' || status === 'completed',
   )
   const completedInvestments = investments.filter((i) => i.roiPaid)
   const watchlistFarms = watchlistData?.watchlist ?? []

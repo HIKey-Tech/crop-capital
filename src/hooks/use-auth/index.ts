@@ -1,18 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import type { LoginRequest, RegisterRequest } from '@/types'
-
-import { authApi } from '@/lib/api-client'
-
-export const authKeys = {
-  all: ['auth'] as const,
-  me: () => [...authKeys.all, 'me'] as const,
-}
+import { api } from '@/lib/api-builder'
 
 export function useCurrentUser() {
   return useQuery({
-    queryKey: authKeys.me(),
-    queryFn: () => authApi.getMe(),
+    queryKey: api.auth.me.$use(),
+    queryFn: () => api.$use.auth.me(),
     retry: false,
     staleTime: 1000 * 60 * 5, // 5 minutes
   })
@@ -22,9 +16,9 @@ export function useLogin() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (credentials: LoginRequest) => authApi.login(credentials),
+    mutationFn: (credentials: LoginRequest) => api.$use.auth.login(credentials),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: authKeys.me() })
+      queryClient.invalidateQueries({ queryKey: api.auth.$get() })
     },
   })
 }
@@ -33,9 +27,9 @@ export function useRegister() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (data: RegisterRequest) => authApi.register(data),
+    mutationFn: (data: RegisterRequest) => api.$use.auth.register(data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: authKeys.me() })
+      queryClient.invalidateQueries({ queryKey: api.auth.$get() })
     },
   })
 }
@@ -45,7 +39,8 @@ export function useLogout() {
 
   return useMutation({
     mutationFn: async () => {
-      authApi.logout()
+      localStorage.removeItem('token')
+      localStorage.removeItem('refreshToken')
       return Promise.resolve()
     },
     onSuccess: () => {
@@ -59,9 +54,9 @@ export function useUpdateProfile() {
 
   return useMutation({
     mutationFn: (data: { name?: string; country?: string; photo?: string }) =>
-      authApi.updateProfile(data),
+      api.$use.auth.updateProfile(data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: authKeys.me() })
+      queryClient.invalidateQueries({ queryKey: api.auth.me.$use() })
     },
   })
 }
@@ -69,6 +64,6 @@ export function useUpdateProfile() {
 export function useUpdatePassword() {
   return useMutation({
     mutationFn: (data: { currentPassword: string; newPassword: string }) =>
-      authApi.updatePassword(data),
+      api.$use.auth.updatePassword(data),
   })
 }

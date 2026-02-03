@@ -1,16 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import type { Farm } from '@/types'
-import { watchlistApi } from '@/api/watchlist'
-
-export const watchlistKeys = {
-  all: ['watchlist'] as const,
-  list: () => [...watchlistKeys.all, 'list'] as const,
-}
+import { api } from '@/lib/api-builder'
 
 export function useWatchlist() {
   return useQuery({
-    queryKey: watchlistKeys.list(),
-    queryFn: watchlistApi.getWatchlist,
+    queryKey: api.watchlist.list.$use(),
+    queryFn: () => api.$use.watchlist.list(),
   })
 }
 
@@ -18,9 +13,9 @@ export function useAddToWatchlist() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (farmId: string) => watchlistApi.addToWatchlist(farmId),
+    mutationFn: (farmId: string) => api.$use.watchlist.add(farmId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: watchlistKeys.all })
+      queryClient.invalidateQueries({ queryKey: api.watchlist.$get() })
     },
   })
 }
@@ -29,9 +24,9 @@ export function useRemoveFromWatchlist() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (farmId: string) => watchlistApi.removeFromWatchlist(farmId),
+    mutationFn: (farmId: string) => api.$use.watchlist.remove(farmId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: watchlistKeys.all })
+      queryClient.invalidateQueries({ queryKey: api.watchlist.$get() })
     },
   })
 }

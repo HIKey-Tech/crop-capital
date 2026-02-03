@@ -1,30 +1,20 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import type { CreateFarmRequest } from '@/types'
-
-import { farmsApi } from '@/lib/api-client'
-
-export const farmKeys = {
-  all: ['farms'] as const,
-  lists: () => [...farmKeys.all, 'list'] as const,
-  list: (filters?: Record<string, unknown>) =>
-    [...farmKeys.lists(), filters] as const,
-  details: () => [...farmKeys.all, 'detail'] as const,
-  detail: (id: string) => [...farmKeys.details(), id] as const,
-}
+import { api } from '@/lib/api-builder'
 
 export function useFarms() {
   return useQuery({
-    queryKey: farmKeys.lists(),
-    queryFn: () => farmsApi.getAll(),
+    queryKey: api.farms.list.$use(),
+    queryFn: () => api.$use.farms.list(),
     staleTime: 1000 * 60 * 2, // 2 minutes
   })
 }
 
 export function useFarm(id: string) {
   return useQuery({
-    queryKey: farmKeys.detail(id),
-    queryFn: () => farmsApi.getById(id),
+    queryKey: api.farms.detail.$use(id),
+    queryFn: () => api.$use.farms.detail(id),
     enabled: !!id,
   })
 }
@@ -33,9 +23,9 @@ export function useCreateFarm() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (data: CreateFarmRequest) => farmsApi.create(data),
+    mutationFn: (data: CreateFarmRequest) => api.$use.farms.create(data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: farmKeys.lists() })
+      queryClient.invalidateQueries({ queryKey: api.farms.list.$use() })
     },
   })
 }
@@ -50,10 +40,12 @@ export function useUpdateFarm() {
     }: {
       id: string
       data: Partial<CreateFarmRequest>
-    }) => farmsApi.update(id, data),
+    }) => api.$use.farms.update(id, data),
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: farmKeys.detail(variables.id) })
-      queryClient.invalidateQueries({ queryKey: farmKeys.lists() })
+      queryClient.invalidateQueries({
+        queryKey: api.farms.detail.$use(variables.id),
+      })
+      queryClient.invalidateQueries({ queryKey: api.farms.list.$use() })
     },
   })
 }
@@ -62,9 +54,9 @@ export function useDeleteFarm() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (id: string) => farmsApi.delete(id),
+    mutationFn: (id: string) => api.$use.farms.delete(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: farmKeys.lists() })
+      queryClient.invalidateQueries({ queryKey: api.farms.list.$use() })
     },
   })
 }
@@ -79,9 +71,11 @@ export function useAddFarmUpdate() {
     }: {
       id: string
       update: { stage: string; image?: string }
-    }) => farmsApi.addUpdate(id, update),
+    }) => api.$use.farms.addUpdate(id, update),
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: farmKeys.detail(variables.id) })
+      queryClient.invalidateQueries({
+        queryKey: api.farms.detail.$use(variables.id),
+      })
     },
   })
 }

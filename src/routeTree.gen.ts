@@ -295,17 +295,17 @@ export interface FileRoutesByFullPath {
   '/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
   '/settings/security': typeof AuthenticatedSettingsSecurityRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
-  '/dashboard': typeof AuthenticatedDashboardIndexRoute
-  '/discover': typeof AuthenticatedDiscoverIndexRoute
-  '/investments': typeof AuthenticatedInvestmentsIndexRoute
-  '/notifications': typeof AuthenticatedNotificationsIndexRoute
+  '/dashboard/': typeof AuthenticatedDashboardIndexRoute
+  '/discover/': typeof AuthenticatedDiscoverIndexRoute
+  '/investments/': typeof AuthenticatedInvestmentsIndexRoute
+  '/notifications/': typeof AuthenticatedNotificationsIndexRoute
   '/settings/': typeof AuthenticatedSettingsIndexRoute
-  '/transactions': typeof AuthenticatedTransactionsIndexRoute
-  '/wallet': typeof AuthenticatedWalletIndexRoute
-  '/auth/forgot-password': typeof AuthForgotPasswordIndexRoute
-  '/auth/reset-password': typeof AuthResetPasswordIndexRoute
-  '/auth/sign-in': typeof AuthSignInIndexRoute
-  '/auth/sign-up': typeof AuthSignUpIndexRoute
+  '/transactions/': typeof AuthenticatedTransactionsIndexRoute
+  '/wallet/': typeof AuthenticatedWalletIndexRoute
+  '/auth/forgot-password/': typeof AuthForgotPasswordIndexRoute
+  '/auth/reset-password/': typeof AuthResetPasswordIndexRoute
+  '/auth/sign-in/': typeof AuthSignInIndexRoute
+  '/auth/sign-up/': typeof AuthSignUpIndexRoute
   '/admin/farm/new': typeof AuthenticatedAdminFarmNewRoute
   '/admin/users/$id': typeof AuthenticatedAdminUsersIdRoute
   '/farms/$id/invest': typeof AuthenticatedFarmsIdInvestRoute
@@ -419,17 +419,17 @@ export interface FileRouteTypes {
     | '/settings/notifications'
     | '/settings/security'
     | '/admin/'
-    | '/dashboard'
-    | '/discover'
-    | '/investments'
-    | '/notifications'
+    | '/dashboard/'
+    | '/discover/'
+    | '/investments/'
+    | '/notifications/'
     | '/settings/'
-    | '/transactions'
-    | '/wallet'
-    | '/auth/forgot-password'
-    | '/auth/reset-password'
-    | '/auth/sign-in'
-    | '/auth/sign-up'
+    | '/transactions/'
+    | '/wallet/'
+    | '/auth/forgot-password/'
+    | '/auth/reset-password/'
+    | '/auth/sign-in/'
+    | '/auth/sign-up/'
     | '/admin/farm/new'
     | '/admin/users/$id'
     | '/farms/$id/invest'
@@ -567,7 +567,7 @@ declare module '@tanstack/react-router' {
     '/_authenticated': {
       id: '/_authenticated'
       path: ''
-      fullPath: ''
+      fullPath: '/'
       preLoaderRoute: typeof AuthenticatedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
@@ -616,42 +616,42 @@ declare module '@tanstack/react-router' {
     '/auth/sign-up/': {
       id: '/auth/sign-up/'
       path: '/sign-up'
-      fullPath: '/auth/sign-up'
+      fullPath: '/auth/sign-up/'
       preLoaderRoute: typeof AuthSignUpIndexRouteImport
       parentRoute: typeof AuthRoute
     }
     '/auth/sign-in/': {
       id: '/auth/sign-in/'
       path: '/sign-in'
-      fullPath: '/auth/sign-in'
+      fullPath: '/auth/sign-in/'
       preLoaderRoute: typeof AuthSignInIndexRouteImport
       parentRoute: typeof AuthRoute
     }
     '/auth/reset-password/': {
       id: '/auth/reset-password/'
       path: '/reset-password'
-      fullPath: '/auth/reset-password'
+      fullPath: '/auth/reset-password/'
       preLoaderRoute: typeof AuthResetPasswordIndexRouteImport
       parentRoute: typeof AuthRoute
     }
     '/auth/forgot-password/': {
       id: '/auth/forgot-password/'
       path: '/forgot-password'
-      fullPath: '/auth/forgot-password'
+      fullPath: '/auth/forgot-password/'
       preLoaderRoute: typeof AuthForgotPasswordIndexRouteImport
       parentRoute: typeof AuthRoute
     }
     '/_authenticated/wallet/': {
       id: '/_authenticated/wallet/'
       path: '/wallet'
-      fullPath: '/wallet'
+      fullPath: '/wallet/'
       preLoaderRoute: typeof AuthenticatedWalletIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/transactions/': {
       id: '/_authenticated/transactions/'
       path: '/transactions'
-      fullPath: '/transactions'
+      fullPath: '/transactions/'
       preLoaderRoute: typeof AuthenticatedTransactionsIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
@@ -665,28 +665,28 @@ declare module '@tanstack/react-router' {
     '/_authenticated/notifications/': {
       id: '/_authenticated/notifications/'
       path: '/notifications'
-      fullPath: '/notifications'
+      fullPath: '/notifications/'
       preLoaderRoute: typeof AuthenticatedNotificationsIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/investments/': {
       id: '/_authenticated/investments/'
       path: '/investments'
-      fullPath: '/investments'
+      fullPath: '/investments/'
       preLoaderRoute: typeof AuthenticatedInvestmentsIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/discover/': {
       id: '/_authenticated/discover/'
       path: '/discover'
-      fullPath: '/discover'
+      fullPath: '/discover/'
       preLoaderRoute: typeof AuthenticatedDiscoverIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/dashboard/': {
       id: '/_authenticated/dashboard/'
       path: '/dashboard'
-      fullPath: '/dashboard'
+      fullPath: '/dashboard/'
       preLoaderRoute: typeof AuthenticatedDashboardIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }

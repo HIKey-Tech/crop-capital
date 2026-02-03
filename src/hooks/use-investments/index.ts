@@ -1,37 +1,28 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import type { InvestRequest } from '@/types'
-
-import { investmentsApi } from '@/lib/api-client'
-
-export const investmentKeys = {
-  all: ['investments'] as const,
-  lists: () => [...investmentKeys.all, 'list'] as const,
-  myInvestments: () => [...investmentKeys.lists(), 'mine'] as const,
-  allInvestments: () => [...investmentKeys.lists(), 'all'] as const,
-  detail: (id: string) => [...investmentKeys.all, 'detail', id] as const,
-}
+import { api } from '@/lib/api-builder'
 
 export function useMyInvestments() {
   return useQuery({
-    queryKey: investmentKeys.myInvestments(),
-    queryFn: () => investmentsApi.getMyInvestments(),
+    queryKey: api.investments.mine.$use(),
+    queryFn: () => api.$use.investments.mine(),
     staleTime: 1000 * 60 * 2, // 2 minutes
   })
 }
 
 export function useAllInvestments() {
   return useQuery({
-    queryKey: investmentKeys.allInvestments(),
-    queryFn: () => investmentsApi.getAllInvestments(),
+    queryKey: api.investments.all.$use(),
+    queryFn: () => api.$use.investments.all(),
     staleTime: 1000 * 60 * 2, // 2 minutes
   })
 }
 
 export function useInvestment(id: string) {
   return useQuery({
-    queryKey: investmentKeys.detail(id),
-    queryFn: () => investmentsApi.getById(id),
+    queryKey: api.investments.detail.$use(id),
+    queryFn: () => api.$use.investments.detail(id),
     staleTime: 1000 * 60 * 2, // 2 minutes
     enabled: !!id,
   })
@@ -41,10 +32,10 @@ export function useInvest() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (data: InvestRequest) => investmentsApi.invest(data),
+    mutationFn: (data: InvestRequest) => api.$use.investments.invest(data),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: investmentKeys.myInvestments(),
+        queryKey: api.investments.mine.$use(),
       })
     },
   })
@@ -54,10 +45,11 @@ export function useVerifyPayment() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (reference: string) => investmentsApi.verifyPayment(reference),
+    mutationFn: (reference: string) =>
+      api.$use.investments.verifyPayment(reference),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: investmentKeys.myInvestments(),
+        queryKey: api.investments.mine.$use(),
       })
     },
   })
