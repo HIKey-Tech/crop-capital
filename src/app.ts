@@ -15,6 +15,13 @@ const app = express();
 const portRange = Array.from(portNumbers(3000, 3100));
 const ports = portRange.map((port) => `http://localhost:${port}`);
 
+/**
+ * Enables trust proxy for correct client IP and protocol detection behind proxies.
+ * On Render: This allows Express to read the X-Forwarded-For header set by the load balancer,
+ * ensuring req.ip returns the true client IP instead of the load balancer's IP.
+ */
+app.set("trust proxy", true);
+
 const corsOptions = {
   origin: [FRONTEND_URL].concat(ports).filter(Boolean),
   credentials: true,
@@ -31,17 +38,25 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-/* Security */
+/* Security & Rate Limiting */
 app.use(
   helmet({
     crossOriginResourcePolicy: { policy: "cross-origin" },
   }),
 );
 
+// Rate limiter with proper IP extraction for proxied environments
 app.use(
   rateLimit({
-    windowMs: 15 * 60 * 1000,
-    max: 100,
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // Limit each IP to 100 requests per windowMs
+    standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+    legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+    // Trust proxy is already set, so req.ip will correctly use X-Forwarded-For
+    skip: (req) => {
+      // Optional: Skip rate limiting for health checks
+      return req.path === "/";
+    },
   }),
 );
 
