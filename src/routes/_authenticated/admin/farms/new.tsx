@@ -1,11 +1,12 @@
 import { useState } from 'react'
-import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import { Link, createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useForm } from '@mantine/form'
 import { zodResolver } from 'mantine-form-zod-resolver'
-import { Plus, XCircle } from 'lucide-react'
+import { ArrowLeft, Plus, XCircle } from 'lucide-react'
 import { toast } from 'sonner'
 
 import type { CreateFarmInput } from '@/api/farms/schema'
+import { Breadcrumbs } from '@/components/breadcrumbs'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -13,28 +14,29 @@ import { useCreateFarm } from '@/hooks'
 import { createFarmSchema } from '@/api/farms/schema'
 import { fileToBase64 } from '@/lib/file-utils'
 
-export const Route = createFileRoute('/_authenticated/admin/farm/new')({
+export const Route = createFileRoute('/_authenticated/admin/farms/new')({
   component: AddNewInvestment,
 })
 
 interface ImagePreview {
   id: number
   url: string
+  file: File
 }
 
 function AddNewInvestment() {
   const [images, setImages] = useState<Array<ImagePreview>>([])
-  const [imageFile, setImageFile] = useState<File | null>(null)
   const [isUploading, setIsUploading] = useState(false)
   const navigate = useNavigate()
   const createFarm = useCreateFarm()
 
   const form = useForm<CreateFarmInput>({
-    mode: 'uncontrolled',
     initialValues: {
       name: '',
       location: '',
-      image: '',
+      latitude: undefined,
+      longitude: undefined,
+      images: [],
       investmentGoal: 0,
       minimumInvestment: 0,
       roi: 0,
@@ -47,25 +49,23 @@ function AddNewInvestment() {
     if (!e.target.files || e.target.files.length === 0) return
     const files = Array.from(e.target.files)
 
-    // Store the first file for upload
-    if (!imageFile && files[0]) {
-      setImageFile(files[0])
-    }
+    const remaining = 5 - images.length
+    const filesToAdd = files.slice(0, remaining)
 
-    const newImgs = files.map((file, idx) => ({
+    const newImgs = filesToAdd.map((file, idx) => ({
       id: Date.now() + idx,
       url: URL.createObjectURL(file),
+      file,
     }))
-    setImages([...images, ...newImgs])
+    setImages((prev) => [...prev, ...newImgs])
   }
 
   function handleRemoveImage(id: number) {
     setImages((imgs) => imgs.filter((img) => img.id !== id))
-    setImageFile(null)
   }
 
   async function handleSubmit(values: CreateFarmInput) {
-    if (!imageFile) {
+    if (images.length === 0) {
       toast.error('Please upload at least one farm image')
       return
     }
@@ -73,13 +73,25 @@ function AddNewInvestment() {
     try {
       setIsUploading(true)
 
-      // Convert image to base64
-      const base64Image = await fileToBase64(imageFile)
+      // Convert all images to base64
+      const base64Images = await Promise.all(
+        images.map((img) => fileToBase64(img.file)),
+      )
 
-      // Create farm with base64 image
+      const { latitude, longitude, ...rest } = values
+
+      // Create farm with all images and optional coordinates
       await createFarm.mutateAsync({
-        ...values,
-        image: base64Image,
+        ...rest,
+        images: base64Images,
+        ...(latitude != null && longitude != null
+          ? {
+              coordinates: {
+                latitude: Number(latitude),
+                longitude: Number(longitude),
+              },
+            }
+          : {}),
       })
 
       toast.success('Farm opportunity created successfully!')
@@ -94,9 +106,27 @@ function AddNewInvestment() {
 
   return (
     <div className="max-w-5xl mx-auto py-12 animate-fade-in px-4 sm:px-8">
-      <h1 className="text-3xl sm:text-4xl font-bold mb-10 text-foreground tracking-tight">
-        Add New Investment Opportunity
-      </h1>
+      {/* Breadcrumbs */}
+      <Breadcrumbs
+        items={[
+          { label: 'Farms', href: '/admin/farms' },
+          { label: 'New Opportunity' },
+        ]}
+        className="mb-6"
+      />
+
+      {/* Header with Back Button */}
+      <div className="flex items-center gap-4 mb-10">
+        <Link
+          to="/admin/farms"
+          className="p-2 rounded-lg border border-border hover:bg-accent transition-colors"
+        >
+          <ArrowLeft className="w-5 h-5" />
+        </Link>
+        <h1 className="text-3xl sm:text-4xl font-bold text-foreground tracking-tight">
+          Add New Investment Opportunity
+        </h1>
+      </div>
       <form
         className="space-y-0 bg-white rounded-2xl border border-border shadow-sm"
         onSubmit={form.onSubmit(handleSubmit)}
@@ -117,7 +147,7 @@ function AddNewInvestment() {
                 </Label>
                 <Input
                   id="name"
-                  placeholder="Green Palm Trees Farm"
+                  placeholder="Enter farm name"
                   className="bg-accent"
                   required
                   key={form.key('name')}
@@ -138,7 +168,7 @@ function AddNewInvestment() {
                 </Label>
                 <Input
                   id="location"
-                  placeholder="Monrovia, Liberia"
+                  placeholder="Enter farm location"
                   className="bg-accent"
                   required
                   key={form.key('location')}
@@ -147,6 +177,66 @@ function AddNewInvestment() {
                 {form.errors.location && (
                   <p className="text-sm text-red-600 mt-1">
                     {form.errors.location}
+                  </p>
+                )}
+              </div>
+            </div>
+
+            {/* Coordinates */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+              <div>
+                <Label
+                  htmlFor="latitude"
+                  className="mb-2 block font-medium tracking-tight"
+                >
+                  Latitude{' '}
+                  <span className="text-xs font-normal text-muted-foreground">
+                    (optional)
+                  </span>
+                </Label>
+                <Input
+                  id="latitude"
+                  type="number"
+                  inputMode="decimal"
+                  step="any"
+                  min="-90"
+                  max="90"
+                  placeholder="e.g. 6.4281"
+                  className="bg-accent"
+                  key={form.key('latitude')}
+                  {...form.getInputProps('latitude')}
+                />
+                {form.errors.latitude && (
+                  <p className="text-sm text-red-600 mt-1">
+                    {form.errors.latitude}
+                  </p>
+                )}
+              </div>
+              <div>
+                <Label
+                  htmlFor="longitude"
+                  className="mb-2 block font-medium tracking-tight"
+                >
+                  Longitude{' '}
+                  <span className="text-xs font-normal text-muted-foreground">
+                    (optional)
+                  </span>
+                </Label>
+                <Input
+                  id="longitude"
+                  type="number"
+                  inputMode="decimal"
+                  step="any"
+                  min="-180"
+                  max="180"
+                  placeholder="e.g. -10.7957"
+                  className="bg-accent"
+                  key={form.key('longitude')}
+                  {...form.getInputProps('longitude')}
+                />
+                {form.errors.longitude && (
+                  <p className="text-sm text-red-600 mt-1">
+                    {form.errors.longitude}
                   </p>
                 )}
               </div>
@@ -171,7 +261,7 @@ function AddNewInvestment() {
                   type="number"
                   inputMode="decimal"
                   min="0"
-                  placeholder="50,000"
+                  placeholder="Enter target amount"
                   className="bg-accent"
                   required
                   key={form.key('investmentGoal')}
@@ -199,7 +289,7 @@ function AddNewInvestment() {
                   inputMode="decimal"
                   min="0"
                   max="100"
-                  placeholder="15"
+                  placeholder="Enter projected ROI"
                   className="bg-accent"
                   required
                   key={form.key('roi')}
@@ -224,7 +314,7 @@ function AddNewInvestment() {
                   type="number"
                   inputMode="decimal"
                   min="0"
-                  placeholder="6"
+                  placeholder="Enter duration in months"
                   className="bg-accent"
                   required
                   key={form.key('durationMonths')}
@@ -241,14 +331,14 @@ function AddNewInvestment() {
                   htmlFor="minimumInvestment"
                   className="mb-2 block font-medium tracking-tight"
                 >
-                  Min Investment
+                  Minimum Investment
                 </Label>
                 <Input
                   id="minimumInvestment"
                   type="number"
                   inputMode="decimal"
                   min="0"
-                  placeholder="100"
+                  placeholder="Enter minimum investment amount"
                   className="bg-accent"
                   required
                   key={form.key('minimumInvestment')}
@@ -310,8 +400,17 @@ function AddNewInvestment() {
             <p className="text-xs text-muted-foreground mt-2">Max 5 images.</p>
           </div>
 
-          {/* Submission Button */}
-          <div className="flex justify-end pt-6 border-t border-border">
+          {/* Submission Buttons */}
+          <div className="flex justify-end gap-3 pt-6 border-t border-border">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => navigate({ to: '/admin/farms' })}
+              disabled={isUploading || createFarm.isPending}
+              className="h-12 px-8 text-base font-semibold"
+            >
+              Cancel
+            </Button>
             <Button
               type="submit"
               disabled={isUploading || createFarm.isPending}

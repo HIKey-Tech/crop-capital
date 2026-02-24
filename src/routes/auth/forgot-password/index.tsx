@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { forgotPasswordSchema } from '@/api/auth/schema'
-import { forgotPassword } from '@/api/auth'
+import { authApi } from '@/lib/api-client'
 
 export const Route = createFileRoute('/auth/forgot-password/')({
   component: ForgotPasswordPage,
@@ -20,7 +20,6 @@ function ForgotPasswordPage() {
   const [isSubmitted, setIsSubmitted] = useState(false)
 
   const form = useForm({
-    mode: 'uncontrolled',
     initialValues: {
       email: '',
     },
@@ -28,7 +27,7 @@ function ForgotPasswordPage() {
   })
 
   const forgotPasswordMutation = useMutation({
-    mutationFn: (email: string) => forgotPassword(email),
+    mutationFn: (email: string) => authApi.forgotPassword(email),
     onSuccess: () => {
       toast.success('Password reset link sent to your email!')
       setIsSubmitted(true)

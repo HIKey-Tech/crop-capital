@@ -1,12 +1,29 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { Activity, Banknote, ListChecks, TrendingUp, Users } from 'lucide-react'
+import {
+  Activity,
+  Banknote,
+  CheckCircle,
+  Coins,
+  FileX2,
+  LandPlot,
+  ListChecks,
+  Pencil,
+  ShieldCheck,
+  ShieldX,
+  Trash2,
+  TrendingUp,
+  UserPlus,
+  Users,
+  XCircle,
+} from 'lucide-react'
 import type { ColumnDef } from '@tanstack/react-table'
+import type { LucideIcon } from 'lucide-react'
 
-import type { UserWithStats } from '@/types'
+import type { ActivityType, UserWithStats } from '@/types'
 
 import { StatsCard } from '@/components/dashboard/stats-card'
 import { DataTable } from '@/components/data-table'
-import { useFarms, useUserStats, useUsers } from '@/hooks'
+import { useActivities, useFarms, useUserStats, useUsers } from '@/hooks'
 import { formatDate } from '@/lib/format-date'
 
 export const Route = createFileRoute('/_authenticated/admin/reports')({
@@ -55,10 +72,14 @@ function AdminReportsPage() {
   const { data: usersData, isLoading: usersLoading } = useUsers()
   const { data: statsData, isLoading: statsLoading } = useUserStats()
   const { data: farmsData, isLoading: farmsLoading } = useFarms()
+  const { data: activityData, isLoading: activityLoading } = useActivities({
+    limit: 10,
+  })
 
   const users = usersData?.users ?? []
   const stats = statsData?.stats
   const farms = farmsData?.farms ?? []
+  const activities = activityData?.activities ?? []
 
   const isLoading = usersLoading || statsLoading || farmsLoading
 
@@ -74,14 +95,6 @@ function AdminReportsPage() {
   const opportunitiesCreated = farms.length
   // Platform revenue could be a percentage of total invested (e.g., 5%)
   const platformRevenue = Math.round(totalAmountInvested * 0.05)
-
-  // Recent activity - derive from farms and users data
-  const recentUsers = [...users]
-    .sort(
-      (a, b) =>
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-    )
-    .slice(0, 4)
 
   return (
     <div className="max-w-screen-2xl mx-auto px-4 mb-10 animate-fade-in space-y-8">
@@ -143,69 +156,124 @@ function AdminReportsPage() {
               Recent Activity
             </h2>
           </header>
-          {isLoading ? (
+          {activityLoading ? (
             <div className="p-6 text-center text-muted-foreground">
               Loading...
             </div>
           ) : (
-            <ul className="divide-y divide-border">
-              {recentUsers.length > 0 ? (
-                recentUsers.map((user, idx) => (
-                  <li
-                    key={user._id}
-                    className="px-6 py-4 flex items-start gap-4 group transition hover:bg-muted/30"
-                    style={{ animation: `slide-up 400ms ${idx * 40}ms both` }}
-                  >
-                    <span className="mt-1 shrink-0 rounded-full border border-border p-1.5 bg-primary/10">
-                      <Users className="w-4 h-4 text-primary" />
-                    </span>
-                    <div className="flex-1">
-                      <div className="text-xs text-muted-foreground mb-1">
-                        {formatDate(user.createdAt, { dateStyle: 'medium' })}
-                      </div>
-                      <div className="font-medium text-foreground">
-                        New Investor
-                      </div>
-                      <div className="text-sm text-muted-foreground">
-                        {user.name} joined the platform
-                      </div>
-                    </div>
+            <>
+              <ul className="divide-y divide-border">
+                {activities.length > 0 ? (
+                  activities.map((activity, idx) => {
+                    const style = activityStyles[activity.type]
+                    const Icon = style.icon
+                    return (
+                      <li
+                        key={activity._id}
+                        className="px-6 py-4 flex items-start gap-4 group transition hover:bg-muted/30"
+                        style={{
+                          animation: `slide-up 400ms ${idx * 40}ms both`,
+                        }}
+                      >
+                        <span
+                          className={`mt-1 shrink-0 rounded-full border border-border p-1.5 ${style.bg}`}
+                        >
+                          <Icon className={`w-4 h-4 ${style.color}`} />
+                        </span>
+                        <div className="flex-1">
+                          <div className="text-xs text-muted-foreground mb-1">
+                            {formatDate(activity.createdAt, {
+                              dateStyle: 'medium',
+                            })}
+                          </div>
+                          <div className="font-medium text-foreground">
+                            {activity.title}
+                          </div>
+                          <div className="text-sm text-muted-foreground">
+                            {activity.description}
+                          </div>
+                        </div>
+                      </li>
+                    )
+                  })
+                ) : (
+                  <li className="py-6 text-center text-muted-foreground">
+                    No activity to show.
                   </li>
-                ))
-              ) : (
-                <li className="py-6 text-center text-muted-foreground">
-                  No activity to show.
-                </li>
+                )}
+              </ul>
+              {(activityData?.pagination.pages ?? 0) > 1 && (
+                <div className="px-6 py-3 border-t border-border">
+                  <button className="text-sm text-primary hover:underline font-medium w-full text-center">
+                    View All Activity
+                  </button>
+                </div>
               )}
-
-              {farms.slice(0, 2).map((farm, idx) => (
-                <li
-                  key={farm._id}
-                  className="px-6 py-4 flex items-start gap-4 group transition hover:bg-muted/30"
-                  style={{
-                    animation: `slide-up 400ms ${(recentUsers.length + idx) * 40}ms both`,
-                  }}
-                >
-                  <span className="mt-1 shrink-0 rounded-full border border-border p-1.5 bg-green-100">
-                    <TrendingUp className="w-4 h-4 text-green-600" />
-                  </span>
-                  <div className="flex-1">
-                    <div className="text-xs text-muted-foreground mb-1">
-                      {formatDate(farm.createdAt, { dateStyle: 'medium' })}
-                    </div>
-                    <div className="font-medium text-foreground">
-                      New Opportunity
-                    </div>
-                    <div className="text-sm text-muted-foreground">
-                      {farm.name} was created
-                    </div>
-                  </div>
-                </li>
-              ))}
-            </ul>
+            </>
           )}
         </section>
       </div>
     </div>
   )
+}
+
+const activityStyles: Record<
+  ActivityType,
+  { icon: LucideIcon; bg: string; color: string }
+> = {
+  user_signup: {
+    icon: UserPlus,
+    bg: 'bg-primary/10',
+    color: 'text-primary',
+  },
+  farm_created: {
+    icon: LandPlot,
+    bg: 'bg-green-100',
+    color: 'text-green-600',
+  },
+  farm_updated: {
+    icon: Pencil,
+    bg: 'bg-blue-100',
+    color: 'text-blue-600',
+  },
+  farm_deleted: {
+    icon: Trash2,
+    bg: 'bg-red-100',
+    color: 'text-red-600',
+  },
+  investment_created: {
+    icon: Coins,
+    bg: 'bg-amber-100',
+    color: 'text-amber-600',
+  },
+  investment_completed: {
+    icon: CheckCircle,
+    bg: 'bg-green-100',
+    color: 'text-green-600',
+  },
+  investment_failed: {
+    icon: XCircle,
+    bg: 'bg-red-100',
+    color: 'text-red-600',
+  },
+  kyc_submitted: {
+    icon: FileX2,
+    bg: 'bg-blue-100',
+    color: 'text-blue-600',
+  },
+  kyc_approved: {
+    icon: ShieldCheck,
+    bg: 'bg-green-100',
+    color: 'text-green-600',
+  },
+  kyc_rejected: {
+    icon: ShieldX,
+    bg: 'bg-red-100',
+    color: 'text-red-600',
+  },
+  roi_paid: {
+    icon: TrendingUp,
+    bg: 'bg-emerald-100',
+    color: 'text-emerald-600',
+  },
 }

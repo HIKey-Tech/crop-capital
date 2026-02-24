@@ -1,5 +1,6 @@
-import { Link, useLocation } from '@tanstack/react-router'
+import { Link } from '@tanstack/react-router'
 import {
+  ArrowLeftRight,
   Bell,
   FileBarChart,
   FolderOpen,
@@ -8,14 +9,16 @@ import {
   Receipt,
   Search,
   Settings,
+  Shield,
   Users,
   Wallet,
   X,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { useViewMode } from '@/contexts/view-mode'
+import { NavLink } from '@/components/nav-link'
 
 interface SidebarProps {
-  userRole?: 'investor' | 'admin'
   isOpen?: boolean
   onClose?: () => void
 }
@@ -25,29 +28,26 @@ const investorNavItems = [
   { href: '/investments', label: 'My Investments', icon: FolderOpen },
   { href: '/wallet', label: 'Wallet', icon: Wallet },
   { href: '/transactions', label: 'Transactions', icon: Receipt },
-  { href: '/discover', label: 'Discover Farms', icon: Search },
+  { href: '/farms', label: 'Discover Farms', icon: Search },
   { href: '/news', label: 'News & Updates', icon: Newspaper },
   { href: '/notifications', label: 'Notifications', icon: Bell },
   { href: '/settings', label: 'Settings', icon: Settings },
 ]
 
 const adminNavItems = [
-  { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
+  { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/admin/farms', label: 'Farms', icon: FolderOpen },
   { href: '/admin/investors', label: 'Investors', icon: Users },
   { href: '/admin/transactions', label: 'Transactions', icon: Receipt },
   { href: '/admin/payouts', label: 'Payouts', icon: Wallet },
   { href: '/admin/kyc', label: 'KYC Review', icon: FileBarChart },
   { href: '/admin/reports', label: 'Reports', icon: FileBarChart },
+  { href: '/settings', label: 'Settings', icon: Settings },
 ]
 
-export function Sidebar({
-  userRole = 'investor',
-  isOpen,
-  onClose,
-}: SidebarProps) {
-  const location = useLocation()
-  const navItems = userRole === 'admin' ? adminNavItems : investorNavItems
+export function Sidebar({ isOpen, onClose }: SidebarProps) {
+  const { viewMode, isAdmin, toggleViewMode } = useViewMode()
+  const navItems = viewMode === 'admin' ? adminNavItems : investorNavItems
 
   return (
     <>
@@ -61,7 +61,7 @@ export function Sidebar({
 
       <aside
         className={cn(
-          'fixed left-0 top-0 z-50 h-full w-55 bg-sidebar border-r border-sidebar-border flex flex-col transition-transform duration-300 lg:translate-x-0',
+          'fixed left-0 top-0 z-50 h-full w-55 bg-background border-r border-sidebar-border flex flex-col transition-transform duration-300 lg:translate-x-0 lg:bg-sidebar',
           isOpen ? 'translate-x-0' : '-translate-x-full',
         )}
       >
@@ -95,21 +95,46 @@ export function Sidebar({
         <nav className="flex-1 px-3 py-4 space-y-1">
           {navItems.map((item) => {
             const Icon = item.icon
-            const isActive = location.pathname === item.href
 
             return (
-              <Link
+              <NavLink
                 key={item.href}
                 to={item.href}
                 onClick={onClose}
-                className={cn('nav-link', isActive && 'active')}
+                className="nav-link"
+                activeClassName="active"
               >
                 <Icon className="w-5 h-5" />
                 <span>{item.label}</span>
-              </Link>
+              </NavLink>
             )
           })}
         </nav>
+
+        {/* View Mode Toggle (admin only) */}
+        {isAdmin && (
+          <div className="px-3 pb-2">
+            <button
+              onClick={toggleViewMode}
+              className={cn(
+                'flex items-center gap-2 w-full px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
+                'hover:bg-muted text-muted-foreground',
+              )}
+            >
+              {viewMode === 'admin' ? (
+                <>
+                  <ArrowLeftRight className="w-4 h-4" />
+                  <span>Switch to Investor</span>
+                </>
+              ) : (
+                <>
+                  <Shield className="w-4 h-4" />
+                  <span>Switch to Admin</span>
+                </>
+              )}
+            </button>
+          </div>
+        )}
 
         {/* Footer */}
         <div className="px-5 py-4 border-t border-sidebar-border">

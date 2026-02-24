@@ -6,7 +6,7 @@ import { zodResolver } from 'mantine-form-zod-resolver'
 import { useState } from 'react'
 import { toast } from 'sonner'
 
-import { resetPassword } from '@/api/auth'
+import { authApi } from '@/lib/api-client'
 import { resetPasswordSchema } from '@/api/auth/schema'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -29,7 +29,6 @@ function ResetPasswordPage() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
   const form = useForm({
-    mode: 'uncontrolled',
     initialValues: {
       password: '',
       confirmPassword: '',
@@ -38,7 +37,7 @@ function ResetPasswordPage() {
   })
 
   const resetPasswordMutation = useMutation({
-    mutationFn: (password: string) => resetPassword(token, password),
+    mutationFn: (password: string) => authApi.resetPassword(token, password),
     onSuccess: () => {
       toast.success('Password reset successfully!')
       setIsSuccess(true)

@@ -3,7 +3,17 @@ import { z } from 'zod'
 export const createFarmSchema = z.object({
   name: z.string().min(1, 'Farm name is required'),
   location: z.string().min(1, 'Location is required'),
-  image: z.url('Must be a valid URL'),
+  latitude: z
+    .union([z.string(), z.number()])
+    .transform(Number)
+    .pipe(z.number().min(-90).max(90))
+    .optional(),
+  longitude: z
+    .union([z.string(), z.number()])
+    .transform(Number)
+    .pipe(z.number().min(-180).max(180))
+    .optional(),
+  images: z.array(z.string()).min(1, 'At least one farm image is required'),
   investmentGoal: z.number().min(1, 'Investment goal must be at least 1'),
   minimumInvestment: z.number().min(1, 'Minimum investment must be at least 1'),
   roi: z

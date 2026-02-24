@@ -1,4 +1,5 @@
 import type {
+  ActivitiesListResponse,
   AuthResponse,
   CreateFarmRequest,
   FarmResponse,
@@ -7,6 +8,12 @@ import type {
   InvestmentDetailResponse,
   InvestmentResponse,
   InvestmentsListResponse,
+  KycDetailResponse,
+  KycListResponse,
+  KycMyResponse,
+  KycReviewResponse,
+  KycSubmitRequest,
+  KycSubmitResponse,
   LoginRequest,
   RegisterRequest,
   UserDetailResponse,
@@ -49,9 +56,28 @@ export function setRefreshToken(token: string): void {
   localStorage.setItem('refreshToken', token)
 }
 
+// View mode management (sessionStorage - resets each session for security)
+export type ViewMode = 'admin' | 'investor'
+
+export function getViewMode(): ViewMode | null {
+  if (typeof window === 'undefined') return null
+  const stored = sessionStorage.getItem('viewMode')
+  return stored === 'admin' || stored === 'investor' ? stored : null
+}
+
+export function setViewMode(mode: ViewMode): void {
+  sessionStorage.setItem('viewMode', mode)
+}
+
+export function clearViewMode(): void {
+  sessionStorage.removeItem('viewMode')
+}
+
+// Clear all auth state (tokens + view mode)
 export function clearAuthToken(): void {
   localStorage.removeItem('token')
   localStorage.removeItem('refreshToken')
+  clearViewMode()
 }
 
 export async function request<T>(
@@ -142,6 +168,26 @@ export const authApi = {
       {
         method: 'PATCH',
         body: JSON.stringify(data),
+      },
+    )
+  },
+
+  forgotPassword: async (email: string) => {
+    return request<{ success: boolean; message: string }>(
+      '/auth/forgot-password',
+      {
+        method: 'POST',
+        body: JSON.stringify({ email }),
+      },
+    )
+  },
+
+  resetPassword: async (token: string, password: string) => {
+    return request<{ success: boolean; message: string }>(
+      '/auth/reset-password',
+      {
+        method: 'POST',
+        body: JSON.stringify({ token, password }),
       },
     )
   },
@@ -276,6 +322,67 @@ export const usersApi = {
       {
         method: 'PATCH',
       },
+    )
+  },
+}
+
+// KYC API
+export const kycApi = {
+  // Investor
+  getMyKyc: async (): Promise<KycMyResponse> => {
+    return request<KycMyResponse>('/kyc/me')
+  },
+
+  submit: async (data: KycSubmitRequest): Promise<KycSubmitResponse> => {
+    return request<KycSubmitResponse>('/kyc/submit', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    })
+  },
+
+  resubmit: async (data: KycSubmitRequest): Promise<KycSubmitResponse> => {
+    return request<KycSubmitResponse>('/kyc/resubmit', {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    })
+  },
+
+  // Admin
+  getAll: async (status?: string): Promise<KycListResponse> => {
+    const query = status ? `?status=${status}` : ''
+    return request<KycListResponse>(`/kyc${query}`)
+  },
+
+  getById: async (id: string): Promise<KycDetailResponse> => {
+    return request<KycDetailResponse>(`/kyc/${id}`)
+  },
+
+  approve: async (id: string): Promise<KycReviewResponse> => {
+    return request<KycReviewResponse>(`/kyc/${id}/approve`, {
+      method: 'PATCH',
+    })
+  },
+
+  reject: async (id: string, reason: string): Promise<KycReviewResponse> => {
+    return request<KycReviewResponse>(`/kyc/${id}/reject`, {
+      method: 'PATCH',
+      body: JSON.stringify({ reason }),
+    })
+  },
+}
+
+// Activities API
+export const activitiesApi = {
+  getAll: async (
+    params: { page?: number; limit?: number; type?: string } = {},
+  ): Promise<ActivitiesListResponse> => {
+    const searchParams = new URLSearchParams()
+    if (params.page) searchParams.set('page', String(params.page))
+    if (params.limit) searchParams.set('limit', String(params.limit))
+    if (params.type) searchParams.set('type', params.type)
+    const query = searchParams.toString()
+    return request<ActivitiesListResponse>(
+      `/activities${query ? `?${query}` : ''}`,
     )
   },
 }

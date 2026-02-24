@@ -5,9 +5,10 @@ import {
   redirect,
 } from '@tanstack/react-router'
 import { useState } from 'react'
-import { getAuthToken } from '@/lib/api-client'
+import { clearAuthToken, getAuthToken } from '@/lib/api-client'
 import { Sidebar } from '@/components/layout/sidebar'
 import { Header } from '@/components/layout/header'
+import { ViewModeProvider } from '@/contexts/view-mode'
 import { api } from '@/lib/api-builder'
 
 export const Route = createFileRoute('/_authenticated')({
@@ -30,14 +31,21 @@ export const Route = createFileRoute('/_authenticated')({
         queryFn: () => api.$use.auth.me(),
         staleTime: 1000 * 60 * 5, // 5 minutes
       })
-      return { user: response.user }
+
+      const user = response.user
+
+      // Redirect to dashboard if accessing root
+      if (location.pathname === '/') {
+        throw redirect({ to: '/dashboard' })
+      }
+
+      return { user }
     } catch (error) {
       // Re-throw redirects (they're intentional, not errors)
       if (isRedirect(error)) throw error
 
       // Auth check failed (network error, token invalid, etc.) - redirect to login
-      localStorage.removeItem('token')
-      localStorage.removeItem('refreshToken')
+      clearAuthToken()
       throw redirect({
         to: '/auth/sign-in',
         search: {
@@ -52,22 +60,19 @@ export const Route = createFileRoute('/_authenticated')({
 export function AuthenticatedLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const { user } = Route.useRouteContext()
-  const userRole = user.role
 
   return (
-    <div className="min-h-screen bg-background">
-      <Sidebar
-        userRole={userRole}
-        isOpen={sidebarOpen}
-        onClose={() => setSidebarOpen(false)}
-      />
+    <ViewModeProvider userRole={user.role}>
+      <div className="min-h-screen bg-background">
+        <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
-      <div className="lg:pl-55">
-        <Header onMenuClick={() => setSidebarOpen(true)} />
-        <main className="p-6">
-          <Outlet />
-        </main>
+        <div className="lg:pl-55">
+          <Header onMenuClick={() => setSidebarOpen(true)} />
+          <main className="p-6">
+            <Outlet />
+          </main>
+        </div>
       </div>
-    </div>
+    </ViewModeProvider>
   )
 }

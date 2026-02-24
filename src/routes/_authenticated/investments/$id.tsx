@@ -122,7 +122,7 @@ function InvestmentDetailsPage() {
           </div>
         </div>
         <Button variant="outline" className="w-full sm:w-auto" asChild>
-          <Link to="/farm/$id" params={{ id: farm._id }}>
+          <Link to="/farms/$id" params={{ id: farm._id }}>
             View Farm Details
           </Link>
         </Button>
@@ -354,13 +354,13 @@ function InvestmentDetailsPage() {
         <div className="space-y-6">
           <div className="bg-card border rounded-xl overflow-hidden">
             <img
-              src={farm.image}
+              src={farm.images[0]}
               alt={farm.name}
               className="h-48 w-full object-cover"
             />
             <div className="p-5">
               <Link
-                to="/farm/$id"
+                to="/farms/$id"
                 params={{ id: farm._id }}
                 className="hover:underline"
               >

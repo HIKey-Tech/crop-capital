@@ -24,13 +24,13 @@ export const Route = createFileRoute('/auth/sign-up/')({
 })
 
 function SignUpPage() {
-  const { mutateAsync: register, isPending } = useRegister()
+  const { mutate: register, isPending } = useRegister()
   const navigate = useNavigate()
+
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
   const form = useForm({
-    mode: 'uncontrolled',
     initialValues: {
       name: '',
       email: '',
@@ -41,20 +41,24 @@ function SignUpPage() {
     validate: zodResolver(registerSchema),
   })
 
-  const handleSubmit = form.onSubmit(async (values) => {
-    try {
-      await register({
+  const handleSubmit = form.onSubmit((values) => {
+    register(
+      {
         name: values.name,
         email: values.email,
         password: values.password,
         country: values.country,
-      })
-      toast.success('Account created successfully!')
-      navigate({ to: '/dashboard' })
-    } catch (error) {
-      const message = error instanceof Error ? error.message : 'Sign up failed'
-      toast.error(message)
-    }
+      },
+      {
+        onSuccess: () => {
+          toast.success('Account created successfully!')
+          navigate({ to: '/dashboard' })
+        },
+        onError: (error: Error) => {
+          toast.error(error.message || 'Failed to create account')
+        },
+      },
+    )
   })
 
   return (

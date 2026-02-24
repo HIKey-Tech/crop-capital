@@ -81,7 +81,7 @@ function LandingPage() {
                   <ArrowRight className="w-5 h-5 ml-2" />
                 </Button>
               </Link>
-              <Link to="/discover">
+              <Link to="/farms">
                 <Button
                   size="lg"
                   variant="outline"

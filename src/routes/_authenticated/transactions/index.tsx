@@ -216,11 +216,13 @@ function TransactionsPage() {
               Your investment transactions will appear here
             </p>
             <Button asChild>
-              <Link to="/discover">Explore Farms</Link>
+              <Link to="/farms">Explore Farms</Link>
             </Button>
           </div>
         ) : (
-          <DataTable columns={columns} data={filteredData} />
+          <div className="p-4">
+            <DataTable columns={columns} data={filteredData} />
+          </div>
         )}
       </div>
     </div>

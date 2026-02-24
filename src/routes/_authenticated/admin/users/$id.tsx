@@ -211,12 +211,14 @@ function UserDetailsPage() {
           <h3 className="font-semibold">Investment History</h3>
         </div>
         {investmentRows.length > 0 ? (
-          <DataTable
-            columns={columns}
-            data={investmentRows}
-            pageSize={10}
-            enableSearch={false}
-          />
+          <div className="p-4">
+            <DataTable
+              columns={columns}
+              data={investmentRows}
+              pageSize={10}
+              enableSearch={false}
+            />
+          </div>
         ) : (
           <div className="flex flex-col items-center justify-center py-12">
             <p className="text-muted-foreground">

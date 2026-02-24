@@ -4,7 +4,7 @@ import {
   createFileRoute,
   useLocation,
 } from '@tanstack/react-router'
-import { Bell, Shield, User } from 'lucide-react'
+import { Bell, FileCheck, Shield, User } from 'lucide-react'
 
 export const Route = createFileRoute('/_authenticated/settings')({
   component: SettingsLayout,
@@ -17,6 +17,7 @@ function SettingsLayout() {
     { to: '/settings', label: 'Profile', icon: User },
     { to: '/settings/security', label: 'Security', icon: Shield },
     { to: '/settings/notifications', label: 'Notifications', icon: Bell },
+    { to: '/settings/verification', label: 'Verification', icon: FileCheck },
   ]
 
   return (

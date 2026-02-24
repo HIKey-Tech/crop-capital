@@ -191,7 +191,7 @@ function WalletPage() {
           </p>
         </div>
         <Button asChild className="bg-primary hover:bg-primary/90">
-          <Link to="/discover">
+          <Link to="/farms">
             <TrendingUp className="h-4 w-4 mr-2" /> Invest Now
           </Link>
         </Button>
@@ -250,11 +250,13 @@ function WalletPage() {
                 Start investing to see your transaction history
               </p>
               <Button asChild>
-                <Link to="/discover">Explore Farms</Link>
+                <Link to="/farms">Explore Farms</Link>
               </Button>
             </div>
           ) : (
-            <DataTable columns={columns} data={transactions.slice(0, 5)} />
+            <div className="p-4">
+              <DataTable columns={columns} data={transactions.slice(0, 5)} />
+            </div>
           )}
         </div>
       </div>

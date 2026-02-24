@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import type { LoginRequest, RegisterRequest } from '@/types'
 import { api } from '@/lib/api-builder'
+import { clearAuthToken } from '@/lib/api-client'
 
 export function useCurrentUser() {
   return useQuery({
@@ -39,8 +40,7 @@ export function useLogout() {
 
   return useMutation({
     mutationFn: async () => {
-      localStorage.removeItem('token')
-      localStorage.removeItem('refreshToken')
+      clearAuthToken()
       return Promise.resolve()
     },
     onSuccess: () => {

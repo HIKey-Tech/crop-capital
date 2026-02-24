@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { Link, createFileRoute } from '@tanstack/react-router'
 
 import { Sprout } from 'lucide-react'
 import { EmptyState } from '@/components/ui/empty-state'
@@ -19,9 +19,9 @@ function NewsPage() {
         id: `${farm._id}-${update.date}`,
         farmId: farm._id,
         farmName: farm.name,
-        farmImage: farm.image,
+        farmImage: farm.images[0],
         stage: update.stage,
-        image: update.image || farm.image,
+        image: update.image || farm.images[0],
         date: update.date,
       })),
     )
@@ -55,28 +55,34 @@ function NewsPage() {
       {updates.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {updates.map((update, index) => (
-            <article
+            <Link
               key={update.id}
-              className="card-elevated rounded-xl overflow-hidden border border-border animate-slide-up"
-              style={{ animationDelay: `${index * 100}ms` }}
+              to="/farms/$id"
+              params={{ id: update.farmId }}
+              className="block"
             >
-              <img
-                src={update.image}
-                alt={update.farmName}
-                className="w-full h-40 object-cover"
-              />
-              <div className="p-4">
-                <p className="text-sm text-muted-foreground mb-2">
-                  {formatDate(update.date)}
-                </p>
-                <h3 className="font-semibold text-foreground mb-2 line-clamp-2">
-                  {update.farmName}: {update.stage}
-                </h3>
-                <p className="text-sm text-muted-foreground">
-                  Farm update for {update.farmName}
-                </p>
-              </div>
-            </article>
+              <article
+                className="card-elevated rounded-xl overflow-hidden border border-border animate-slide-up hover:shadow-md transition-shadow cursor-pointer"
+                style={{ animationDelay: `${index * 100}ms` }}
+              >
+                <img
+                  src={update.image}
+                  alt={update.farmName}
+                  className="w-full h-40 object-cover"
+                />
+                <div className="p-4">
+                  <p className="text-sm text-muted-foreground mb-2">
+                    {formatDate(update.date)}
+                  </p>
+                  <h3 className="font-semibold text-foreground mb-2 line-clamp-2">
+                    {update.farmName}: {update.stage}
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    Farm update for {update.farmName}
+                  </p>
+                </div>
+              </article>
+            </Link>
           ))}
         </div>
       ) : (

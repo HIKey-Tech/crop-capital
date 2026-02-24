@@ -34,3 +34,10 @@ export function calculateProjectedROI(
 ): number {
   return amount + (amount * roiPercent) / 100
 }
+
+/**
+ * Get the array of all images for a farm
+ */
+export function getFarmImages(farm: Farm): Array<string> {
+  return farm.images
+}

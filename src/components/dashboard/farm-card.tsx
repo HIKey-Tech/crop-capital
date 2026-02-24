@@ -64,7 +64,7 @@ export function FarmCard({ farm, variant = 'default' }: FarmCardProps) {
       <div className="card-elevated rounded-xl overflow-hidden border border-border">
         <div className="flex items-center gap-4 p-4">
           <img
-            src={farm.image}
+            src={farm.images[0]}
             alt={farm.name}
             className="w-16 h-16 rounded-lg object-cover"
           />
@@ -86,7 +86,7 @@ export function FarmCard({ farm, variant = 'default' }: FarmCardProps) {
     <div className="card-elevated rounded-xl overflow-hidden border border-border bg-white transition-shadow duration-300 group h-full flex flex-col">
       <div className="relative aspect-16/10 overflow-hidden">
         <img
-          src={farm.image}
+          src={farm.images[0]}
           alt={farm.name}
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
@@ -122,7 +122,7 @@ export function FarmCard({ farm, variant = 'default' }: FarmCardProps) {
         </div>
 
         <div className="flex gap-3 mt-5">
-          <Link to="/farm/$id" params={{ id: farm._id }} className="w-1/2">
+          <Link to="/farms/$id" params={{ id: farm._id }} className="w-1/2">
             <Button
               className="w-full h-11 border-2 border-[#39A86B] text-[#218641] font-semibold bg-white rounded-lg transition-colors hover:bg-accent focus:outline-none text-base"
               type="button"
@@ -134,7 +134,7 @@ export function FarmCard({ farm, variant = 'default' }: FarmCardProps) {
             </Button>
           </Link>
           <Link
-            to="/farm/$id"
+            to="/farms/$id"
             params={{ id: farm._id }}
             search={{ invest: true }}
             className="w-1/2"

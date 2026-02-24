@@ -54,7 +54,7 @@ function InvestmentDetail({ icon: Icon, label, value }: InvestmentDetailProps) {
   )
 }
 
-export const Route = createFileRoute('/_authenticated/farm/$id')({
+export const Route = createFileRoute('/_authenticated/farms/$id/')({
   validateSearch: z.object({ invest: z.boolean().optional() }),
   component: FarmDetailsPage,
 })

@@ -1,12 +1,11 @@
-import { Link, createFileRoute } from '@tanstack/react-router'
-import { DollarSign, Plus, Users } from 'lucide-react'
+import { createFileRoute } from '@tanstack/react-router'
+import { DollarSign, Users } from 'lucide-react'
 import type { ColumnDef } from '@tanstack/react-table'
 
 import type { UserWithStats } from '@/types'
 
 import { StatsCard } from '@/components/dashboard/stats-card'
 import { DataTable } from '@/components/data-table'
-import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { useUserStats, useUsers } from '@/hooks'
 import { formatDate } from '@/lib/format-date'
@@ -136,22 +135,15 @@ function AdminInvestorPage() {
         />
       </div>
 
-      <div className="flex justify-end">
-        <Link to="/admin/investors">
-          <Button className="flex items-center px-5 h-11 rounded-lg font-semibold bg-primary text-primary-foreground hover:bg-primary/90 transition-colors">
-            <Plus className="w-5 h-5 mr-2" />
-            <span>Add New Investor</span>
-          </Button>
-        </Link>
+      <div className="p-4">
+        <DataTable
+          columns={columns}
+          data={investors}
+          loading={usersLoading || statsLoading}
+          searchPlaceholder="Search by name or email..."
+          pageSize={10}
+        />
       </div>
-
-      <DataTable
-        columns={columns}
-        data={investors}
-        loading={usersLoading || statsLoading}
-        searchPlaceholder="Search by name or email..."
-        pageSize={10}
-      />
     </div>
   )
 }

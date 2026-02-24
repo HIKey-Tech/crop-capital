@@ -109,7 +109,7 @@ function NotificationsPage() {
             className="py-12"
           >
             <Button asChild className="mt-4">
-              <Link to="/discover">Start Investing</Link>
+              <Link to="/farms">Start Investing</Link>
             </Button>
           </EmptyState>
         )}

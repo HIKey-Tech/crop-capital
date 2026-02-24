@@ -14,8 +14,12 @@ export interface Farm {
   _id: string
   name: string
   location: string
-  image: string
-  imagePublicId: string
+  coordinates?: {
+    latitude: number
+    longitude: number
+  }
+  images: Array<string>
+  imagePublicIds: Array<string>
   investmentGoal: number
   minimumInvestment: number
   roi: number
@@ -111,7 +115,11 @@ export interface InvestRequest {
 export interface CreateFarmRequest {
   name: string
   location: string
-  image: string
+  coordinates?: {
+    latitude: number
+    longitude: number
+  }
+  images: Array<string>
   investmentGoal: number
   minimumInvestment: number
   roi: number
@@ -153,5 +161,100 @@ export interface UserStatsResponse {
     verifiedUsers: number
     totalVolume: number
     activeInvestors: number
+  }
+}
+
+// KYC types
+export type KycDocumentType = 'passport' | 'national_id' | 'drivers_license'
+export type KycStatus = 'pending' | 'approved' | 'rejected'
+
+export interface KycSubmission {
+  _id: string
+  user: string | Pick<User, '_id' | 'name' | 'email' | 'country' | 'photo'>
+  documentType: KycDocumentType
+  documentImage: string
+  selfieImage?: string
+  status: KycStatus
+  rejectionReason?: string
+  reviewedBy?: Pick<User, '_id' | 'name' | 'email'>
+  reviewedAt?: string
+  createdAt: string
+  updatedAt: string
+}
+
+export interface KycMyResponse {
+  success: boolean
+  kyc: KycSubmission | null
+}
+
+export interface KycSubmitResponse {
+  success: boolean
+  message: string
+  kyc: Pick<KycSubmission, '_id' | 'documentType' | 'status' | 'createdAt'>
+}
+
+export interface KycListResponse {
+  success: boolean
+  stats: {
+    pending: number
+    approved: number
+    rejected: number
+    total: number
+  }
+  submissions: Array<KycSubmission>
+}
+
+export interface KycDetailResponse {
+  success: boolean
+  kyc: KycSubmission
+}
+
+export interface KycReviewResponse {
+  success: boolean
+  message: string
+  kyc: Pick<KycSubmission, '_id' | 'status' | 'rejectionReason' | 'reviewedAt'>
+}
+
+export interface KycSubmitRequest {
+  documentType: KycDocumentType
+  documentImage: string
+  selfieImage?: string
+}
+
+// Activity types
+export type ActivityType =
+  | 'user_signup'
+  | 'farm_created'
+  | 'farm_updated'
+  | 'farm_deleted'
+  | 'investment_created'
+  | 'investment_completed'
+  | 'investment_failed'
+  | 'kyc_submitted'
+  | 'kyc_approved'
+  | 'kyc_rejected'
+  | 'roi_paid'
+
+export interface Activity {
+  _id: string
+  type: ActivityType
+  title: string
+  description: string
+  actor?: Pick<User, '_id' | 'name' | 'email' | 'photo'>
+  resourceId?: string
+  resourceType?: 'Farm' | 'Investment' | 'User' | 'KycDocument'
+  metadata?: Record<string, unknown>
+  createdAt: string
+  updatedAt: string
+}
+
+export interface ActivitiesListResponse {
+  success: boolean
+  activities: Array<Activity>
+  pagination: {
+    page: number
+    limit: number
+    total: number
+    pages: number
   }
 }

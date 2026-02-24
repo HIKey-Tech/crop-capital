@@ -201,11 +201,13 @@ function PayoutsPage() {
           <h3 className="font-semibold">All Payouts</h3>
         </div>
         {payoutRows.length > 0 ? (
-          <DataTable
-            columns={columns}
-            data={payoutRows}
-            searchPlaceholder="Search investor or farm..."
-          />
+          <div className="p-4">
+            <DataTable
+              columns={columns}
+              data={payoutRows}
+              searchPlaceholder="Search investor or farm..."
+            />
+          </div>
         ) : (
           <div className="flex flex-col items-center justify-center py-12">
             <DollarSign className="h-12 w-12 text-muted-foreground/30 mb-4" />

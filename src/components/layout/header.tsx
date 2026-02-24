@@ -1,5 +1,6 @@
 import { Bell, Menu, User } from 'lucide-react'
-import { Link, useRouteContext } from '@tanstack/react-router'
+import { Link, useNavigate, useRouteContext } from '@tanstack/react-router'
+import { toast } from 'sonner'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -9,7 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { useNotifications } from '@/hooks'
+import { useLogout, useNotifications } from '@/hooks'
 
 interface HeaderProps {
   onMenuClick?: () => void
@@ -18,12 +19,24 @@ interface HeaderProps {
 export function Header({ onMenuClick }: HeaderProps) {
   const { user } = useRouteContext({ from: '/_authenticated' })
   const { notifications, unreadCount } = useNotifications()
+  const { mutate: logout } = useLogout()
+
+  const navigate = useNavigate()
 
   // Get the 2 most recent notifications for the dropdown
   const recentNotifications = notifications.slice(0, 2)
 
   // Extract first name from full name
   const firstName = user.name.split(' ')[0] || 'User'
+
+  const handleLogout = () => {
+    logout(undefined, {
+      onSuccess: () => {
+        navigate({ to: '/auth/sign-in' })
+        toast.success('Signed out successfully')
+      },
+    })
+  }
 
   return (
     <header className="h-16 bg-card border-b border-border flex items-center justify-between px-6">
@@ -92,20 +105,23 @@ export function Header({ onMenuClick }: HeaderProps) {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-48">
             <DropdownMenuItem asChild>
-              <Link to="/settings/profile" className="w-full">
+              <Link to="/settings" className="w-full">
                 Profile Settings
               </Link>
             </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link to="/admin" className="w-full">
-                Admin Dashboard
-              </Link>
-            </DropdownMenuItem>
+            {user.role === 'admin' && (
+              <DropdownMenuItem asChild>
+                <Link to="/admin" className="w-full">
+                  Admin Dashboard
+                </Link>
+              </DropdownMenuItem>
+            )}
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-destructive" asChild>
-              <Link to="/auth/sign-in" className="w-full">
-                Sign Out
-              </Link>
+            <DropdownMenuItem
+              className="text-destructive cursor-pointer"
+              onClick={handleLogout}
+            >
+              Sign Out
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

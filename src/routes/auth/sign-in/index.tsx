@@ -16,12 +16,12 @@ export const Route = createFileRoute('/auth/sign-in/')({
 })
 
 function SignInPage() {
-  const { mutateAsync: login, isPending } = useLogin()
+  const { mutate: login, isPending } = useLogin()
   const navigate = useNavigate()
+
   const [showPassword, setShowPassword] = useState(false)
 
   const form = useForm({
-    mode: 'uncontrolled',
     initialValues: {
       email: '',
       password: '',
@@ -29,15 +29,21 @@ function SignInPage() {
     validate: zodResolver(loginSchema),
   })
 
-  const handleSubmit = form.onSubmit(async (values) => {
-    try {
-      await login(values)
-      toast.success('Welcome back!')
-      navigate({ to: '/dashboard' })
-    } catch (error) {
-      const message = error instanceof Error ? error.message : 'Sign in failed'
-      toast.error(message)
-    }
+  const handleSubmit = form.onSubmit((values) => {
+    login(values, {
+      onSuccess: () => {
+        toast.success('Welcome back!', {
+          style: {
+            background: 'hsl(var(--popover))',
+            opacity: 1,
+          },
+        })
+        navigate({ to: '/dashboard' })
+      },
+      onError: (error: Error) => {
+        toast.error(error.message || 'Failed to sign in')
+      },
+    })
   })
 
   return (

@@ -55,7 +55,7 @@ function MyInvestmentsPage() {
           </p>
         </div>
         <Button asChild className="bg-green-600 hover:bg-green-700">
-          <Link to="/discover">Browse Farms</Link>
+          <Link to="/farms">Browse Farms</Link>
         </Button>
       </div>
 
@@ -86,7 +86,7 @@ function MyInvestmentsPage() {
               description="You don't have any active farm investments at the moment. Start growing your portfolio today!"
               action={
                 <Button asChild className="btn-primary-gradient">
-                  <Link to="/discover">
+                  <Link to="/farms">
                     Explore Farms
                     <ArrowRight className="w-4 h-4 ml-2" />
                   </Link>
@@ -137,7 +137,7 @@ function MyInvestmentsPage() {
               description="Save farms you're interested in to your watchlist for easy access later."
               action={
                 <Button asChild className="btn-primary-gradient">
-                  <Link to="/discover">
+                  <Link to="/farms">
                     Browse Farms
                     <ArrowRight className="w-4 h-4 ml-2" />
                   </Link>

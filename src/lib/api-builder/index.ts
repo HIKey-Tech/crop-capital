@@ -2,10 +2,18 @@ import { createBuilder } from '@ibnlanre/builder'
 import type {
   CreateFarmRequest,
   InvestRequest,
+  KycSubmitRequest,
   LoginRequest,
   RegisterRequest,
 } from '@/types'
-import { authApi, farmsApi, investmentsApi, usersApi } from '@/lib/api-client'
+import {
+  activitiesApi,
+  authApi,
+  farmsApi,
+  investmentsApi,
+  kycApi,
+  usersApi,
+} from '@/lib/api-client'
 import { watchlistApi } from '@/api/watchlist'
 
 export const api = createBuilder({
@@ -51,5 +59,18 @@ export const api = createBuilder({
     list: () => watchlistApi.getWatchlist(),
     add: (farmId: string) => watchlistApi.addToWatchlist(farmId),
     remove: (farmId: string) => watchlistApi.removeFromWatchlist(farmId),
+  },
+  kyc: {
+    me: () => kycApi.getMyKyc(),
+    submit: (data: KycSubmitRequest) => kycApi.submit(data),
+    resubmit: (data: KycSubmitRequest) => kycApi.resubmit(data),
+    list: (status?: string) => kycApi.getAll(status),
+    detail: (id: string) => kycApi.getById(id),
+    approve: (id: string) => kycApi.approve(id),
+    reject: (id: string, reason: string) => kycApi.reject(id, reason),
+  },
+  activities: {
+    list: (params?: { page?: number; limit?: number; type?: string }) =>
+      activitiesApi.getAll(params),
   },
 })

@@ -11,11 +11,11 @@ import { useFarms } from '@/hooks'
 import { FarmCard } from '@/components/dashboard/farm-card'
 import { LoadingSpinner } from '@/components/ui/loading'
 
-export const Route = createFileRoute('/_authenticated/discover/')({
-  component: DiscoverPage,
+export const Route = createFileRoute('/_authenticated/farms/')({
+  component: FarmsPage,
 })
 
-function DiscoverPage() {
+function FarmsPage() {
   const { data, isLoading, error } = useFarms()
   const [search, setSearch] = useState('')
   const [roiFilter, setRoiFilter] = useState<'all' | 'high' | 'medium'>('all')

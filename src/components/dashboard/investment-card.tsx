@@ -81,7 +81,7 @@ export function InvestmentCard({ investment }: InvestmentCardProps) {
     <div className="rounded-xl overflow-hidden border border-border bg-white transition-shadow duration-300 group">
       <div className="relative aspect-16/10 overflow-hidden">
         <img
-          src={farm.image}
+          src={farm.images[0]}
           alt={farm.name}
           className="w-full h-full object-cover"
         />

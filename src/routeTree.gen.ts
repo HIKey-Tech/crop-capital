@@ -30,9 +30,10 @@ import { Route as AuthenticatedTransactionsIndexRouteImport } from './routes/_au
 import { Route as AuthenticatedSettingsIndexRouteImport } from './routes/_authenticated/settings/index'
 import { Route as AuthenticatedNotificationsIndexRouteImport } from './routes/_authenticated/notifications/index'
 import { Route as AuthenticatedInvestmentsIndexRouteImport } from './routes/_authenticated/investments/index'
-import { Route as AuthenticatedDiscoverIndexRouteImport } from './routes/_authenticated/discover/index'
+import { Route as AuthenticatedFarmsIndexRouteImport } from './routes/_authenticated/farms/index'
 import { Route as AuthenticatedDashboardIndexRouteImport } from './routes/_authenticated/dashboard/index'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
+import { Route as AuthenticatedSettingsVerificationRouteImport } from './routes/_authenticated/settings/verification'
 import { Route as AuthenticatedSettingsSecurityRouteImport } from './routes/_authenticated/settings/security'
 import { Route as AuthenticatedSettingsNotificationsRouteImport } from './routes/_authenticated/settings/notifications'
 import { Route as AuthenticatedPaymentCallbackRouteImport } from './routes/_authenticated/payment/callback'
@@ -43,12 +44,13 @@ import { Route as AuthenticatedAdminReportsRouteImport } from './routes/_authent
 import { Route as AuthenticatedAdminPayoutsRouteImport } from './routes/_authenticated/admin/payouts'
 import { Route as AuthenticatedAdminKycRouteImport } from './routes/_authenticated/admin/kyc'
 import { Route as AuthenticatedAdminInvestorsRouteImport } from './routes/_authenticated/admin/investors'
-import { Route as AuthenticatedAdminFarmsRouteImport } from './routes/_authenticated/admin/farms'
+import { Route as AuthenticatedFarmsIdIndexRouteImport } from './routes/_authenticated/farms/$id/index'
+import { Route as AuthenticatedAdminFarmsIndexRouteImport } from './routes/_authenticated/admin/farms/index'
 import { Route as AuthenticatedFarmsIdInvestRouteImport } from './routes/_authenticated/farms/$id/invest'
 import { Route as AuthenticatedAdminUsersIdRouteImport } from './routes/_authenticated/admin/users/$id'
-import { Route as AuthenticatedAdminFarmNewRouteImport } from './routes/_authenticated/admin/farm.new'
-import { Route as AuthenticatedAdminFarmsIdEditRouteImport } from './routes/_authenticated/admin/farms.$id.edit'
-import { Route as AuthenticatedAdminFarmsIdAnalyticsRouteImport } from './routes/_authenticated/admin/farms.$id.analytics'
+import { Route as AuthenticatedAdminFarmsNewRouteImport } from './routes/_authenticated/admin/farms/new'
+import { Route as AuthenticatedAdminFarmsIdEditRouteImport } from './routes/_authenticated/admin/farms/$id/edit'
+import { Route as AuthenticatedAdminFarmsIdAnalyticsRouteImport } from './routes/_authenticated/admin/farms/$id/analytics'
 
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
@@ -160,12 +162,11 @@ const AuthenticatedInvestmentsIndexRoute =
     path: '/investments/',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
-const AuthenticatedDiscoverIndexRoute =
-  AuthenticatedDiscoverIndexRouteImport.update({
-    id: '/discover/',
-    path: '/discover/',
-    getParentRoute: () => AuthenticatedRouteRoute,
-  } as any)
+const AuthenticatedFarmsIndexRoute = AuthenticatedFarmsIndexRouteImport.update({
+  id: '/farms/',
+  path: '/farms/',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedDashboardIndexRoute =
   AuthenticatedDashboardIndexRouteImport.update({
     id: '/dashboard/',
@@ -177,6 +178,12 @@ const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AuthenticatedAdminRoute,
 } as any)
+const AuthenticatedSettingsVerificationRoute =
+  AuthenticatedSettingsVerificationRouteImport.update({
+    id: '/verification',
+    path: '/verification',
+    getParentRoute: () => AuthenticatedSettingsRouteRoute,
+  } as any)
 const AuthenticatedSettingsSecurityRoute =
   AuthenticatedSettingsSecurityRouteImport.update({
     id: '/security',
@@ -235,11 +242,18 @@ const AuthenticatedAdminInvestorsRoute =
     path: '/investors',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
-const AuthenticatedAdminFarmsRoute = AuthenticatedAdminFarmsRouteImport.update({
-  id: '/farms',
-  path: '/farms',
-  getParentRoute: () => AuthenticatedAdminRoute,
-} as any)
+const AuthenticatedFarmsIdIndexRoute =
+  AuthenticatedFarmsIdIndexRouteImport.update({
+    id: '/farms/$id/',
+    path: '/farms/$id/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedAdminFarmsIndexRoute =
+  AuthenticatedAdminFarmsIndexRouteImport.update({
+    id: '/farms/',
+    path: '/farms/',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedFarmsIdInvestRoute =
   AuthenticatedFarmsIdInvestRouteImport.update({
     id: '/farms/$id/invest',
@@ -252,23 +266,23 @@ const AuthenticatedAdminUsersIdRoute =
     path: '/users/$id',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
-const AuthenticatedAdminFarmNewRoute =
-  AuthenticatedAdminFarmNewRouteImport.update({
-    id: '/farm/new',
-    path: '/farm/new',
+const AuthenticatedAdminFarmsNewRoute =
+  AuthenticatedAdminFarmsNewRouteImport.update({
+    id: '/farms/new',
+    path: '/farms/new',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
 const AuthenticatedAdminFarmsIdEditRoute =
   AuthenticatedAdminFarmsIdEditRouteImport.update({
-    id: '/$id/edit',
-    path: '/$id/edit',
-    getParentRoute: () => AuthenticatedAdminFarmsRoute,
+    id: '/farms/$id/edit',
+    path: '/farms/$id/edit',
+    getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
 const AuthenticatedAdminFarmsIdAnalyticsRoute =
   AuthenticatedAdminFarmsIdAnalyticsRouteImport.update({
-    id: '/$id/analytics',
-    path: '/$id/analytics',
-    getParentRoute: () => AuthenticatedAdminFarmsRoute,
+    id: '/farms/$id/analytics',
+    path: '/farms/$id/analytics',
+    getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -283,7 +297,6 @@ export interface FileRoutesByFullPath {
   '/news': typeof AuthenticatedNewsRoute
   '/auth/verify-email': typeof AuthVerifyEmailRoute
   '/auth/': typeof AuthIndexRoute
-  '/admin/farms': typeof AuthenticatedAdminFarmsRouteWithChildren
   '/admin/investors': typeof AuthenticatedAdminInvestorsRoute
   '/admin/kyc': typeof AuthenticatedAdminKycRoute
   '/admin/payouts': typeof AuthenticatedAdminPayoutsRoute
@@ -294,9 +307,10 @@ export interface FileRoutesByFullPath {
   '/payment/callback': typeof AuthenticatedPaymentCallbackRoute
   '/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
   '/settings/security': typeof AuthenticatedSettingsSecurityRoute
+  '/settings/verification': typeof AuthenticatedSettingsVerificationRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/dashboard/': typeof AuthenticatedDashboardIndexRoute
-  '/discover/': typeof AuthenticatedDiscoverIndexRoute
+  '/farms/': typeof AuthenticatedFarmsIndexRoute
   '/investments/': typeof AuthenticatedInvestmentsIndexRoute
   '/notifications/': typeof AuthenticatedNotificationsIndexRoute
   '/settings/': typeof AuthenticatedSettingsIndexRoute
@@ -306,9 +320,11 @@ export interface FileRoutesByFullPath {
   '/auth/reset-password/': typeof AuthResetPasswordIndexRoute
   '/auth/sign-in/': typeof AuthSignInIndexRoute
   '/auth/sign-up/': typeof AuthSignUpIndexRoute
-  '/admin/farm/new': typeof AuthenticatedAdminFarmNewRoute
+  '/admin/farms/new': typeof AuthenticatedAdminFarmsNewRoute
   '/admin/users/$id': typeof AuthenticatedAdminUsersIdRoute
   '/farms/$id/invest': typeof AuthenticatedFarmsIdInvestRoute
+  '/admin/farms/': typeof AuthenticatedAdminFarmsIndexRoute
+  '/farms/$id/': typeof AuthenticatedFarmsIdIndexRoute
   '/admin/farms/$id/analytics': typeof AuthenticatedAdminFarmsIdAnalyticsRoute
   '/admin/farms/$id/edit': typeof AuthenticatedAdminFarmsIdEditRoute
 }
@@ -321,7 +337,6 @@ export interface FileRoutesByTo {
   '/news': typeof AuthenticatedNewsRoute
   '/auth/verify-email': typeof AuthVerifyEmailRoute
   '/auth': typeof AuthIndexRoute
-  '/admin/farms': typeof AuthenticatedAdminFarmsRouteWithChildren
   '/admin/investors': typeof AuthenticatedAdminInvestorsRoute
   '/admin/kyc': typeof AuthenticatedAdminKycRoute
   '/admin/payouts': typeof AuthenticatedAdminPayoutsRoute
@@ -332,9 +347,10 @@ export interface FileRoutesByTo {
   '/payment/callback': typeof AuthenticatedPaymentCallbackRoute
   '/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
   '/settings/security': typeof AuthenticatedSettingsSecurityRoute
+  '/settings/verification': typeof AuthenticatedSettingsVerificationRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/dashboard': typeof AuthenticatedDashboardIndexRoute
-  '/discover': typeof AuthenticatedDiscoverIndexRoute
+  '/farms': typeof AuthenticatedFarmsIndexRoute
   '/investments': typeof AuthenticatedInvestmentsIndexRoute
   '/notifications': typeof AuthenticatedNotificationsIndexRoute
   '/settings': typeof AuthenticatedSettingsIndexRoute
@@ -344,9 +360,11 @@ export interface FileRoutesByTo {
   '/auth/reset-password': typeof AuthResetPasswordIndexRoute
   '/auth/sign-in': typeof AuthSignInIndexRoute
   '/auth/sign-up': typeof AuthSignUpIndexRoute
-  '/admin/farm/new': typeof AuthenticatedAdminFarmNewRoute
+  '/admin/farms/new': typeof AuthenticatedAdminFarmsNewRoute
   '/admin/users/$id': typeof AuthenticatedAdminUsersIdRoute
   '/farms/$id/invest': typeof AuthenticatedFarmsIdInvestRoute
+  '/admin/farms': typeof AuthenticatedAdminFarmsIndexRoute
+  '/farms/$id': typeof AuthenticatedFarmsIdIndexRoute
   '/admin/farms/$id/analytics': typeof AuthenticatedAdminFarmsIdAnalyticsRoute
   '/admin/farms/$id/edit': typeof AuthenticatedAdminFarmsIdEditRoute
 }
@@ -364,7 +382,6 @@ export interface FileRoutesById {
   '/_authenticated/news': typeof AuthenticatedNewsRoute
   '/auth/verify-email': typeof AuthVerifyEmailRoute
   '/auth/': typeof AuthIndexRoute
-  '/_authenticated/admin/farms': typeof AuthenticatedAdminFarmsRouteWithChildren
   '/_authenticated/admin/investors': typeof AuthenticatedAdminInvestorsRoute
   '/_authenticated/admin/kyc': typeof AuthenticatedAdminKycRoute
   '/_authenticated/admin/payouts': typeof AuthenticatedAdminPayoutsRoute
@@ -375,9 +392,10 @@ export interface FileRoutesById {
   '/_authenticated/payment/callback': typeof AuthenticatedPaymentCallbackRoute
   '/_authenticated/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
   '/_authenticated/settings/security': typeof AuthenticatedSettingsSecurityRoute
+  '/_authenticated/settings/verification': typeof AuthenticatedSettingsVerificationRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/_authenticated/dashboard/': typeof AuthenticatedDashboardIndexRoute
-  '/_authenticated/discover/': typeof AuthenticatedDiscoverIndexRoute
+  '/_authenticated/farms/': typeof AuthenticatedFarmsIndexRoute
   '/_authenticated/investments/': typeof AuthenticatedInvestmentsIndexRoute
   '/_authenticated/notifications/': typeof AuthenticatedNotificationsIndexRoute
   '/_authenticated/settings/': typeof AuthenticatedSettingsIndexRoute
@@ -387,9 +405,11 @@ export interface FileRoutesById {
   '/auth/reset-password/': typeof AuthResetPasswordIndexRoute
   '/auth/sign-in/': typeof AuthSignInIndexRoute
   '/auth/sign-up/': typeof AuthSignUpIndexRoute
-  '/_authenticated/admin/farm/new': typeof AuthenticatedAdminFarmNewRoute
+  '/_authenticated/admin/farms/new': typeof AuthenticatedAdminFarmsNewRoute
   '/_authenticated/admin/users/$id': typeof AuthenticatedAdminUsersIdRoute
   '/_authenticated/farms/$id/invest': typeof AuthenticatedFarmsIdInvestRoute
+  '/_authenticated/admin/farms/': typeof AuthenticatedAdminFarmsIndexRoute
+  '/_authenticated/farms/$id/': typeof AuthenticatedFarmsIdIndexRoute
   '/_authenticated/admin/farms/$id/analytics': typeof AuthenticatedAdminFarmsIdAnalyticsRoute
   '/_authenticated/admin/farms/$id/edit': typeof AuthenticatedAdminFarmsIdEditRoute
 }
@@ -407,7 +427,6 @@ export interface FileRouteTypes {
     | '/news'
     | '/auth/verify-email'
     | '/auth/'
-    | '/admin/farms'
     | '/admin/investors'
     | '/admin/kyc'
     | '/admin/payouts'
@@ -418,9 +437,10 @@ export interface FileRouteTypes {
     | '/payment/callback'
     | '/settings/notifications'
     | '/settings/security'
+    | '/settings/verification'
     | '/admin/'
     | '/dashboard/'
-    | '/discover/'
+    | '/farms/'
     | '/investments/'
     | '/notifications/'
     | '/settings/'
@@ -430,9 +450,11 @@ export interface FileRouteTypes {
     | '/auth/reset-password/'
     | '/auth/sign-in/'
     | '/auth/sign-up/'
-    | '/admin/farm/new'
+    | '/admin/farms/new'
     | '/admin/users/$id'
     | '/farms/$id/invest'
+    | '/admin/farms/'
+    | '/farms/$id/'
     | '/admin/farms/$id/analytics'
     | '/admin/farms/$id/edit'
   fileRoutesByTo: FileRoutesByTo
@@ -445,7 +467,6 @@ export interface FileRouteTypes {
     | '/news'
     | '/auth/verify-email'
     | '/auth'
-    | '/admin/farms'
     | '/admin/investors'
     | '/admin/kyc'
     | '/admin/payouts'
@@ -456,9 +477,10 @@ export interface FileRouteTypes {
     | '/payment/callback'
     | '/settings/notifications'
     | '/settings/security'
+    | '/settings/verification'
     | '/admin'
     | '/dashboard'
-    | '/discover'
+    | '/farms'
     | '/investments'
     | '/notifications'
     | '/settings'
@@ -468,9 +490,11 @@ export interface FileRouteTypes {
     | '/auth/reset-password'
     | '/auth/sign-in'
     | '/auth/sign-up'
-    | '/admin/farm/new'
+    | '/admin/farms/new'
     | '/admin/users/$id'
     | '/farms/$id/invest'
+    | '/admin/farms'
+    | '/farms/$id'
     | '/admin/farms/$id/analytics'
     | '/admin/farms/$id/edit'
   id:
@@ -487,7 +511,6 @@ export interface FileRouteTypes {
     | '/_authenticated/news'
     | '/auth/verify-email'
     | '/auth/'
-    | '/_authenticated/admin/farms'
     | '/_authenticated/admin/investors'
     | '/_authenticated/admin/kyc'
     | '/_authenticated/admin/payouts'
@@ -498,9 +521,10 @@ export interface FileRouteTypes {
     | '/_authenticated/payment/callback'
     | '/_authenticated/settings/notifications'
     | '/_authenticated/settings/security'
+    | '/_authenticated/settings/verification'
     | '/_authenticated/admin/'
     | '/_authenticated/dashboard/'
-    | '/_authenticated/discover/'
+    | '/_authenticated/farms/'
     | '/_authenticated/investments/'
     | '/_authenticated/notifications/'
     | '/_authenticated/settings/'
@@ -510,9 +534,11 @@ export interface FileRouteTypes {
     | '/auth/reset-password/'
     | '/auth/sign-in/'
     | '/auth/sign-up/'
-    | '/_authenticated/admin/farm/new'
+    | '/_authenticated/admin/farms/new'
     | '/_authenticated/admin/users/$id'
     | '/_authenticated/farms/$id/invest'
+    | '/_authenticated/admin/farms/'
+    | '/_authenticated/farms/$id/'
     | '/_authenticated/admin/farms/$id/analytics'
     | '/_authenticated/admin/farms/$id/edit'
   fileRoutesById: FileRoutesById
@@ -676,11 +702,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedInvestmentsIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/discover/': {
-      id: '/_authenticated/discover/'
-      path: '/discover'
-      fullPath: '/discover/'
-      preLoaderRoute: typeof AuthenticatedDiscoverIndexRouteImport
+    '/_authenticated/farms/': {
+      id: '/_authenticated/farms/'
+      path: '/farms'
+      fullPath: '/farms/'
+      preLoaderRoute: typeof AuthenticatedFarmsIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/dashboard/': {
@@ -696,6 +722,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/'
       preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/settings/verification': {
+      id: '/_authenticated/settings/verification'
+      path: '/verification'
+      fullPath: '/settings/verification'
+      preLoaderRoute: typeof AuthenticatedSettingsVerificationRouteImport
+      parentRoute: typeof AuthenticatedSettingsRouteRoute
     }
     '/_authenticated/settings/security': {
       id: '/_authenticated/settings/security'
@@ -767,11 +800,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminInvestorsRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
-    '/_authenticated/admin/farms': {
-      id: '/_authenticated/admin/farms'
+    '/_authenticated/farms/$id/': {
+      id: '/_authenticated/farms/$id/'
+      path: '/farms/$id'
+      fullPath: '/farms/$id/'
+      preLoaderRoute: typeof AuthenticatedFarmsIdIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/admin/farms/': {
+      id: '/_authenticated/admin/farms/'
       path: '/farms'
-      fullPath: '/admin/farms'
-      preLoaderRoute: typeof AuthenticatedAdminFarmsRouteImport
+      fullPath: '/admin/farms/'
+      preLoaderRoute: typeof AuthenticatedAdminFarmsIndexRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
     '/_authenticated/farms/$id/invest': {
@@ -788,26 +828,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminUsersIdRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
-    '/_authenticated/admin/farm/new': {
-      id: '/_authenticated/admin/farm/new'
-      path: '/farm/new'
-      fullPath: '/admin/farm/new'
-      preLoaderRoute: typeof AuthenticatedAdminFarmNewRouteImport
+    '/_authenticated/admin/farms/new': {
+      id: '/_authenticated/admin/farms/new'
+      path: '/farms/new'
+      fullPath: '/admin/farms/new'
+      preLoaderRoute: typeof AuthenticatedAdminFarmsNewRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
     '/_authenticated/admin/farms/$id/edit': {
       id: '/_authenticated/admin/farms/$id/edit'
-      path: '/$id/edit'
+      path: '/farms/$id/edit'
       fullPath: '/admin/farms/$id/edit'
       preLoaderRoute: typeof AuthenticatedAdminFarmsIdEditRouteImport
-      parentRoute: typeof AuthenticatedAdminFarmsRoute
+      parentRoute: typeof AuthenticatedAdminRoute
     }
     '/_authenticated/admin/farms/$id/analytics': {
       id: '/_authenticated/admin/farms/$id/analytics'
-      path: '/$id/analytics'
+      path: '/farms/$id/analytics'
       fullPath: '/admin/farms/$id/analytics'
       preLoaderRoute: typeof AuthenticatedAdminFarmsIdAnalyticsRouteImport
-      parentRoute: typeof AuthenticatedAdminFarmsRoute
+      parentRoute: typeof AuthenticatedAdminRoute
     }
   }
 }
@@ -815,6 +855,7 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedSettingsRouteRouteChildren {
   AuthenticatedSettingsNotificationsRoute: typeof AuthenticatedSettingsNotificationsRoute
   AuthenticatedSettingsSecurityRoute: typeof AuthenticatedSettingsSecurityRoute
+  AuthenticatedSettingsVerificationRoute: typeof AuthenticatedSettingsVerificationRoute
   AuthenticatedSettingsIndexRoute: typeof AuthenticatedSettingsIndexRoute
 }
 
@@ -823,6 +864,8 @@ const AuthenticatedSettingsRouteRouteChildren: AuthenticatedSettingsRouteRouteCh
     AuthenticatedSettingsNotificationsRoute:
       AuthenticatedSettingsNotificationsRoute,
     AuthenticatedSettingsSecurityRoute: AuthenticatedSettingsSecurityRoute,
+    AuthenticatedSettingsVerificationRoute:
+      AuthenticatedSettingsVerificationRoute,
     AuthenticatedSettingsIndexRoute: AuthenticatedSettingsIndexRoute,
   }
 
@@ -831,45 +874,33 @@ const AuthenticatedSettingsRouteRouteWithChildren =
     AuthenticatedSettingsRouteRouteChildren,
   )
 
-interface AuthenticatedAdminFarmsRouteChildren {
-  AuthenticatedAdminFarmsIdAnalyticsRoute: typeof AuthenticatedAdminFarmsIdAnalyticsRoute
-  AuthenticatedAdminFarmsIdEditRoute: typeof AuthenticatedAdminFarmsIdEditRoute
-}
-
-const AuthenticatedAdminFarmsRouteChildren: AuthenticatedAdminFarmsRouteChildren =
-  {
-    AuthenticatedAdminFarmsIdAnalyticsRoute:
-      AuthenticatedAdminFarmsIdAnalyticsRoute,
-    AuthenticatedAdminFarmsIdEditRoute: AuthenticatedAdminFarmsIdEditRoute,
-  }
-
-const AuthenticatedAdminFarmsRouteWithChildren =
-  AuthenticatedAdminFarmsRoute._addFileChildren(
-    AuthenticatedAdminFarmsRouteChildren,
-  )
-
 interface AuthenticatedAdminRouteChildren {
-  AuthenticatedAdminFarmsRoute: typeof AuthenticatedAdminFarmsRouteWithChildren
   AuthenticatedAdminInvestorsRoute: typeof AuthenticatedAdminInvestorsRoute
   AuthenticatedAdminKycRoute: typeof AuthenticatedAdminKycRoute
   AuthenticatedAdminPayoutsRoute: typeof AuthenticatedAdminPayoutsRoute
   AuthenticatedAdminReportsRoute: typeof AuthenticatedAdminReportsRoute
   AuthenticatedAdminTransactionsRoute: typeof AuthenticatedAdminTransactionsRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
-  AuthenticatedAdminFarmNewRoute: typeof AuthenticatedAdminFarmNewRoute
+  AuthenticatedAdminFarmsNewRoute: typeof AuthenticatedAdminFarmsNewRoute
   AuthenticatedAdminUsersIdRoute: typeof AuthenticatedAdminUsersIdRoute
+  AuthenticatedAdminFarmsIndexRoute: typeof AuthenticatedAdminFarmsIndexRoute
+  AuthenticatedAdminFarmsIdAnalyticsRoute: typeof AuthenticatedAdminFarmsIdAnalyticsRoute
+  AuthenticatedAdminFarmsIdEditRoute: typeof AuthenticatedAdminFarmsIdEditRoute
 }
 
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
-  AuthenticatedAdminFarmsRoute: AuthenticatedAdminFarmsRouteWithChildren,
   AuthenticatedAdminInvestorsRoute: AuthenticatedAdminInvestorsRoute,
   AuthenticatedAdminKycRoute: AuthenticatedAdminKycRoute,
   AuthenticatedAdminPayoutsRoute: AuthenticatedAdminPayoutsRoute,
   AuthenticatedAdminReportsRoute: AuthenticatedAdminReportsRoute,
   AuthenticatedAdminTransactionsRoute: AuthenticatedAdminTransactionsRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
-  AuthenticatedAdminFarmNewRoute: AuthenticatedAdminFarmNewRoute,
+  AuthenticatedAdminFarmsNewRoute: AuthenticatedAdminFarmsNewRoute,
   AuthenticatedAdminUsersIdRoute: AuthenticatedAdminUsersIdRoute,
+  AuthenticatedAdminFarmsIndexRoute: AuthenticatedAdminFarmsIndexRoute,
+  AuthenticatedAdminFarmsIdAnalyticsRoute:
+    AuthenticatedAdminFarmsIdAnalyticsRoute,
+  AuthenticatedAdminFarmsIdEditRoute: AuthenticatedAdminFarmsIdEditRoute,
 }
 
 const AuthenticatedAdminRouteWithChildren =
@@ -883,12 +914,13 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedInvestmentsIdRoute: typeof AuthenticatedInvestmentsIdRoute
   AuthenticatedPaymentCallbackRoute: typeof AuthenticatedPaymentCallbackRoute
   AuthenticatedDashboardIndexRoute: typeof AuthenticatedDashboardIndexRoute
-  AuthenticatedDiscoverIndexRoute: typeof AuthenticatedDiscoverIndexRoute
+  AuthenticatedFarmsIndexRoute: typeof AuthenticatedFarmsIndexRoute
   AuthenticatedInvestmentsIndexRoute: typeof AuthenticatedInvestmentsIndexRoute
   AuthenticatedNotificationsIndexRoute: typeof AuthenticatedNotificationsIndexRoute
   AuthenticatedTransactionsIndexRoute: typeof AuthenticatedTransactionsIndexRoute
   AuthenticatedWalletIndexRoute: typeof AuthenticatedWalletIndexRoute
   AuthenticatedFarmsIdInvestRoute: typeof AuthenticatedFarmsIdInvestRoute
+  AuthenticatedFarmsIdIndexRoute: typeof AuthenticatedFarmsIdIndexRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -899,12 +931,13 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedInvestmentsIdRoute: AuthenticatedInvestmentsIdRoute,
   AuthenticatedPaymentCallbackRoute: AuthenticatedPaymentCallbackRoute,
   AuthenticatedDashboardIndexRoute: AuthenticatedDashboardIndexRoute,
-  AuthenticatedDiscoverIndexRoute: AuthenticatedDiscoverIndexRoute,
+  AuthenticatedFarmsIndexRoute: AuthenticatedFarmsIndexRoute,
   AuthenticatedInvestmentsIndexRoute: AuthenticatedInvestmentsIndexRoute,
   AuthenticatedNotificationsIndexRoute: AuthenticatedNotificationsIndexRoute,
   AuthenticatedTransactionsIndexRoute: AuthenticatedTransactionsIndexRoute,
   AuthenticatedWalletIndexRoute: AuthenticatedWalletIndexRoute,
   AuthenticatedFarmsIdInvestRoute: AuthenticatedFarmsIdInvestRoute,
+  AuthenticatedFarmsIdIndexRoute: AuthenticatedFarmsIdIndexRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =

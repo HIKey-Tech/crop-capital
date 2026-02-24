@@ -89,7 +89,7 @@ function PaymentCallbackPage() {
             </Button>
             <Button
               variant="outline"
-              onClick={() => navigate({ to: '/discover' })}
+              onClick={() => navigate({ to: '/farms' })}
             >
               Explore More Farms
             </Button>
@@ -112,7 +112,7 @@ function PaymentCallbackPage() {
         </p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <Button
-            onClick={() => navigate({ to: '/discover' })}
+            onClick={() => navigate({ to: '/farms' })}
             className="btn-primary-gradient"
           >
             Try Again

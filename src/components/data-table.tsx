@@ -97,7 +97,7 @@ export function DataTable<TData, TValue>({
   }
 
   return (
-    <div className="space-y-4 p-4">
+    <div className="space-y-4">
       {/* Toolbar */}
       {(enableSearch || enableColumnVisibility) && (
         <div className="flex items-center justify-between">
