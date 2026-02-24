@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { AppError } from "@/utils/AppError";
 import { Farm } from "./farm.model";
 import { uploadImage, deleteImage } from "@/utils/cloudinary";
+import { logActivity } from "@/modules/activities/activity.service";
 
 // Admin: create farm
 export const createFarm = async (
@@ -10,21 +11,31 @@ export const createFarm = async (
   next: NextFunction,
 ) => {
   try {
-    const { image, ...farmData } = req.body;
+    const { images, ...farmData } = req.body;
 
-    // Validate image is provided
-    if (!image) {
-      return next(new AppError("Farm image is required", 400));
+    if (!images?.length) {
+      return next(new AppError("At least one farm image is required", 400));
     }
 
-    // Upload image to Cloudinary
-    const { url, publicId } = await uploadImage(image, "farms");
+    // Upload all images to Cloudinary
+    const uploadResults = await Promise.all(
+      images.map((img: string) => uploadImage(img, "farms")),
+    );
 
-    // Create farm with image URL and publicId
     const farm = await Farm.create({
       ...farmData,
-      image: url,
-      imagePublicId: publicId,
+      images: uploadResults.map((r) => r.url),
+      imagePublicIds: uploadResults.map((r) => r.publicId),
+    });
+
+    logActivity({
+      type: "farm_created",
+      title: "New Opportunity",
+      description: `${farm.name} was created`,
+      actor: req.user?._id,
+      resourceId: farm._id,
+      resourceType: "Farm",
+      metadata: { farmName: farm.name, investmentGoal: farm.investmentGoal },
     });
 
     res.status(201).json({ success: true, farm });
@@ -40,26 +51,42 @@ export const updateFarm = async (
   next: NextFunction,
 ) => {
   try {
-    const { image, ...farmData } = req.body;
+    const { images, ...farmData } = req.body;
 
     const farm = await Farm.findById(req.params.id);
     if (!farm) return next(new AppError("Farm not found", 404));
 
-    // If a new image is provided, upload it and delete the old one
-    if (image && image !== farm.image) {
-      // Delete old image from Cloudinary
-      if (farm.imagePublicId) {
-        await deleteImage(farm.imagePublicId);
+    // Handle images update
+    if (images?.length) {
+      // Delete all old images from Cloudinary
+      if (farm.imagePublicIds?.length) {
+        await Promise.all(
+          farm.imagePublicIds.map((pid: string) => deleteImage(pid)),
+        );
       }
 
-      // Upload new image
-      const { url, publicId } = await uploadImage(image, "farms");
-      farmData.image = url;
-      farmData.imagePublicId = publicId;
+      // Upload all new images
+      const uploadResults = await Promise.all(
+        images.map((img: string) => uploadImage(img, "farms")),
+      );
+
+      farmData.images = uploadResults.map((r: { url: string }) => r.url);
+      farmData.imagePublicIds = uploadResults.map(
+        (r: { publicId: string }) => r.publicId,
+      );
     }
 
     const updatedFarm = await Farm.findByIdAndUpdate(req.params.id, farmData, {
       new: true,
+    });
+
+    logActivity({
+      type: "farm_updated",
+      title: "Opportunity Updated",
+      description: `${updatedFarm?.name ?? farm.name} was updated`,
+      actor: req.user?._id,
+      resourceId: farm._id,
+      resourceType: "Farm",
     });
 
     res.json({ success: true, farm: updatedFarm });
@@ -78,12 +105,25 @@ export const deleteFarm = async (
     const farm = await Farm.findById(req.params.id);
     if (!farm) return next(new AppError("Farm not found", 404));
 
-    // Delete image from Cloudinary
-    if (farm.imagePublicId) {
-      await deleteImage(farm.imagePublicId);
+    // Delete all images from Cloudinary
+    if (farm.imagePublicIds?.length) {
+      await Promise.all(
+        farm.imagePublicIds.map((pid: string) => deleteImage(pid)),
+      );
     }
 
     await Farm.findByIdAndDelete(req.params.id);
+
+    logActivity({
+      type: "farm_deleted",
+      title: "Opportunity Deleted",
+      description: `${farm.name} was deleted`,
+      actor: req.user?._id,
+      resourceId: farm._id,
+      resourceType: "Farm",
+      metadata: { farmName: farm.name },
+    });
+
     res.json({ success: true, message: "Farm deleted" });
   } catch (err: any) {
     next(new AppError(err.message, 400));

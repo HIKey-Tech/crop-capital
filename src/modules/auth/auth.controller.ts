@@ -10,6 +10,7 @@ import {
   updateUserPassword,
 } from "./auth.service";
 import { AppError } from "@/utils/AppError";
+import { logActivity } from "@/modules/activities/activity.service";
 
 export const signup = async (
   req: Request,
@@ -22,6 +23,17 @@ export const signup = async (
     const user = await signupUser(name, email, password, country);
     const token = createToken(user.id, user.role);
     const refreshToken = createRefreshToken(user.id);
+
+    logActivity({
+      type: "user_signup",
+      title: "New Investor",
+      description: `${user.name} joined the platform`,
+      actor: user._id,
+      resourceId: user._id,
+      resourceType: "User",
+      metadata: { email: user.email, country },
+    });
+
     res.status(201).json({ success: true, token, refreshToken, user });
   } catch (err: any) {
     next(new AppError(err.message, 400));

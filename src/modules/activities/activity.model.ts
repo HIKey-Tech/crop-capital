@@ -1,0 +1,68 @@
+import mongoose, { Schema, Document } from "mongoose";
+
+export type ActivityType =
+  | "user_signup"
+  | "farm_created"
+  | "farm_updated"
+  | "farm_deleted"
+  | "investment_created"
+  | "investment_completed"
+  | "investment_failed"
+  | "kyc_submitted"
+  | "kyc_approved"
+  | "kyc_rejected"
+  | "roi_paid";
+
+export interface IActivity extends Document {
+  type: ActivityType;
+  title: string;
+  description: string;
+  /** The user who triggered or is the subject of the activity */
+  actor?: mongoose.Types.ObjectId;
+  /** Optional related resource (farm, investment, etc.) */
+  resourceId?: mongoose.Types.ObjectId;
+  resourceType?: "Farm" | "Investment" | "User" | "KycDocument";
+  /** Arbitrary extra data (amounts, names, etc.) */
+  metadata?: Record<string, unknown>;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+const ActivitySchema = new Schema<IActivity>(
+  {
+    type: {
+      type: String,
+      required: true,
+      enum: [
+        "user_signup",
+        "farm_created",
+        "farm_updated",
+        "farm_deleted",
+        "investment_created",
+        "investment_completed",
+        "investment_failed",
+        "kyc_submitted",
+        "kyc_approved",
+        "kyc_rejected",
+        "roi_paid",
+      ],
+      index: true,
+    },
+    title: { type: String, required: true },
+    description: { type: String, required: true },
+    actor: { type: Schema.Types.ObjectId, ref: "User", index: true },
+    resourceId: { type: Schema.Types.ObjectId },
+    resourceType: {
+      type: String,
+      enum: ["Farm", "Investment", "User", "KycDocument"],
+    },
+    metadata: { type: Schema.Types.Mixed },
+  },
+  { timestamps: true },
+);
+
+// Compound index for efficient querying: newest first, filterable by type
+ActivitySchema.index({ createdAt: -1 });
+ActivitySchema.index({ type: 1, createdAt: -1 });
+
+export const Activity = mongoose.model<IActivity>("Activity", ActivitySchema);

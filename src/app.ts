@@ -7,6 +7,8 @@ import authRoutes from "./modules/auth/auth.routes";
 import farmRoutes from "./modules/farms/farm.routes";
 import investmentRoutes from "./modules/investments/investment.routes";
 import userRoutes from "./modules/users/user.routes";
+import kycRoutes from "./modules/kyc/kyc.routes";
+import activityRoutes from "./modules/activities/activity.routes";
 import { paystackWebhook } from "./modules/payments/payment.webhook";
 import { FRONTEND_URL } from "./config/env";
 import { portNumbers } from "get-port";
@@ -16,11 +18,12 @@ const portRange = Array.from(portNumbers(3000, 3100));
 const ports = portRange.map((port) => `http://localhost:${port}`);
 
 /**
- * Enables trust proxy for correct client IP and protocol detection behind proxies.
- * On Render: This allows Express to read the X-Forwarded-For header set by the load balancer,
- * ensuring req.ip returns the true client IP instead of the load balancer's IP.
+ * Trust only the first proxy (Render's load balancer) for correct client IP detection.
+ * This prevents IP spoofing by not trusting X-Forwarded-For headers from untrusted sources.
+ * On Render: The load balancer sets X-Forwarded-For, and we trust only that one proxy.
+ * See: https://express-rate-limit.mintlify.app/reference/error-codes#err-erl-permissive-trust-proxy
  */
-app.set("trust proxy", true);
+app.set("trust proxy", 1);
 
 const corsOptions = {
   origin: [FRONTEND_URL].concat(ports).filter(Boolean),
@@ -75,6 +78,8 @@ app.use("/api/auth", authRoutes);
 app.use("/api/farms", farmRoutes);
 app.use("/api/investments", investmentRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/kyc", kycRoutes);
+app.use("/api/activities", activityRoutes);
 
 /* Error Handler (must be last) */
 app.use(errorHandler);

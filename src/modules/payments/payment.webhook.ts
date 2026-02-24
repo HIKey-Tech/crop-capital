@@ -1,10 +1,11 @@
 import { Request, Response, NextFunction } from "express";
 import { validateWebhookSignature } from "./payment.service";
 import { Investment } from "../investments/investment.model";
-import { Farm, IFarm } from "../farms/farm.model";
+import { IFarm } from "../farms/farm.model";
 import { User } from "../users/user.model";
 import { sendEmail } from "@/utils/email";
 import { WebhookEvent } from "./webhookEvent.model";
+import { logActivity } from "@/modules/activities/activity.service";
 
 interface PaystackWebhookEvent {
   event: string;
@@ -133,6 +134,20 @@ async function handleChargeSuccess(data: PaystackWebhookEvent["data"]) {
     );
   }
 
+  logActivity({
+    type: "investment_completed",
+    title: "Investment Completed",
+    description: `${investor?.name ?? "An investor"} invested ₦${investment.amount.toLocaleString()} in ${farm.name}`,
+    actor: investment.investor as any,
+    resourceId: investment._id,
+    resourceType: "Investment",
+    metadata: {
+      farmName: farm.name,
+      amount: investment.amount,
+      roi: investment.roi,
+    },
+  });
+
   console.log(`Investment ${investment._id} completed via Paystack webhook`);
 }
 
@@ -163,6 +178,15 @@ async function handleChargeFailed(data: PaystackWebhookEvent["data"]) {
             <p>Please try again or contact support if the issue persists.</p>`,
     );
   }
+
+  logActivity({
+    type: "investment_failed",
+    title: "Payment Failed",
+    description: `Payment failed for investment in ${farm.name}`,
+    actor: investment.investor as any,
+    resourceId: investment._id,
+    resourceType: "Investment",
+  });
 
   console.log(`Payment failed for investment ${investment._id}`);
 }

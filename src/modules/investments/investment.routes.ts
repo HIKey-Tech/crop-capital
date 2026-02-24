@@ -14,7 +14,7 @@ const router = Router();
 
 // Investor: invest in farm
 router.post("/", protect, restrictTo("investor"), investInFarm);
-router.get("/me", protect, restrictTo("investor"), getMyInvestments);
+router.get("/me", protect, getMyInvestments); // Allow both admins and investors
 
 // Admin: get all investments
 router.get("/", protect, restrictTo("admin"), getAllInvestments);
