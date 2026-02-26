@@ -19,10 +19,11 @@ export const signup = async (
 ) => {
   try {
     const { name, email, password, country } = req.body;
+    const tenantId = req.tenant?._id?.toString();
 
-    const user = await signupUser(name, email, password, country);
-    const token = createToken(user.id, user.role);
-    const refreshToken = createRefreshToken(user.id);
+    const user = await signupUser(name, email, password, country, tenantId);
+    const token = createToken(user.id, user.role, tenantId);
+    const refreshToken = createRefreshToken(user.id, tenantId);
 
     logActivity({
       type: "user_signup",
@@ -32,6 +33,7 @@ export const signup = async (
       resourceId: user._id,
       resourceType: "User",
       metadata: { email: user.email, country },
+      tenantId,
     });
 
     res.status(201).json({ success: true, token, refreshToken, user });
@@ -47,9 +49,10 @@ export const login = async (
 ) => {
   try {
     const { email, password } = req.body;
-    const user = await loginUser(email, password);
-    const token = createToken(user.id, user.role);
-    const refreshToken = createRefreshToken(user.id);
+    const tenantId = req.tenant?._id?.toString();
+    const user = await loginUser(email, password, tenantId);
+    const token = createToken(user.id, user.role, tenantId);
+    const refreshToken = createRefreshToken(user.id, tenantId);
     res.status(200).json({ success: true, token, refreshToken, user });
   } catch (err: any) {
     next(new AppError(err.message, 401));
@@ -63,7 +66,8 @@ export const requestPasswordReset = async (
 ) => {
   try {
     const { email } = req.body;
-    const result = await forgotPassword(email);
+    const tenantId = req.tenant?._id?.toString();
+    const result = await forgotPassword(email, tenantId);
     res.status(200).json({ success: true, ...result });
   } catch (err: any) {
     next(new AppError(err.message, 404));
@@ -77,7 +81,8 @@ export const resetPasswordHandler = async (
 ) => {
   try {
     const { token, password } = req.body;
-    const result = await resetPassword(token, password);
+    const tenantId = req.tenant?._id?.toString();
+    const result = await resetPassword(token, password, tenantId);
     res.status(200).json({ success: true, ...result });
   } catch (err: any) {
     next(new AppError(err.message, 400));

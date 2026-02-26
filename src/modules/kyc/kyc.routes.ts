@@ -10,6 +10,7 @@ import {
 } from "./kyc.controller";
 import { protect } from "@/middlewares/auth.middleware";
 import { restrictTo } from "@/middlewares/role.middleware";
+import { requireTenantFeature } from "@/middlewares/feature.middleware";
 
 const router = Router();
 
@@ -19,9 +20,33 @@ router.get("/me", protect, restrictTo("investor"), getMyKyc);
 router.put("/resubmit", protect, restrictTo("investor"), resubmitKyc);
 
 // Admin routes
-router.get("/", protect, restrictTo("admin"), getAllKyc);
-router.get("/:id", protect, restrictTo("admin"), getKycById);
-router.patch("/:id/approve", protect, restrictTo("admin"), approveKyc);
-router.patch("/:id/reject", protect, restrictTo("admin"), rejectKyc);
+router.get(
+  "/",
+  protect,
+  restrictTo("admin"),
+  requireTenantFeature("adminKyc"),
+  getAllKyc,
+);
+router.get(
+  "/:id",
+  protect,
+  restrictTo("admin"),
+  requireTenantFeature("adminKyc"),
+  getKycById,
+);
+router.patch(
+  "/:id/approve",
+  protect,
+  restrictTo("admin"),
+  requireTenantFeature("adminKyc"),
+  approveKyc,
+);
+router.patch(
+  "/:id/reject",
+  protect,
+  restrictTo("admin"),
+  requireTenantFeature("adminKyc"),
+  rejectKyc,
+);
 
 export default router;

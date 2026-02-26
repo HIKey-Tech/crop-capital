@@ -1,6 +1,7 @@
 import mongoose, { Schema, Document } from "mongoose";
 
 export interface IFarm extends Document {
+  tenantId?: mongoose.Types.ObjectId;
   name: string;
   location: string;
   coordinates?: {
@@ -24,6 +25,7 @@ export interface IFarm extends Document {
 
 const FarmSchema = new Schema<IFarm>(
   {
+    tenantId: { type: Schema.Types.ObjectId, ref: "Tenant", index: true },
     name: { type: String, required: true },
     location: { type: String, required: true },
     coordinates: {
@@ -48,5 +50,7 @@ const FarmSchema = new Schema<IFarm>(
   },
   { timestamps: true },
 );
+
+FarmSchema.index({ tenantId: 1, createdAt: -1 });
 
 export const Farm = mongoose.model<IFarm>("Farm", FarmSchema);

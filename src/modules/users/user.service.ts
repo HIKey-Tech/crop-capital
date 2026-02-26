@@ -1,7 +1,10 @@
 import { User } from "./user.model";
 
-export const promoteToAdmin = async (userId: string) => {
-  const user = await User.findById(userId);
+export const promoteToAdmin = async (userId: string, tenantId?: string) => {
+  const user = await User.findOne({
+    _id: userId,
+    ...(tenantId ? { tenantId } : {}),
+  });
   if (!user) throw new Error("User not found");
 
   if (user.role === "admin") {
@@ -13,8 +16,11 @@ export const promoteToAdmin = async (userId: string) => {
   return user;
 };
 
-export const demoteFromAdmin = async (userId: string) => {
-  const user = await User.findById(userId);
+export const demoteFromAdmin = async (userId: string, tenantId?: string) => {
+  const user = await User.findOne({
+    _id: userId,
+    ...(tenantId ? { tenantId } : {}),
+  });
   if (!user) throw new Error("User not found");
 
   if (user.role === "investor") {

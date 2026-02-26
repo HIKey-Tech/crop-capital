@@ -1,7 +1,7 @@
-import { User } from "./modules/users/user.model";
-import { Farm } from "./modules/farms/farm.model";
-import { Investment } from "./modules/investments/investment.model";
-import { connectDB } from "./config/db";
+import { User } from "../src/modules/users/user.model";
+import { Farm } from "../src/modules/farms/farm.model";
+import { Investment } from "../src/modules/investments/investment.model";
+import { connectDB } from "../src/config/db";
 
 const seedData = async () => {
   try {
@@ -12,7 +12,7 @@ const seedData = async () => {
     // Create or update admin user
     const adminData = {
       name: "Admin User",
-      email: "admin@ayfagro.com",
+      email: "admin@cropcapital.com",
       password: "admin123",
       role: "admin",
       country: "Liberia",
@@ -390,7 +390,7 @@ const seedData = async () => {
     console.log(`   - Investments: ${investments.length}`);
     console.log("\n🔑 Login Credentials:");
     console.log("   Admin:");
-    console.log("     Email: admin@ayfagro.com");
+    console.log("     Email: admin@cropcapital.com");
     console.log("     Password: admin123");
     console.log("\n   Investor:");
     console.log("     Email: john@example.com");

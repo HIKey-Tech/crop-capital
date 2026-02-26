@@ -41,7 +41,7 @@ interface PaystackVerifyResponse {
 export function generateReference(): string {
   const timestamp = Date.now().toString(36);
   const randomStr = crypto.randomBytes(8).toString("hex");
-  return `AYF-${timestamp}-${randomStr}`.toUpperCase();
+  return `CC-${timestamp}-${randomStr}`.toUpperCase();
 }
 
 /**

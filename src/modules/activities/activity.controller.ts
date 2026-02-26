@@ -9,6 +9,7 @@ export const getActivities = async (
   next: NextFunction,
 ) => {
   try {
+    const tenantId = req.tenant?._id;
     const page = Math.max(1, parseInt(req.query.page as string) || 1);
     const limit = Math.min(
       50,
@@ -16,7 +17,7 @@ export const getActivities = async (
     );
     const type = req.query.type as string | undefined;
 
-    const filter: Record<string, unknown> = {};
+    const filter: Record<string, unknown> = tenantId ? { tenantId } : {};
     if (type) {
       filter.type = type;
     }

@@ -95,7 +95,7 @@ Response:
 
 The seed script (`src/scripts/seed.ts`) creates an initial admin account:
 
-- **Email**: `admin@ayfagro.com`
+- **Email**: `admin@cropcapital.com`
 - **Password**: `admin123`
 - **Role**: `admin`
 

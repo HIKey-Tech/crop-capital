@@ -19,6 +19,8 @@ interface PaystackWebhookEvent {
     channel: string;
     metadata: {
       investmentId?: string;
+      tenantId?: string;
+      tenantSlug?: string;
       [key: string]: unknown;
     };
     customer: {
@@ -54,13 +56,15 @@ export const paystackWebhook = async (
   }
 
   try {
+    let tenantId: string | undefined;
+
     switch (event.event) {
       case "charge.success":
-        await handleChargeSuccess(event.data);
+        tenantId = await handleChargeSuccess(event.data);
         break;
 
       case "charge.failed":
-        await handleChargeFailed(event.data);
+        tenantId = await handleChargeFailed(event.data);
         break;
 
       default:
@@ -71,6 +75,7 @@ export const paystackWebhook = async (
     await WebhookEvent.create({
       paystackEventId: eventId,
       eventType: event.event,
+      tenantId,
     });
   } catch (err: unknown) {
     const error = err as Error;
@@ -82,26 +87,35 @@ export const paystackWebhook = async (
   res.status(200).json({ received: true });
 };
 
-async function handleChargeSuccess(data: PaystackWebhookEvent["data"]) {
+async function handleChargeSuccess(
+  data: PaystackWebhookEvent["data"],
+): Promise<string | undefined> {
   const { reference, metadata, amount } = data;
 
   if (!metadata?.investmentId) {
     console.log("No investmentId in metadata, skipping...");
-    return;
+    return undefined;
   }
 
-  const investment = await Investment.findById(metadata.investmentId).populate(
-    "farm",
-  );
+  const investment = await Investment.findOne({
+    _id: metadata.investmentId,
+    ...(metadata.tenantId ? { tenantId: metadata.tenantId } : {}),
+  }).populate("farm");
   if (!investment) {
     console.error(`Investment not found: ${metadata.investmentId}`);
-    return;
+    return undefined;
+  }
+
+  const investmentTenantId = investment.tenantId?.toString();
+  if (metadata.tenantId && metadata.tenantId !== investmentTenantId) {
+    console.error("Tenant mismatch in webhook metadata and investment record");
+    return undefined;
   }
 
   // Already completed, skip
   if (investment.status === "completed") {
     console.log(`Investment ${investment._id} already completed`);
-    return;
+    return investmentTenantId;
   }
 
   // Update investment
@@ -111,11 +125,23 @@ async function handleChargeSuccess(data: PaystackWebhookEvent["data"]) {
 
   // Update farm funded amount
   const farm = investment.farm as IFarm;
+  if (
+    farm.tenantId &&
+    investment.tenantId &&
+    farm.tenantId.toString() !== investment.tenantId.toString()
+  ) {
+    console.error("Tenant mismatch between farm and investment");
+    return undefined;
+  }
+
   farm.fundedAmount = (farm.fundedAmount || 0) + investment.amount;
   await farm.save();
 
   // Get investor for email
-  const investor = await User.findById(investment.investor);
+  const investor = await User.findOne({
+    _id: investment.investor,
+    ...(investment.tenantId ? { tenantId: investment.tenantId } : {}),
+  });
   if (investor) {
     await sendEmail(
       investor.email,
@@ -130,7 +156,7 @@ async function handleChargeSuccess(data: PaystackWebhookEvent["data"]) {
                 <li>Duration: ${investment.durationMonths} months</li>
                 <li>Projected Return: ₦${investment.projectedReturn().toLocaleString()}</li>
             </ul>
-            <p>Thank you for investing with AYF Agro!</p>`,
+            <p>Thank you for investing with CropCapital!</p>`,
     );
   }
 
@@ -146,27 +172,35 @@ async function handleChargeSuccess(data: PaystackWebhookEvent["data"]) {
       amount: investment.amount,
       roi: investment.roi,
     },
+    tenantId: investmentTenantId,
   });
 
   console.log(`Investment ${investment._id} completed via Paystack webhook`);
+  return investmentTenantId;
 }
 
-async function handleChargeFailed(data: PaystackWebhookEvent["data"]) {
+async function handleChargeFailed(
+  data: PaystackWebhookEvent["data"],
+): Promise<string | undefined> {
   const { metadata } = data;
 
   if (!metadata?.investmentId) {
-    return;
+    return undefined;
   }
 
-  const investment = await Investment.findById(metadata.investmentId).populate(
-    "farm",
-  );
+  const investment = await Investment.findOne({
+    _id: metadata.investmentId,
+    ...(metadata.tenantId ? { tenantId: metadata.tenantId } : {}),
+  }).populate("farm");
   if (!investment || investment.status !== "pending") {
-    return;
+    return undefined;
   }
 
   // Optionally notify investor about failed payment
-  const investor = await User.findById(investment.investor);
+  const investor = await User.findOne({
+    _id: investment.investor,
+    ...(investment.tenantId ? { tenantId: investment.tenantId } : {}),
+  });
   const farm = investment.farm as IFarm;
 
   if (investor) {
@@ -186,7 +220,9 @@ async function handleChargeFailed(data: PaystackWebhookEvent["data"]) {
     actor: investment.investor as any,
     resourceId: investment._id,
     resourceType: "Investment",
+    tenantId: investment.tenantId?.toString(),
   });
 
   console.log(`Payment failed for investment ${investment._id}`);
+  return investment.tenantId?.toString();
 }

@@ -5,6 +5,7 @@ interface LogActivityParams {
   type: ActivityType;
   title: string;
   description: string;
+  tenantId?: string | mongoose.Types.ObjectId;
   actor?: string | mongoose.Types.ObjectId;
   resourceId?: string | mongoose.Types.ObjectId;
   resourceType?: "Farm" | "Investment" | "User" | "KycDocument";
@@ -20,6 +21,9 @@ export function logActivity(params: LogActivityParams): void {
     type: params.type,
     title: params.title,
     description: params.description,
+    tenantId: params.tenantId
+      ? new mongoose.Types.ObjectId(String(params.tenantId))
+      : undefined,
     actor: params.actor
       ? new mongoose.Types.ObjectId(String(params.actor))
       : undefined,

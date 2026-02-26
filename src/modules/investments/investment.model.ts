@@ -2,6 +2,7 @@ import mongoose, { Schema, Document, Types } from "mongoose";
 import { IFarm } from "../farms/farm.model";
 
 export interface IInvestment extends Document {
+  tenantId?: Types.ObjectId;
   investor: Types.ObjectId; // reference to User
   farm: Types.ObjectId | IFarm; // populated
   amount: number;
@@ -20,6 +21,7 @@ export interface IInvestment extends Document {
 
 const InvestmentSchema = new Schema<IInvestment>(
   {
+    tenantId: { type: Schema.Types.ObjectId, ref: "Tenant", index: true },
     investor: { type: Schema.Types.ObjectId, ref: "User", required: true },
     farm: { type: Schema.Types.ObjectId, ref: "Farm", required: true },
     amount: { type: Number, required: true },
@@ -36,6 +38,9 @@ const InvestmentSchema = new Schema<IInvestment>(
   },
   { timestamps: true },
 );
+
+InvestmentSchema.index({ tenantId: 1, investor: 1, createdAt: -1 });
+InvestmentSchema.index({ tenantId: 1, farm: 1, status: 1 });
 
 // Method to calculate projected return
 InvestmentSchema.methods.projectedReturn = function () {

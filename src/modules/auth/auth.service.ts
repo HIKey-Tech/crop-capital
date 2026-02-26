@@ -1,17 +1,22 @@
 import { User } from "../users/user.model";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
+import mongoose from "mongoose";
 import { FRONTEND_URL, JWT_SECRET } from "@/config/env";
 import { sendEmail } from "@/utils/email";
 
-export const createToken = (userId: string, role: string) => {
-  return jwt.sign({ id: userId, role }, JWT_SECRET, {
+export const createToken = (
+  userId: string,
+  role: string,
+  tenantId?: string,
+) => {
+  return jwt.sign({ id: userId, role, tenantId }, JWT_SECRET, {
     expiresIn: "7d",
   });
 };
 
-export const createRefreshToken = (userId: string) => {
-  return jwt.sign({ id: userId }, JWT_SECRET, {
+export const createRefreshToken = (userId: string, tenantId?: string) => {
+  return jwt.sign({ id: userId, tenantId }, JWT_SECRET, {
     expiresIn: "7d",
   });
 };
@@ -21,8 +26,13 @@ export const signupUser = async (
   email: string,
   password: string,
   country: string,
+  tenantId?: string,
 ) => {
-  const existing = await User.findOne({ email });
+  const existing = await User.findOne(
+    tenantId
+      ? { email, tenantId: new mongoose.Types.ObjectId(tenantId) }
+      : { email },
+  );
   if (existing) throw new Error("Email already registered");
   const user = await User.create({
     name,
@@ -30,19 +40,32 @@ export const signupUser = async (
     password,
     role: "investor",
     country,
+    ...(tenantId ? { tenantId } : {}),
   });
   return user;
 };
 
-export const loginUser = async (email: string, password: string) => {
-  const user = await User.findOne({ email });
+export const loginUser = async (
+  email: string,
+  password: string,
+  tenantId?: string,
+) => {
+  const user = await User.findOne(
+    tenantId
+      ? { email, tenantId: new mongoose.Types.ObjectId(tenantId) }
+      : { email },
+  );
   if (!user) throw new Error("Invalid email or password");
   const isMatch = await user.comparePassword(password);
   if (!isMatch) throw new Error("Invalid email or password");
   return user;
 };
-export const forgotPassword = async (email: string) => {
-  const user = await User.findOne({ email });
+export const forgotPassword = async (email: string, tenantId?: string) => {
+  const user = await User.findOne(
+    tenantId
+      ? { email, tenantId: new mongoose.Types.ObjectId(tenantId) }
+      : { email },
+  );
   if (!user) throw new Error("No account found with that email");
 
   // Generate reset token
@@ -68,11 +91,16 @@ export const forgotPassword = async (email: string) => {
   return { message: "Password reset email sent" };
 };
 
-export const resetPassword = async (token: string, newPassword: string) => {
+export const resetPassword = async (
+  token: string,
+  newPassword: string,
+  tenantId?: string,
+) => {
   const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
   const user = await User.findOne({
     passwordResetToken: hashedToken,
     passwordResetExpires: { $gt: Date.now() },
+    ...(tenantId ? { tenantId: new mongoose.Types.ObjectId(tenantId) } : {}),
   });
 
   if (!user) throw new Error("Invalid or expired reset token");

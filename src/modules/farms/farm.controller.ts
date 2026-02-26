@@ -11,6 +11,7 @@ export const createFarm = async (
   next: NextFunction,
 ) => {
   try {
+    const tenantId = req.tenant?._id;
     const { images, ...farmData } = req.body;
 
     if (!images?.length) {
@@ -23,6 +24,7 @@ export const createFarm = async (
     );
 
     const farm = await Farm.create({
+      ...(tenantId ? { tenantId } : {}),
       ...farmData,
       images: uploadResults.map((r) => r.url),
       imagePublicIds: uploadResults.map((r) => r.publicId),
@@ -36,6 +38,7 @@ export const createFarm = async (
       resourceId: farm._id,
       resourceType: "Farm",
       metadata: { farmName: farm.name, investmentGoal: farm.investmentGoal },
+      tenantId: tenantId?.toString(),
     });
 
     res.status(201).json({ success: true, farm });
@@ -51,9 +54,13 @@ export const updateFarm = async (
   next: NextFunction,
 ) => {
   try {
+    const tenantId = req.tenant?._id;
     const { images, ...farmData } = req.body;
 
-    const farm = await Farm.findById(req.params.id);
+    const farm = await Farm.findOne({
+      _id: req.params.id,
+      ...(tenantId ? { tenantId } : {}),
+    });
     if (!farm) return next(new AppError("Farm not found", 404));
 
     // Handle images update
@@ -76,9 +83,13 @@ export const updateFarm = async (
       );
     }
 
-    const updatedFarm = await Farm.findByIdAndUpdate(req.params.id, farmData, {
-      new: true,
-    });
+    const updatedFarm = await Farm.findOneAndUpdate(
+      { _id: req.params.id, ...(tenantId ? { tenantId } : {}) },
+      farmData,
+      {
+        new: true,
+      },
+    );
 
     logActivity({
       type: "farm_updated",
@@ -87,6 +98,7 @@ export const updateFarm = async (
       actor: req.user?._id,
       resourceId: farm._id,
       resourceType: "Farm",
+      tenantId: tenantId?.toString(),
     });
 
     res.json({ success: true, farm: updatedFarm });
@@ -102,7 +114,11 @@ export const deleteFarm = async (
   next: NextFunction,
 ) => {
   try {
-    const farm = await Farm.findById(req.params.id);
+    const tenantId = req.tenant?._id;
+    const farm = await Farm.findOne({
+      _id: req.params.id,
+      ...(tenantId ? { tenantId } : {}),
+    });
     if (!farm) return next(new AppError("Farm not found", 404));
 
     // Delete all images from Cloudinary
@@ -112,7 +128,10 @@ export const deleteFarm = async (
       );
     }
 
-    await Farm.findByIdAndDelete(req.params.id);
+    await Farm.findOneAndDelete({
+      _id: req.params.id,
+      ...(tenantId ? { tenantId } : {}),
+    });
 
     logActivity({
       type: "farm_deleted",
@@ -122,6 +141,7 @@ export const deleteFarm = async (
       resourceId: farm._id,
       resourceType: "Farm",
       metadata: { farmName: farm.name },
+      tenantId: tenantId?.toString(),
     });
 
     res.json({ success: true, message: "Farm deleted" });
@@ -137,7 +157,8 @@ export const getFarms = async (
   next: NextFunction,
 ) => {
   try {
-    const farms = await Farm.find();
+    const tenantId = req.tenant?._id;
+    const farms = await Farm.find(tenantId ? { tenantId } : {});
     res.json({ success: true, farms });
   } catch (err: any) {
     next(new AppError(err.message, 400));
@@ -151,7 +172,11 @@ export const getFarm = async (
   next: NextFunction,
 ) => {
   try {
-    const farm = await Farm.findById(req.params.id);
+    const tenantId = req.tenant?._id;
+    const farm = await Farm.findOne({
+      _id: req.params.id,
+      ...(tenantId ? { tenantId } : {}),
+    });
     if (!farm) return next(new AppError("Farm not found", 404));
     res.json({ success: true, farm });
   } catch (err: any) {
@@ -166,13 +191,17 @@ export const addFarmUpdate = async (
   next: NextFunction,
 ) => {
   try {
+    const tenantId = req.tenant?._id;
     const { stage, image } = req.body;
 
     if (!stage) {
       return next(new AppError("Update stage is required", 400));
     }
 
-    const farm = await Farm.findById(req.params.id);
+    const farm = await Farm.findOne({
+      _id: req.params.id,
+      ...(tenantId ? { tenantId } : {}),
+    });
     if (!farm) return next(new AppError("Farm not found", 404));
 
     const updateData: any = {

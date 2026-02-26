@@ -1,11 +1,13 @@
 {
-  "name": "ayf-backend",
+  "name": "cropcapital-backend",
   "version": "1.0.0",
   "main": "index.js",
   "type": "module",
   "scripts": {
     "dev": "tsx watch src/server.ts",
-    "seed": "tsx src/seed.ts",
+    "seed": "tsx scripts/seed.ts",
+    "backfill:tenant": "tsx scripts/backfillTenant.ts",
+    "onboard:cropcapital": "tsx scripts/onboardCropCapitalTenant.ts",
     "build": "tsc",
     "start": "node dist/server.js"
   },

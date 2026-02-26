@@ -10,7 +10,11 @@ export const getUsers = async (
   next: NextFunction,
 ): Promise<void> => {
   try {
-    const users = await User.find({ role: "investor" }).select("-password");
+    const tenantId = req.tenant?._id;
+    const users = await User.find({
+      role: "investor",
+      ...(tenantId ? { tenantId } : {}),
+    }).select("-password");
 
     // Get investment stats for each user
     const usersWithStats = await Promise.all(
@@ -18,6 +22,7 @@ export const getUsers = async (
         const investments = await Investment.find({
           investor: user._id,
           status: "completed",
+          ...(tenantId ? { tenantId } : {}),
         });
 
         const totalInvested = investments.reduce(
@@ -56,8 +61,12 @@ export const getUserById = async (
   next: NextFunction,
 ): Promise<void> => {
   try {
+    const tenantId = req.tenant?._id;
     const { id } = req.params;
-    const user = await User.findById(id).select("-password");
+    const user = await User.findOne({
+      _id: id,
+      ...(tenantId ? { tenantId } : {}),
+    }).select("-password");
 
     if (!user) {
       res.status(404).json({ success: false, message: "User not found" });
@@ -67,6 +76,7 @@ export const getUserById = async (
     // Get user's investments
     const investments = await Investment.find({
       investor: user._id,
+      ...(tenantId ? { tenantId } : {}),
     }).populate("farm");
 
     const totalInvested = investments
@@ -116,19 +126,28 @@ export const getUserStats = async (
   next: NextFunction,
 ): Promise<void> => {
   try {
-    const totalUsers = await User.countDocuments({ role: "investor" });
+    const tenantId = req.tenant?._id;
+    const totalUsers = await User.countDocuments({
+      role: "investor",
+      ...(tenantId ? { tenantId } : {}),
+    });
     const verifiedUsers = await User.countDocuments({
       role: "investor",
       isVerified: true,
+      ...(tenantId ? { tenantId } : {}),
     });
 
-    const investments = await Investment.find({ status: "completed" });
+    const investments = await Investment.find({
+      status: "completed",
+      ...(tenantId ? { tenantId } : {}),
+    });
     const totalVolume = investments.reduce((sum, inv) => sum + inv.amount, 0);
 
     // Get unique active investors (those with non-paid ROI investments)
     const activeInvestorIds = await Investment.distinct("investor", {
       status: "completed",
       roiPaid: false,
+      ...(tenantId ? { tenantId } : {}),
     });
 
     res.status(200).json({
@@ -153,11 +172,13 @@ export const getMyDashboardStats = async (
 ): Promise<void> => {
   try {
     const userId = req.user?._id;
+    const tenantId = req.tenant?._id;
 
     // Get all completed investments for this user
     const investments = await Investment.find({
       investor: userId,
       status: "completed",
+      ...(tenantId ? { tenantId } : {}),
     });
 
     // Calculate total invested
@@ -192,7 +213,8 @@ export const promoteUser = async (
 ): Promise<void> => {
   try {
     const { id } = req.params;
-    const user = await promoteToAdmin(id);
+    const tenantId = req.tenant?._id?.toString();
+    const user = await promoteToAdmin(id, tenantId);
 
     res.status(200).json({
       success: true,
@@ -217,7 +239,8 @@ export const demoteUser = async (
 ): Promise<void> => {
   try {
     const { id } = req.params;
-    const user = await demoteFromAdmin(id);
+    const tenantId = req.tenant?._id?.toString();
+    const user = await demoteFromAdmin(id, tenantId);
 
     res.status(200).json({
       success: true,
@@ -243,13 +266,17 @@ export const addToWatchlist = async (
   try {
     const userId = req.user?._id;
     const { farmId } = req.body;
+    const tenantId = req.tenant?._id;
 
     if (!farmId) {
       res.status(400).json({ success: false, message: "Farm ID is required" });
       return;
     }
 
-    const user = await User.findById(userId);
+    const user = await User.findOne({
+      _id: userId,
+      ...(tenantId ? { tenantId } : {}),
+    });
     if (!user) {
       res.status(404).json({ success: false, message: "User not found" });
       return;
@@ -286,8 +313,12 @@ export const removeFromWatchlist = async (
   try {
     const userId = req.user?._id;
     const { farmId } = req.params;
+    const tenantId = req.tenant?._id;
 
-    const user = await User.findById(userId);
+    const user = await User.findOne({
+      _id: userId,
+      ...(tenantId ? { tenantId } : {}),
+    });
     if (!user) {
       res.status(404).json({ success: false, message: "User not found" });
       return;
@@ -316,8 +347,12 @@ export const getWatchlist = async (
 ): Promise<void> => {
   try {
     const userId = req.user?._id;
+    const tenantId = req.tenant?._id;
 
-    const user = await User.findById(userId).populate("watchlist");
+    const user = await User.findOne({
+      _id: userId,
+      ...(tenantId ? { tenantId } : {}),
+    }).populate("watchlist");
     if (!user) {
       res.status(404).json({ success: false, message: "User not found" });
       return;

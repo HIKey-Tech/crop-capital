@@ -2,17 +2,19 @@ import { Request, Response, NextFunction } from "express";
 import { AppError } from "../utils/AppError";
 
 export const errorHandler = (
-    err: AppError,
-    req: Request,
-    res: Response,
-    next: NextFunction
+  err: AppError,
+  req: Request,
+  res: Response,
+  next: NextFunction,
 ) => {
-    const statusCode = err.statusCode || 500;
-    const message = err.message || "Internal Server Error";
+  const statusCode = err.statusCode || 500;
+  const message = err.message || "Internal Server Error";
 
-    res.status(statusCode).json({
-        success: false,
-        message,
-        ...(process.env.NODE_ENV === "development" && { stack: err.stack })
-    });
+  res.status(statusCode).json({
+    success: false,
+    message,
+    ...(err.code && { code: err.code }),
+    ...(err.details && { details: err.details }),
+    ...(process.env.NODE_ENV === "development" && { stack: err.stack }),
+  });
 };

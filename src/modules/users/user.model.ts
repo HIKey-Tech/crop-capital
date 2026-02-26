@@ -2,10 +2,11 @@ import mongoose, { Schema, Document } from "mongoose";
 import bcrypt from "bcryptjs";
 
 export interface IUser extends Document {
+  tenantId?: mongoose.Types.ObjectId;
   name: string;
   email: string;
   password: string;
-  role: "investor" | "admin";
+  role: "investor" | "admin" | "super_admin";
   country?: string;
   photo?: string;
   isVerified: boolean;
@@ -18,10 +19,15 @@ export interface IUser extends Document {
 
 const UserSchema = new Schema<IUser>(
   {
+    tenantId: { type: Schema.Types.ObjectId, ref: "Tenant", index: true },
     name: { type: String, required: true },
-    email: { type: String, required: true, unique: true },
+    email: { type: String, required: true, lowercase: true, trim: true },
     password: { type: String, required: true },
-    role: { type: String, enum: ["investor", "admin"], default: "investor" },
+    role: {
+      type: String,
+      enum: ["investor", "admin", "super_admin"],
+      default: "investor",
+    },
     country: { type: String },
     photo: { type: String },
     isVerified: { type: Boolean, default: false },
@@ -32,6 +38,8 @@ const UserSchema = new Schema<IUser>(
   },
   { timestamps: true },
 );
+
+UserSchema.index({ tenantId: 1, email: 1 }, { unique: true, sparse: true });
 
 // ✅ Hash password before save
 UserSchema.pre("save", async function (this: IUser) {

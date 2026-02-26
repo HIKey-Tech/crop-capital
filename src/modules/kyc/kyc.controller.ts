@@ -14,6 +14,7 @@ export const submitKyc = async (
 ) => {
   try {
     const userId = req.user?._id;
+    const tenantId = req.tenant?._id;
     const { documentType, documentImage, selfieImage } = req.body;
 
     if (!documentType || !documentImage) {
@@ -26,6 +27,7 @@ export const submitKyc = async (
     const existing = await KycDocument.findOne({
       user: userId,
       status: { $in: ["pending", "approved"] },
+      ...(tenantId ? { tenantId } : {}),
     });
 
     if (existing?.status === "approved") {
@@ -49,6 +51,7 @@ export const submitKyc = async (
 
     const kycData: Record<string, unknown> = {
       user: userId,
+      ...(tenantId ? { tenantId } : {}),
       documentType,
       documentImage: docUrl,
       documentImagePublicId: docPublicId,
@@ -75,6 +78,7 @@ export const submitKyc = async (
       resourceId: kycDoc._id,
       resourceType: "KycDocument",
       metadata: { documentType },
+      tenantId: tenantId?.toString(),
     });
 
     res.status(201).json({
@@ -100,8 +104,12 @@ export const getMyKyc = async (
 ) => {
   try {
     const userId = req.user?._id;
+    const tenantId = req.tenant?._id;
 
-    const kyc = await KycDocument.findOne({ user: userId })
+    const kyc = await KycDocument.findOne({
+      user: userId,
+      ...(tenantId ? { tenantId } : {}),
+    })
       .sort({ createdAt: -1 })
       .select("-documentImagePublicId -selfieImagePublicId");
 
@@ -133,6 +141,7 @@ export const resubmitKyc = async (
 ) => {
   try {
     const userId = req.user?._id;
+    const tenantId = req.tenant?._id;
     const { documentType, documentImage, selfieImage } = req.body;
 
     if (!documentType || !documentImage) {
@@ -145,6 +154,7 @@ export const resubmitKyc = async (
     const rejected = await KycDocument.findOne({
       user: userId,
       status: "rejected",
+      ...(tenantId ? { tenantId } : {}),
     }).sort({ createdAt: -1 });
 
     if (!rejected) {
@@ -209,9 +219,10 @@ export const getAllKyc = async (
   next: NextFunction,
 ) => {
   try {
+    const tenantId = req.tenant?._id;
     const { status } = req.query;
 
-    const filter: Record<string, unknown> = {};
+    const filter: Record<string, unknown> = tenantId ? { tenantId } : {};
     if (
       status &&
       ["pending", "approved", "rejected"].includes(status as string)
@@ -226,9 +237,18 @@ export const getAllKyc = async (
 
     // Count by status
     const [pendingCount, approvedCount, rejectedCount] = await Promise.all([
-      KycDocument.countDocuments({ status: "pending" }),
-      KycDocument.countDocuments({ status: "approved" }),
-      KycDocument.countDocuments({ status: "rejected" }),
+      KycDocument.countDocuments({
+        status: "pending",
+        ...(tenantId ? { tenantId } : {}),
+      }),
+      KycDocument.countDocuments({
+        status: "approved",
+        ...(tenantId ? { tenantId } : {}),
+      }),
+      KycDocument.countDocuments({
+        status: "rejected",
+        ...(tenantId ? { tenantId } : {}),
+      }),
     ]);
 
     res.json({
@@ -253,7 +273,11 @@ export const getKycById = async (
   next: NextFunction,
 ) => {
   try {
-    const kyc = await KycDocument.findById(req.params.id)
+    const tenantId = req.tenant?._id;
+    const kyc = await KycDocument.findOne({
+      _id: req.params.id,
+      ...(tenantId ? { tenantId } : {}),
+    })
       .populate("user", "name email country photo createdAt")
       .populate("reviewedBy", "name email");
 
@@ -272,10 +296,11 @@ export const approveKyc = async (
   next: NextFunction,
 ) => {
   try {
-    const kyc = await KycDocument.findById(req.params.id).populate(
-      "user",
-      "name email",
-    );
+    const tenantId = req.tenant?._id;
+    const kyc = await KycDocument.findOne({
+      _id: req.params.id,
+      ...(tenantId ? { tenantId } : {}),
+    }).populate("user", "name email");
     if (!kyc) return next(new AppError("KYC submission not found", 404));
 
     if (kyc.status === "approved") {
@@ -289,7 +314,13 @@ export const approveKyc = async (
     await kyc.save();
 
     // Mark user as verified
-    await User.findByIdAndUpdate(kyc.user._id, { isVerified: true });
+    await User.findOneAndUpdate(
+      {
+        _id: kyc.user._id,
+        ...(tenantId ? { tenantId } : {}),
+      },
+      { isVerified: true },
+    );
 
     logActivity({
       type: "kyc_approved",
@@ -298,6 +329,7 @@ export const approveKyc = async (
       actor: req.user?._id,
       resourceId: kyc._id,
       resourceType: "KycDocument",
+      tenantId: tenantId?.toString(),
     });
 
     // Send approval email
@@ -305,14 +337,14 @@ export const approveKyc = async (
     try {
       await sendEmail(
         user.email,
-        "KYC Verification Approved - AYF Agro",
+        "KYC Verification Approved - CropCapital",
         `
         <h2>Identity Verified!</h2>
         <p>Dear ${user.name},</p>
-        <p>Your identity verification has been approved. You now have full access to all investment opportunities on AYF Agro.</p>
+        <p>Your identity verification has been approved. You now have full access to all investment opportunities on CropCapital.</p>
         <p>Thank you for completing the verification process.</p>
         <br/>
-        <p>Best regards,<br/>AYF Agro Team</p>
+        <p>Best regards,<br/>CropCapital Team</p>
         `,
       );
     } catch {
@@ -340,16 +372,17 @@ export const rejectKyc = async (
   next: NextFunction,
 ) => {
   try {
+    const tenantId = req.tenant?._id;
     const { reason } = req.body;
 
     if (!reason) {
       return next(new AppError("Rejection reason is required", 400));
     }
 
-    const kyc = await KycDocument.findById(req.params.id).populate(
-      "user",
-      "name email",
-    );
+    const kyc = await KycDocument.findOne({
+      _id: req.params.id,
+      ...(tenantId ? { tenantId } : {}),
+    }).populate("user", "name email");
     if (!kyc) return next(new AppError("KYC submission not found", 404));
 
     if (kyc.status === "rejected") {
@@ -370,6 +403,7 @@ export const rejectKyc = async (
       resourceId: kyc._id,
       resourceType: "KycDocument",
       metadata: { reason },
+      tenantId: tenantId?.toString(),
     });
 
     // Send rejection email
@@ -377,7 +411,7 @@ export const rejectKyc = async (
     try {
       await sendEmail(
         user.email,
-        "KYC Verification Update - AYF Agro",
+        "KYC Verification Update - CropCapital",
         `
         <h2>Verification Update</h2>
         <p>Dear ${user.name},</p>
@@ -385,7 +419,7 @@ export const rejectKyc = async (
         <p><strong>Reason:</strong> ${reason}</p>
         <p>Please log in to your account and resubmit your documents with the corrections noted above.</p>
         <br/>
-        <p>Best regards,<br/>AYF Agro Team</p>
+        <p>Best regards,<br/>CropCapital Team</p>
         `,
       );
     } catch {

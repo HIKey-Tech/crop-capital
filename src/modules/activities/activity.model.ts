@@ -14,6 +14,7 @@ export type ActivityType =
   | "roi_paid";
 
 export interface IActivity extends Document {
+  tenantId?: mongoose.Types.ObjectId;
   type: ActivityType;
   title: string;
   description: string;
@@ -30,6 +31,7 @@ export interface IActivity extends Document {
 
 const ActivitySchema = new Schema<IActivity>(
   {
+    tenantId: { type: Schema.Types.ObjectId, ref: "Tenant", index: true },
     type: {
       type: String,
       required: true,
@@ -64,5 +66,6 @@ const ActivitySchema = new Schema<IActivity>(
 // Compound index for efficient querying: newest first, filterable by type
 ActivitySchema.index({ createdAt: -1 });
 ActivitySchema.index({ type: 1, createdAt: -1 });
+ActivitySchema.index({ tenantId: 1, createdAt: -1 });
 
 export const Activity = mongoose.model<IActivity>("Activity", ActivitySchema);

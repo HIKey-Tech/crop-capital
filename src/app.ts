@@ -9,9 +9,12 @@ import investmentRoutes from "./modules/investments/investment.routes";
 import userRoutes from "./modules/users/user.routes";
 import kycRoutes from "./modules/kyc/kyc.routes";
 import activityRoutes from "./modules/activities/activity.routes";
+import tenantRoutes from "./modules/tenants/tenant.routes";
 import { paystackWebhook } from "./modules/payments/payment.webhook";
 import { FRONTEND_URL } from "./config/env";
 import { portNumbers } from "get-port";
+import { resolveTenant } from "./middlewares/tenant.middleware";
+import { requireTenant } from "./middlewares/require-tenant.middleware";
 
 const app = express();
 const portRange = Array.from(portNumbers(3000, 3100));
@@ -40,6 +43,7 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
+app.use(resolveTenant);
 
 /* Security & Rate Limiting */
 app.use(
@@ -69,9 +73,12 @@ app.post("/api/webhooks/paystack", express.json(), paystackWebhook);
 /* Parse JSON for all other routes */
 app.use(express.json());
 
+/* Require tenant for all API routes (webhooks are mounted above and bypass this) */
+app.use("/api", requireTenant);
+
 /* Health Check */
 app.get("/", (_, res) => {
-  res.json({ status: "AYF Backend running" });
+  res.json({ status: "CropCapital Backend running" });
 });
 
 app.use("/api/auth", authRoutes);
@@ -80,6 +87,7 @@ app.use("/api/investments", investmentRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/kyc", kycRoutes);
 app.use("/api/activities", activityRoutes);
+app.use("/api/tenants", tenantRoutes);
 
 /* Error Handler (must be last) */
 app.use(errorHandler);

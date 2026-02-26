@@ -15,10 +15,14 @@ export const investInFarm = async (
   next: NextFunction,
 ) => {
   try {
+    const tenantId = req.tenant?._id;
     const { farmId, amount } = req.body;
     const investor = req.user!; // from auth middleware
 
-    const farm = await Farm.findById(farmId);
+    const farm = await Farm.findOne({
+      _id: farmId,
+      ...(tenantId ? { tenantId } : {}),
+    });
     if (!farm) return next(new AppError("Farm not found", 404));
 
     if (amount < farm.minimumInvestment) {
@@ -32,6 +36,7 @@ export const investInFarm = async (
 
     // Create pending investment first
     const investment = await Investment.create({
+      ...(tenantId ? { tenantId } : {}),
       investor: investor._id,
       farm: farm._id,
       amount,
@@ -46,6 +51,8 @@ export const investInFarm = async (
       amount,
       {
         investmentId: investment._id.toString(),
+        tenantId: tenantId?.toString(),
+        tenantSlug: req.tenant?.slug,
         farmId: farm._id.toString(),
         farmName: farm.name,
       },
@@ -87,6 +94,7 @@ export const verifyPayment = async (
   next: NextFunction,
 ) => {
   try {
+    const tenantId = req.tenant?._id;
     const { reference } = req.params;
 
     const paystackResponse = await verifyTransaction(reference);
@@ -97,6 +105,7 @@ export const verifyPayment = async (
 
     const investment = await Investment.findOne({
       paystackReference: reference,
+      ...(tenantId ? { tenantId } : {}),
     }).populate("farm");
     if (!investment) {
       return next(new AppError("Investment not found", 404));
@@ -135,9 +144,11 @@ export const completeInvestment = async (
   next: NextFunction,
 ) => {
   try {
-    const investment = await Investment.findById(req.params.id).populate(
-      "farm investor",
-    );
+    const tenantId = req.tenant?._id;
+    const investment = await Investment.findOne({
+      _id: req.params.id,
+      ...(tenantId ? { tenantId } : {}),
+    }).populate("farm investor");
 
     if (!investment) return next(new AppError("Investment not found", 404));
 
@@ -183,8 +194,10 @@ export const getMyInvestments = async (
   next: NextFunction,
 ) => {
   try {
+    const tenantId = req.tenant?._id;
     const investments = await Investment.find({
       investor: req.user!._id,
+      ...(tenantId ? { tenantId } : {}),
     }).populate("farm");
 
     // Add projected return for each investment
@@ -215,9 +228,11 @@ export const getInvestmentById = async (
   next: NextFunction,
 ) => {
   try {
-    const investment = await Investment.findById(req.params.id).populate(
-      "farm",
-    );
+    const tenantId = req.tenant?._id;
+    const investment = await Investment.findOne({
+      _id: req.params.id,
+      ...(tenantId ? { tenantId } : {}),
+    }).populate("farm");
 
     if (!investment) {
       return next(new AppError("Investment not found", 404));
@@ -262,7 +277,8 @@ export const getAllInvestments = async (
   next: NextFunction,
 ) => {
   try {
-    const investments = await Investment.find()
+    const tenantId = req.tenant?._id;
+    const investments = await Investment.find(tenantId ? { tenantId } : {})
       .populate("farm")
       .populate("investor", "name email");
 
