@@ -4,11 +4,14 @@
   "version": "0.1.0",
   "packageManager": "pnpm@10.17.1",
   "scripts": {
-    "dev": "pnpm -r --parallel --if-present dev",
-    "build": "pnpm -r --if-present build",
-    "typecheck": "pnpm -r --if-present typecheck",
-    "lint": "pnpm -r --if-present lint",
-    "test": "pnpm -r --if-present test",
+    "dev": "turbo run dev --parallel",
+    "build": "turbo run build",
+    "typecheck": "turbo run typecheck",
+    "lint": "turbo run lint",
+    "test": "turbo run test",
     "clean": "pnpm -r --if-present clean"
+  },
+  "devDependencies": {
+    "turbo": "^2.5.6"
   }
 }

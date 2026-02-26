@@ -89,13 +89,17 @@ export const investInFarm = async (
 
 // Verify payment after callback (optional - webhook handles this too)
 export const verifyPayment = async (
-  req: Request,
+  req: Request<{ reference: string }>,
   res: Response,
   next: NextFunction,
 ) => {
   try {
     const tenantId = req.tenant?._id;
     const { reference } = req.params;
+
+    if (!reference) {
+      return next(new AppError("Payment reference is required", 400));
+    }
 
     const paystackResponse = await verifyTransaction(reference);
 

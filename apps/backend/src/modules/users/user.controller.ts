@@ -212,7 +212,11 @@ export const promoteUser = async (
   next: NextFunction,
 ): Promise<void> => {
   try {
-    const { id } = req.params;
+    const rawId = req.params.id;
+    const id = Array.isArray(rawId) ? rawId[0] : rawId;
+    if (!id) {
+      throw new Error("User ID is required");
+    }
     const tenantId = req.tenant?._id?.toString();
     const user = await promoteToAdmin(id, tenantId);
 
@@ -238,7 +242,11 @@ export const demoteUser = async (
   next: NextFunction,
 ): Promise<void> => {
   try {
-    const { id } = req.params;
+    const rawId = req.params.id;
+    const id = Array.isArray(rawId) ? rawId[0] : rawId;
+    if (!id) {
+      throw new Error("User ID is required");
+    }
     const tenantId = req.tenant?._id?.toString();
     const user = await demoteFromAdmin(id, tenantId);
 
