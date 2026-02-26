@@ -1,0 +1,39 @@
+# Render.com Blueprint for CropCapital Backend
+
+services:
+  - type: web
+    name: cropcapital-backend
+    runtime: node
+    region: frankfurt # Change to your preferred region
+    plan: free # Change to 'starter' or 'standard' for production
+
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+      - key: MONGO_URI
+        sync: false # Set manually in Render dashboard
+      - key: JWT_SECRET
+        generateValue: true
+      - key: PAYSTACK_SECRET_KEY
+        sync: false # Set manually in Render dashboard
+      - key: PAYSTACK_PUBLIC_KEY
+        sync: false # Set manually in Render dashboard
+      - key: EMAIL_HOST
+        sync: false
+      - key: EMAIL_PORT
+        value: 587
+      - key: EMAIL_USER
+        sync: false
+      - key: EMAIL_PASS
+        sync: false
+      - key: FRONTEND_URL
+        sync: false # Set to your Vercel frontend URL
+
+    healthCheckPath: /
+
+    autoDeploy: true # Auto-deploy when code is pushed to main branch
