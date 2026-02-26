@@ -10,6 +10,7 @@ import { Sidebar } from '@/components/layout/sidebar'
 import { Header } from '@/components/layout/header'
 import { ViewModeProvider } from '@/contexts/view-mode'
 import { api } from '@/lib/api-builder'
+import { useTenant } from '@/contexts/tenant'
 
 export const Route = createFileRoute('/_authenticated')({
   beforeLoad: async ({ location, context }) => {
@@ -60,9 +61,13 @@ export const Route = createFileRoute('/_authenticated')({
 export function AuthenticatedLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const { user } = Route.useRouteContext()
+  const { tenant } = useTenant()
 
   return (
-    <ViewModeProvider userRole={user.role}>
+    <ViewModeProvider
+      userRole={user.role}
+      allowAdminView={tenant.features.adminPortal}
+    >
       <div className="min-h-screen bg-background">
         <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 

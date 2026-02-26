@@ -1,6 +1,7 @@
 import {
   createContext,
   useCallback,
+  useEffect,
   useContext,
   useMemo,
   useState,
@@ -19,21 +20,32 @@ interface ViewModeContextValue {
 const ViewModeContext = createContext<ViewModeContextValue | null>(null)
 
 interface ViewModeProviderProps {
-  userRole: 'admin' | 'investor'
+  userRole: 'admin' | 'investor' | 'super_admin'
+  allowAdminView?: boolean
   children: ReactNode
 }
 
 export function ViewModeProvider({
   userRole,
+  allowAdminView = true,
   children,
 }: ViewModeProviderProps) {
   const [viewMode, setViewModeState] = useState<ViewMode>(() => {
     // Only admins can have admin view mode
-    if (userRole !== 'admin') return 'investor'
+    if (userRole !== 'admin' && userRole !== 'super_admin') return 'investor'
+    if (!allowAdminView) return 'investor'
     return getViewMode() || 'investor'
   })
 
-  const isAdmin = userRole === 'admin'
+  const isAdmin =
+    (userRole === 'admin' || userRole === 'super_admin') && allowAdminView
+
+  useEffect(() => {
+    if (!allowAdminView && viewMode === 'admin') {
+      setViewModeState('investor')
+      storeViewMode('investor')
+    }
+  }, [allowAdminView, viewMode])
 
   const setViewMode = useCallback(
     (mode: ViewMode) => {

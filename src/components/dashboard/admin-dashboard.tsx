@@ -59,7 +59,7 @@ export function AdminDashboard() {
   }))
 
   const fundingChartConfig = {
-    funded: { label: 'Funded', color: 'hsl(142, 40%, 48%)' }, // AYF logo green
+    funded: { label: 'Funded', color: 'hsl(142, 40%, 48%)' }, // brand green
     remaining: { label: 'Remaining', color: 'hsl(38, 70%, 68%)' }, // soft amber
   } satisfies ChartConfig
 
@@ -82,13 +82,13 @@ export function AdminDashboard() {
   }))
 
   const roiChartConfig = {
-    roi: { label: 'ROI %', color: 'hsl(142, 64%, 48%)' }, // AYF logo green
+    roi: { label: 'ROI %', color: 'hsl(142, 64%, 48%)' }, // brand green
   } satisfies ChartConfig
 
   // Soft vibrant color palette for ROI bars
   const roiColors = [
     'hsl(221, 65%, 68%)', // soft blue
-    'hsl(142, 64%, 48%)', // AYF logo green
+    'hsl(142, 64%, 48%)', // brand green
     'hsl(280, 60%, 70%)', // soft purple
     'hsl(262, 60%, 68%)', // soft violet
     'hsl(346, 60%, 68%)', // soft rose
@@ -97,7 +97,7 @@ export function AdminDashboard() {
     'hsl(24, 70%, 68%)', // soft orange
     'hsl(173, 55%, 65%)', // soft cyan
     'hsl(339, 60%, 70%)', // soft pink
-    'hsl(142, 64%, 46%)', // AYF green variant
+    'hsl(142, 64%, 46%)', // brand green variant
     'hsl(262, 58%, 70%)', // soft lavender
   ]
 

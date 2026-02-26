@@ -18,6 +18,7 @@ import {
 import { countries } from '@/components/layout/auth-layout'
 import { useRegister } from '@/hooks/use-auth'
 import { registerSchema } from '@/api/auth/schema'
+import { useTenant } from '@/contexts/tenant'
 
 export const Route = createFileRoute('/auth/sign-up/')({
   component: SignUpPage,
@@ -25,6 +26,7 @@ export const Route = createFileRoute('/auth/sign-up/')({
 
 function SignUpPage() {
   const { mutate: register, isPending } = useRegister()
+  const { tenant } = useTenant()
   const navigate = useNavigate()
 
   const [showPassword, setShowPassword] = useState(false)
@@ -68,7 +70,7 @@ function SignUpPage() {
           Create your account to start investing in agriculture.
         </p>
         <h1 className="text-3xl font-bold text-foreground">
-          Sign Up to <span className="text-primary">AYF</span>
+          Sign Up to <span className="text-primary">{tenant.shortName}</span>
         </h1>
       </div>
 

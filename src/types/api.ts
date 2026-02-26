@@ -2,7 +2,7 @@ export interface User {
   _id: string
   name: string
   email: string
-  role: 'investor' | 'admin'
+  role: 'investor' | 'admin' | 'super_admin'
   country?: string
   photo?: string
   isVerified: boolean
@@ -257,4 +257,96 @@ export interface ActivitiesListResponse {
     total: number
     pages: number
   }
+}
+
+export interface TenantBranding {
+  displayName: string
+  shortName?: string
+  legalName?: string
+  logoUrl?: string
+  faviconUrl?: string
+  primaryColor?: string
+  tagline?: string
+  heroTitle?: string
+  heroDescription?: string
+  ctaPrimaryLabel?: string
+  ctaSecondaryLabel?: string
+  supportEmail?: string
+  supportPhone?: string
+  supportWhatsapp?: string
+  address?: string
+  websiteUrl?: string
+  termsUrl?: string
+  privacyUrl?: string
+}
+
+export interface TenantFeatures {
+  investments: boolean
+  wallet: boolean
+  transactions: boolean
+  farms: boolean
+  news: boolean
+  notifications: boolean
+  adminPortal: boolean
+  adminFarms: boolean
+  adminInvestors: boolean
+  adminTransactions: boolean
+  adminPayouts: boolean
+  adminKyc: boolean
+  adminReports: boolean
+}
+
+export interface TenantBootstrap {
+  id: string
+  name: string
+  slug: string
+  features: TenantFeatures
+  branding: TenantBranding
+}
+
+export interface TenantBootstrapResponse {
+  success: boolean
+  tenant: TenantBootstrap | null
+}
+
+export interface TenantSummary extends TenantBootstrap {
+  domains: Array<string>
+  isActive: boolean
+  createdAt?: string
+  updatedAt?: string
+}
+
+export interface TenantsListResponse {
+  success: boolean
+  count: number
+  tenants: Array<TenantSummary>
+}
+
+export interface CreateTenantRequest {
+  name: string
+  slug: string
+  domains?: Array<string>
+  isActive?: boolean
+  branding: TenantBranding
+  features?: TenantFeatures
+}
+
+export interface UpdateTenantRequest {
+  name?: string
+  slug?: string
+  domains?: Array<string>
+  isActive?: boolean
+  branding?: TenantBranding
+  features?: TenantFeatures
+}
+
+export interface TenantMutationResponse {
+  success: boolean
+  tenant: TenantSummary
+}
+
+export interface AssignUsersResponse {
+  success: boolean
+  message: string
+  updatedCount: number
 }

@@ -10,18 +10,21 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
+import { useTenant } from '@/contexts/tenant'
 
 export const Route = createFileRoute('/support')({
   component: SupportPage,
 })
 
 function SupportPage() {
+  const { tenant } = useTenant()
+
   return (
     <div className="max-w-4xl mx-auto space-y-10 animate-fade-in px-4">
       <div className="text-center space-y-2 py-8">
         <h1 className="text-3xl font-bold tracking-tight">How can we help?</h1>
         <p className="text-muted-foreground text-lg">
-          Find answers or contact our support team.
+          Find answers or contact the {tenant.displayName} support team.
         </p>
       </div>
 
@@ -52,10 +55,10 @@ function SupportPage() {
             <h3 className="font-medium mb-3">Contact Information</h3>
             <div className="space-y-3 text-sm text-muted-foreground">
               <div className="flex items-center gap-2">
-                <Mail className="h-4 w-4" /> support@ayfagro.com
+                <Mail className="h-4 w-4" /> {tenant.supportEmail}
               </div>
               <div className="flex items-center gap-2">
-                <Phone className="h-4 w-4" /> +234 800 123 4567
+                <Phone className="h-4 w-4" /> {tenant.supportPhone}
               </div>
             </div>
           </div>

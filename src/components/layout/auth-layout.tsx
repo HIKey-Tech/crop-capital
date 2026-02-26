@@ -1,4 +1,5 @@
 import { Outlet } from '@tanstack/react-router'
+import { useTenant } from '@/contexts/tenant'
 
 const countries = [
   'Liberia',
@@ -13,6 +14,8 @@ const countries = [
 ]
 
 export function AuthLayout() {
+  const { tenant } = useTenant()
+
   return (
     <div className="min-h-screen flex">
       {/* Left Panel - Branding */}
@@ -20,19 +23,24 @@ export function AuthLayout() {
         <div className="max-w-md text-center">
           <div className="flex items-center justify-center gap-3 mb-6">
             <div className="w-12 h-12 rounded-xl bg-primary flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-xl">
-                AYF
-              </span>
+              {tenant.logoUrl ? (
+                <img
+                  src={tenant.logoUrl}
+                  alt={tenant.displayName}
+                  className="w-8 h-8 object-contain"
+                />
+              ) : (
+                <span className="text-primary-foreground font-bold text-xl">
+                  {tenant.shortName}
+                </span>
+              )}
             </div>
             <span className="text-2xl font-bold text-foreground">
-              Africa Youth Forum
+              {tenant.displayName}
             </span>
           </div>
 
-          <p className="text-muted-foreground mb-12">
-            Empowering African agriculture through community-driven investments.
-            Join thousands of investors building sustainable futures.
-          </p>
+          <p className="text-muted-foreground mb-12">{tenant.tagline}</p>
 
           {/* Illustration placeholder */}
           <div className="relative mx-auto w-64 h-80">
@@ -78,10 +86,20 @@ export function AuthLayout() {
         <div className="w-full max-w-md">
           <div className="lg:hidden flex items-center justify-center gap-3 mb-8">
             <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
-              <span className="text-primary-foreground font-bold">AYF</span>
+              {tenant.logoUrl ? (
+                <img
+                  src={tenant.logoUrl}
+                  alt={tenant.displayName}
+                  className="w-6 h-6 object-contain"
+                />
+              ) : (
+                <span className="text-primary-foreground font-bold">
+                  {tenant.shortName}
+                </span>
+              )}
             </div>
             <span className="text-xl font-bold text-foreground">
-              Africa Youth Forum
+              {tenant.displayName}
             </span>
           </div>
 

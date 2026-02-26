@@ -1,4 +1,4 @@
-import { createFileRoute, useRouteContext } from '@tanstack/react-router'
+import { createFileRoute } from '@tanstack/react-router'
 import { toast } from 'sonner'
 import { Mail, MapPin, Save, User } from 'lucide-react'
 
@@ -15,7 +15,7 @@ export const Route = createFileRoute('/_authenticated/settings/')({
 })
 
 function ProfileSettingsPage() {
-  const { user } = Route.useRouteContext();
+  const { user } = Route.useRouteContext()
   const { mutate: updateProfile, isPending } = useUpdateProfile()
 
   const form = useForm({

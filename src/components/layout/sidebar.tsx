@@ -1,4 +1,5 @@
 import { Link } from '@tanstack/react-router'
+import { useRouteContext } from '@tanstack/react-router'
 import {
   ArrowLeftRight,
   Bell,
@@ -13,10 +14,12 @@ import {
   Users,
   Wallet,
   X,
+  Building2,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useViewMode } from '@/contexts/view-mode'
 import { NavLink } from '@/components/nav-link'
+import { useTenant } from '@/contexts/tenant'
 
 interface SidebarProps {
   isOpen?: boolean
@@ -25,29 +28,110 @@ interface SidebarProps {
 
 const investorNavItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/investments', label: 'My Investments', icon: FolderOpen },
-  { href: '/wallet', label: 'Wallet', icon: Wallet },
-  { href: '/transactions', label: 'Transactions', icon: Receipt },
-  { href: '/farms', label: 'Discover Farms', icon: Search },
-  { href: '/news', label: 'News & Updates', icon: Newspaper },
-  { href: '/notifications', label: 'Notifications', icon: Bell },
+  {
+    href: '/investments',
+    label: 'My Investments',
+    icon: FolderOpen,
+    feature: 'investments' as const,
+  },
+  {
+    href: '/wallet',
+    label: 'Wallet',
+    icon: Wallet,
+    feature: 'wallet' as const,
+  },
+  {
+    href: '/transactions',
+    label: 'Transactions',
+    icon: Receipt,
+    feature: 'transactions' as const,
+  },
+  {
+    href: '/farms',
+    label: 'Discover Farms',
+    icon: Search,
+    feature: 'farms' as const,
+  },
+  {
+    href: '/news',
+    label: 'News & Updates',
+    icon: Newspaper,
+    feature: 'news' as const,
+  },
+  {
+    href: '/notifications',
+    label: 'Notifications',
+    icon: Bell,
+    feature: 'notifications' as const,
+  },
   { href: '/settings', label: 'Settings', icon: Settings },
 ]
 
 const adminNavItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/admin/farms', label: 'Farms', icon: FolderOpen },
-  { href: '/admin/investors', label: 'Investors', icon: Users },
-  { href: '/admin/transactions', label: 'Transactions', icon: Receipt },
-  { href: '/admin/payouts', label: 'Payouts', icon: Wallet },
-  { href: '/admin/kyc', label: 'KYC Review', icon: FileBarChart },
-  { href: '/admin/reports', label: 'Reports', icon: FileBarChart },
+  {
+    href: '/admin/farms',
+    label: 'Farms',
+    icon: FolderOpen,
+    feature: 'adminFarms' as const,
+  },
+  {
+    href: '/admin/investors',
+    label: 'Investors',
+    icon: Users,
+    feature: 'adminInvestors' as const,
+  },
+  {
+    href: '/admin/transactions',
+    label: 'Transactions',
+    icon: Receipt,
+    feature: 'adminTransactions' as const,
+  },
+  {
+    href: '/admin/payouts',
+    label: 'Payouts',
+    icon: Wallet,
+    feature: 'adminPayouts' as const,
+  },
+  {
+    href: '/admin/kyc',
+    label: 'KYC Review',
+    icon: FileBarChart,
+    feature: 'adminKyc' as const,
+  },
+  {
+    href: '/admin/reports',
+    label: 'Reports',
+    icon: FileBarChart,
+    feature: 'adminReports' as const,
+  },
   { href: '/settings', label: 'Settings', icon: Settings },
 ]
 
 export function Sidebar({ isOpen, onClose }: SidebarProps) {
+  const { user } = useRouteContext({ from: '/_authenticated' })
   const { viewMode, isAdmin, toggleViewMode } = useViewMode()
-  const navItems = viewMode === 'admin' ? adminNavItems : investorNavItems
+  const { tenant } = useTenant()
+  const isSuperAdmin = user.role === 'super_admin'
+  const canUseAdminView = tenant.features.adminPortal
+
+  const visibleInvestorNavItems = investorNavItems.filter(
+    (item) => !item.feature || tenant.features[item.feature],
+  )
+
+  const visibleAdminNavItems = adminNavItems.filter(
+    (item) => !item.feature || tenant.features[item.feature],
+  )
+
+  const navItems =
+    viewMode === 'admin' && canUseAdminView
+      ? isSuperAdmin
+        ? [
+            ...visibleAdminNavItems,
+            { href: '/admin', label: 'Tenants', icon: Building2 },
+          ]
+        : visibleAdminNavItems
+      : visibleInvestorNavItems
 
   return (
     <>
@@ -69,16 +153,21 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
         <div className="flex items-center justify-between px-5 py-6 border-b border-sidebar-border">
           <Link to="/" className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-sm">
-                AYF
-              </span>
+              {tenant.logoUrl ? (
+                <img
+                  src={tenant.logoUrl}
+                  alt={tenant.displayName}
+                  className="w-5 h-5 object-contain"
+                />
+              ) : (
+                <span className="text-primary-foreground font-bold text-sm">
+                  {tenant.shortName}
+                </span>
+              )}
             </div>
             <div className="flex flex-col">
               <span className="text-sm font-semibold text-foreground leading-tight">
-                Africa Youth
-              </span>
-              <span className="text-sm font-semibold text-primary leading-tight">
-                Forum
+                {tenant.displayName}
               </span>
             </div>
           </Link>
@@ -112,7 +201,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
         </nav>
 
         {/* View Mode Toggle (admin only) */}
-        {isAdmin && (
+        {isAdmin && canUseAdminView && (
           <div className="px-3 pb-2">
             <button
               onClick={toggleViewMode}
@@ -129,7 +218,9 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
               ) : (
                 <>
                   <Shield className="w-4 h-4" />
-                  <span>Switch to Admin</span>
+                  <span>
+                    {isSuperAdmin ? 'Switch to Super Admin' : 'Switch to Admin'}
+                  </span>
                 </>
               )}
             </button>
@@ -139,7 +230,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
         {/* Footer */}
         <div className="px-5 py-4 border-t border-sidebar-border">
           <p className="text-xs text-muted-foreground">
-            © {new Date().getFullYear()} Africa Youth Forum
+            © {new Date().getFullYear()} {tenant.legalName}
           </p>
         </div>
       </aside>

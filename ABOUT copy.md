@@ -1,21 +1,21 @@
-# AYF Agro — Agricultural Investment Platform
+# CropCapital — Agricultural Investment Platform
 
 Here's a grounded assessment based on a deep analysis of both codebases and the target SaaS described in the attached explainer.
 
-## Feasibility: Converting AYF Agro into a SaaS Agricultural Value Chain Platform
+## Feasibility: Converting CropCapital into a SaaS Agricultural Value Chain Platform
 
-**TL;DR — It's feasible, but the current codebase and the target SaaS describe two fundamentally different products sharing an agricultural context. The current system is an *investment crowdfunding platform*; the target is an *agricultural value chain management system* (farmer registry, crop tracking, aggregation, buyer marketplace, logistics). Realistic reuse is ~25% infrastructure scaffolding / ~75% new development. Structuring it as a monorepo with AYF as one "solution" is the right architecture, but it's closer to building a new product on proven foundations than to "converting" the existing one.**
+**TL;DR — It's feasible, but the current codebase and the target SaaS describe two fundamentally different products sharing an agricultural context. The current system is an _investment crowdfunding platform_; the target is an _agricultural value chain management system_ (farmer registry, crop tracking, aggregation, buyer marketplace, logistics). Realistic reuse is ~25% infrastructure scaffolding / ~75% new development. Structuring it as a monorepo with CropCapital as the first "solution" is the right architecture, but it's closer to building a new product on proven foundations than to "converting" the existing one.**
 
 ---
 
 ### What the Two Systems Actually Do
 
-| | **AYF Agro (current)** | **Target SaaS (explainer)** |
-|---|---|---|
-| **Core idea** | Investors fund farms, earn ROI | End-to-end agricultural value chain management |
-| **Users** | Investors + Admins (2 roles) | Farmers, Aggregators, Buyers, Logistics, Program Managers, Platform Admins (6+ roles) |
-| **Money flow** | Investor → Farm → ROI payout | Buyer → Aggregator → Farmer (multi-party ledger) |
-| **Data focus** | Investment amounts, ROI, payment status | Crop yields, produce grading, inventory levels, delivery tracking |
+|                   | **CropCapital (current)**                      | **Target SaaS (explainer)**                                                                         |
+| ----------------- | ---------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| **Core idea**     | Investors fund farms, earn ROI                 | End-to-end agricultural value chain management                                                      |
+| **Users**         | Investors + Admins (2 roles)                   | Farmers, Aggregators, Buyers, Logistics, Program Managers, Platform Admins (6+ roles)               |
+| **Money flow**    | Investor → Farm → ROI payout                   | Buyer → Aggregator → Farmer (multi-party ledger)                                                    |
+| **Data focus**    | Investment amounts, ROI, payment status        | Crop yields, produce grading, inventory levels, delivery tracking                                   |
 | **Domain models** | User, Farm, Investment, KYC, Activity, Payment | All of the above + Crop Cycles, Aggregation Batches, Storage Units, Buyer Orders, Transport Records |
 
 **Domain overlap is ~15-20%.** The shared surface is basic user auth, KYC verification, activity logging, and the Paystack payment pattern. The agricultural models are almost entirely different.
@@ -57,34 +57,34 @@ agro-platform/                          ← new monorepo root
 │   ├── api/                            ← new multi-tenant backend (reuses current patterns)
 │   └── web/                            ← new multi-tenant frontend (reuses current architecture)
 ├── solutions/
-│   └── ayf/                            ← AYF-specific config, seed data, custom branding
+│   └── cropcapital/                    ← CropCapital-specific config, seed data, custom branding
 └── turbo.json / pnpm-workspace.yaml
 ```
 
-AYF becomes a **tenant configuration** (branding, seed data, feature flags) rather than a separate codebase. The core platform handles multi-tenancy, and AYF is the first customer/deployment.
+CropCapital becomes a **tenant configuration** (branding, seed data, feature flags) rather than a separate codebase. The core platform handles multi-tenancy, and CropCapital is the first customer/deployment.
 
 ---
 
 ### Phased Approach
 
-| Phase | Scope | Reuse from Current |
-|---|---|---|
+| Phase                          | Scope                                                                                                             | Reuse from Current                          |
+| ------------------------------ | ----------------------------------------------------------------------------------------------------------------- | ------------------------------------------- |
 | **1. Monorepo + Tenant infra** | pnpm workspaces, shared types, tenant model, tenant middleware, JWT with `tenantId`, row-level Mongoose isolation | Express skeleton, auth flow, error handling |
-| **2. Role system overhaul** | RBAC with permissions table, 6+ roles, granular route guards | Middleware pattern (rewritten) |
-| **3. Core value chain models** | Farmer Registry, Crop Cycles, Aggregation, Inventory | ~15% from current Farm/User models |
-| **4. Marketplace + Logistics** | Buyer orders, transport tracking, delivery confirmation | Paystack integration pattern |
-| **5. Reporting + Analytics** | Dashboards, data export, trend analysis | Activity logging pattern, UI components |
-| **6. AYF migration** | Migrate current AYF data, map investment model to financial records | AYF becomes first tenant |
+| **2. Role system overhaul**    | RBAC with permissions table, 6+ roles, granular route guards                                                      | Middleware pattern (rewritten)              |
+| **3. Core value chain models** | Farmer Registry, Crop Cycles, Aggregation, Inventory                                                              | ~15% from current Farm/User models          |
+| **4. Marketplace + Logistics** | Buyer orders, transport tracking, delivery confirmation                                                           | Paystack integration pattern                |
+| **5. Reporting + Analytics**   | Dashboards, data export, trend analysis                                                                           | Activity logging pattern, UI components     |
+| **6. CropCapital migration**   | Migrate current CropCapital data, map investment model to financial records                                       | CropCapital becomes first tenant            |
 
 ---
 
 ### Verdict
 
-| Question | Answer |
-|---|---|
-| **Is it possible?** | Yes — architecturally sound and the right long-term play |
-| **Is it a "conversion"?** | No — it's a **new product** that inherits ~25% of infrastructure patterns from the current codebase |
-| **Is the current code wasted?** | No — the architectural decisions (TanStack Router/Query, Express + Mongoose patterns, Paystack integration, component library) are all directly transferable |
-| **Is it out of scope for the current team/timeline?** | That depends on team size and timeline. This is a 6-12 month effort for a small team (2-4 devs), not a weekend refactor |
+| Question                                              | Answer                                                                                                                                                       |
+| ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Is it possible?**                                   | Yes — architecturally sound and the right long-term play                                                                                                     |
+| **Is it a "conversion"?**                             | No — it's a **new product** that inherits ~25% of infrastructure patterns from the current codebase                                                          |
+| **Is the current code wasted?**                       | No — the architectural decisions (TanStack Router/Query, Express + Mongoose patterns, Paystack integration, component library) are all directly transferable |
+| **Is it out of scope for the current team/timeline?** | That depends on team size and timeline. This is a 6-12 month effort for a small team (2-4 devs), not a weekend refactor                                      |
 
-The most pragmatic path: **finish the critical missing features for AYF first** (investment checkout, notifications — as listed in still-missing.md), ship it as a working product, then use those proven patterns as the foundation for the multi-tenant SaaS platform.
+The most pragmatic path: **finish the critical missing features for CropCapital first** (investment checkout, notifications — as listed in still-missing.md), ship it as a working product, then use those proven patterns as the foundation for the multi-tenant SaaS platform.

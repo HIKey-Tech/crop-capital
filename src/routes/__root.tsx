@@ -7,8 +7,9 @@ import type { User } from '@/types'
 import { Toaster as Sonner } from '@/components/ui/sonner'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { NotFound } from '@/components/not-found'
+import { TenantProvider } from '@/contexts/tenant'
 
-const queryClient = new QueryClient({
+export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       staleTime: 1000 * 60 * 5, // 5 minutes
@@ -34,7 +35,7 @@ export const Route = createRootRouteWithContext<RootContext>()({
         content: 'width=device-width, initial-scale=1',
       },
       {
-        title: 'AYF Agro - Agricultural Investment Platform',
+        title: 'CropCapital - Agricultural Investment Platform',
       },
     ],
     links: [{ rel: 'stylesheet', href: appCss }],
@@ -51,10 +52,12 @@ export const Route = createRootRouteWithContext<RootContext>()({
 function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Sonner />
-        <Outlet />
-      </TooltipProvider>
+      <TenantProvider>
+        <TooltipProvider>
+          <Sonner />
+          <Outlet />
+        </TooltipProvider>
+      </TenantProvider>
     </QueryClientProvider>
   )
 }

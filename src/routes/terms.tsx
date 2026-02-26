@@ -1,10 +1,13 @@
 import { createFileRoute } from '@tanstack/react-router'
+import { useTenant } from '@/contexts/tenant'
 
 export const Route = createFileRoute('/terms')({
   component: TermsPage,
 })
 
 function TermsPage() {
+  const { tenant } = useTenant()
+
   return (
     <div className="max-w-4xl mx-auto py-8 animate-fade-in space-y-8">
       <div>
@@ -18,8 +21,8 @@ function TermsPage() {
             1. Acceptance of Terms
           </h2>
           <p>
-            By accessing and using the AYF Agro platform, you agree to be bound
-            by these Terms of Service...
+            By accessing and using the {tenant.displayName} platform, you agree
+            to be bound by these Terms of Service...
           </p>
         </section>
 

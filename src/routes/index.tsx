@@ -3,6 +3,7 @@ import { Link, createFileRoute } from '@tanstack/react-router'
 import { ArrowRight, Shield, TrendingUp, Users } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
+import { useTenant } from '@/contexts/tenant'
 
 import farmPalmTrees from '@/assets/farm-palm-trees.jpg'
 
@@ -11,6 +12,10 @@ export const Route = createFileRoute('/')({
 })
 
 function LandingPage() {
+  const { tenant } = useTenant()
+  const isExternalTerms = Boolean(tenant.termsUrl?.startsWith('http'))
+  const isExternalPrivacy = Boolean(tenant.privacyUrl?.startsWith('http'))
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -18,12 +23,20 @@ function LandingPage() {
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2">
             <div className="w-9 h-9 rounded-lg bg-primary flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-sm">
-                AYF
-              </span>
+              {tenant.logoUrl ? (
+                <img
+                  src={tenant.logoUrl}
+                  alt={tenant.displayName}
+                  className="w-6 h-6 object-contain"
+                />
+              ) : (
+                <span className="text-primary-foreground font-bold text-sm">
+                  {tenant.shortName}
+                </span>
+              )}
             </div>
             <span className="text-lg font-bold text-foreground">
-              Africa Youth Forum
+              {tenant.displayName}
             </span>
           </Link>
 
@@ -64,12 +77,10 @@ function LandingPage() {
         <div className="container mx-auto">
           <div className="max-w-4xl mx-auto text-center">
             <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-6 leading-tight">
-              Invest in African
-              <span className="text-primary"> Agriculture</span>
+              {tenant.heroTitle}
             </h1>
             <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-              Connect with verified farms across Liberia and West Africa. Earn
-              attractive returns while empowering local communities.
+              {tenant.heroDescription}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link to="/auth">
@@ -77,7 +88,7 @@ function LandingPage() {
                   size="lg"
                   className="btn-primary-gradient h-14 px-8 text-lg"
                 >
-                  Start Investing
+                  {tenant.ctaPrimaryLabel}
                   <ArrowRight className="w-5 h-5 ml-2" />
                 </Button>
               </Link>
@@ -87,7 +98,7 @@ function LandingPage() {
                   variant="outline"
                   className="h-14 px-8 text-lg"
                 >
-                  Explore Farms
+                  {tenant.ctaSecondaryLabel}
                 </Button>
               </Link>
             </div>
@@ -95,7 +106,7 @@ function LandingPage() {
 
           {/* Hero Image */}
           <div className="mt-16 relative">
-            <div className="aspect-7/3 rounded-2xl overflow-hidden shadow-ayf-lg">
+            <div className="aspect-7/3 rounded-2xl overflow-hidden shadow-lg">
               <img
                 src={farmPalmTrees}
                 alt="African palm tree farm"
@@ -129,7 +140,7 @@ function LandingPage() {
       <section id="features" className="py-20 px-4 bg-muted">
         <div className="container mx-auto">
           <h2 className="text-3xl font-bold text-center text-foreground mb-12">
-            Why Invest with AYF?
+            Why Invest with {tenant.shortName}?
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -195,20 +206,38 @@ function LandingPage() {
         <div className="container mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-xs">
-                AYF
-              </span>
+              {tenant.logoUrl ? (
+                <img
+                  src={tenant.logoUrl}
+                  alt={tenant.displayName}
+                  className="w-5 h-5 object-contain"
+                />
+              ) : (
+                <span className="text-primary-foreground font-bold text-xs">
+                  {tenant.shortName}
+                </span>
+              )}
             </div>
             <span className="text-sm text-muted-foreground">
-              © {new Date().getFullYear()} Africa Youth Forum. All rights
+              © {new Date().getFullYear()} {tenant.legalName}. All rights
               reserved.
             </span>
           </div>
           <div className="flex gap-6 text-sm text-muted-foreground">
-            <a href="/privacy" className="hover:text-foreground">
+            <a
+              href={tenant.privacyUrl || '/privacy'}
+              target={isExternalPrivacy ? '_blank' : undefined}
+              rel={isExternalPrivacy ? 'noreferrer' : undefined}
+              className="hover:text-foreground"
+            >
               Privacy Policy
             </a>
-            <a href="/terms" className="hover:text-foreground">
+            <a
+              href={tenant.termsUrl || '/terms'}
+              target={isExternalTerms ? '_blank' : undefined}
+              rel={isExternalTerms ? 'noreferrer' : undefined}
+              className="hover:text-foreground"
+            >
               Terms of Service
             </a>
             <a href="/support" className="hover:text-foreground">

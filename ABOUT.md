@@ -1,8 +1,8 @@
-# AYF Agro — Agricultural Investment Platform
+# CropCapital — Agricultural Investment Platform
 
-## What Is AYF Agro?
+## What Is CropCapital?
 
-AYF Agro is a crowdfunding platform that connects everyday investors with verified agricultural farm projects. Users can browse active farm listings, invest money into projects they believe in, and earn a return on investment (ROI) once the farm's investment cycle matures.
+CropCapital is a crowdfunding platform that connects everyday investors with verified agricultural farm projects. Users can browse active farm listings, invest money into projects they believe in, and earn a return on investment (ROI) once the farm's investment cycle matures.
 
 Think of it as a marketplace where farmers get the capital they need to operate, and investors get a transparent, structured way to grow their money through agriculture.
 
@@ -51,7 +51,7 @@ agro-backend/           — Express API server
     activities/         — Activity logging
   src/workers/          — Scheduled ROI payout processing
 
-AYF-Agro---frontend/    — React SPA (TanStack Start-style)
+Frontend app/          — React SPA (TanStack Start-style)
   src/routes/           — File-based routing (auth, dashboard, onboarding, etc.)
   src/hooks/            — Data-fetching hooks per domain (farms, investments, auth…)
   src/components/       — UI components (dashboard, layout, invest, shared ui)

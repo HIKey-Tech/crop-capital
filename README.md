@@ -39,7 +39,7 @@ npm run format
 npm run check
 ```
 
-## 🌾 AYF Agro - Agricultural Investment Platform
+## 🌾 CropCapital - Agricultural Investment Platform
 
 This is a **crowdfunding/investment platform for agricultural projects (farms)**. It connects investors with verified farm projects, allowing them to invest money and earn ROI over time.
 
@@ -74,7 +74,7 @@ This is a **crowdfunding/investment platform for agricultural projects (farms)**
 - **Payments** - ⚠️ Stripe integration (needs Paystack replacement)
 - **Workers** - Scheduled ROI processing via cron jobs
 
-### Frontend (AYF-Agro---frontend)
+### Frontend App
 
 - Dashboard with stats (total invested, active projects, ROI earned)
 - Farm discovery and search
@@ -86,7 +86,7 @@ This is a **crowdfunding/investment platform for agricultural projects (farms)**
 
 ## 🚫 Missing Screens
 
-Based on my analysis, here are the **missing screens** for the AYF Agro platform:
+Based on my analysis, here are the **missing screens** for the CropCapital platform:
 
 ### **User/Investor Screens**
 

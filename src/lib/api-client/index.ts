@@ -1,7 +1,9 @@
 import type {
   ActivitiesListResponse,
+  AssignUsersResponse,
   AuthResponse,
   CreateFarmRequest,
+  CreateTenantRequest,
   FarmResponse,
   FarmsListResponse,
   InvestRequest,
@@ -16,6 +18,10 @@ import type {
   KycSubmitResponse,
   LoginRequest,
   RegisterRequest,
+  TenantBootstrapResponse,
+  TenantMutationResponse,
+  TenantsListResponse,
+  UpdateTenantRequest,
   UserDetailResponse,
   UserStatsResponse,
   UsersListResponse,
@@ -80,6 +86,28 @@ export function clearAuthToken(): void {
   clearViewMode()
 }
 
+function resolveTenantSlugFromHost(): string | null {
+  if (typeof window === 'undefined') return null
+
+  const host = window.location.hostname.toLowerCase()
+  const platformRoot = import.meta.env.VITE_PLATFORM_ROOT_DOMAIN as
+    | string
+    | undefined
+
+  if (!platformRoot) return null
+
+  if (!host.endsWith(platformRoot.toLowerCase())) return null
+
+  const suffix = `.${platformRoot.toLowerCase()}`
+  if (!host.endsWith(suffix)) return null
+
+  const prefix = host.slice(0, -suffix.length)
+  if (!prefix) return null
+
+  const parts = prefix.split('.').filter(Boolean)
+  return parts.length ? parts[parts.length - 1] : null
+}
+
 export async function request<T>(
   endpoint: string,
   options: RequestInit = {},
@@ -95,6 +123,11 @@ export async function request<T>(
     headers.Authorization = `Bearer ${token}`
   }
 
+  const tenantSlug = resolveTenantSlugFromHost()
+  if (tenantSlug) {
+    headers['X-Tenant-Slug'] = tenantSlug
+  }
+
   const url = `${API_BASE_URL}${endpoint}`
   const response = await fetch(url, { ...options, headers })
   const data = await response.json()
@@ -104,6 +137,40 @@ export async function request<T>(
   }
 
   return data
+}
+
+export const tenantApi = {
+  bootstrap: async (): Promise<TenantBootstrapResponse> => {
+    return request<TenantBootstrapResponse>('/tenants/bootstrap')
+  },
+  list: async (): Promise<TenantsListResponse> => {
+    return request<TenantsListResponse>('/tenants')
+  },
+  create: async (
+    data: CreateTenantRequest,
+  ): Promise<TenantMutationResponse> => {
+    return request<TenantMutationResponse>('/tenants', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    })
+  },
+  update: async (
+    id: string,
+    data: UpdateTenantRequest,
+  ): Promise<TenantMutationResponse> => {
+    return request<TenantMutationResponse>(`/tenants/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    })
+  },
+  assignUnassignedUsers: async (id: string): Promise<AssignUsersResponse> => {
+    return request<AssignUsersResponse>(
+      `/tenants/${id}/assign-unassigned-users`,
+      {
+        method: 'POST',
+      },
+    )
+  },
 }
 
 // Auth API

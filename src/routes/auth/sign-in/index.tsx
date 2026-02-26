@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useLogin } from '@/hooks/use-auth'
+import { useTenant } from '@/contexts/tenant'
 
 export const Route = createFileRoute('/auth/sign-in/')({
   component: SignInPage,
@@ -17,6 +18,7 @@ export const Route = createFileRoute('/auth/sign-in/')({
 
 function SignInPage() {
   const { mutate: login, isPending } = useLogin()
+  const { tenant } = useTenant()
   const navigate = useNavigate()
 
   const [showPassword, setShowPassword] = useState(false)
@@ -53,7 +55,7 @@ function SignInPage() {
           Welcome back! Please sign in to your account.
         </p>
         <h1 className="text-3xl font-bold text-foreground">
-          Sign In to <span className="text-primary">AYF</span>
+          Sign In to <span className="text-primary">{tenant.shortName}</span>
         </h1>
       </div>
 

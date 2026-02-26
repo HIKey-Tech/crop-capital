@@ -249,7 +249,7 @@ function FarmDetailsPage() {
                       >
                         <span className="font-medium">Pay with Wallet</span>
                         <span className="text-sm text-muted-foreground">
-                          Use your AYF balance
+                          Use your CropCapital balance
                         </span>
                       </Label>
                       <RadioGroupItem value="wallet" id="wallet" />

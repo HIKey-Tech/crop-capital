@@ -1,10 +1,13 @@
 import { createFileRoute } from '@tanstack/react-router'
+import { useTenant } from '@/contexts/tenant'
 
 export const Route = createFileRoute('/privacy')({
   component: PrivacyPage,
 })
 
 function PrivacyPage() {
+  const { tenant } = useTenant()
+
   return (
     <div className="max-w-4xl mx-auto py-8 animate-fade-in space-y-8">
       <div>
@@ -18,8 +21,9 @@ function PrivacyPage() {
             1. Information We Collect
           </h2>
           <p>
-            We collect personal information that you provide to us such as name,
-            email address, phone number, and payment information...
+            {tenant.displayName} collects personal information that you provide
+            to us such as name, email address, phone number, and payment
+            information...
           </p>
         </section>
 
