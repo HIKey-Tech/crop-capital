@@ -1,8 +1,9 @@
-import { createContext, useContext, useEffect, useMemo, useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
+import { createContext, useContext, useEffect, useMemo } from 'react'
 import type { ReactNode } from 'react'
 
 import type { TenantBootstrap } from '@/types'
-import { tenantApi } from '@/lib/api-client'
+import { api } from '@/lib/api-builder'
 
 interface TenantFeatures {
   investments: boolean
@@ -192,33 +193,17 @@ function applyTenantTheme(tenant: TenantConfig) {
 }
 
 export function TenantProvider({ children }: { children: ReactNode }) {
-  const [tenant, setTenant] = useState<TenantConfig>(defaultTenantConfig)
-  const [loading, setLoading] = useState(true)
+  const tenantQuery = useQuery({
+    queryKey: api.tenants.bootstrap.$use(),
+    queryFn: () => api.$use.tenants.bootstrap(),
+    retry: false,
+  })
 
-  useEffect(() => {
-    let mounted = true
-
-    const loadTenant = async () => {
-      try {
-        const response = await tenantApi.bootstrap()
-        if (!mounted) return
-        setTenant(toTenantConfig(response.tenant))
-      } catch {
-        if (!mounted) return
-        setTenant(defaultTenantConfig)
-      } finally {
-        if (mounted) {
-          setLoading(false)
-        }
-      }
-    }
-
-    loadTenant()
-
-    return () => {
-      mounted = false
-    }
-  }, [])
+  const tenant = useMemo(
+    () => toTenantConfig(tenantQuery.data?.tenant),
+    [tenantQuery.data?.tenant],
+  )
+  const loading = tenantQuery.isLoading
 
   useEffect(() => {
     applyTenantTheme(tenant)

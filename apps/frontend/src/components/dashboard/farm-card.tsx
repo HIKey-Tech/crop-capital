@@ -1,4 +1,4 @@
-import { Link } from '@tanstack/react-router'
+import { Link, useParams } from '@tanstack/react-router'
 import type { Farm } from '@/types'
 
 import { Badge } from '@/components/ui/badge'
@@ -40,6 +40,8 @@ interface FarmCardProps {
 }
 
 export function FarmCard({ farm, variant = 'default' }: FarmCardProps) {
+  const params = useParams({ strict: false })
+  const tenant = params.tenant ?? ''
   const progress = calculateFundingProgress(farm)
 
   // Determine status based on funding
@@ -122,7 +124,11 @@ export function FarmCard({ farm, variant = 'default' }: FarmCardProps) {
         </div>
 
         <div className="flex gap-3 mt-5">
-          <Link to="/farms/$id" params={{ id: farm._id }} className="w-1/2">
+          <Link
+            to="/$tenant/farms/$id"
+            params={{ tenant, id: farm._id }}
+            className="w-1/2"
+          >
             <Button
               className="w-full h-11 border-2 border-[#39A86B] text-[#218641] font-semibold bg-white rounded-lg transition-colors hover:bg-accent focus:outline-none text-base"
               type="button"
@@ -134,8 +140,8 @@ export function FarmCard({ farm, variant = 'default' }: FarmCardProps) {
             </Button>
           </Link>
           <Link
-            to="/farms/$id"
-            params={{ id: farm._id }}
+            to="/$tenant/farms/$id"
+            params={{ tenant, id: farm._id }}
             search={{ invest: true }}
             className="w-1/2"
           >

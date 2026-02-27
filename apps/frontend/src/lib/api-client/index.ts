@@ -27,14 +27,34 @@ import type {
   UsersListResponse,
 } from '@/types'
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
+function resolveApiBaseUrl(): string {
+  const fromEnv = import.meta.env.VITE_API_BASE_URL?.trim()
+  if (fromEnv) {
+    return fromEnv.replace(/\/$/, '')
+  }
 
-if (!API_BASE_URL) {
-  console.error('❌ VITE_API_BASE_URL is not defined!')
-  console.error('Environment variables:', import.meta.env)
-} else {
-  console.log('✅ API_BASE_URL:', API_BASE_URL)
+  if (typeof window !== 'undefined') {
+    const isLocalHost =
+      window.location.hostname === 'localhost' ||
+      window.location.hostname === '127.0.0.1'
+
+    if (isLocalHost) {
+      console.warn(
+        '⚠️ VITE_API_BASE_URL is not defined, defaulting to http://localhost:5123/api',
+      )
+      return 'http://localhost:5123/api'
+    }
+
+    console.warn(
+      '⚠️ VITE_API_BASE_URL is not defined, defaulting to same-origin /api',
+    )
+    return `${window.location.origin}/api`
+  }
+
+  return 'http://localhost:5123/api'
 }
+
+const API_BASE_URL = resolveApiBaseUrl()
 
 export class ApiError extends Error {
   constructor(
@@ -128,7 +148,10 @@ export async function request<T>(
     headers['X-Tenant-Slug'] = tenantSlug
   }
 
-  const url = `${API_BASE_URL}${endpoint}`
+  const normalizedEndpoint = endpoint.startsWith('/')
+    ? endpoint
+    : `/${endpoint}`
+  const url = `${API_BASE_URL}${normalizedEndpoint}`
   const response = await fetch(url, { ...options, headers })
   const data = await response.json()
 

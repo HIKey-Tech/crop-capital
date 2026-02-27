@@ -1,251 +1,212 @@
 import { Link, createFileRoute } from '@tanstack/react-router'
-
-import { ArrowRight, Shield, TrendingUp, Users } from 'lucide-react'
+import {
+  ArrowRight,
+  Building2,
+  CheckCircle2,
+  Settings2,
+  ShieldCheck,
+  Sparkles,
+  Users,
+} from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
-import { useTenant } from '@/contexts/tenant'
-
-import farmPalmTrees from '@/assets/farm-palm-trees.jpg'
 
 export const Route = createFileRoute('/')({
-  component: LandingPage,
+  component: RootRoute,
 })
 
-function LandingPage() {
-  const { tenant } = useTenant()
-  const isExternalTerms = Boolean(tenant.termsUrl?.startsWith('http'))
-  const isExternalPrivacy = Boolean(tenant.privacyUrl?.startsWith('http'))
-
+function RootRoute() {
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
-        <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2">
+      <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-md">
+        <div className="container mx-auto h-16 px-4 flex items-center justify-between">
+          <div className="flex items-center gap-2">
             <div className="w-9 h-9 rounded-lg bg-primary flex items-center justify-center">
-              {tenant.logoUrl ? (
-                <img
-                  src={tenant.logoUrl}
-                  alt={tenant.displayName}
-                  className="w-6 h-6 object-contain"
-                />
-              ) : (
-                <span className="text-primary-foreground font-bold text-sm">
-                  {tenant.shortName}
-                </span>
-              )}
+              <span className="text-primary-foreground font-bold text-sm">
+                CC
+              </span>
             </div>
             <span className="text-lg font-bold text-foreground">
-              {tenant.displayName}
+              CropCapital
             </span>
-          </Link>
-
-          <nav className="hidden md:flex items-center gap-8">
-            <a
-              href="#features"
-              className="text-muted-foreground hover:text-foreground transition-colors"
-            >
-              Features
-            </a>
-            <a
-              href="#how-it-works"
-              className="text-muted-foreground hover:text-foreground transition-colors"
-            >
-              How it Works
-            </a>
-            <a
-              href="#farms"
-              className="text-muted-foreground hover:text-foreground transition-colors"
-            >
-              Farms
-            </a>
-          </nav>
+          </div>
 
           <div className="flex items-center gap-3">
             <Link to="/auth">
               <Button variant="ghost">Sign In</Button>
             </Link>
             <Link to="/auth">
-              <Button className="btn-primary-gradient">Get Started</Button>
+              <Button className="btn-primary-gradient">Access Platform</Button>
             </Link>
           </div>
         </div>
       </header>
 
-      {/* Hero */}
-      <section className="pt-32 pb-20 px-4">
-        <div className="container mx-auto">
+      <main>
+        <section className="container mx-auto px-4 pt-16 md:pt-24 pb-14">
           <div className="max-w-4xl mx-auto text-center">
+            <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-sm text-muted-foreground mb-6">
+              <Sparkles className="w-4 h-4 text-primary" />
+              Tenant launch infrastructure for agri-investment teams
+            </div>
+
             <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-6 leading-tight">
-              {tenant.heroTitle}
+              Launch Your Agricultural Investment Platform
             </h1>
+
             <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-              {tenant.heroDescription}
+              Onboard and operate tenants with confidence — configure branding,
+              domain mapping, feature access, and user assignment before
+              customer launch.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+
+            <div className="flex flex-col sm:flex-row gap-3 justify-center mb-10">
               <Link to="/auth">
                 <Button
                   size="lg"
                   className="btn-primary-gradient h-14 px-8 text-lg"
                 >
-                  {tenant.ctaPrimaryLabel}
+                  Platform Sign In
                   <ArrowRight className="w-5 h-5 ml-2" />
                 </Button>
               </Link>
-              <Link to="/farms">
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="h-14 px-8 text-lg"
-                >
-                  {tenant.ctaSecondaryLabel}
-                </Button>
-              </Link>
-            </div>
-          </div>
-
-          {/* Hero Image */}
-          <div className="mt-16 relative">
-            <div className="aspect-7/3 rounded-2xl overflow-hidden shadow-lg">
-              <img
-                src={farmPalmTrees}
-                alt="African palm tree farm"
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-linear-to-t from-foreground/30 to-transparent" />
             </div>
 
-            {/* Floating Stats */}
-            <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 flex gap-4">
-              <div className="bg-card px-6 py-4 rounded-xl shadow-lg border border-border">
-                <p className="text-2xl font-bold text-foreground">$11.8M+</p>
-                <p className="text-sm text-muted-foreground">Total Invested</p>
-              </div>
-              <div className="bg-card px-6 py-4 rounded-xl shadow-lg border border-border">
-                <p className="text-2xl font-bold text-foreground">2,500+</p>
+            <p className="text-sm text-muted-foreground mb-10">
+              Need platform access? Email{' '}
+              <a
+                href="mailto:support@cropcapital.com"
+                className="text-primary font-medium hover:underline"
+              >
+                support@cropcapital.com
+              </a>
+              .
+            </p>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-3xl mx-auto">
+              <div className="rounded-xl border border-border bg-card p-4">
+                <p className="text-2xl font-bold text-foreground">
+                  Multi-tenant
+                </p>
                 <p className="text-sm text-muted-foreground">
-                  Active Investors
+                  Platform architecture
                 </p>
               </div>
-              <div className="bg-card px-6 py-4 rounded-xl shadow-lg border border-border hidden sm:block">
-                <p className="text-2xl font-bold text-primary">18.5%</p>
-                <p className="text-sm text-muted-foreground">Avg. ROI</p>
+              <div className="rounded-xl border border-border bg-card p-4">
+                <p className="text-2xl font-bold text-foreground">Role-based</p>
+                <p className="text-sm text-muted-foreground">
+                  Access and approvals
+                </p>
+              </div>
+              <div className="rounded-xl border border-border bg-card p-4">
+                <p className="text-2xl font-bold text-foreground">
+                  Config-first
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  No-code tenant setup
+                </p>
               </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Features */}
-      <section id="features" className="py-20 px-4 bg-muted">
-        <div className="container mx-auto">
-          <h2 className="text-3xl font-bold text-center text-foreground mb-12">
-            Why Invest with {tenant.shortName}?
-          </h2>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-card p-8 rounded-xl border border-border text-center">
-              <div className="w-14 h-14 rounded-xl bg-secondary flex items-center justify-center mx-auto mb-4">
-                <TrendingUp className="w-7 h-7 text-primary" />
+        <section className="container mx-auto px-4 pb-14">
+          <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="bg-card border border-border rounded-xl p-6 text-center">
+              <div className="w-12 h-12 rounded-lg bg-secondary flex items-center justify-center mx-auto mb-4">
+                <Building2 className="w-6 h-6 text-primary" />
               </div>
-              <h3 className="text-xl font-semibold mb-3">High Returns</h3>
-              <p className="text-muted-foreground">
-                Earn up to 20% annual returns on verified agricultural
-                investments.
+              <h2 className="text-lg font-semibold mb-2">Create Tenant</h2>
+              <p className="text-sm text-muted-foreground">
+                Register tenant profile, slug, domains, and activation state in
+                one flow.
               </p>
             </div>
 
-            <div className="bg-card p-8 rounded-xl border border-border text-center">
-              <div className="w-14 h-14 rounded-xl bg-secondary flex items-center justify-center mx-auto mb-4">
-                <Shield className="w-7 h-7 text-primary" />
+            <div className="bg-card border border-border rounded-xl p-6 text-center">
+              <div className="w-12 h-12 rounded-lg bg-secondary flex items-center justify-center mx-auto mb-4">
+                <Settings2 className="w-6 h-6 text-primary" />
               </div>
-              <h3 className="text-xl font-semibold mb-3">Verified Projects</h3>
-              <p className="text-muted-foreground">
-                All farms are vetted and verified before listing on our
-                platform.
+              <h2 className="text-lg font-semibold mb-2">Configure Features</h2>
+              <p className="text-sm text-muted-foreground">
+                Toggle modules like farms, investments, wallet, admin reports,
+                and KYC.
               </p>
             </div>
 
-            <div className="bg-card p-8 rounded-xl border border-border text-center">
-              <div className="w-14 h-14 rounded-xl bg-secondary flex items-center justify-center mx-auto mb-4">
-                <Users className="w-7 h-7 text-primary" />
+            <div className="bg-card border border-border rounded-xl p-6 text-center">
+              <div className="w-12 h-12 rounded-lg bg-secondary flex items-center justify-center mx-auto mb-4">
+                <Users className="w-6 h-6 text-primary" />
               </div>
-              <h3 className="text-xl font-semibold mb-3">Community Impact</h3>
-              <p className="text-muted-foreground">
-                Your investment directly supports local farmers and communities.
+              <h2 className="text-lg font-semibold mb-2">Assign Users</h2>
+              <p className="text-sm text-muted-foreground">
+                Map pending and existing accounts into the correct tenant before
+                go-live.
               </p>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* CTA */}
-      <section className="py-20 px-4">
-        <div className="container mx-auto text-center">
-          <h2 className="text-3xl font-bold text-foreground mb-4">
-            Ready to Start Investing?
-          </h2>
-          <p className="text-xl text-muted-foreground mb-8 max-w-xl mx-auto">
-            Join thousands of investors building wealth while supporting African
-            agriculture.
-          </p>
-          <Link to="/auth">
-            <Button
-              size="lg"
-              className="btn-primary-gradient h-14 px-8 text-lg"
-            >
-              Create Free Account
-              <ArrowRight className="w-5 h-5 ml-2" />
-            </Button>
-          </Link>
-        </div>
-      </section>
+        <section className="container mx-auto px-4 pb-20">
+          <div className="max-w-5xl mx-auto rounded-2xl border border-border bg-card p-8 md:p-10">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+              <div>
+                <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-3">
+                  Built for controlled, scalable rollout
+                </h2>
+                <p className="text-muted-foreground mb-6">
+                  Keep launch quality high with a platform workflow that
+                  centralizes onboarding and minimizes tenant misconfiguration.
+                </p>
+                <Link to="/auth">
+                  <Button className="btn-primary-gradient">
+                    Sign In to Platform
+                    <ArrowRight className="w-4 h-4 ml-2" />
+                  </Button>
+                </Link>
+              </div>
 
-      {/* Footer */}
-      <footer className="py-8 px-4 border-t border-border">
-        <div className="container mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-              {tenant.logoUrl ? (
-                <img
-                  src={tenant.logoUrl}
-                  alt={tenant.displayName}
-                  className="w-5 h-5 object-contain"
-                />
-              ) : (
-                <span className="text-primary-foreground font-bold text-xs">
-                  {tenant.shortName}
-                </span>
-              )}
+              <div className="space-y-3">
+                <div className="flex items-start gap-3 rounded-lg border border-border p-4">
+                  <ShieldCheck className="w-5 h-5 text-primary mt-0.5" />
+                  <div>
+                    <p className="font-medium text-foreground">
+                      Role-safe entry
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      Super-admin and tenant experiences are isolated by design.
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3 rounded-lg border border-border p-4">
+                  <CheckCircle2 className="w-5 h-5 text-primary mt-0.5" />
+                  <div>
+                    <p className="font-medium text-foreground">
+                      Config consistency
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      Branding, domains, and feature controls are managed in one
+                      place.
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3 rounded-lg border border-border p-4">
+                  <CheckCircle2 className="w-5 h-5 text-primary mt-0.5" />
+                  <div>
+                    <p className="font-medium text-foreground">
+                      Pre-launch readiness
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      Assign users and validate tenant settings before customer
+                      access.
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
-            <span className="text-sm text-muted-foreground">
-              © {new Date().getFullYear()} {tenant.legalName}. All rights
-              reserved.
-            </span>
           </div>
-          <div className="flex gap-6 text-sm text-muted-foreground">
-            <a
-              href={tenant.privacyUrl || '/privacy'}
-              target={isExternalPrivacy ? '_blank' : undefined}
-              rel={isExternalPrivacy ? 'noreferrer' : undefined}
-              className="hover:text-foreground"
-            >
-              Privacy Policy
-            </a>
-            <a
-              href={tenant.termsUrl || '/terms'}
-              target={isExternalTerms ? '_blank' : undefined}
-              rel={isExternalTerms ? 'noreferrer' : undefined}
-              className="hover:text-foreground"
-            >
-              Terms of Service
-            </a>
-            <a href="/support" className="hover:text-foreground">
-              Contact
-            </a>
-          </div>
-        </div>
-      </footer>
+        </section>
+      </main>
     </div>
   )
 }

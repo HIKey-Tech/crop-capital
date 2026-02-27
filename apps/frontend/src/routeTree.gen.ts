@@ -9,76 +9,55 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as TermsRouteImport } from './routes/terms'
-import { Route as SupportRouteImport } from './routes/support'
-import { Route as PrivacyRouteImport } from './routes/privacy'
-import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as AuthRouteImport } from './routes/auth'
-import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AuthIndexRouteImport } from './routes/auth/index'
-import { Route as AuthVerifyEmailRouteImport } from './routes/auth/verify-email'
-import { Route as AuthenticatedNewsRouteImport } from './routes/_authenticated/news'
-import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
-import { Route as AuthenticatedSettingsRouteRouteImport } from './routes/_authenticated/settings/route'
-import { Route as AuthSignUpIndexRouteImport } from './routes/auth/sign-up/index'
-import { Route as AuthSignInIndexRouteImport } from './routes/auth/sign-in/index'
-import { Route as AuthResetPasswordIndexRouteImport } from './routes/auth/reset-password/index'
-import { Route as AuthForgotPasswordIndexRouteImport } from './routes/auth/forgot-password/index'
-import { Route as AuthenticatedWalletIndexRouteImport } from './routes/_authenticated/wallet/index'
-import { Route as AuthenticatedTransactionsIndexRouteImport } from './routes/_authenticated/transactions/index'
-import { Route as AuthenticatedSettingsIndexRouteImport } from './routes/_authenticated/settings/index'
-import { Route as AuthenticatedNotificationsIndexRouteImport } from './routes/_authenticated/notifications/index'
-import { Route as AuthenticatedInvestmentsIndexRouteImport } from './routes/_authenticated/investments/index'
-import { Route as AuthenticatedFarmsIndexRouteImport } from './routes/_authenticated/farms/index'
-import { Route as AuthenticatedDashboardIndexRouteImport } from './routes/_authenticated/dashboard/index'
-import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
-import { Route as AuthenticatedSettingsVerificationRouteImport } from './routes/_authenticated/settings/verification'
-import { Route as AuthenticatedSettingsSecurityRouteImport } from './routes/_authenticated/settings/security'
-import { Route as AuthenticatedSettingsNotificationsRouteImport } from './routes/_authenticated/settings/notifications'
-import { Route as AuthenticatedPaymentCallbackRouteImport } from './routes/_authenticated/payment/callback'
-import { Route as AuthenticatedInvestmentsIdRouteImport } from './routes/_authenticated/investments/$id'
-import { Route as AuthenticatedFarmIdRouteImport } from './routes/_authenticated/farm/$id'
-import { Route as AuthenticatedAdminTransactionsRouteImport } from './routes/_authenticated/admin/transactions'
-import { Route as AuthenticatedAdminReportsRouteImport } from './routes/_authenticated/admin/reports'
-import { Route as AuthenticatedAdminPayoutsRouteImport } from './routes/_authenticated/admin/payouts'
-import { Route as AuthenticatedAdminKycRouteImport } from './routes/_authenticated/admin/kyc'
-import { Route as AuthenticatedAdminInvestorsRouteImport } from './routes/_authenticated/admin/investors'
-import { Route as AuthenticatedFarmsIdIndexRouteImport } from './routes/_authenticated/farms/$id/index'
-import { Route as AuthenticatedAdminFarmsIndexRouteImport } from './routes/_authenticated/admin/farms/index'
-import { Route as AuthenticatedFarmsIdInvestRouteImport } from './routes/_authenticated/farms/$id/invest'
-import { Route as AuthenticatedAdminUsersIdRouteImport } from './routes/_authenticated/admin/users/$id'
-import { Route as AuthenticatedAdminFarmsNewRouteImport } from './routes/_authenticated/admin/farms/new'
-import { Route as AuthenticatedAdminFarmsIdEditRouteImport } from './routes/_authenticated/admin/farms/$id/edit'
-import { Route as AuthenticatedAdminFarmsIdAnalyticsRouteImport } from './routes/_authenticated/admin/farms/$id/analytics'
+import { Route as SuperAdminIndexRouteImport } from './routes/super-admin/index'
+import { Route as TenantIndexRouteImport } from './routes/$tenant/index'
+import { Route as TenantTermsRouteImport } from './routes/$tenant/terms'
+import { Route as TenantSupportRouteImport } from './routes/$tenant/support'
+import { Route as TenantPrivacyRouteImport } from './routes/$tenant/privacy'
+import { Route as TenantOnboardingRouteImport } from './routes/$tenant/onboarding'
+import { Route as TenantAuthRouteRouteImport } from './routes/$tenant/auth/route'
+import { Route as TenantAuthenticatedRouteRouteImport } from './routes/$tenant/_authenticated/route'
+import { Route as TenantAuthIndexRouteImport } from './routes/$tenant/auth/index'
+import { Route as TenantAuthVerifyEmailRouteImport } from './routes/$tenant/auth/verify-email'
+import { Route as TenantAuthenticatedNewsRouteImport } from './routes/$tenant/_authenticated/news'
+import { Route as TenantAuthenticatedAdminRouteImport } from './routes/$tenant/_authenticated/admin'
+import { Route as TenantAuthenticatedSettingsRouteRouteImport } from './routes/$tenant/_authenticated/settings/route'
+import { Route as TenantAuthSignUpIndexRouteImport } from './routes/$tenant/auth/sign-up/index'
+import { Route as TenantAuthSignInIndexRouteImport } from './routes/$tenant/auth/sign-in/index'
+import { Route as TenantAuthResetPasswordIndexRouteImport } from './routes/$tenant/auth/reset-password/index'
+import { Route as TenantAuthForgotPasswordIndexRouteImport } from './routes/$tenant/auth/forgot-password/index'
+import { Route as TenantAuthenticatedWalletIndexRouteImport } from './routes/$tenant/_authenticated/wallet/index'
+import { Route as TenantAuthenticatedTransactionsIndexRouteImport } from './routes/$tenant/_authenticated/transactions/index'
+import { Route as TenantAuthenticatedSettingsIndexRouteImport } from './routes/$tenant/_authenticated/settings/index'
+import { Route as TenantAuthenticatedNotificationsIndexRouteImport } from './routes/$tenant/_authenticated/notifications/index'
+import { Route as TenantAuthenticatedInvestmentsIndexRouteImport } from './routes/$tenant/_authenticated/investments/index'
+import { Route as TenantAuthenticatedFarmsIndexRouteImport } from './routes/$tenant/_authenticated/farms/index'
+import { Route as TenantAuthenticatedDashboardIndexRouteImport } from './routes/$tenant/_authenticated/dashboard/index'
+import { Route as TenantAuthenticatedAdminIndexRouteImport } from './routes/$tenant/_authenticated/admin/index'
+import { Route as TenantAuthenticatedSettingsVerificationRouteImport } from './routes/$tenant/_authenticated/settings/verification'
+import { Route as TenantAuthenticatedSettingsSecurityRouteImport } from './routes/$tenant/_authenticated/settings/security'
+import { Route as TenantAuthenticatedSettingsNotificationsRouteImport } from './routes/$tenant/_authenticated/settings/notifications'
+import { Route as TenantAuthenticatedPaymentCallbackRouteImport } from './routes/$tenant/_authenticated/payment/callback'
+import { Route as TenantAuthenticatedInvestmentsIdRouteImport } from './routes/$tenant/_authenticated/investments/$id'
+import { Route as TenantAuthenticatedFarmIdRouteImport } from './routes/$tenant/_authenticated/farm/$id'
+import { Route as TenantAuthenticatedAdminTransactionsRouteImport } from './routes/$tenant/_authenticated/admin/transactions'
+import { Route as TenantAuthenticatedAdminReportsRouteImport } from './routes/$tenant/_authenticated/admin/reports'
+import { Route as TenantAuthenticatedAdminPayoutsRouteImport } from './routes/$tenant/_authenticated/admin/payouts'
+import { Route as TenantAuthenticatedAdminKycRouteImport } from './routes/$tenant/_authenticated/admin/kyc'
+import { Route as TenantAuthenticatedAdminInvestorsRouteImport } from './routes/$tenant/_authenticated/admin/investors'
+import { Route as TenantAuthenticatedFarmsIdIndexRouteImport } from './routes/$tenant/_authenticated/farms/$id/index'
+import { Route as TenantAuthenticatedAdminFarmsIndexRouteImport } from './routes/$tenant/_authenticated/admin/farms/index'
+import { Route as TenantAuthenticatedFarmsIdInvestRouteImport } from './routes/$tenant/_authenticated/farms/$id/invest'
+import { Route as TenantAuthenticatedAdminUsersIdRouteImport } from './routes/$tenant/_authenticated/admin/users/$id'
+import { Route as TenantAuthenticatedAdminFarmsNewRouteImport } from './routes/$tenant/_authenticated/admin/farms/new'
+import { Route as TenantAuthenticatedAdminFarmsIdEditRouteImport } from './routes/$tenant/_authenticated/admin/farms/$id/edit'
+import { Route as TenantAuthenticatedAdminFarmsIdAnalyticsRouteImport } from './routes/$tenant/_authenticated/admin/farms/$id/analytics'
 
-const TermsRoute = TermsRouteImport.update({
-  id: '/terms',
-  path: '/terms',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SupportRoute = SupportRouteImport.update({
-  id: '/support',
-  path: '/support',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PrivacyRoute = PrivacyRouteImport.update({
-  id: '/privacy',
-  path: '/privacy',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const OnboardingRoute = OnboardingRouteImport.update({
-  id: '/onboarding',
-  path: '/onboarding',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
-  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -86,515 +65,551 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthIndexRoute = AuthIndexRouteImport.update({
+const SuperAdminIndexRoute = SuperAdminIndexRouteImport.update({
+  id: '/super-admin/',
+  path: '/super-admin/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TenantIndexRoute = TenantIndexRouteImport.update({
+  id: '/$tenant/',
+  path: '/$tenant/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TenantTermsRoute = TenantTermsRouteImport.update({
+  id: '/$tenant/terms',
+  path: '/$tenant/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TenantSupportRoute = TenantSupportRouteImport.update({
+  id: '/$tenant/support',
+  path: '/$tenant/support',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TenantPrivacyRoute = TenantPrivacyRouteImport.update({
+  id: '/$tenant/privacy',
+  path: '/$tenant/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TenantOnboardingRoute = TenantOnboardingRouteImport.update({
+  id: '/$tenant/onboarding',
+  path: '/$tenant/onboarding',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TenantAuthRouteRoute = TenantAuthRouteRouteImport.update({
+  id: '/$tenant/auth',
+  path: '/$tenant/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TenantAuthenticatedRouteRoute =
+  TenantAuthenticatedRouteRouteImport.update({
+    id: '/$tenant/_authenticated',
+    path: '/$tenant',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const TenantAuthIndexRoute = TenantAuthIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => AuthRoute,
+  getParentRoute: () => TenantAuthRouteRoute,
 } as any)
-const AuthVerifyEmailRoute = AuthVerifyEmailRouteImport.update({
+const TenantAuthVerifyEmailRoute = TenantAuthVerifyEmailRouteImport.update({
   id: '/verify-email',
   path: '/verify-email',
-  getParentRoute: () => AuthRoute,
+  getParentRoute: () => TenantAuthRouteRoute,
 } as any)
-const AuthenticatedNewsRoute = AuthenticatedNewsRouteImport.update({
+const TenantAuthenticatedNewsRoute = TenantAuthenticatedNewsRouteImport.update({
   id: '/news',
   path: '/news',
-  getParentRoute: () => AuthenticatedRouteRoute,
+  getParentRoute: () => TenantAuthenticatedRouteRoute,
 } as any)
-const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
-  id: '/admin',
-  path: '/admin',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
-const AuthenticatedSettingsRouteRoute =
-  AuthenticatedSettingsRouteRouteImport.update({
+const TenantAuthenticatedAdminRoute =
+  TenantAuthenticatedAdminRouteImport.update({
+    id: '/admin',
+    path: '/admin',
+    getParentRoute: () => TenantAuthenticatedRouteRoute,
+  } as any)
+const TenantAuthenticatedSettingsRouteRoute =
+  TenantAuthenticatedSettingsRouteRouteImport.update({
     id: '/settings',
     path: '/settings',
-    getParentRoute: () => AuthenticatedRouteRoute,
+    getParentRoute: () => TenantAuthenticatedRouteRoute,
   } as any)
-const AuthSignUpIndexRoute = AuthSignUpIndexRouteImport.update({
+const TenantAuthSignUpIndexRoute = TenantAuthSignUpIndexRouteImport.update({
   id: '/sign-up/',
   path: '/sign-up/',
-  getParentRoute: () => AuthRoute,
+  getParentRoute: () => TenantAuthRouteRoute,
 } as any)
-const AuthSignInIndexRoute = AuthSignInIndexRouteImport.update({
+const TenantAuthSignInIndexRoute = TenantAuthSignInIndexRouteImport.update({
   id: '/sign-in/',
   path: '/sign-in/',
-  getParentRoute: () => AuthRoute,
+  getParentRoute: () => TenantAuthRouteRoute,
 } as any)
-const AuthResetPasswordIndexRoute = AuthResetPasswordIndexRouteImport.update({
-  id: '/reset-password/',
-  path: '/reset-password/',
-  getParentRoute: () => AuthRoute,
-} as any)
-const AuthForgotPasswordIndexRoute = AuthForgotPasswordIndexRouteImport.update({
-  id: '/forgot-password/',
-  path: '/forgot-password/',
-  getParentRoute: () => AuthRoute,
-} as any)
-const AuthenticatedWalletIndexRoute =
-  AuthenticatedWalletIndexRouteImport.update({
+const TenantAuthResetPasswordIndexRoute =
+  TenantAuthResetPasswordIndexRouteImport.update({
+    id: '/reset-password/',
+    path: '/reset-password/',
+    getParentRoute: () => TenantAuthRouteRoute,
+  } as any)
+const TenantAuthForgotPasswordIndexRoute =
+  TenantAuthForgotPasswordIndexRouteImport.update({
+    id: '/forgot-password/',
+    path: '/forgot-password/',
+    getParentRoute: () => TenantAuthRouteRoute,
+  } as any)
+const TenantAuthenticatedWalletIndexRoute =
+  TenantAuthenticatedWalletIndexRouteImport.update({
     id: '/wallet/',
     path: '/wallet/',
-    getParentRoute: () => AuthenticatedRouteRoute,
+    getParentRoute: () => TenantAuthenticatedRouteRoute,
   } as any)
-const AuthenticatedTransactionsIndexRoute =
-  AuthenticatedTransactionsIndexRouteImport.update({
+const TenantAuthenticatedTransactionsIndexRoute =
+  TenantAuthenticatedTransactionsIndexRouteImport.update({
     id: '/transactions/',
     path: '/transactions/',
-    getParentRoute: () => AuthenticatedRouteRoute,
+    getParentRoute: () => TenantAuthenticatedRouteRoute,
   } as any)
-const AuthenticatedSettingsIndexRoute =
-  AuthenticatedSettingsIndexRouteImport.update({
+const TenantAuthenticatedSettingsIndexRoute =
+  TenantAuthenticatedSettingsIndexRouteImport.update({
     id: '/',
     path: '/',
-    getParentRoute: () => AuthenticatedSettingsRouteRoute,
+    getParentRoute: () => TenantAuthenticatedSettingsRouteRoute,
   } as any)
-const AuthenticatedNotificationsIndexRoute =
-  AuthenticatedNotificationsIndexRouteImport.update({
+const TenantAuthenticatedNotificationsIndexRoute =
+  TenantAuthenticatedNotificationsIndexRouteImport.update({
     id: '/notifications/',
     path: '/notifications/',
-    getParentRoute: () => AuthenticatedRouteRoute,
+    getParentRoute: () => TenantAuthenticatedRouteRoute,
   } as any)
-const AuthenticatedInvestmentsIndexRoute =
-  AuthenticatedInvestmentsIndexRouteImport.update({
+const TenantAuthenticatedInvestmentsIndexRoute =
+  TenantAuthenticatedInvestmentsIndexRouteImport.update({
     id: '/investments/',
     path: '/investments/',
-    getParentRoute: () => AuthenticatedRouteRoute,
+    getParentRoute: () => TenantAuthenticatedRouteRoute,
   } as any)
-const AuthenticatedFarmsIndexRoute = AuthenticatedFarmsIndexRouteImport.update({
-  id: '/farms/',
-  path: '/farms/',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
-const AuthenticatedDashboardIndexRoute =
-  AuthenticatedDashboardIndexRouteImport.update({
-    id: '/dashboard/',
-    path: '/dashboard/',
-    getParentRoute: () => AuthenticatedRouteRoute,
-  } as any)
-const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => AuthenticatedAdminRoute,
-} as any)
-const AuthenticatedSettingsVerificationRoute =
-  AuthenticatedSettingsVerificationRouteImport.update({
-    id: '/verification',
-    path: '/verification',
-    getParentRoute: () => AuthenticatedSettingsRouteRoute,
-  } as any)
-const AuthenticatedSettingsSecurityRoute =
-  AuthenticatedSettingsSecurityRouteImport.update({
-    id: '/security',
-    path: '/security',
-    getParentRoute: () => AuthenticatedSettingsRouteRoute,
-  } as any)
-const AuthenticatedSettingsNotificationsRoute =
-  AuthenticatedSettingsNotificationsRouteImport.update({
-    id: '/notifications',
-    path: '/notifications',
-    getParentRoute: () => AuthenticatedSettingsRouteRoute,
-  } as any)
-const AuthenticatedPaymentCallbackRoute =
-  AuthenticatedPaymentCallbackRouteImport.update({
-    id: '/payment/callback',
-    path: '/payment/callback',
-    getParentRoute: () => AuthenticatedRouteRoute,
-  } as any)
-const AuthenticatedInvestmentsIdRoute =
-  AuthenticatedInvestmentsIdRouteImport.update({
-    id: '/investments/$id',
-    path: '/investments/$id',
-    getParentRoute: () => AuthenticatedRouteRoute,
-  } as any)
-const AuthenticatedFarmIdRoute = AuthenticatedFarmIdRouteImport.update({
-  id: '/farm/$id',
-  path: '/farm/$id',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
-const AuthenticatedAdminTransactionsRoute =
-  AuthenticatedAdminTransactionsRouteImport.update({
-    id: '/transactions',
-    path: '/transactions',
-    getParentRoute: () => AuthenticatedAdminRoute,
-  } as any)
-const AuthenticatedAdminReportsRoute =
-  AuthenticatedAdminReportsRouteImport.update({
-    id: '/reports',
-    path: '/reports',
-    getParentRoute: () => AuthenticatedAdminRoute,
-  } as any)
-const AuthenticatedAdminPayoutsRoute =
-  AuthenticatedAdminPayoutsRouteImport.update({
-    id: '/payouts',
-    path: '/payouts',
-    getParentRoute: () => AuthenticatedAdminRoute,
-  } as any)
-const AuthenticatedAdminKycRoute = AuthenticatedAdminKycRouteImport.update({
-  id: '/kyc',
-  path: '/kyc',
-  getParentRoute: () => AuthenticatedAdminRoute,
-} as any)
-const AuthenticatedAdminInvestorsRoute =
-  AuthenticatedAdminInvestorsRouteImport.update({
-    id: '/investors',
-    path: '/investors',
-    getParentRoute: () => AuthenticatedAdminRoute,
-  } as any)
-const AuthenticatedFarmsIdIndexRoute =
-  AuthenticatedFarmsIdIndexRouteImport.update({
-    id: '/farms/$id/',
-    path: '/farms/$id/',
-    getParentRoute: () => AuthenticatedRouteRoute,
-  } as any)
-const AuthenticatedAdminFarmsIndexRoute =
-  AuthenticatedAdminFarmsIndexRouteImport.update({
+const TenantAuthenticatedFarmsIndexRoute =
+  TenantAuthenticatedFarmsIndexRouteImport.update({
     id: '/farms/',
     path: '/farms/',
-    getParentRoute: () => AuthenticatedAdminRoute,
+    getParentRoute: () => TenantAuthenticatedRouteRoute,
   } as any)
-const AuthenticatedFarmsIdInvestRoute =
-  AuthenticatedFarmsIdInvestRouteImport.update({
+const TenantAuthenticatedDashboardIndexRoute =
+  TenantAuthenticatedDashboardIndexRouteImport.update({
+    id: '/dashboard/',
+    path: '/dashboard/',
+    getParentRoute: () => TenantAuthenticatedRouteRoute,
+  } as any)
+const TenantAuthenticatedAdminIndexRoute =
+  TenantAuthenticatedAdminIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => TenantAuthenticatedAdminRoute,
+  } as any)
+const TenantAuthenticatedSettingsVerificationRoute =
+  TenantAuthenticatedSettingsVerificationRouteImport.update({
+    id: '/verification',
+    path: '/verification',
+    getParentRoute: () => TenantAuthenticatedSettingsRouteRoute,
+  } as any)
+const TenantAuthenticatedSettingsSecurityRoute =
+  TenantAuthenticatedSettingsSecurityRouteImport.update({
+    id: '/security',
+    path: '/security',
+    getParentRoute: () => TenantAuthenticatedSettingsRouteRoute,
+  } as any)
+const TenantAuthenticatedSettingsNotificationsRoute =
+  TenantAuthenticatedSettingsNotificationsRouteImport.update({
+    id: '/notifications',
+    path: '/notifications',
+    getParentRoute: () => TenantAuthenticatedSettingsRouteRoute,
+  } as any)
+const TenantAuthenticatedPaymentCallbackRoute =
+  TenantAuthenticatedPaymentCallbackRouteImport.update({
+    id: '/payment/callback',
+    path: '/payment/callback',
+    getParentRoute: () => TenantAuthenticatedRouteRoute,
+  } as any)
+const TenantAuthenticatedInvestmentsIdRoute =
+  TenantAuthenticatedInvestmentsIdRouteImport.update({
+    id: '/investments/$id',
+    path: '/investments/$id',
+    getParentRoute: () => TenantAuthenticatedRouteRoute,
+  } as any)
+const TenantAuthenticatedFarmIdRoute =
+  TenantAuthenticatedFarmIdRouteImport.update({
+    id: '/farm/$id',
+    path: '/farm/$id',
+    getParentRoute: () => TenantAuthenticatedRouteRoute,
+  } as any)
+const TenantAuthenticatedAdminTransactionsRoute =
+  TenantAuthenticatedAdminTransactionsRouteImport.update({
+    id: '/transactions',
+    path: '/transactions',
+    getParentRoute: () => TenantAuthenticatedAdminRoute,
+  } as any)
+const TenantAuthenticatedAdminReportsRoute =
+  TenantAuthenticatedAdminReportsRouteImport.update({
+    id: '/reports',
+    path: '/reports',
+    getParentRoute: () => TenantAuthenticatedAdminRoute,
+  } as any)
+const TenantAuthenticatedAdminPayoutsRoute =
+  TenantAuthenticatedAdminPayoutsRouteImport.update({
+    id: '/payouts',
+    path: '/payouts',
+    getParentRoute: () => TenantAuthenticatedAdminRoute,
+  } as any)
+const TenantAuthenticatedAdminKycRoute =
+  TenantAuthenticatedAdminKycRouteImport.update({
+    id: '/kyc',
+    path: '/kyc',
+    getParentRoute: () => TenantAuthenticatedAdminRoute,
+  } as any)
+const TenantAuthenticatedAdminInvestorsRoute =
+  TenantAuthenticatedAdminInvestorsRouteImport.update({
+    id: '/investors',
+    path: '/investors',
+    getParentRoute: () => TenantAuthenticatedAdminRoute,
+  } as any)
+const TenantAuthenticatedFarmsIdIndexRoute =
+  TenantAuthenticatedFarmsIdIndexRouteImport.update({
+    id: '/farms/$id/',
+    path: '/farms/$id/',
+    getParentRoute: () => TenantAuthenticatedRouteRoute,
+  } as any)
+const TenantAuthenticatedAdminFarmsIndexRoute =
+  TenantAuthenticatedAdminFarmsIndexRouteImport.update({
+    id: '/farms/',
+    path: '/farms/',
+    getParentRoute: () => TenantAuthenticatedAdminRoute,
+  } as any)
+const TenantAuthenticatedFarmsIdInvestRoute =
+  TenantAuthenticatedFarmsIdInvestRouteImport.update({
     id: '/farms/$id/invest',
     path: '/farms/$id/invest',
-    getParentRoute: () => AuthenticatedRouteRoute,
+    getParentRoute: () => TenantAuthenticatedRouteRoute,
   } as any)
-const AuthenticatedAdminUsersIdRoute =
-  AuthenticatedAdminUsersIdRouteImport.update({
+const TenantAuthenticatedAdminUsersIdRoute =
+  TenantAuthenticatedAdminUsersIdRouteImport.update({
     id: '/users/$id',
     path: '/users/$id',
-    getParentRoute: () => AuthenticatedAdminRoute,
+    getParentRoute: () => TenantAuthenticatedAdminRoute,
   } as any)
-const AuthenticatedAdminFarmsNewRoute =
-  AuthenticatedAdminFarmsNewRouteImport.update({
+const TenantAuthenticatedAdminFarmsNewRoute =
+  TenantAuthenticatedAdminFarmsNewRouteImport.update({
     id: '/farms/new',
     path: '/farms/new',
-    getParentRoute: () => AuthenticatedAdminRoute,
+    getParentRoute: () => TenantAuthenticatedAdminRoute,
   } as any)
-const AuthenticatedAdminFarmsIdEditRoute =
-  AuthenticatedAdminFarmsIdEditRouteImport.update({
+const TenantAuthenticatedAdminFarmsIdEditRoute =
+  TenantAuthenticatedAdminFarmsIdEditRouteImport.update({
     id: '/farms/$id/edit',
     path: '/farms/$id/edit',
-    getParentRoute: () => AuthenticatedAdminRoute,
+    getParentRoute: () => TenantAuthenticatedAdminRoute,
   } as any)
-const AuthenticatedAdminFarmsIdAnalyticsRoute =
-  AuthenticatedAdminFarmsIdAnalyticsRouteImport.update({
+const TenantAuthenticatedAdminFarmsIdAnalyticsRoute =
+  TenantAuthenticatedAdminFarmsIdAnalyticsRouteImport.update({
     id: '/farms/$id/analytics',
     path: '/farms/$id/analytics',
-    getParentRoute: () => AuthenticatedAdminRoute,
+    getParentRoute: () => TenantAuthenticatedAdminRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/auth': typeof AuthRouteWithChildren
-  '/onboarding': typeof OnboardingRoute
-  '/privacy': typeof PrivacyRoute
-  '/support': typeof SupportRoute
-  '/terms': typeof TermsRoute
-  '/settings': typeof AuthenticatedSettingsRouteRouteWithChildren
-  '/admin': typeof AuthenticatedAdminRouteWithChildren
-  '/news': typeof AuthenticatedNewsRoute
-  '/auth/verify-email': typeof AuthVerifyEmailRoute
-  '/auth/': typeof AuthIndexRoute
-  '/admin/investors': typeof AuthenticatedAdminInvestorsRoute
-  '/admin/kyc': typeof AuthenticatedAdminKycRoute
-  '/admin/payouts': typeof AuthenticatedAdminPayoutsRoute
-  '/admin/reports': typeof AuthenticatedAdminReportsRoute
-  '/admin/transactions': typeof AuthenticatedAdminTransactionsRoute
-  '/farm/$id': typeof AuthenticatedFarmIdRoute
-  '/investments/$id': typeof AuthenticatedInvestmentsIdRoute
-  '/payment/callback': typeof AuthenticatedPaymentCallbackRoute
-  '/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
-  '/settings/security': typeof AuthenticatedSettingsSecurityRoute
-  '/settings/verification': typeof AuthenticatedSettingsVerificationRoute
-  '/admin/': typeof AuthenticatedAdminIndexRoute
-  '/dashboard/': typeof AuthenticatedDashboardIndexRoute
-  '/farms/': typeof AuthenticatedFarmsIndexRoute
-  '/investments/': typeof AuthenticatedInvestmentsIndexRoute
-  '/notifications/': typeof AuthenticatedNotificationsIndexRoute
-  '/settings/': typeof AuthenticatedSettingsIndexRoute
-  '/transactions/': typeof AuthenticatedTransactionsIndexRoute
-  '/wallet/': typeof AuthenticatedWalletIndexRoute
-  '/auth/forgot-password/': typeof AuthForgotPasswordIndexRoute
-  '/auth/reset-password/': typeof AuthResetPasswordIndexRoute
-  '/auth/sign-in/': typeof AuthSignInIndexRoute
-  '/auth/sign-up/': typeof AuthSignUpIndexRoute
-  '/admin/farms/new': typeof AuthenticatedAdminFarmsNewRoute
-  '/admin/users/$id': typeof AuthenticatedAdminUsersIdRoute
-  '/farms/$id/invest': typeof AuthenticatedFarmsIdInvestRoute
-  '/admin/farms/': typeof AuthenticatedAdminFarmsIndexRoute
-  '/farms/$id/': typeof AuthenticatedFarmsIdIndexRoute
-  '/admin/farms/$id/analytics': typeof AuthenticatedAdminFarmsIdAnalyticsRoute
-  '/admin/farms/$id/edit': typeof AuthenticatedAdminFarmsIdEditRoute
+  '/auth': typeof AuthRoute
+  '/$tenant': typeof TenantAuthenticatedRouteRouteWithChildren
+  '/$tenant/auth': typeof TenantAuthRouteRouteWithChildren
+  '/$tenant/onboarding': typeof TenantOnboardingRoute
+  '/$tenant/privacy': typeof TenantPrivacyRoute
+  '/$tenant/support': typeof TenantSupportRoute
+  '/$tenant/terms': typeof TenantTermsRoute
+  '/$tenant/': typeof TenantIndexRoute
+  '/super-admin/': typeof SuperAdminIndexRoute
+  '/$tenant/settings': typeof TenantAuthenticatedSettingsRouteRouteWithChildren
+  '/$tenant/admin': typeof TenantAuthenticatedAdminRouteWithChildren
+  '/$tenant/news': typeof TenantAuthenticatedNewsRoute
+  '/$tenant/auth/verify-email': typeof TenantAuthVerifyEmailRoute
+  '/$tenant/auth/': typeof TenantAuthIndexRoute
+  '/$tenant/admin/investors': typeof TenantAuthenticatedAdminInvestorsRoute
+  '/$tenant/admin/kyc': typeof TenantAuthenticatedAdminKycRoute
+  '/$tenant/admin/payouts': typeof TenantAuthenticatedAdminPayoutsRoute
+  '/$tenant/admin/reports': typeof TenantAuthenticatedAdminReportsRoute
+  '/$tenant/admin/transactions': typeof TenantAuthenticatedAdminTransactionsRoute
+  '/$tenant/farm/$id': typeof TenantAuthenticatedFarmIdRoute
+  '/$tenant/investments/$id': typeof TenantAuthenticatedInvestmentsIdRoute
+  '/$tenant/payment/callback': typeof TenantAuthenticatedPaymentCallbackRoute
+  '/$tenant/settings/notifications': typeof TenantAuthenticatedSettingsNotificationsRoute
+  '/$tenant/settings/security': typeof TenantAuthenticatedSettingsSecurityRoute
+  '/$tenant/settings/verification': typeof TenantAuthenticatedSettingsVerificationRoute
+  '/$tenant/admin/': typeof TenantAuthenticatedAdminIndexRoute
+  '/$tenant/dashboard/': typeof TenantAuthenticatedDashboardIndexRoute
+  '/$tenant/farms/': typeof TenantAuthenticatedFarmsIndexRoute
+  '/$tenant/investments/': typeof TenantAuthenticatedInvestmentsIndexRoute
+  '/$tenant/notifications/': typeof TenantAuthenticatedNotificationsIndexRoute
+  '/$tenant/settings/': typeof TenantAuthenticatedSettingsIndexRoute
+  '/$tenant/transactions/': typeof TenantAuthenticatedTransactionsIndexRoute
+  '/$tenant/wallet/': typeof TenantAuthenticatedWalletIndexRoute
+  '/$tenant/auth/forgot-password/': typeof TenantAuthForgotPasswordIndexRoute
+  '/$tenant/auth/reset-password/': typeof TenantAuthResetPasswordIndexRoute
+  '/$tenant/auth/sign-in/': typeof TenantAuthSignInIndexRoute
+  '/$tenant/auth/sign-up/': typeof TenantAuthSignUpIndexRoute
+  '/$tenant/admin/farms/new': typeof TenantAuthenticatedAdminFarmsNewRoute
+  '/$tenant/admin/users/$id': typeof TenantAuthenticatedAdminUsersIdRoute
+  '/$tenant/farms/$id/invest': typeof TenantAuthenticatedFarmsIdInvestRoute
+  '/$tenant/admin/farms/': typeof TenantAuthenticatedAdminFarmsIndexRoute
+  '/$tenant/farms/$id/': typeof TenantAuthenticatedFarmsIdIndexRoute
+  '/$tenant/admin/farms/$id/analytics': typeof TenantAuthenticatedAdminFarmsIdAnalyticsRoute
+  '/$tenant/admin/farms/$id/edit': typeof TenantAuthenticatedAdminFarmsIdEditRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/onboarding': typeof OnboardingRoute
-  '/privacy': typeof PrivacyRoute
-  '/support': typeof SupportRoute
-  '/terms': typeof TermsRoute
-  '/news': typeof AuthenticatedNewsRoute
-  '/auth/verify-email': typeof AuthVerifyEmailRoute
-  '/auth': typeof AuthIndexRoute
-  '/admin/investors': typeof AuthenticatedAdminInvestorsRoute
-  '/admin/kyc': typeof AuthenticatedAdminKycRoute
-  '/admin/payouts': typeof AuthenticatedAdminPayoutsRoute
-  '/admin/reports': typeof AuthenticatedAdminReportsRoute
-  '/admin/transactions': typeof AuthenticatedAdminTransactionsRoute
-  '/farm/$id': typeof AuthenticatedFarmIdRoute
-  '/investments/$id': typeof AuthenticatedInvestmentsIdRoute
-  '/payment/callback': typeof AuthenticatedPaymentCallbackRoute
-  '/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
-  '/settings/security': typeof AuthenticatedSettingsSecurityRoute
-  '/settings/verification': typeof AuthenticatedSettingsVerificationRoute
-  '/admin': typeof AuthenticatedAdminIndexRoute
-  '/dashboard': typeof AuthenticatedDashboardIndexRoute
-  '/farms': typeof AuthenticatedFarmsIndexRoute
-  '/investments': typeof AuthenticatedInvestmentsIndexRoute
-  '/notifications': typeof AuthenticatedNotificationsIndexRoute
-  '/settings': typeof AuthenticatedSettingsIndexRoute
-  '/transactions': typeof AuthenticatedTransactionsIndexRoute
-  '/wallet': typeof AuthenticatedWalletIndexRoute
-  '/auth/forgot-password': typeof AuthForgotPasswordIndexRoute
-  '/auth/reset-password': typeof AuthResetPasswordIndexRoute
-  '/auth/sign-in': typeof AuthSignInIndexRoute
-  '/auth/sign-up': typeof AuthSignUpIndexRoute
-  '/admin/farms/new': typeof AuthenticatedAdminFarmsNewRoute
-  '/admin/users/$id': typeof AuthenticatedAdminUsersIdRoute
-  '/farms/$id/invest': typeof AuthenticatedFarmsIdInvestRoute
-  '/admin/farms': typeof AuthenticatedAdminFarmsIndexRoute
-  '/farms/$id': typeof AuthenticatedFarmsIdIndexRoute
-  '/admin/farms/$id/analytics': typeof AuthenticatedAdminFarmsIdAnalyticsRoute
-  '/admin/farms/$id/edit': typeof AuthenticatedAdminFarmsIdEditRoute
+  '/auth': typeof AuthRoute
+  '/$tenant': typeof TenantIndexRoute
+  '/$tenant/onboarding': typeof TenantOnboardingRoute
+  '/$tenant/privacy': typeof TenantPrivacyRoute
+  '/$tenant/support': typeof TenantSupportRoute
+  '/$tenant/terms': typeof TenantTermsRoute
+  '/super-admin': typeof SuperAdminIndexRoute
+  '/$tenant/news': typeof TenantAuthenticatedNewsRoute
+  '/$tenant/auth/verify-email': typeof TenantAuthVerifyEmailRoute
+  '/$tenant/auth': typeof TenantAuthIndexRoute
+  '/$tenant/admin/investors': typeof TenantAuthenticatedAdminInvestorsRoute
+  '/$tenant/admin/kyc': typeof TenantAuthenticatedAdminKycRoute
+  '/$tenant/admin/payouts': typeof TenantAuthenticatedAdminPayoutsRoute
+  '/$tenant/admin/reports': typeof TenantAuthenticatedAdminReportsRoute
+  '/$tenant/admin/transactions': typeof TenantAuthenticatedAdminTransactionsRoute
+  '/$tenant/farm/$id': typeof TenantAuthenticatedFarmIdRoute
+  '/$tenant/investments/$id': typeof TenantAuthenticatedInvestmentsIdRoute
+  '/$tenant/payment/callback': typeof TenantAuthenticatedPaymentCallbackRoute
+  '/$tenant/settings/notifications': typeof TenantAuthenticatedSettingsNotificationsRoute
+  '/$tenant/settings/security': typeof TenantAuthenticatedSettingsSecurityRoute
+  '/$tenant/settings/verification': typeof TenantAuthenticatedSettingsVerificationRoute
+  '/$tenant/admin': typeof TenantAuthenticatedAdminIndexRoute
+  '/$tenant/dashboard': typeof TenantAuthenticatedDashboardIndexRoute
+  '/$tenant/farms': typeof TenantAuthenticatedFarmsIndexRoute
+  '/$tenant/investments': typeof TenantAuthenticatedInvestmentsIndexRoute
+  '/$tenant/notifications': typeof TenantAuthenticatedNotificationsIndexRoute
+  '/$tenant/settings': typeof TenantAuthenticatedSettingsIndexRoute
+  '/$tenant/transactions': typeof TenantAuthenticatedTransactionsIndexRoute
+  '/$tenant/wallet': typeof TenantAuthenticatedWalletIndexRoute
+  '/$tenant/auth/forgot-password': typeof TenantAuthForgotPasswordIndexRoute
+  '/$tenant/auth/reset-password': typeof TenantAuthResetPasswordIndexRoute
+  '/$tenant/auth/sign-in': typeof TenantAuthSignInIndexRoute
+  '/$tenant/auth/sign-up': typeof TenantAuthSignUpIndexRoute
+  '/$tenant/admin/farms/new': typeof TenantAuthenticatedAdminFarmsNewRoute
+  '/$tenant/admin/users/$id': typeof TenantAuthenticatedAdminUsersIdRoute
+  '/$tenant/farms/$id/invest': typeof TenantAuthenticatedFarmsIdInvestRoute
+  '/$tenant/admin/farms': typeof TenantAuthenticatedAdminFarmsIndexRoute
+  '/$tenant/farms/$id': typeof TenantAuthenticatedFarmsIdIndexRoute
+  '/$tenant/admin/farms/$id/analytics': typeof TenantAuthenticatedAdminFarmsIdAnalyticsRoute
+  '/$tenant/admin/farms/$id/edit': typeof TenantAuthenticatedAdminFarmsIdEditRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
-  '/auth': typeof AuthRouteWithChildren
-  '/onboarding': typeof OnboardingRoute
-  '/privacy': typeof PrivacyRoute
-  '/support': typeof SupportRoute
-  '/terms': typeof TermsRoute
-  '/_authenticated/settings': typeof AuthenticatedSettingsRouteRouteWithChildren
-  '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
-  '/_authenticated/news': typeof AuthenticatedNewsRoute
-  '/auth/verify-email': typeof AuthVerifyEmailRoute
-  '/auth/': typeof AuthIndexRoute
-  '/_authenticated/admin/investors': typeof AuthenticatedAdminInvestorsRoute
-  '/_authenticated/admin/kyc': typeof AuthenticatedAdminKycRoute
-  '/_authenticated/admin/payouts': typeof AuthenticatedAdminPayoutsRoute
-  '/_authenticated/admin/reports': typeof AuthenticatedAdminReportsRoute
-  '/_authenticated/admin/transactions': typeof AuthenticatedAdminTransactionsRoute
-  '/_authenticated/farm/$id': typeof AuthenticatedFarmIdRoute
-  '/_authenticated/investments/$id': typeof AuthenticatedInvestmentsIdRoute
-  '/_authenticated/payment/callback': typeof AuthenticatedPaymentCallbackRoute
-  '/_authenticated/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
-  '/_authenticated/settings/security': typeof AuthenticatedSettingsSecurityRoute
-  '/_authenticated/settings/verification': typeof AuthenticatedSettingsVerificationRoute
-  '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
-  '/_authenticated/dashboard/': typeof AuthenticatedDashboardIndexRoute
-  '/_authenticated/farms/': typeof AuthenticatedFarmsIndexRoute
-  '/_authenticated/investments/': typeof AuthenticatedInvestmentsIndexRoute
-  '/_authenticated/notifications/': typeof AuthenticatedNotificationsIndexRoute
-  '/_authenticated/settings/': typeof AuthenticatedSettingsIndexRoute
-  '/_authenticated/transactions/': typeof AuthenticatedTransactionsIndexRoute
-  '/_authenticated/wallet/': typeof AuthenticatedWalletIndexRoute
-  '/auth/forgot-password/': typeof AuthForgotPasswordIndexRoute
-  '/auth/reset-password/': typeof AuthResetPasswordIndexRoute
-  '/auth/sign-in/': typeof AuthSignInIndexRoute
-  '/auth/sign-up/': typeof AuthSignUpIndexRoute
-  '/_authenticated/admin/farms/new': typeof AuthenticatedAdminFarmsNewRoute
-  '/_authenticated/admin/users/$id': typeof AuthenticatedAdminUsersIdRoute
-  '/_authenticated/farms/$id/invest': typeof AuthenticatedFarmsIdInvestRoute
-  '/_authenticated/admin/farms/': typeof AuthenticatedAdminFarmsIndexRoute
-  '/_authenticated/farms/$id/': typeof AuthenticatedFarmsIdIndexRoute
-  '/_authenticated/admin/farms/$id/analytics': typeof AuthenticatedAdminFarmsIdAnalyticsRoute
-  '/_authenticated/admin/farms/$id/edit': typeof AuthenticatedAdminFarmsIdEditRoute
+  '/auth': typeof AuthRoute
+  '/$tenant/_authenticated': typeof TenantAuthenticatedRouteRouteWithChildren
+  '/$tenant/auth': typeof TenantAuthRouteRouteWithChildren
+  '/$tenant/onboarding': typeof TenantOnboardingRoute
+  '/$tenant/privacy': typeof TenantPrivacyRoute
+  '/$tenant/support': typeof TenantSupportRoute
+  '/$tenant/terms': typeof TenantTermsRoute
+  '/$tenant/': typeof TenantIndexRoute
+  '/super-admin/': typeof SuperAdminIndexRoute
+  '/$tenant/_authenticated/settings': typeof TenantAuthenticatedSettingsRouteRouteWithChildren
+  '/$tenant/_authenticated/admin': typeof TenantAuthenticatedAdminRouteWithChildren
+  '/$tenant/_authenticated/news': typeof TenantAuthenticatedNewsRoute
+  '/$tenant/auth/verify-email': typeof TenantAuthVerifyEmailRoute
+  '/$tenant/auth/': typeof TenantAuthIndexRoute
+  '/$tenant/_authenticated/admin/investors': typeof TenantAuthenticatedAdminInvestorsRoute
+  '/$tenant/_authenticated/admin/kyc': typeof TenantAuthenticatedAdminKycRoute
+  '/$tenant/_authenticated/admin/payouts': typeof TenantAuthenticatedAdminPayoutsRoute
+  '/$tenant/_authenticated/admin/reports': typeof TenantAuthenticatedAdminReportsRoute
+  '/$tenant/_authenticated/admin/transactions': typeof TenantAuthenticatedAdminTransactionsRoute
+  '/$tenant/_authenticated/farm/$id': typeof TenantAuthenticatedFarmIdRoute
+  '/$tenant/_authenticated/investments/$id': typeof TenantAuthenticatedInvestmentsIdRoute
+  '/$tenant/_authenticated/payment/callback': typeof TenantAuthenticatedPaymentCallbackRoute
+  '/$tenant/_authenticated/settings/notifications': typeof TenantAuthenticatedSettingsNotificationsRoute
+  '/$tenant/_authenticated/settings/security': typeof TenantAuthenticatedSettingsSecurityRoute
+  '/$tenant/_authenticated/settings/verification': typeof TenantAuthenticatedSettingsVerificationRoute
+  '/$tenant/_authenticated/admin/': typeof TenantAuthenticatedAdminIndexRoute
+  '/$tenant/_authenticated/dashboard/': typeof TenantAuthenticatedDashboardIndexRoute
+  '/$tenant/_authenticated/farms/': typeof TenantAuthenticatedFarmsIndexRoute
+  '/$tenant/_authenticated/investments/': typeof TenantAuthenticatedInvestmentsIndexRoute
+  '/$tenant/_authenticated/notifications/': typeof TenantAuthenticatedNotificationsIndexRoute
+  '/$tenant/_authenticated/settings/': typeof TenantAuthenticatedSettingsIndexRoute
+  '/$tenant/_authenticated/transactions/': typeof TenantAuthenticatedTransactionsIndexRoute
+  '/$tenant/_authenticated/wallet/': typeof TenantAuthenticatedWalletIndexRoute
+  '/$tenant/auth/forgot-password/': typeof TenantAuthForgotPasswordIndexRoute
+  '/$tenant/auth/reset-password/': typeof TenantAuthResetPasswordIndexRoute
+  '/$tenant/auth/sign-in/': typeof TenantAuthSignInIndexRoute
+  '/$tenant/auth/sign-up/': typeof TenantAuthSignUpIndexRoute
+  '/$tenant/_authenticated/admin/farms/new': typeof TenantAuthenticatedAdminFarmsNewRoute
+  '/$tenant/_authenticated/admin/users/$id': typeof TenantAuthenticatedAdminUsersIdRoute
+  '/$tenant/_authenticated/farms/$id/invest': typeof TenantAuthenticatedFarmsIdInvestRoute
+  '/$tenant/_authenticated/admin/farms/': typeof TenantAuthenticatedAdminFarmsIndexRoute
+  '/$tenant/_authenticated/farms/$id/': typeof TenantAuthenticatedFarmsIdIndexRoute
+  '/$tenant/_authenticated/admin/farms/$id/analytics': typeof TenantAuthenticatedAdminFarmsIdAnalyticsRoute
+  '/$tenant/_authenticated/admin/farms/$id/edit': typeof TenantAuthenticatedAdminFarmsIdEditRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/auth'
-    | '/onboarding'
-    | '/privacy'
-    | '/support'
-    | '/terms'
-    | '/settings'
-    | '/admin'
-    | '/news'
-    | '/auth/verify-email'
-    | '/auth/'
-    | '/admin/investors'
-    | '/admin/kyc'
-    | '/admin/payouts'
-    | '/admin/reports'
-    | '/admin/transactions'
-    | '/farm/$id'
-    | '/investments/$id'
-    | '/payment/callback'
-    | '/settings/notifications'
-    | '/settings/security'
-    | '/settings/verification'
-    | '/admin/'
-    | '/dashboard/'
-    | '/farms/'
-    | '/investments/'
-    | '/notifications/'
-    | '/settings/'
-    | '/transactions/'
-    | '/wallet/'
-    | '/auth/forgot-password/'
-    | '/auth/reset-password/'
-    | '/auth/sign-in/'
-    | '/auth/sign-up/'
-    | '/admin/farms/new'
-    | '/admin/users/$id'
-    | '/farms/$id/invest'
-    | '/admin/farms/'
-    | '/farms/$id/'
-    | '/admin/farms/$id/analytics'
-    | '/admin/farms/$id/edit'
+    | '/$tenant'
+    | '/$tenant/auth'
+    | '/$tenant/onboarding'
+    | '/$tenant/privacy'
+    | '/$tenant/support'
+    | '/$tenant/terms'
+    | '/$tenant/'
+    | '/super-admin/'
+    | '/$tenant/settings'
+    | '/$tenant/admin'
+    | '/$tenant/news'
+    | '/$tenant/auth/verify-email'
+    | '/$tenant/auth/'
+    | '/$tenant/admin/investors'
+    | '/$tenant/admin/kyc'
+    | '/$tenant/admin/payouts'
+    | '/$tenant/admin/reports'
+    | '/$tenant/admin/transactions'
+    | '/$tenant/farm/$id'
+    | '/$tenant/investments/$id'
+    | '/$tenant/payment/callback'
+    | '/$tenant/settings/notifications'
+    | '/$tenant/settings/security'
+    | '/$tenant/settings/verification'
+    | '/$tenant/admin/'
+    | '/$tenant/dashboard/'
+    | '/$tenant/farms/'
+    | '/$tenant/investments/'
+    | '/$tenant/notifications/'
+    | '/$tenant/settings/'
+    | '/$tenant/transactions/'
+    | '/$tenant/wallet/'
+    | '/$tenant/auth/forgot-password/'
+    | '/$tenant/auth/reset-password/'
+    | '/$tenant/auth/sign-in/'
+    | '/$tenant/auth/sign-up/'
+    | '/$tenant/admin/farms/new'
+    | '/$tenant/admin/users/$id'
+    | '/$tenant/farms/$id/invest'
+    | '/$tenant/admin/farms/'
+    | '/$tenant/farms/$id/'
+    | '/$tenant/admin/farms/$id/analytics'
+    | '/$tenant/admin/farms/$id/edit'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/onboarding'
-    | '/privacy'
-    | '/support'
-    | '/terms'
-    | '/news'
-    | '/auth/verify-email'
     | '/auth'
-    | '/admin/investors'
-    | '/admin/kyc'
-    | '/admin/payouts'
-    | '/admin/reports'
-    | '/admin/transactions'
-    | '/farm/$id'
-    | '/investments/$id'
-    | '/payment/callback'
-    | '/settings/notifications'
-    | '/settings/security'
-    | '/settings/verification'
-    | '/admin'
-    | '/dashboard'
-    | '/farms'
-    | '/investments'
-    | '/notifications'
-    | '/settings'
-    | '/transactions'
-    | '/wallet'
-    | '/auth/forgot-password'
-    | '/auth/reset-password'
-    | '/auth/sign-in'
-    | '/auth/sign-up'
-    | '/admin/farms/new'
-    | '/admin/users/$id'
-    | '/farms/$id/invest'
-    | '/admin/farms'
-    | '/farms/$id'
-    | '/admin/farms/$id/analytics'
-    | '/admin/farms/$id/edit'
+    | '/$tenant'
+    | '/$tenant/onboarding'
+    | '/$tenant/privacy'
+    | '/$tenant/support'
+    | '/$tenant/terms'
+    | '/super-admin'
+    | '/$tenant/news'
+    | '/$tenant/auth/verify-email'
+    | '/$tenant/auth'
+    | '/$tenant/admin/investors'
+    | '/$tenant/admin/kyc'
+    | '/$tenant/admin/payouts'
+    | '/$tenant/admin/reports'
+    | '/$tenant/admin/transactions'
+    | '/$tenant/farm/$id'
+    | '/$tenant/investments/$id'
+    | '/$tenant/payment/callback'
+    | '/$tenant/settings/notifications'
+    | '/$tenant/settings/security'
+    | '/$tenant/settings/verification'
+    | '/$tenant/admin'
+    | '/$tenant/dashboard'
+    | '/$tenant/farms'
+    | '/$tenant/investments'
+    | '/$tenant/notifications'
+    | '/$tenant/settings'
+    | '/$tenant/transactions'
+    | '/$tenant/wallet'
+    | '/$tenant/auth/forgot-password'
+    | '/$tenant/auth/reset-password'
+    | '/$tenant/auth/sign-in'
+    | '/$tenant/auth/sign-up'
+    | '/$tenant/admin/farms/new'
+    | '/$tenant/admin/users/$id'
+    | '/$tenant/farms/$id/invest'
+    | '/$tenant/admin/farms'
+    | '/$tenant/farms/$id'
+    | '/$tenant/admin/farms/$id/analytics'
+    | '/$tenant/admin/farms/$id/edit'
   id:
     | '__root__'
     | '/'
-    | '/_authenticated'
     | '/auth'
-    | '/onboarding'
-    | '/privacy'
-    | '/support'
-    | '/terms'
-    | '/_authenticated/settings'
-    | '/_authenticated/admin'
-    | '/_authenticated/news'
-    | '/auth/verify-email'
-    | '/auth/'
-    | '/_authenticated/admin/investors'
-    | '/_authenticated/admin/kyc'
-    | '/_authenticated/admin/payouts'
-    | '/_authenticated/admin/reports'
-    | '/_authenticated/admin/transactions'
-    | '/_authenticated/farm/$id'
-    | '/_authenticated/investments/$id'
-    | '/_authenticated/payment/callback'
-    | '/_authenticated/settings/notifications'
-    | '/_authenticated/settings/security'
-    | '/_authenticated/settings/verification'
-    | '/_authenticated/admin/'
-    | '/_authenticated/dashboard/'
-    | '/_authenticated/farms/'
-    | '/_authenticated/investments/'
-    | '/_authenticated/notifications/'
-    | '/_authenticated/settings/'
-    | '/_authenticated/transactions/'
-    | '/_authenticated/wallet/'
-    | '/auth/forgot-password/'
-    | '/auth/reset-password/'
-    | '/auth/sign-in/'
-    | '/auth/sign-up/'
-    | '/_authenticated/admin/farms/new'
-    | '/_authenticated/admin/users/$id'
-    | '/_authenticated/farms/$id/invest'
-    | '/_authenticated/admin/farms/'
-    | '/_authenticated/farms/$id/'
-    | '/_authenticated/admin/farms/$id/analytics'
-    | '/_authenticated/admin/farms/$id/edit'
+    | '/$tenant/_authenticated'
+    | '/$tenant/auth'
+    | '/$tenant/onboarding'
+    | '/$tenant/privacy'
+    | '/$tenant/support'
+    | '/$tenant/terms'
+    | '/$tenant/'
+    | '/super-admin/'
+    | '/$tenant/_authenticated/settings'
+    | '/$tenant/_authenticated/admin'
+    | '/$tenant/_authenticated/news'
+    | '/$tenant/auth/verify-email'
+    | '/$tenant/auth/'
+    | '/$tenant/_authenticated/admin/investors'
+    | '/$tenant/_authenticated/admin/kyc'
+    | '/$tenant/_authenticated/admin/payouts'
+    | '/$tenant/_authenticated/admin/reports'
+    | '/$tenant/_authenticated/admin/transactions'
+    | '/$tenant/_authenticated/farm/$id'
+    | '/$tenant/_authenticated/investments/$id'
+    | '/$tenant/_authenticated/payment/callback'
+    | '/$tenant/_authenticated/settings/notifications'
+    | '/$tenant/_authenticated/settings/security'
+    | '/$tenant/_authenticated/settings/verification'
+    | '/$tenant/_authenticated/admin/'
+    | '/$tenant/_authenticated/dashboard/'
+    | '/$tenant/_authenticated/farms/'
+    | '/$tenant/_authenticated/investments/'
+    | '/$tenant/_authenticated/notifications/'
+    | '/$tenant/_authenticated/settings/'
+    | '/$tenant/_authenticated/transactions/'
+    | '/$tenant/_authenticated/wallet/'
+    | '/$tenant/auth/forgot-password/'
+    | '/$tenant/auth/reset-password/'
+    | '/$tenant/auth/sign-in/'
+    | '/$tenant/auth/sign-up/'
+    | '/$tenant/_authenticated/admin/farms/new'
+    | '/$tenant/_authenticated/admin/users/$id'
+    | '/$tenant/_authenticated/farms/$id/invest'
+    | '/$tenant/_authenticated/admin/farms/'
+    | '/$tenant/_authenticated/farms/$id/'
+    | '/$tenant/_authenticated/admin/farms/$id/analytics'
+    | '/$tenant/_authenticated/admin/farms/$id/edit'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
-  AuthRoute: typeof AuthRouteWithChildren
-  OnboardingRoute: typeof OnboardingRoute
-  PrivacyRoute: typeof PrivacyRoute
-  SupportRoute: typeof SupportRoute
-  TermsRoute: typeof TermsRoute
+  AuthRoute: typeof AuthRoute
+  TenantAuthenticatedRouteRoute: typeof TenantAuthenticatedRouteRouteWithChildren
+  TenantAuthRouteRoute: typeof TenantAuthRouteRouteWithChildren
+  TenantOnboardingRoute: typeof TenantOnboardingRoute
+  TenantPrivacyRoute: typeof TenantPrivacyRoute
+  TenantSupportRoute: typeof TenantSupportRoute
+  TenantTermsRoute: typeof TenantTermsRoute
+  TenantIndexRoute: typeof TenantIndexRoute
+  SuperAdminIndexRoute: typeof SuperAdminIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/terms': {
-      id: '/terms'
-      path: '/terms'
-      fullPath: '/terms'
-      preLoaderRoute: typeof TermsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/support': {
-      id: '/support'
-      path: '/support'
-      fullPath: '/support'
-      preLoaderRoute: typeof SupportRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/privacy': {
-      id: '/privacy'
-      path: '/privacy'
-      fullPath: '/privacy'
-      preLoaderRoute: typeof PrivacyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/onboarding': {
-      id: '/onboarding'
-      path: '/onboarding'
-      fullPath: '/onboarding'
-      preLoaderRoute: typeof OnboardingRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/auth': {
       id: '/auth'
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_authenticated': {
-      id: '/_authenticated'
-      path: ''
-      fullPath: '/'
-      preLoaderRoute: typeof AuthenticatedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -604,373 +619,455 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/auth/': {
-      id: '/auth/'
-      path: '/'
-      fullPath: '/auth/'
-      preLoaderRoute: typeof AuthIndexRouteImport
-      parentRoute: typeof AuthRoute
+    '/super-admin/': {
+      id: '/super-admin/'
+      path: '/super-admin'
+      fullPath: '/super-admin/'
+      preLoaderRoute: typeof SuperAdminIndexRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/auth/verify-email': {
-      id: '/auth/verify-email'
+    '/$tenant/': {
+      id: '/$tenant/'
+      path: '/$tenant'
+      fullPath: '/$tenant/'
+      preLoaderRoute: typeof TenantIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/$tenant/terms': {
+      id: '/$tenant/terms'
+      path: '/$tenant/terms'
+      fullPath: '/$tenant/terms'
+      preLoaderRoute: typeof TenantTermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/$tenant/support': {
+      id: '/$tenant/support'
+      path: '/$tenant/support'
+      fullPath: '/$tenant/support'
+      preLoaderRoute: typeof TenantSupportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/$tenant/privacy': {
+      id: '/$tenant/privacy'
+      path: '/$tenant/privacy'
+      fullPath: '/$tenant/privacy'
+      preLoaderRoute: typeof TenantPrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/$tenant/onboarding': {
+      id: '/$tenant/onboarding'
+      path: '/$tenant/onboarding'
+      fullPath: '/$tenant/onboarding'
+      preLoaderRoute: typeof TenantOnboardingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/$tenant/auth': {
+      id: '/$tenant/auth'
+      path: '/$tenant/auth'
+      fullPath: '/$tenant/auth'
+      preLoaderRoute: typeof TenantAuthRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/$tenant/_authenticated': {
+      id: '/$tenant/_authenticated'
+      path: '/$tenant'
+      fullPath: '/$tenant'
+      preLoaderRoute: typeof TenantAuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/$tenant/auth/': {
+      id: '/$tenant/auth/'
+      path: '/'
+      fullPath: '/$tenant/auth/'
+      preLoaderRoute: typeof TenantAuthIndexRouteImport
+      parentRoute: typeof TenantAuthRouteRoute
+    }
+    '/$tenant/auth/verify-email': {
+      id: '/$tenant/auth/verify-email'
       path: '/verify-email'
-      fullPath: '/auth/verify-email'
-      preLoaderRoute: typeof AuthVerifyEmailRouteImport
-      parentRoute: typeof AuthRoute
+      fullPath: '/$tenant/auth/verify-email'
+      preLoaderRoute: typeof TenantAuthVerifyEmailRouteImport
+      parentRoute: typeof TenantAuthRouteRoute
     }
-    '/_authenticated/news': {
-      id: '/_authenticated/news'
+    '/$tenant/_authenticated/news': {
+      id: '/$tenant/_authenticated/news'
       path: '/news'
-      fullPath: '/news'
-      preLoaderRoute: typeof AuthenticatedNewsRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+      fullPath: '/$tenant/news'
+      preLoaderRoute: typeof TenantAuthenticatedNewsRouteImport
+      parentRoute: typeof TenantAuthenticatedRouteRoute
     }
-    '/_authenticated/admin': {
-      id: '/_authenticated/admin'
+    '/$tenant/_authenticated/admin': {
+      id: '/$tenant/_authenticated/admin'
       path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof AuthenticatedAdminRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+      fullPath: '/$tenant/admin'
+      preLoaderRoute: typeof TenantAuthenticatedAdminRouteImport
+      parentRoute: typeof TenantAuthenticatedRouteRoute
     }
-    '/_authenticated/settings': {
-      id: '/_authenticated/settings'
+    '/$tenant/_authenticated/settings': {
+      id: '/$tenant/_authenticated/settings'
       path: '/settings'
-      fullPath: '/settings'
-      preLoaderRoute: typeof AuthenticatedSettingsRouteRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+      fullPath: '/$tenant/settings'
+      preLoaderRoute: typeof TenantAuthenticatedSettingsRouteRouteImport
+      parentRoute: typeof TenantAuthenticatedRouteRoute
     }
-    '/auth/sign-up/': {
-      id: '/auth/sign-up/'
+    '/$tenant/auth/sign-up/': {
+      id: '/$tenant/auth/sign-up/'
       path: '/sign-up'
-      fullPath: '/auth/sign-up/'
-      preLoaderRoute: typeof AuthSignUpIndexRouteImport
-      parentRoute: typeof AuthRoute
+      fullPath: '/$tenant/auth/sign-up/'
+      preLoaderRoute: typeof TenantAuthSignUpIndexRouteImport
+      parentRoute: typeof TenantAuthRouteRoute
     }
-    '/auth/sign-in/': {
-      id: '/auth/sign-in/'
+    '/$tenant/auth/sign-in/': {
+      id: '/$tenant/auth/sign-in/'
       path: '/sign-in'
-      fullPath: '/auth/sign-in/'
-      preLoaderRoute: typeof AuthSignInIndexRouteImport
-      parentRoute: typeof AuthRoute
+      fullPath: '/$tenant/auth/sign-in/'
+      preLoaderRoute: typeof TenantAuthSignInIndexRouteImport
+      parentRoute: typeof TenantAuthRouteRoute
     }
-    '/auth/reset-password/': {
-      id: '/auth/reset-password/'
+    '/$tenant/auth/reset-password/': {
+      id: '/$tenant/auth/reset-password/'
       path: '/reset-password'
-      fullPath: '/auth/reset-password/'
-      preLoaderRoute: typeof AuthResetPasswordIndexRouteImport
-      parentRoute: typeof AuthRoute
+      fullPath: '/$tenant/auth/reset-password/'
+      preLoaderRoute: typeof TenantAuthResetPasswordIndexRouteImport
+      parentRoute: typeof TenantAuthRouteRoute
     }
-    '/auth/forgot-password/': {
-      id: '/auth/forgot-password/'
+    '/$tenant/auth/forgot-password/': {
+      id: '/$tenant/auth/forgot-password/'
       path: '/forgot-password'
-      fullPath: '/auth/forgot-password/'
-      preLoaderRoute: typeof AuthForgotPasswordIndexRouteImport
-      parentRoute: typeof AuthRoute
+      fullPath: '/$tenant/auth/forgot-password/'
+      preLoaderRoute: typeof TenantAuthForgotPasswordIndexRouteImport
+      parentRoute: typeof TenantAuthRouteRoute
     }
-    '/_authenticated/wallet/': {
-      id: '/_authenticated/wallet/'
+    '/$tenant/_authenticated/wallet/': {
+      id: '/$tenant/_authenticated/wallet/'
       path: '/wallet'
-      fullPath: '/wallet/'
-      preLoaderRoute: typeof AuthenticatedWalletIndexRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+      fullPath: '/$tenant/wallet/'
+      preLoaderRoute: typeof TenantAuthenticatedWalletIndexRouteImport
+      parentRoute: typeof TenantAuthenticatedRouteRoute
     }
-    '/_authenticated/transactions/': {
-      id: '/_authenticated/transactions/'
+    '/$tenant/_authenticated/transactions/': {
+      id: '/$tenant/_authenticated/transactions/'
       path: '/transactions'
-      fullPath: '/transactions/'
-      preLoaderRoute: typeof AuthenticatedTransactionsIndexRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+      fullPath: '/$tenant/transactions/'
+      preLoaderRoute: typeof TenantAuthenticatedTransactionsIndexRouteImport
+      parentRoute: typeof TenantAuthenticatedRouteRoute
     }
-    '/_authenticated/settings/': {
-      id: '/_authenticated/settings/'
+    '/$tenant/_authenticated/settings/': {
+      id: '/$tenant/_authenticated/settings/'
       path: '/'
-      fullPath: '/settings/'
-      preLoaderRoute: typeof AuthenticatedSettingsIndexRouteImport
-      parentRoute: typeof AuthenticatedSettingsRouteRoute
+      fullPath: '/$tenant/settings/'
+      preLoaderRoute: typeof TenantAuthenticatedSettingsIndexRouteImport
+      parentRoute: typeof TenantAuthenticatedSettingsRouteRoute
     }
-    '/_authenticated/notifications/': {
-      id: '/_authenticated/notifications/'
+    '/$tenant/_authenticated/notifications/': {
+      id: '/$tenant/_authenticated/notifications/'
       path: '/notifications'
-      fullPath: '/notifications/'
-      preLoaderRoute: typeof AuthenticatedNotificationsIndexRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+      fullPath: '/$tenant/notifications/'
+      preLoaderRoute: typeof TenantAuthenticatedNotificationsIndexRouteImport
+      parentRoute: typeof TenantAuthenticatedRouteRoute
     }
-    '/_authenticated/investments/': {
-      id: '/_authenticated/investments/'
+    '/$tenant/_authenticated/investments/': {
+      id: '/$tenant/_authenticated/investments/'
       path: '/investments'
-      fullPath: '/investments/'
-      preLoaderRoute: typeof AuthenticatedInvestmentsIndexRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+      fullPath: '/$tenant/investments/'
+      preLoaderRoute: typeof TenantAuthenticatedInvestmentsIndexRouteImport
+      parentRoute: typeof TenantAuthenticatedRouteRoute
     }
-    '/_authenticated/farms/': {
-      id: '/_authenticated/farms/'
+    '/$tenant/_authenticated/farms/': {
+      id: '/$tenant/_authenticated/farms/'
       path: '/farms'
-      fullPath: '/farms/'
-      preLoaderRoute: typeof AuthenticatedFarmsIndexRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+      fullPath: '/$tenant/farms/'
+      preLoaderRoute: typeof TenantAuthenticatedFarmsIndexRouteImport
+      parentRoute: typeof TenantAuthenticatedRouteRoute
     }
-    '/_authenticated/dashboard/': {
-      id: '/_authenticated/dashboard/'
+    '/$tenant/_authenticated/dashboard/': {
+      id: '/$tenant/_authenticated/dashboard/'
       path: '/dashboard'
-      fullPath: '/dashboard/'
-      preLoaderRoute: typeof AuthenticatedDashboardIndexRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+      fullPath: '/$tenant/dashboard/'
+      preLoaderRoute: typeof TenantAuthenticatedDashboardIndexRouteImport
+      parentRoute: typeof TenantAuthenticatedRouteRoute
     }
-    '/_authenticated/admin/': {
-      id: '/_authenticated/admin/'
+    '/$tenant/_authenticated/admin/': {
+      id: '/$tenant/_authenticated/admin/'
       path: '/'
-      fullPath: '/admin/'
-      preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
+      fullPath: '/$tenant/admin/'
+      preLoaderRoute: typeof TenantAuthenticatedAdminIndexRouteImport
+      parentRoute: typeof TenantAuthenticatedAdminRoute
     }
-    '/_authenticated/settings/verification': {
-      id: '/_authenticated/settings/verification'
+    '/$tenant/_authenticated/settings/verification': {
+      id: '/$tenant/_authenticated/settings/verification'
       path: '/verification'
-      fullPath: '/settings/verification'
-      preLoaderRoute: typeof AuthenticatedSettingsVerificationRouteImport
-      parentRoute: typeof AuthenticatedSettingsRouteRoute
+      fullPath: '/$tenant/settings/verification'
+      preLoaderRoute: typeof TenantAuthenticatedSettingsVerificationRouteImport
+      parentRoute: typeof TenantAuthenticatedSettingsRouteRoute
     }
-    '/_authenticated/settings/security': {
-      id: '/_authenticated/settings/security'
+    '/$tenant/_authenticated/settings/security': {
+      id: '/$tenant/_authenticated/settings/security'
       path: '/security'
-      fullPath: '/settings/security'
-      preLoaderRoute: typeof AuthenticatedSettingsSecurityRouteImport
-      parentRoute: typeof AuthenticatedSettingsRouteRoute
+      fullPath: '/$tenant/settings/security'
+      preLoaderRoute: typeof TenantAuthenticatedSettingsSecurityRouteImport
+      parentRoute: typeof TenantAuthenticatedSettingsRouteRoute
     }
-    '/_authenticated/settings/notifications': {
-      id: '/_authenticated/settings/notifications'
+    '/$tenant/_authenticated/settings/notifications': {
+      id: '/$tenant/_authenticated/settings/notifications'
       path: '/notifications'
-      fullPath: '/settings/notifications'
-      preLoaderRoute: typeof AuthenticatedSettingsNotificationsRouteImport
-      parentRoute: typeof AuthenticatedSettingsRouteRoute
+      fullPath: '/$tenant/settings/notifications'
+      preLoaderRoute: typeof TenantAuthenticatedSettingsNotificationsRouteImport
+      parentRoute: typeof TenantAuthenticatedSettingsRouteRoute
     }
-    '/_authenticated/payment/callback': {
-      id: '/_authenticated/payment/callback'
+    '/$tenant/_authenticated/payment/callback': {
+      id: '/$tenant/_authenticated/payment/callback'
       path: '/payment/callback'
-      fullPath: '/payment/callback'
-      preLoaderRoute: typeof AuthenticatedPaymentCallbackRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+      fullPath: '/$tenant/payment/callback'
+      preLoaderRoute: typeof TenantAuthenticatedPaymentCallbackRouteImport
+      parentRoute: typeof TenantAuthenticatedRouteRoute
     }
-    '/_authenticated/investments/$id': {
-      id: '/_authenticated/investments/$id'
+    '/$tenant/_authenticated/investments/$id': {
+      id: '/$tenant/_authenticated/investments/$id'
       path: '/investments/$id'
-      fullPath: '/investments/$id'
-      preLoaderRoute: typeof AuthenticatedInvestmentsIdRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+      fullPath: '/$tenant/investments/$id'
+      preLoaderRoute: typeof TenantAuthenticatedInvestmentsIdRouteImport
+      parentRoute: typeof TenantAuthenticatedRouteRoute
     }
-    '/_authenticated/farm/$id': {
-      id: '/_authenticated/farm/$id'
+    '/$tenant/_authenticated/farm/$id': {
+      id: '/$tenant/_authenticated/farm/$id'
       path: '/farm/$id'
-      fullPath: '/farm/$id'
-      preLoaderRoute: typeof AuthenticatedFarmIdRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+      fullPath: '/$tenant/farm/$id'
+      preLoaderRoute: typeof TenantAuthenticatedFarmIdRouteImport
+      parentRoute: typeof TenantAuthenticatedRouteRoute
     }
-    '/_authenticated/admin/transactions': {
-      id: '/_authenticated/admin/transactions'
+    '/$tenant/_authenticated/admin/transactions': {
+      id: '/$tenant/_authenticated/admin/transactions'
       path: '/transactions'
-      fullPath: '/admin/transactions'
-      preLoaderRoute: typeof AuthenticatedAdminTransactionsRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
+      fullPath: '/$tenant/admin/transactions'
+      preLoaderRoute: typeof TenantAuthenticatedAdminTransactionsRouteImport
+      parentRoute: typeof TenantAuthenticatedAdminRoute
     }
-    '/_authenticated/admin/reports': {
-      id: '/_authenticated/admin/reports'
+    '/$tenant/_authenticated/admin/reports': {
+      id: '/$tenant/_authenticated/admin/reports'
       path: '/reports'
-      fullPath: '/admin/reports'
-      preLoaderRoute: typeof AuthenticatedAdminReportsRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
+      fullPath: '/$tenant/admin/reports'
+      preLoaderRoute: typeof TenantAuthenticatedAdminReportsRouteImport
+      parentRoute: typeof TenantAuthenticatedAdminRoute
     }
-    '/_authenticated/admin/payouts': {
-      id: '/_authenticated/admin/payouts'
+    '/$tenant/_authenticated/admin/payouts': {
+      id: '/$tenant/_authenticated/admin/payouts'
       path: '/payouts'
-      fullPath: '/admin/payouts'
-      preLoaderRoute: typeof AuthenticatedAdminPayoutsRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
+      fullPath: '/$tenant/admin/payouts'
+      preLoaderRoute: typeof TenantAuthenticatedAdminPayoutsRouteImport
+      parentRoute: typeof TenantAuthenticatedAdminRoute
     }
-    '/_authenticated/admin/kyc': {
-      id: '/_authenticated/admin/kyc'
+    '/$tenant/_authenticated/admin/kyc': {
+      id: '/$tenant/_authenticated/admin/kyc'
       path: '/kyc'
-      fullPath: '/admin/kyc'
-      preLoaderRoute: typeof AuthenticatedAdminKycRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
+      fullPath: '/$tenant/admin/kyc'
+      preLoaderRoute: typeof TenantAuthenticatedAdminKycRouteImport
+      parentRoute: typeof TenantAuthenticatedAdminRoute
     }
-    '/_authenticated/admin/investors': {
-      id: '/_authenticated/admin/investors'
+    '/$tenant/_authenticated/admin/investors': {
+      id: '/$tenant/_authenticated/admin/investors'
       path: '/investors'
-      fullPath: '/admin/investors'
-      preLoaderRoute: typeof AuthenticatedAdminInvestorsRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
+      fullPath: '/$tenant/admin/investors'
+      preLoaderRoute: typeof TenantAuthenticatedAdminInvestorsRouteImport
+      parentRoute: typeof TenantAuthenticatedAdminRoute
     }
-    '/_authenticated/farms/$id/': {
-      id: '/_authenticated/farms/$id/'
+    '/$tenant/_authenticated/farms/$id/': {
+      id: '/$tenant/_authenticated/farms/$id/'
       path: '/farms/$id'
-      fullPath: '/farms/$id/'
-      preLoaderRoute: typeof AuthenticatedFarmsIdIndexRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+      fullPath: '/$tenant/farms/$id/'
+      preLoaderRoute: typeof TenantAuthenticatedFarmsIdIndexRouteImport
+      parentRoute: typeof TenantAuthenticatedRouteRoute
     }
-    '/_authenticated/admin/farms/': {
-      id: '/_authenticated/admin/farms/'
+    '/$tenant/_authenticated/admin/farms/': {
+      id: '/$tenant/_authenticated/admin/farms/'
       path: '/farms'
-      fullPath: '/admin/farms/'
-      preLoaderRoute: typeof AuthenticatedAdminFarmsIndexRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
+      fullPath: '/$tenant/admin/farms/'
+      preLoaderRoute: typeof TenantAuthenticatedAdminFarmsIndexRouteImport
+      parentRoute: typeof TenantAuthenticatedAdminRoute
     }
-    '/_authenticated/farms/$id/invest': {
-      id: '/_authenticated/farms/$id/invest'
+    '/$tenant/_authenticated/farms/$id/invest': {
+      id: '/$tenant/_authenticated/farms/$id/invest'
       path: '/farms/$id/invest'
-      fullPath: '/farms/$id/invest'
-      preLoaderRoute: typeof AuthenticatedFarmsIdInvestRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+      fullPath: '/$tenant/farms/$id/invest'
+      preLoaderRoute: typeof TenantAuthenticatedFarmsIdInvestRouteImport
+      parentRoute: typeof TenantAuthenticatedRouteRoute
     }
-    '/_authenticated/admin/users/$id': {
-      id: '/_authenticated/admin/users/$id'
+    '/$tenant/_authenticated/admin/users/$id': {
+      id: '/$tenant/_authenticated/admin/users/$id'
       path: '/users/$id'
-      fullPath: '/admin/users/$id'
-      preLoaderRoute: typeof AuthenticatedAdminUsersIdRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
+      fullPath: '/$tenant/admin/users/$id'
+      preLoaderRoute: typeof TenantAuthenticatedAdminUsersIdRouteImport
+      parentRoute: typeof TenantAuthenticatedAdminRoute
     }
-    '/_authenticated/admin/farms/new': {
-      id: '/_authenticated/admin/farms/new'
+    '/$tenant/_authenticated/admin/farms/new': {
+      id: '/$tenant/_authenticated/admin/farms/new'
       path: '/farms/new'
-      fullPath: '/admin/farms/new'
-      preLoaderRoute: typeof AuthenticatedAdminFarmsNewRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
+      fullPath: '/$tenant/admin/farms/new'
+      preLoaderRoute: typeof TenantAuthenticatedAdminFarmsNewRouteImport
+      parentRoute: typeof TenantAuthenticatedAdminRoute
     }
-    '/_authenticated/admin/farms/$id/edit': {
-      id: '/_authenticated/admin/farms/$id/edit'
+    '/$tenant/_authenticated/admin/farms/$id/edit': {
+      id: '/$tenant/_authenticated/admin/farms/$id/edit'
       path: '/farms/$id/edit'
-      fullPath: '/admin/farms/$id/edit'
-      preLoaderRoute: typeof AuthenticatedAdminFarmsIdEditRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
+      fullPath: '/$tenant/admin/farms/$id/edit'
+      preLoaderRoute: typeof TenantAuthenticatedAdminFarmsIdEditRouteImport
+      parentRoute: typeof TenantAuthenticatedAdminRoute
     }
-    '/_authenticated/admin/farms/$id/analytics': {
-      id: '/_authenticated/admin/farms/$id/analytics'
+    '/$tenant/_authenticated/admin/farms/$id/analytics': {
+      id: '/$tenant/_authenticated/admin/farms/$id/analytics'
       path: '/farms/$id/analytics'
-      fullPath: '/admin/farms/$id/analytics'
-      preLoaderRoute: typeof AuthenticatedAdminFarmsIdAnalyticsRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
+      fullPath: '/$tenant/admin/farms/$id/analytics'
+      preLoaderRoute: typeof TenantAuthenticatedAdminFarmsIdAnalyticsRouteImport
+      parentRoute: typeof TenantAuthenticatedAdminRoute
     }
   }
 }
 
-interface AuthenticatedSettingsRouteRouteChildren {
-  AuthenticatedSettingsNotificationsRoute: typeof AuthenticatedSettingsNotificationsRoute
-  AuthenticatedSettingsSecurityRoute: typeof AuthenticatedSettingsSecurityRoute
-  AuthenticatedSettingsVerificationRoute: typeof AuthenticatedSettingsVerificationRoute
-  AuthenticatedSettingsIndexRoute: typeof AuthenticatedSettingsIndexRoute
+interface TenantAuthenticatedSettingsRouteRouteChildren {
+  TenantAuthenticatedSettingsNotificationsRoute: typeof TenantAuthenticatedSettingsNotificationsRoute
+  TenantAuthenticatedSettingsSecurityRoute: typeof TenantAuthenticatedSettingsSecurityRoute
+  TenantAuthenticatedSettingsVerificationRoute: typeof TenantAuthenticatedSettingsVerificationRoute
+  TenantAuthenticatedSettingsIndexRoute: typeof TenantAuthenticatedSettingsIndexRoute
 }
 
-const AuthenticatedSettingsRouteRouteChildren: AuthenticatedSettingsRouteRouteChildren =
+const TenantAuthenticatedSettingsRouteRouteChildren: TenantAuthenticatedSettingsRouteRouteChildren =
   {
-    AuthenticatedSettingsNotificationsRoute:
-      AuthenticatedSettingsNotificationsRoute,
-    AuthenticatedSettingsSecurityRoute: AuthenticatedSettingsSecurityRoute,
-    AuthenticatedSettingsVerificationRoute:
-      AuthenticatedSettingsVerificationRoute,
-    AuthenticatedSettingsIndexRoute: AuthenticatedSettingsIndexRoute,
+    TenantAuthenticatedSettingsNotificationsRoute:
+      TenantAuthenticatedSettingsNotificationsRoute,
+    TenantAuthenticatedSettingsSecurityRoute:
+      TenantAuthenticatedSettingsSecurityRoute,
+    TenantAuthenticatedSettingsVerificationRoute:
+      TenantAuthenticatedSettingsVerificationRoute,
+    TenantAuthenticatedSettingsIndexRoute:
+      TenantAuthenticatedSettingsIndexRoute,
   }
 
-const AuthenticatedSettingsRouteRouteWithChildren =
-  AuthenticatedSettingsRouteRoute._addFileChildren(
-    AuthenticatedSettingsRouteRouteChildren,
+const TenantAuthenticatedSettingsRouteRouteWithChildren =
+  TenantAuthenticatedSettingsRouteRoute._addFileChildren(
+    TenantAuthenticatedSettingsRouteRouteChildren,
   )
 
-interface AuthenticatedAdminRouteChildren {
-  AuthenticatedAdminInvestorsRoute: typeof AuthenticatedAdminInvestorsRoute
-  AuthenticatedAdminKycRoute: typeof AuthenticatedAdminKycRoute
-  AuthenticatedAdminPayoutsRoute: typeof AuthenticatedAdminPayoutsRoute
-  AuthenticatedAdminReportsRoute: typeof AuthenticatedAdminReportsRoute
-  AuthenticatedAdminTransactionsRoute: typeof AuthenticatedAdminTransactionsRoute
-  AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
-  AuthenticatedAdminFarmsNewRoute: typeof AuthenticatedAdminFarmsNewRoute
-  AuthenticatedAdminUsersIdRoute: typeof AuthenticatedAdminUsersIdRoute
-  AuthenticatedAdminFarmsIndexRoute: typeof AuthenticatedAdminFarmsIndexRoute
-  AuthenticatedAdminFarmsIdAnalyticsRoute: typeof AuthenticatedAdminFarmsIdAnalyticsRoute
-  AuthenticatedAdminFarmsIdEditRoute: typeof AuthenticatedAdminFarmsIdEditRoute
+interface TenantAuthenticatedAdminRouteChildren {
+  TenantAuthenticatedAdminInvestorsRoute: typeof TenantAuthenticatedAdminInvestorsRoute
+  TenantAuthenticatedAdminKycRoute: typeof TenantAuthenticatedAdminKycRoute
+  TenantAuthenticatedAdminPayoutsRoute: typeof TenantAuthenticatedAdminPayoutsRoute
+  TenantAuthenticatedAdminReportsRoute: typeof TenantAuthenticatedAdminReportsRoute
+  TenantAuthenticatedAdminTransactionsRoute: typeof TenantAuthenticatedAdminTransactionsRoute
+  TenantAuthenticatedAdminIndexRoute: typeof TenantAuthenticatedAdminIndexRoute
+  TenantAuthenticatedAdminFarmsNewRoute: typeof TenantAuthenticatedAdminFarmsNewRoute
+  TenantAuthenticatedAdminUsersIdRoute: typeof TenantAuthenticatedAdminUsersIdRoute
+  TenantAuthenticatedAdminFarmsIndexRoute: typeof TenantAuthenticatedAdminFarmsIndexRoute
+  TenantAuthenticatedAdminFarmsIdAnalyticsRoute: typeof TenantAuthenticatedAdminFarmsIdAnalyticsRoute
+  TenantAuthenticatedAdminFarmsIdEditRoute: typeof TenantAuthenticatedAdminFarmsIdEditRoute
 }
 
-const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
-  AuthenticatedAdminInvestorsRoute: AuthenticatedAdminInvestorsRoute,
-  AuthenticatedAdminKycRoute: AuthenticatedAdminKycRoute,
-  AuthenticatedAdminPayoutsRoute: AuthenticatedAdminPayoutsRoute,
-  AuthenticatedAdminReportsRoute: AuthenticatedAdminReportsRoute,
-  AuthenticatedAdminTransactionsRoute: AuthenticatedAdminTransactionsRoute,
-  AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
-  AuthenticatedAdminFarmsNewRoute: AuthenticatedAdminFarmsNewRoute,
-  AuthenticatedAdminUsersIdRoute: AuthenticatedAdminUsersIdRoute,
-  AuthenticatedAdminFarmsIndexRoute: AuthenticatedAdminFarmsIndexRoute,
-  AuthenticatedAdminFarmsIdAnalyticsRoute:
-    AuthenticatedAdminFarmsIdAnalyticsRoute,
-  AuthenticatedAdminFarmsIdEditRoute: AuthenticatedAdminFarmsIdEditRoute,
+const TenantAuthenticatedAdminRouteChildren: TenantAuthenticatedAdminRouteChildren =
+  {
+    TenantAuthenticatedAdminInvestorsRoute:
+      TenantAuthenticatedAdminInvestorsRoute,
+    TenantAuthenticatedAdminKycRoute: TenantAuthenticatedAdminKycRoute,
+    TenantAuthenticatedAdminPayoutsRoute: TenantAuthenticatedAdminPayoutsRoute,
+    TenantAuthenticatedAdminReportsRoute: TenantAuthenticatedAdminReportsRoute,
+    TenantAuthenticatedAdminTransactionsRoute:
+      TenantAuthenticatedAdminTransactionsRoute,
+    TenantAuthenticatedAdminIndexRoute: TenantAuthenticatedAdminIndexRoute,
+    TenantAuthenticatedAdminFarmsNewRoute:
+      TenantAuthenticatedAdminFarmsNewRoute,
+    TenantAuthenticatedAdminUsersIdRoute: TenantAuthenticatedAdminUsersIdRoute,
+    TenantAuthenticatedAdminFarmsIndexRoute:
+      TenantAuthenticatedAdminFarmsIndexRoute,
+    TenantAuthenticatedAdminFarmsIdAnalyticsRoute:
+      TenantAuthenticatedAdminFarmsIdAnalyticsRoute,
+    TenantAuthenticatedAdminFarmsIdEditRoute:
+      TenantAuthenticatedAdminFarmsIdEditRoute,
+  }
+
+const TenantAuthenticatedAdminRouteWithChildren =
+  TenantAuthenticatedAdminRoute._addFileChildren(
+    TenantAuthenticatedAdminRouteChildren,
+  )
+
+interface TenantAuthenticatedRouteRouteChildren {
+  TenantAuthenticatedSettingsRouteRoute: typeof TenantAuthenticatedSettingsRouteRouteWithChildren
+  TenantAuthenticatedAdminRoute: typeof TenantAuthenticatedAdminRouteWithChildren
+  TenantAuthenticatedNewsRoute: typeof TenantAuthenticatedNewsRoute
+  TenantAuthenticatedFarmIdRoute: typeof TenantAuthenticatedFarmIdRoute
+  TenantAuthenticatedInvestmentsIdRoute: typeof TenantAuthenticatedInvestmentsIdRoute
+  TenantAuthenticatedPaymentCallbackRoute: typeof TenantAuthenticatedPaymentCallbackRoute
+  TenantAuthenticatedDashboardIndexRoute: typeof TenantAuthenticatedDashboardIndexRoute
+  TenantAuthenticatedFarmsIndexRoute: typeof TenantAuthenticatedFarmsIndexRoute
+  TenantAuthenticatedInvestmentsIndexRoute: typeof TenantAuthenticatedInvestmentsIndexRoute
+  TenantAuthenticatedNotificationsIndexRoute: typeof TenantAuthenticatedNotificationsIndexRoute
+  TenantAuthenticatedTransactionsIndexRoute: typeof TenantAuthenticatedTransactionsIndexRoute
+  TenantAuthenticatedWalletIndexRoute: typeof TenantAuthenticatedWalletIndexRoute
+  TenantAuthenticatedFarmsIdInvestRoute: typeof TenantAuthenticatedFarmsIdInvestRoute
+  TenantAuthenticatedFarmsIdIndexRoute: typeof TenantAuthenticatedFarmsIdIndexRoute
 }
 
-const AuthenticatedAdminRouteWithChildren =
-  AuthenticatedAdminRoute._addFileChildren(AuthenticatedAdminRouteChildren)
+const TenantAuthenticatedRouteRouteChildren: TenantAuthenticatedRouteRouteChildren =
+  {
+    TenantAuthenticatedSettingsRouteRoute:
+      TenantAuthenticatedSettingsRouteRouteWithChildren,
+    TenantAuthenticatedAdminRoute: TenantAuthenticatedAdminRouteWithChildren,
+    TenantAuthenticatedNewsRoute: TenantAuthenticatedNewsRoute,
+    TenantAuthenticatedFarmIdRoute: TenantAuthenticatedFarmIdRoute,
+    TenantAuthenticatedInvestmentsIdRoute:
+      TenantAuthenticatedInvestmentsIdRoute,
+    TenantAuthenticatedPaymentCallbackRoute:
+      TenantAuthenticatedPaymentCallbackRoute,
+    TenantAuthenticatedDashboardIndexRoute:
+      TenantAuthenticatedDashboardIndexRoute,
+    TenantAuthenticatedFarmsIndexRoute: TenantAuthenticatedFarmsIndexRoute,
+    TenantAuthenticatedInvestmentsIndexRoute:
+      TenantAuthenticatedInvestmentsIndexRoute,
+    TenantAuthenticatedNotificationsIndexRoute:
+      TenantAuthenticatedNotificationsIndexRoute,
+    TenantAuthenticatedTransactionsIndexRoute:
+      TenantAuthenticatedTransactionsIndexRoute,
+    TenantAuthenticatedWalletIndexRoute: TenantAuthenticatedWalletIndexRoute,
+    TenantAuthenticatedFarmsIdInvestRoute:
+      TenantAuthenticatedFarmsIdInvestRoute,
+    TenantAuthenticatedFarmsIdIndexRoute: TenantAuthenticatedFarmsIdIndexRoute,
+  }
 
-interface AuthenticatedRouteRouteChildren {
-  AuthenticatedSettingsRouteRoute: typeof AuthenticatedSettingsRouteRouteWithChildren
-  AuthenticatedAdminRoute: typeof AuthenticatedAdminRouteWithChildren
-  AuthenticatedNewsRoute: typeof AuthenticatedNewsRoute
-  AuthenticatedFarmIdRoute: typeof AuthenticatedFarmIdRoute
-  AuthenticatedInvestmentsIdRoute: typeof AuthenticatedInvestmentsIdRoute
-  AuthenticatedPaymentCallbackRoute: typeof AuthenticatedPaymentCallbackRoute
-  AuthenticatedDashboardIndexRoute: typeof AuthenticatedDashboardIndexRoute
-  AuthenticatedFarmsIndexRoute: typeof AuthenticatedFarmsIndexRoute
-  AuthenticatedInvestmentsIndexRoute: typeof AuthenticatedInvestmentsIndexRoute
-  AuthenticatedNotificationsIndexRoute: typeof AuthenticatedNotificationsIndexRoute
-  AuthenticatedTransactionsIndexRoute: typeof AuthenticatedTransactionsIndexRoute
-  AuthenticatedWalletIndexRoute: typeof AuthenticatedWalletIndexRoute
-  AuthenticatedFarmsIdInvestRoute: typeof AuthenticatedFarmsIdInvestRoute
-  AuthenticatedFarmsIdIndexRoute: typeof AuthenticatedFarmsIdIndexRoute
+const TenantAuthenticatedRouteRouteWithChildren =
+  TenantAuthenticatedRouteRoute._addFileChildren(
+    TenantAuthenticatedRouteRouteChildren,
+  )
+
+interface TenantAuthRouteRouteChildren {
+  TenantAuthVerifyEmailRoute: typeof TenantAuthVerifyEmailRoute
+  TenantAuthIndexRoute: typeof TenantAuthIndexRoute
+  TenantAuthForgotPasswordIndexRoute: typeof TenantAuthForgotPasswordIndexRoute
+  TenantAuthResetPasswordIndexRoute: typeof TenantAuthResetPasswordIndexRoute
+  TenantAuthSignInIndexRoute: typeof TenantAuthSignInIndexRoute
+  TenantAuthSignUpIndexRoute: typeof TenantAuthSignUpIndexRoute
 }
 
-const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
-  AuthenticatedSettingsRouteRoute: AuthenticatedSettingsRouteRouteWithChildren,
-  AuthenticatedAdminRoute: AuthenticatedAdminRouteWithChildren,
-  AuthenticatedNewsRoute: AuthenticatedNewsRoute,
-  AuthenticatedFarmIdRoute: AuthenticatedFarmIdRoute,
-  AuthenticatedInvestmentsIdRoute: AuthenticatedInvestmentsIdRoute,
-  AuthenticatedPaymentCallbackRoute: AuthenticatedPaymentCallbackRoute,
-  AuthenticatedDashboardIndexRoute: AuthenticatedDashboardIndexRoute,
-  AuthenticatedFarmsIndexRoute: AuthenticatedFarmsIndexRoute,
-  AuthenticatedInvestmentsIndexRoute: AuthenticatedInvestmentsIndexRoute,
-  AuthenticatedNotificationsIndexRoute: AuthenticatedNotificationsIndexRoute,
-  AuthenticatedTransactionsIndexRoute: AuthenticatedTransactionsIndexRoute,
-  AuthenticatedWalletIndexRoute: AuthenticatedWalletIndexRoute,
-  AuthenticatedFarmsIdInvestRoute: AuthenticatedFarmsIdInvestRoute,
-  AuthenticatedFarmsIdIndexRoute: AuthenticatedFarmsIdIndexRoute,
+const TenantAuthRouteRouteChildren: TenantAuthRouteRouteChildren = {
+  TenantAuthVerifyEmailRoute: TenantAuthVerifyEmailRoute,
+  TenantAuthIndexRoute: TenantAuthIndexRoute,
+  TenantAuthForgotPasswordIndexRoute: TenantAuthForgotPasswordIndexRoute,
+  TenantAuthResetPasswordIndexRoute: TenantAuthResetPasswordIndexRoute,
+  TenantAuthSignInIndexRoute: TenantAuthSignInIndexRoute,
+  TenantAuthSignUpIndexRoute: TenantAuthSignUpIndexRoute,
 }
 
-const AuthenticatedRouteRouteWithChildren =
-  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
-
-interface AuthRouteChildren {
-  AuthVerifyEmailRoute: typeof AuthVerifyEmailRoute
-  AuthIndexRoute: typeof AuthIndexRoute
-  AuthForgotPasswordIndexRoute: typeof AuthForgotPasswordIndexRoute
-  AuthResetPasswordIndexRoute: typeof AuthResetPasswordIndexRoute
-  AuthSignInIndexRoute: typeof AuthSignInIndexRoute
-  AuthSignUpIndexRoute: typeof AuthSignUpIndexRoute
-}
-
-const AuthRouteChildren: AuthRouteChildren = {
-  AuthVerifyEmailRoute: AuthVerifyEmailRoute,
-  AuthIndexRoute: AuthIndexRoute,
-  AuthForgotPasswordIndexRoute: AuthForgotPasswordIndexRoute,
-  AuthResetPasswordIndexRoute: AuthResetPasswordIndexRoute,
-  AuthSignInIndexRoute: AuthSignInIndexRoute,
-  AuthSignUpIndexRoute: AuthSignUpIndexRoute,
-}
-
-const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
+const TenantAuthRouteRouteWithChildren = TenantAuthRouteRoute._addFileChildren(
+  TenantAuthRouteRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
-  AuthRoute: AuthRouteWithChildren,
-  OnboardingRoute: OnboardingRoute,
-  PrivacyRoute: PrivacyRoute,
-  SupportRoute: SupportRoute,
-  TermsRoute: TermsRoute,
+  AuthRoute: AuthRoute,
+  TenantAuthenticatedRouteRoute: TenantAuthenticatedRouteRouteWithChildren,
+  TenantAuthRouteRoute: TenantAuthRouteRouteWithChildren,
+  TenantOnboardingRoute: TenantOnboardingRoute,
+  TenantPrivacyRoute: TenantPrivacyRoute,
+  TenantSupportRoute: TenantSupportRoute,
+  TenantTermsRoute: TenantTermsRoute,
+  TenantIndexRoute: TenantIndexRoute,
+  SuperAdminIndexRoute: SuperAdminIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -12,6 +12,7 @@ import {
   farmsApi,
   investmentsApi,
   kycApi,
+  tenantApi,
   usersApi,
 } from '@/lib/api-client'
 import { watchlistApi } from '@/api/watchlist'
@@ -21,6 +22,9 @@ export const api = createBuilder({
     me: () => authApi.getMe(),
     login: (credentials: LoginRequest) => authApi.login(credentials),
     register: (data: RegisterRequest) => authApi.register(data),
+    forgotPassword: (email: string) => authApi.forgotPassword(email),
+    resetPassword: ({ token, password }: { token: string; password: string }) =>
+      authApi.resetPassword(token, password),
     updateProfile: (data: {
       name?: string
       country?: string
@@ -72,5 +76,19 @@ export const api = createBuilder({
   activities: {
     list: (params?: { page?: number; limit?: number; type?: string }) =>
       activitiesApi.getAll(params),
+  },
+  tenants: {
+    bootstrap: () => tenantApi.bootstrap(),
+    list: () => tenantApi.list(),
+    create: (data: Parameters<typeof tenantApi.create>[0]) =>
+      tenantApi.create(data),
+    update: ({
+      id,
+      data,
+    }: {
+      id: string
+      data: Parameters<typeof tenantApi.update>[1]
+    }) => tenantApi.update(id, data),
+    assignUnassignedUsers: (id: string) => tenantApi.assignUnassignedUsers(id),
   },
 })

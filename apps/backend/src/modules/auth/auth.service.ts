@@ -28,6 +28,10 @@ export const signupUser = async (
   country: string,
   tenantId?: string,
 ) => {
+  if (!tenantId) {
+    throw new Error("Tenant context is required for signup");
+  }
+
   const existing = await User.findOne(
     tenantId
       ? { email, tenantId: new mongoose.Types.ObjectId(tenantId) }
@@ -53,7 +57,7 @@ export const loginUser = async (
   const user = await User.findOne(
     tenantId
       ? { email, tenantId: new mongoose.Types.ObjectId(tenantId) }
-      : { email },
+      : { email, role: "super_admin" },
   );
   if (!user) throw new Error("Invalid email or password");
   const isMatch = await user.comparePassword(password);
@@ -64,7 +68,7 @@ export const forgotPassword = async (email: string, tenantId?: string) => {
   const user = await User.findOne(
     tenantId
       ? { email, tenantId: new mongoose.Types.ObjectId(tenantId) }
-      : { email },
+      : { email, role: "super_admin" },
   );
   if (!user) throw new Error("No account found with that email");
 
@@ -100,7 +104,9 @@ export const resetPassword = async (
   const user = await User.findOne({
     passwordResetToken: hashedToken,
     passwordResetExpires: { $gt: Date.now() },
-    ...(tenantId ? { tenantId: new mongoose.Types.ObjectId(tenantId) } : {}),
+    ...(tenantId
+      ? { tenantId: new mongoose.Types.ObjectId(tenantId) }
+      : { role: "super_admin" }),
   });
 
   if (!user) throw new Error("Invalid or expired reset token");

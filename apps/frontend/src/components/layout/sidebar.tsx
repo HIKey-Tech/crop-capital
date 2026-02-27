@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router'
-import { useRouteContext } from '@tanstack/react-router'
+import { useParams } from '@tanstack/react-router'
 import {
   ArrowLeftRight,
   Bell,
@@ -14,7 +14,6 @@ import {
   Users,
   Wallet,
   X,
-  Building2,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useViewMode } from '@/contexts/view-mode'
@@ -27,92 +26,92 @@ interface SidebarProps {
 }
 
 const investorNavItems = [
-  { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { to: '/$tenant/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   {
-    href: '/investments',
+    to: '/$tenant/investments',
     label: 'My Investments',
     icon: FolderOpen,
     feature: 'investments' as const,
   },
   {
-    href: '/wallet',
+    to: '/$tenant/wallet',
     label: 'Wallet',
     icon: Wallet,
     feature: 'wallet' as const,
   },
   {
-    href: '/transactions',
+    to: '/$tenant/transactions',
     label: 'Transactions',
     icon: Receipt,
     feature: 'transactions' as const,
   },
   {
-    href: '/farms',
+    to: '/$tenant/farms',
     label: 'Discover Farms',
     icon: Search,
     feature: 'farms' as const,
   },
   {
-    href: '/news',
+    to: '/$tenant/news',
     label: 'News & Updates',
     icon: Newspaper,
     feature: 'news' as const,
   },
   {
-    href: '/notifications',
+    to: '/$tenant/notifications',
     label: 'Notifications',
     icon: Bell,
     feature: 'notifications' as const,
   },
-  { href: '/settings', label: 'Settings', icon: Settings },
+  { to: '/$tenant/settings', label: 'Settings', icon: Settings },
 ]
 
 const adminNavItems = [
-  { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { to: '/$tenant/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   {
-    href: '/admin/farms',
+    to: '/$tenant/admin/farms',
     label: 'Farms',
     icon: FolderOpen,
     feature: 'adminFarms' as const,
   },
   {
-    href: '/admin/investors',
+    to: '/$tenant/admin/investors',
     label: 'Investors',
     icon: Users,
     feature: 'adminInvestors' as const,
   },
   {
-    href: '/admin/transactions',
+    to: '/$tenant/admin/transactions',
     label: 'Transactions',
     icon: Receipt,
     feature: 'adminTransactions' as const,
   },
   {
-    href: '/admin/payouts',
+    to: '/$tenant/admin/payouts',
     label: 'Payouts',
     icon: Wallet,
     feature: 'adminPayouts' as const,
   },
   {
-    href: '/admin/kyc',
+    to: '/$tenant/admin/kyc',
     label: 'KYC Review',
     icon: FileBarChart,
     feature: 'adminKyc' as const,
   },
   {
-    href: '/admin/reports',
+    to: '/$tenant/admin/reports',
     label: 'Reports',
     icon: FileBarChart,
     feature: 'adminReports' as const,
   },
-  { href: '/settings', label: 'Settings', icon: Settings },
+  { to: '/$tenant/settings', label: 'Settings', icon: Settings },
 ]
 
 export function Sidebar({ isOpen, onClose }: SidebarProps) {
-  const { user } = useRouteContext({ from: '/_authenticated' })
+  const params = useParams({ strict: false })
   const { viewMode, isAdmin, toggleViewMode } = useViewMode()
   const { tenant } = useTenant()
-  const isSuperAdmin = user.role === 'super_admin'
+  const tenantSlug = params.tenant ?? tenant.slug
   const canUseAdminView = tenant.features.adminPortal
 
   const visibleInvestorNavItems = investorNavItems.filter(
@@ -125,12 +124,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
 
   const navItems =
     viewMode === 'admin' && canUseAdminView
-      ? isSuperAdmin
-        ? [
-            ...visibleAdminNavItems,
-            { href: '/admin', label: 'Tenants', icon: Building2 },
-          ]
-        : visibleAdminNavItems
+      ? visibleAdminNavItems
       : visibleInvestorNavItems
 
   return (
@@ -151,7 +145,11 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
       >
         {/* Logo */}
         <div className="flex items-center justify-between px-5 py-6 border-b border-sidebar-border">
-          <Link to="/" className="flex items-center gap-2">
+          <Link
+            to="/$tenant"
+            params={{ tenant: tenantSlug }}
+            className="flex items-center gap-2"
+          >
             <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
               {tenant.logoUrl ? (
                 <img
@@ -187,8 +185,8 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
 
             return (
               <NavLink
-                key={item.href}
-                to={item.href}
+                key={item.to}
+                to={item.to}
                 onClick={onClose}
                 className="nav-link"
                 activeClassName="active"
@@ -218,9 +216,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
               ) : (
                 <>
                   <Shield className="w-4 h-4" />
-                  <span>
-                    {isSuperAdmin ? 'Switch to Super Admin' : 'Switch to Admin'}
-                  </span>
+                  <span>Switch to Admin</span>
                 </>
               )}
             </button>

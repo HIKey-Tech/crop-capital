@@ -1,10 +1,14 @@
-import { Link } from '@tanstack/react-router'
+import { Link, useParams } from '@tanstack/react-router'
+import type { ComponentProps } from 'react'
 import { ChevronRight, Home } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
+type RouterLinkProps = ComponentProps<typeof Link>
+
 export interface BreadcrumbItem {
   label: string
-  href?: string
+  to?: RouterLinkProps['to']
+  params?: Record<string, string>
 }
 
 interface BreadcrumbsProps {
@@ -18,6 +22,9 @@ export function Breadcrumbs({
   showHomeIcon = false,
   className,
 }: BreadcrumbsProps) {
+  const params = useParams({ strict: false })
+  const tenant = params.tenant
+
   return (
     <nav
       className={cn(
@@ -28,9 +35,22 @@ export function Breadcrumbs({
     >
       {showHomeIcon && (
         <>
-          <Link to="/" className="hover:text-foreground transition-colors">
-            <Home className="w-4 h-4" />
-          </Link>
+          {tenant ? (
+            <Link
+              to="/$tenant/dashboard"
+              params={{ tenant }}
+              className="hover:text-foreground transition-colors"
+            >
+              <Home className="w-4 h-4" />
+            </Link>
+          ) : (
+            <Link
+              to="/auth"
+              className="hover:text-foreground transition-colors"
+            >
+              <Home className="w-4 h-4" />
+            </Link>
+          )}
           {items.length > 0 && <ChevronRight className="w-4 h-4 mx-2" />}
         </>
       )}
@@ -40,9 +60,10 @@ export function Breadcrumbs({
 
         return (
           <div key={index} className="flex items-center">
-            {item.href && !isLast ? (
+            {item.to && !isLast ? (
               <Link
-                to={item.href}
+                to={item.to}
+                params={item.params as never}
                 className="hover:text-foreground transition-colors"
               >
                 {item.label}

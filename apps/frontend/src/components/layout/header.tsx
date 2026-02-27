@@ -1,5 +1,10 @@
 import { Bell, Menu, User } from 'lucide-react'
-import { Link, useNavigate, useRouteContext } from '@tanstack/react-router'
+import {
+  Link,
+  useNavigate,
+  useParams,
+  useRouteContext,
+} from '@tanstack/react-router'
 import { toast } from 'sonner'
 
 import { Button } from '@/components/ui/button'
@@ -17,9 +22,11 @@ interface HeaderProps {
 }
 
 export function Header({ onMenuClick }: HeaderProps) {
-  const { user } = useRouteContext({ from: '/_authenticated' })
+  const { user } = useRouteContext({ from: '/$tenant/_authenticated' })
+  const params = useParams({ strict: false })
   const { notifications, unreadCount } = useNotifications()
   const { mutate: logout } = useLogout()
+  const tenant = params.tenant ?? ''
 
   const navigate = useNavigate()
 
@@ -32,7 +39,7 @@ export function Header({ onMenuClick }: HeaderProps) {
   const handleLogout = () => {
     logout(undefined, {
       onSuccess: () => {
-        navigate({ to: '/auth/sign-in' })
+        navigate({ to: '/$tenant/auth/sign-in', params: { tenant } })
         toast.success('Signed out successfully')
       },
     })
@@ -87,7 +94,9 @@ export function Header({ onMenuClick }: HeaderProps) {
               </div>
             )}
             <DropdownMenuItem className="justify-center text-primary" asChild>
-              <Link to="/notifications">View all notifications</Link>
+              <Link to="/$tenant/notifications" params={{ tenant }}>
+                View all notifications
+              </Link>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -105,13 +114,21 @@ export function Header({ onMenuClick }: HeaderProps) {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-48">
             <DropdownMenuItem asChild>
-              <Link to="/settings" className="w-full">
+              <Link
+                to="/$tenant/settings"
+                params={{ tenant }}
+                className="w-full"
+              >
                 Profile Settings
               </Link>
             </DropdownMenuItem>
             {user.role === 'admin' && (
               <DropdownMenuItem asChild>
-                <Link to="/admin" className="w-full">
+                <Link
+                  to="/$tenant/admin"
+                  params={{ tenant }}
+                  className="w-full"
+                >
                   Admin Dashboard
                 </Link>
               </DropdownMenuItem>

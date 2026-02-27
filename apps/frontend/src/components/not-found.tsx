@@ -1,8 +1,11 @@
-import { Link } from '@tanstack/react-router'
+import { Link, useParams } from '@tanstack/react-router'
 import { ArrowLeft, Home } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
 export const NotFound = () => {
+  const params = useParams({ strict: false })
+  const tenant = params.tenant
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 px-4 text-center">
       <div className="space-y-6 max-w-md">
@@ -17,7 +20,8 @@ export const NotFound = () => {
             Field Not Found
           </h1>
           <p className="text-gray-500">
-            Looks like you've ventured too far off the farm. The page you're looking for doesn't exist or has been moved.
+            Looks like you've ventured too far off the farm. The page you're
+            looking for doesn't exist or has been moved.
           </p>
         </div>
 
@@ -28,11 +32,21 @@ export const NotFound = () => {
               Go Back
             </Link>
           </Button>
-          <Button asChild className="gap-2 bg-green-600 hover:bg-green-700 text-white">
-            <Link to="/">
-              <Home className="h-4 w-4" />
-              Return Home
-            </Link>
+          <Button
+            asChild
+            className="gap-2 bg-green-600 hover:bg-green-700 text-white"
+          >
+            {tenant ? (
+              <Link to="/$tenant" params={{ tenant }}>
+                <Home className="h-4 w-4" />
+                Return Home
+              </Link>
+            ) : (
+              <Link to="/auth">
+                <Home className="h-4 w-4" />
+                Return Home
+              </Link>
+            )}
           </Button>
         </div>
       </div>
