@@ -2,6 +2,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import {
   Activity,
   Banknote,
+  Building2,
   CheckCircle,
   Coins,
   FileX2,
@@ -226,6 +227,21 @@ const activityStyles: Record<
     bg: 'bg-primary/10',
     color: 'text-primary',
   },
+  tenant_created: {
+    icon: Building2,
+    bg: 'bg-emerald-100',
+    color: 'text-emerald-700',
+  },
+  tenant_updated: {
+    icon: Pencil,
+    bg: 'bg-blue-100',
+    color: 'text-blue-600',
+  },
+  tenant_deleted: {
+    icon: Trash2,
+    bg: 'bg-red-100',
+    color: 'text-red-600',
+  },
   farm_created: {
     icon: LandPlot,
     bg: 'bg-green-100',
@@ -275,5 +291,15 @@ const activityStyles: Record<
     icon: TrendingUp,
     bg: 'bg-emerald-100',
     color: 'text-emerald-600',
+  },
+  user_promoted_to_admin: {
+    icon: ShieldCheck,
+    bg: 'bg-cyan-100',
+    color: 'text-cyan-700',
+  },
+  user_demoted_to_investor: {
+    icon: ShieldX,
+    bg: 'bg-orange-100',
+    color: 'text-orange-700',
   },
 }

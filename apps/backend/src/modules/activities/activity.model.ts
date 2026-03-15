@@ -2,6 +2,9 @@ import mongoose, { Schema, Document } from "mongoose";
 
 export type ActivityType =
   | "user_signup"
+  | "tenant_created"
+  | "tenant_updated"
+  | "tenant_deleted"
   | "farm_created"
   | "farm_updated"
   | "farm_deleted"
@@ -11,7 +14,9 @@ export type ActivityType =
   | "kyc_submitted"
   | "kyc_approved"
   | "kyc_rejected"
-  | "roi_paid";
+  | "roi_paid"
+  | "user_promoted_to_admin"
+  | "user_demoted_to_investor";
 
 export interface IActivity extends Document {
   tenantId?: mongoose.Types.ObjectId;
@@ -22,7 +27,7 @@ export interface IActivity extends Document {
   actor?: mongoose.Types.ObjectId;
   /** Optional related resource (farm, investment, etc.) */
   resourceId?: mongoose.Types.ObjectId;
-  resourceType?: "Farm" | "Investment" | "User" | "KycDocument";
+  resourceType?: "Farm" | "Investment" | "User" | "KycDocument" | "Tenant";
   /** Arbitrary extra data (amounts, names, etc.) */
   metadata?: Record<string, unknown>;
   createdAt: Date;
@@ -37,6 +42,9 @@ const ActivitySchema = new Schema<IActivity>(
       required: true,
       enum: [
         "user_signup",
+        "tenant_created",
+        "tenant_updated",
+        "tenant_deleted",
         "farm_created",
         "farm_updated",
         "farm_deleted",
@@ -47,6 +55,8 @@ const ActivitySchema = new Schema<IActivity>(
         "kyc_approved",
         "kyc_rejected",
         "roi_paid",
+        "user_promoted_to_admin",
+        "user_demoted_to_investor",
       ],
       index: true,
     },
@@ -56,7 +66,7 @@ const ActivitySchema = new Schema<IActivity>(
     resourceId: { type: Schema.Types.ObjectId },
     resourceType: {
       type: String,
-      enum: ["Farm", "Investment", "User", "KycDocument"],
+      enum: ["Farm", "Investment", "User", "KycDocument", "Tenant"],
     },
     metadata: { type: Schema.Types.Mixed },
   },

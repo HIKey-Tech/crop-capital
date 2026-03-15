@@ -37,6 +37,8 @@ const corsOptions = {
     "Authorization",
     "X-Requested-With",
     "Accept",
+    "X-Tenant-Slug",
+    "X-Tenant-Secret",
   ],
   exposedHeaders: ["Content-Range", "X-Content-Range", "Content-Length"],
   maxAge: 600,

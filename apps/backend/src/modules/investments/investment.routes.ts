@@ -2,6 +2,7 @@ import { Router } from "express";
 import { protect } from "@/middlewares/auth.middleware";
 import { restrictTo } from "@/middlewares/role.middleware";
 import {
+  requireAnyTenantFeature,
   requireRoleBasedTenantFeature,
   requireTenantFeature,
 } from "@/middlewares/feature.middleware";
@@ -20,17 +21,14 @@ const router = Router();
 router.post(
   "/",
   protect,
-  restrictTo("investor"),
+  restrictTo("investor", "admin"),
   requireTenantFeature("investments"),
   investInFarm,
 );
 router.get(
   "/me",
   protect,
-  requireRoleBasedTenantFeature({
-    investor: "investments",
-    admin: "adminTransactions",
-  }),
+  requireAnyTenantFeature(["investments", "adminTransactions"]),
   getMyInvestments,
 ); // Allow both admins and investors
 
@@ -47,10 +45,7 @@ router.get(
 router.get(
   "/:id",
   protect,
-  requireRoleBasedTenantFeature({
-    investor: "investments",
-    admin: "adminTransactions",
-  }),
+  requireAnyTenantFeature(["investments", "adminTransactions"]),
   getInvestmentById,
 );
 

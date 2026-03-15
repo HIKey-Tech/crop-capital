@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { User } from "./user.model";
 import { Investment } from "../investments/investment.model";
 import { promoteToAdmin, demoteFromAdmin } from "./user.service";
+import { logActivity } from "@/modules/activities/activity.service";
 
 // Get all users (admin only)
 export const getUsers = async (
@@ -12,7 +13,7 @@ export const getUsers = async (
   try {
     const tenantId = req.tenant?._id;
     const users = await User.find({
-      role: "investor",
+      role: { $in: ["investor", "admin"] },
       ...(tenantId ? { tenantId } : {}),
     }).select("-password");
 
@@ -35,6 +36,7 @@ export const getUsers = async (
           _id: user._id,
           name: user.name,
           email: user.email,
+          role: user.role,
           country: user.country,
           isVerified: user.isVerified,
           createdAt: user.createdAt,
@@ -220,6 +222,20 @@ export const promoteUser = async (
     const tenantId = req.tenant?._id?.toString();
     const user = await promoteToAdmin(id, tenantId);
 
+    logActivity({
+      type: "user_promoted_to_admin",
+      title: "Tenant admin granted",
+      description: `${user.name} was promoted to tenant admin.`,
+      tenantId: req.tenant?._id,
+      actor: req.user?._id,
+      resourceId: user._id,
+      resourceType: "User",
+      metadata: {
+        userEmail: user.email,
+        promotedBy: req.user?.email,
+      },
+    });
+
     res.status(200).json({
       success: true,
       message: "User promoted to admin successfully",
@@ -247,8 +263,31 @@ export const demoteUser = async (
     if (!id) {
       throw new Error("User ID is required");
     }
+
+    if (req.user?._id?.toString() === id) {
+      res.status(400).json({
+        success: false,
+        message: "You cannot demote your own admin account",
+      });
+      return;
+    }
+
     const tenantId = req.tenant?._id?.toString();
     const user = await demoteFromAdmin(id, tenantId);
+
+    logActivity({
+      type: "user_demoted_to_investor",
+      title: "Tenant admin removed",
+      description: `${user.name} was returned to investor access.`,
+      tenantId: req.tenant?._id,
+      actor: req.user?._id,
+      resourceId: user._id,
+      resourceType: "User",
+      metadata: {
+        userEmail: user.email,
+        demotedBy: req.user?.email,
+      },
+    });
 
     res.status(200).json({
       success: true,

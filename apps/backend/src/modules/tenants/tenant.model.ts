@@ -64,6 +64,14 @@ const featureDefaults: ITenantFeatures = {
   adminReports: true,
 };
 
+const normalizeDomains = (domains?: string[]) => {
+  const normalized = (domains || [])
+    .map((domain) => domain.toLowerCase().trim().split(":")[0])
+    .filter(Boolean);
+
+  return normalized.length > 0 ? normalized : undefined;
+};
+
 const TenantSchema = new Schema<ITenant>(
   {
     name: { type: String, required: true, trim: true },
@@ -74,7 +82,7 @@ const TenantSchema = new Schema<ITenant>(
       lowercase: true,
       trim: true,
     },
-    domains: { type: [String], default: [] },
+    domains: { type: [String], default: undefined },
     isActive: { type: Boolean, default: true },
     features: {
       investments: { type: Boolean, default: featureDefaults.investments },
@@ -126,11 +134,15 @@ const TenantSchema = new Schema<ITenant>(
 
 TenantSchema.pre("save", function () {
   this.slug = this.slug?.toLowerCase().trim();
-  this.domains = (this.domains || [])
-    .map((domain) => domain.toLowerCase().trim().split(":")[0])
-    .filter(Boolean);
+  this.domains = normalizeDomains(this.domains) as string[];
 });
 
-TenantSchema.index({ domains: 1 }, { unique: true, sparse: true });
+TenantSchema.index(
+  { domains: 1 },
+  {
+    unique: true,
+    partialFilterExpression: { "domains.0": { $exists: true } },
+  },
+);
 
 export const Tenant = mongoose.model<ITenant>("Tenant", TenantSchema);

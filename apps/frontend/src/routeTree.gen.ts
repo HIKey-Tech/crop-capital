@@ -10,9 +10,13 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as SuperAdminRouteRouteImport } from './routes/super-admin/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SuperAdminIndexRouteImport } from './routes/super-admin/index'
 import { Route as TenantIndexRouteImport } from './routes/$tenant/index'
+import { Route as SuperAdminTenantsRouteImport } from './routes/super-admin/tenants'
+import { Route as SuperAdminReadinessRouteImport } from './routes/super-admin/readiness'
+import { Route as SuperAdminAccessRouteImport } from './routes/super-admin/access'
 import { Route as TenantTermsRouteImport } from './routes/$tenant/terms'
 import { Route as TenantSupportRouteImport } from './routes/$tenant/support'
 import { Route as TenantPrivacyRouteImport } from './routes/$tenant/privacy'
@@ -60,20 +64,40 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SuperAdminRouteRoute = SuperAdminRouteRouteImport.update({
+  id: '/super-admin',
+  path: '/super-admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SuperAdminIndexRoute = SuperAdminIndexRouteImport.update({
-  id: '/super-admin/',
-  path: '/super-admin/',
-  getParentRoute: () => rootRouteImport,
+  id: '/',
+  path: '/',
+  getParentRoute: () => SuperAdminRouteRoute,
 } as any)
 const TenantIndexRoute = TenantIndexRouteImport.update({
   id: '/$tenant/',
   path: '/$tenant/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const SuperAdminTenantsRoute = SuperAdminTenantsRouteImport.update({
+  id: '/tenants',
+  path: '/tenants',
+  getParentRoute: () => SuperAdminRouteRoute,
+} as any)
+const SuperAdminReadinessRoute = SuperAdminReadinessRouteImport.update({
+  id: '/readiness',
+  path: '/readiness',
+  getParentRoute: () => SuperAdminRouteRoute,
+} as any)
+const SuperAdminAccessRoute = SuperAdminAccessRouteImport.update({
+  id: '/access',
+  path: '/access',
+  getParentRoute: () => SuperAdminRouteRoute,
 } as any)
 const TenantTermsRoute = TenantTermsRouteImport.update({
   id: '/$tenant/terms',
@@ -314,6 +338,7 @@ const TenantAuthenticatedAdminFarmsIdAnalyticsRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/super-admin': typeof SuperAdminRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/$tenant': typeof TenantAuthenticatedRouteRouteWithChildren
   '/$tenant/auth': typeof TenantAuthRouteRouteWithChildren
@@ -321,6 +346,9 @@ export interface FileRoutesByFullPath {
   '/$tenant/privacy': typeof TenantPrivacyRoute
   '/$tenant/support': typeof TenantSupportRoute
   '/$tenant/terms': typeof TenantTermsRoute
+  '/super-admin/access': typeof SuperAdminAccessRoute
+  '/super-admin/readiness': typeof SuperAdminReadinessRoute
+  '/super-admin/tenants': typeof SuperAdminTenantsRoute
   '/$tenant/': typeof TenantIndexRoute
   '/super-admin/': typeof SuperAdminIndexRoute
   '/$tenant/settings': typeof TenantAuthenticatedSettingsRouteRouteWithChildren
@@ -367,6 +395,9 @@ export interface FileRoutesByTo {
   '/$tenant/privacy': typeof TenantPrivacyRoute
   '/$tenant/support': typeof TenantSupportRoute
   '/$tenant/terms': typeof TenantTermsRoute
+  '/super-admin/access': typeof SuperAdminAccessRoute
+  '/super-admin/readiness': typeof SuperAdminReadinessRoute
+  '/super-admin/tenants': typeof SuperAdminTenantsRoute
   '/super-admin': typeof SuperAdminIndexRoute
   '/$tenant/news': typeof TenantAuthenticatedNewsRoute
   '/$tenant/auth/verify-email': typeof TenantAuthVerifyEmailRoute
@@ -405,6 +436,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/super-admin': typeof SuperAdminRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/$tenant/_authenticated': typeof TenantAuthenticatedRouteRouteWithChildren
   '/$tenant/auth': typeof TenantAuthRouteRouteWithChildren
@@ -412,6 +444,9 @@ export interface FileRoutesById {
   '/$tenant/privacy': typeof TenantPrivacyRoute
   '/$tenant/support': typeof TenantSupportRoute
   '/$tenant/terms': typeof TenantTermsRoute
+  '/super-admin/access': typeof SuperAdminAccessRoute
+  '/super-admin/readiness': typeof SuperAdminReadinessRoute
+  '/super-admin/tenants': typeof SuperAdminTenantsRoute
   '/$tenant/': typeof TenantIndexRoute
   '/super-admin/': typeof SuperAdminIndexRoute
   '/$tenant/_authenticated/settings': typeof TenantAuthenticatedSettingsRouteRouteWithChildren
@@ -454,6 +489,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/super-admin'
     | '/auth'
     | '/$tenant'
     | '/$tenant/auth'
@@ -461,6 +497,9 @@ export interface FileRouteTypes {
     | '/$tenant/privacy'
     | '/$tenant/support'
     | '/$tenant/terms'
+    | '/super-admin/access'
+    | '/super-admin/readiness'
+    | '/super-admin/tenants'
     | '/$tenant/'
     | '/super-admin/'
     | '/$tenant/settings'
@@ -507,6 +546,9 @@ export interface FileRouteTypes {
     | '/$tenant/privacy'
     | '/$tenant/support'
     | '/$tenant/terms'
+    | '/super-admin/access'
+    | '/super-admin/readiness'
+    | '/super-admin/tenants'
     | '/super-admin'
     | '/$tenant/news'
     | '/$tenant/auth/verify-email'
@@ -544,6 +586,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/super-admin'
     | '/auth'
     | '/$tenant/_authenticated'
     | '/$tenant/auth'
@@ -551,6 +594,9 @@ export interface FileRouteTypes {
     | '/$tenant/privacy'
     | '/$tenant/support'
     | '/$tenant/terms'
+    | '/super-admin/access'
+    | '/super-admin/readiness'
+    | '/super-admin/tenants'
     | '/$tenant/'
     | '/super-admin/'
     | '/$tenant/_authenticated/settings'
@@ -592,6 +638,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  SuperAdminRouteRoute: typeof SuperAdminRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
   TenantAuthenticatedRouteRoute: typeof TenantAuthenticatedRouteRouteWithChildren
   TenantAuthRouteRoute: typeof TenantAuthRouteRouteWithChildren
@@ -600,7 +647,6 @@ export interface RootRouteChildren {
   TenantSupportRoute: typeof TenantSupportRoute
   TenantTermsRoute: typeof TenantTermsRoute
   TenantIndexRoute: typeof TenantIndexRoute
-  SuperAdminIndexRoute: typeof SuperAdminIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -612,6 +658,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/super-admin': {
+      id: '/super-admin'
+      path: '/super-admin'
+      fullPath: '/super-admin'
+      preLoaderRoute: typeof SuperAdminRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -621,10 +674,10 @@ declare module '@tanstack/react-router' {
     }
     '/super-admin/': {
       id: '/super-admin/'
-      path: '/super-admin'
+      path: '/'
       fullPath: '/super-admin/'
       preLoaderRoute: typeof SuperAdminIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof SuperAdminRouteRoute
     }
     '/$tenant/': {
       id: '/$tenant/'
@@ -632,6 +685,27 @@ declare module '@tanstack/react-router' {
       fullPath: '/$tenant/'
       preLoaderRoute: typeof TenantIndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/super-admin/tenants': {
+      id: '/super-admin/tenants'
+      path: '/tenants'
+      fullPath: '/super-admin/tenants'
+      preLoaderRoute: typeof SuperAdminTenantsRouteImport
+      parentRoute: typeof SuperAdminRouteRoute
+    }
+    '/super-admin/readiness': {
+      id: '/super-admin/readiness'
+      path: '/readiness'
+      fullPath: '/super-admin/readiness'
+      preLoaderRoute: typeof SuperAdminReadinessRouteImport
+      parentRoute: typeof SuperAdminRouteRoute
+    }
+    '/super-admin/access': {
+      id: '/super-admin/access'
+      path: '/access'
+      fullPath: '/super-admin/access'
+      preLoaderRoute: typeof SuperAdminAccessRouteImport
+      parentRoute: typeof SuperAdminRouteRoute
     }
     '/$tenant/terms': {
       id: '/$tenant/terms'
@@ -923,6 +997,24 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface SuperAdminRouteRouteChildren {
+  SuperAdminAccessRoute: typeof SuperAdminAccessRoute
+  SuperAdminReadinessRoute: typeof SuperAdminReadinessRoute
+  SuperAdminTenantsRoute: typeof SuperAdminTenantsRoute
+  SuperAdminIndexRoute: typeof SuperAdminIndexRoute
+}
+
+const SuperAdminRouteRouteChildren: SuperAdminRouteRouteChildren = {
+  SuperAdminAccessRoute: SuperAdminAccessRoute,
+  SuperAdminReadinessRoute: SuperAdminReadinessRoute,
+  SuperAdminTenantsRoute: SuperAdminTenantsRoute,
+  SuperAdminIndexRoute: SuperAdminIndexRoute,
+}
+
+const SuperAdminRouteRouteWithChildren = SuperAdminRouteRoute._addFileChildren(
+  SuperAdminRouteRouteChildren,
+)
+
 interface TenantAuthenticatedSettingsRouteRouteChildren {
   TenantAuthenticatedSettingsNotificationsRoute: typeof TenantAuthenticatedSettingsNotificationsRoute
   TenantAuthenticatedSettingsSecurityRoute: typeof TenantAuthenticatedSettingsSecurityRoute
@@ -1059,6 +1151,7 @@ const TenantAuthRouteRouteWithChildren = TenantAuthRouteRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  SuperAdminRouteRoute: SuperAdminRouteRouteWithChildren,
   AuthRoute: AuthRoute,
   TenantAuthenticatedRouteRoute: TenantAuthenticatedRouteRouteWithChildren,
   TenantAuthRouteRoute: TenantAuthRouteRouteWithChildren,
@@ -1067,7 +1160,6 @@ const rootRouteChildren: RootRouteChildren = {
   TenantSupportRoute: TenantSupportRoute,
   TenantTermsRoute: TenantTermsRoute,
   TenantIndexRoute: TenantIndexRoute,
-  SuperAdminIndexRoute: SuperAdminIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import { api } from '@/lib/api-builder'
 
@@ -24,6 +24,30 @@ export function useUserStats() {
     queryKey: api.users.stats.$use(),
     queryFn: () => api.$use.users.stats(),
     staleTime: 1000 * 60 * 2, // 2 minutes
+  })
+}
+
+export function usePromoteUser() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (id: string) => api.$use.users.promote(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: api.users.list.$use() })
+      queryClient.invalidateQueries({ queryKey: api.users.stats.$use() })
+    },
+  })
+}
+
+export function useDemoteUser() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (id: string) => api.$use.users.demote(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: api.users.list.$use() })
+      queryClient.invalidateQueries({ queryKey: api.users.stats.$use() })
+    },
   })
 }
 

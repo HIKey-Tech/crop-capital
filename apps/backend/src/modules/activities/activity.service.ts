@@ -8,7 +8,7 @@ interface LogActivityParams {
   tenantId?: string | mongoose.Types.ObjectId;
   actor?: string | mongoose.Types.ObjectId;
   resourceId?: string | mongoose.Types.ObjectId;
-  resourceType?: "Farm" | "Investment" | "User" | "KycDocument";
+  resourceType?: "Farm" | "Investment" | "User" | "KycDocument" | "Tenant";
   metadata?: Record<string, unknown>;
 }
 

@@ -89,6 +89,6 @@ export const api = createBuilder({
       id: string
       data: Parameters<typeof tenantApi.update>[1]
     }) => tenantApi.update(id, data),
-    assignUnassignedUsers: (id: string) => tenantApi.assignUnassignedUsers(id),
+    delete: (id: string) => tenantApi.delete(id),
   },
 })

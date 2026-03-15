@@ -8,6 +8,18 @@ import {
 import { AppError } from "@/utils/AppError";
 import { sendEmail } from "@/utils/email";
 
+const sendInvestmentEmailBestEffort = async (
+  email: string,
+  subject: string,
+  html: string,
+) => {
+  try {
+    await sendEmail(email, subject, html);
+  } catch (error) {
+    console.error("Investment email delivery failed", error);
+  }
+};
+
 // Investor: make investment
 export const investInFarm = async (
   req: Request,
@@ -63,8 +75,8 @@ export const investInFarm = async (
     investment.paystackAccessCode = paystackResponse.data.access_code;
     await investment.save();
 
-    // Send confirmation email
-    await sendEmail(
+    // Do not fail the investment flow if email delivery is unavailable.
+    await sendInvestmentEmailBestEffort(
       investor.email,
       "Investment Created - Complete Your Payment",
       `<h1>Investment Pending</h1>
@@ -171,7 +183,7 @@ export const completeInvestment = async (
 
     const investor = investment.investor as any;
 
-    await sendEmail(
+    await sendInvestmentEmailBestEffort(
       investor.email,
       "Investment Completed",
       `<h1>Congratulations!</h1>
@@ -244,8 +256,11 @@ export const getInvestmentById = async (
 
     // Check ownership: investor can only see their own, admin can see all
     const user = req.user!;
+    const canViewAllAsAdmin =
+      user.role === "admin" && Boolean(req.tenant?.features?.adminTransactions);
+
     if (
-      user.role !== "admin" &&
+      !canViewAllAsAdmin &&
       investment.investor.toString() !== user._id.toString()
     ) {
       return next(

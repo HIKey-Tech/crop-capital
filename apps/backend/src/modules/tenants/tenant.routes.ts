@@ -3,6 +3,7 @@ import {
   assignUnassignedUsers,
   assignUsersToTenant,
   createTenant,
+  deleteTenant,
   getTenantBootstrap,
   listTenants,
   updateTenant,
@@ -16,6 +17,7 @@ router.get("/bootstrap", getTenantBootstrap);
 router.get("/", protect, restrictTo("super_admin"), listTenants);
 router.post("/", protect, restrictTo("super_admin"), createTenant);
 router.patch("/:id", protect, restrictTo("super_admin"), updateTenant);
+router.delete("/:id", protect, restrictTo("super_admin"), deleteTenant);
 router.post(
   "/:id/assign-unassigned-users",
   protect,

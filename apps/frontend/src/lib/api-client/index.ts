@@ -1,9 +1,9 @@
 import type {
   ActivitiesListResponse,
-  AssignUsersResponse,
   AuthResponse,
   CreateFarmRequest,
   CreateTenantRequest,
+  DeleteTenantResponse,
   FarmResponse,
   FarmsListResponse,
   InvestRequest,
@@ -128,6 +128,21 @@ function resolveTenantSlugFromHost(): string | null {
   return parts.length ? parts[parts.length - 1] : null
 }
 
+function resolveTenantSlugFromPath(): string | null {
+  if (typeof window === 'undefined') return null
+
+  const [firstSegment] = window.location.pathname.split('/').filter(Boolean)
+
+  if (!firstSegment) return null
+
+  const reservedSegments = new Set(['auth', 'super-admin'])
+  if (reservedSegments.has(firstSegment.toLowerCase())) {
+    return null
+  }
+
+  return firstSegment.toLowerCase()
+}
+
 export async function request<T>(
   endpoint: string,
   options: RequestInit = {},
@@ -143,7 +158,7 @@ export async function request<T>(
     headers.Authorization = `Bearer ${token}`
   }
 
-  const tenantSlug = resolveTenantSlugFromHost()
+  const tenantSlug = resolveTenantSlugFromHost() || resolveTenantSlugFromPath()
   if (tenantSlug) {
     headers['X-Tenant-Slug'] = tenantSlug
   }
@@ -186,13 +201,10 @@ export const tenantApi = {
       body: JSON.stringify(data),
     })
   },
-  assignUnassignedUsers: async (id: string): Promise<AssignUsersResponse> => {
-    return request<AssignUsersResponse>(
-      `/tenants/${id}/assign-unassigned-users`,
-      {
-        method: 'POST',
-      },
-    )
+  delete: async (id: string): Promise<DeleteTenantResponse> => {
+    return request<DeleteTenantResponse>(`/tenants/${id}`, {
+      method: 'DELETE',
+    })
   },
 }
 

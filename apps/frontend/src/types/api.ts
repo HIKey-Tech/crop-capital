@@ -131,6 +131,7 @@ export interface UserWithStats {
   _id: string
   name: string
   email: string
+  role: 'investor' | 'admin' | 'super_admin'
   country?: string
   isVerified: boolean
   createdAt: string
@@ -224,6 +225,9 @@ export interface KycSubmitRequest {
 // Activity types
 export type ActivityType =
   | 'user_signup'
+  | 'tenant_created'
+  | 'tenant_updated'
+  | 'tenant_deleted'
   | 'farm_created'
   | 'farm_updated'
   | 'farm_deleted'
@@ -234,6 +238,8 @@ export type ActivityType =
   | 'kyc_approved'
   | 'kyc_rejected'
   | 'roi_paid'
+  | 'user_promoted_to_admin'
+  | 'user_demoted_to_investor'
 
 export interface Activity {
   _id: string
@@ -242,7 +248,7 @@ export interface Activity {
   description: string
   actor?: Pick<User, '_id' | 'name' | 'email' | 'photo'>
   resourceId?: string
-  resourceType?: 'Farm' | 'Investment' | 'User' | 'KycDocument'
+  resourceType?: 'Farm' | 'Investment' | 'User' | 'KycDocument' | 'Tenant'
   metadata?: Record<string, unknown>
   createdAt: string
   updatedAt: string
@@ -343,6 +349,25 @@ export interface UpdateTenantRequest {
 export interface TenantMutationResponse {
   success: boolean
   tenant: TenantSummary
+}
+
+export interface DeleteTenantResponse {
+  success: boolean
+  message: string
+  cleanup: {
+    tenantId: string
+    tenantSlug: string
+    usersDeleted: number
+    farmsDeleted: number
+    investmentsDeleted: number
+    kycDocumentsDeleted: number
+    activitiesDeleted: number
+    webhookEventsDeleted: number
+    farmImagesDeleted: number
+    farmImagesFailed: number
+    kycImagesDeleted: number
+    kycImagesFailed: number
+  }
 }
 
 export interface AssignUsersResponse {

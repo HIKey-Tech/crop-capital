@@ -1,0 +1,143 @@
+import { useMemo } from 'react'
+import { useQuery } from '@tanstack/react-query'
+
+import type { TenantFeatures, TenantSummary } from '@/types'
+import { api } from '@/lib/api-builder'
+
+export const defaultTenantFeatures: TenantFeatures = {
+  investments: true,
+  wallet: true,
+  transactions: true,
+  farms: true,
+  news: true,
+  notifications: true,
+  adminPortal: true,
+  adminFarms: true,
+  adminInvestors: true,
+  adminTransactions: true,
+  adminPayouts: true,
+  adminKyc: true,
+  adminReports: true,
+}
+
+export const featureLabels: Array<{
+  key: keyof TenantFeatures
+  label: string
+}> = [
+  { key: 'investments', label: 'Investments' },
+  { key: 'wallet', label: 'Wallet' },
+  { key: 'transactions', label: 'Transactions' },
+  { key: 'farms', label: 'Farms' },
+  { key: 'news', label: 'News' },
+  { key: 'notifications', label: 'Notifications' },
+  { key: 'adminPortal', label: 'Admin Portal' },
+  { key: 'adminFarms', label: 'Admin Farms' },
+  { key: 'adminInvestors', label: 'Admin Investors' },
+  { key: 'adminTransactions', label: 'Admin Transactions' },
+  { key: 'adminPayouts', label: 'Admin Payouts' },
+  { key: 'adminKyc', label: 'Admin KYC' },
+  { key: 'adminReports', label: 'Admin Reports' },
+]
+
+export const getBrowserOrigin = () => {
+  if (typeof window === 'undefined') return ''
+  return window.location.origin.replace(/\/$/, '')
+}
+
+export const getTenantAccessUrls = (tenant: TenantSummary, origin: string) => {
+  const primaryDomain = tenant.domains[0]
+  const preferredBaseUrl = primaryDomain
+    ? `https://${primaryDomain}`
+    : `${origin}/${tenant.slug}`
+
+  return {
+    preferredBaseUrl,
+    investorSignInUrl: `${preferredBaseUrl}/auth/sign-in`,
+    tenantDashboardUrl: `${preferredBaseUrl}/dashboard`,
+    localDemoBaseUrl: `${origin}/${tenant.slug}`,
+  }
+}
+
+export const getTenantReadiness = (tenant: TenantSummary) => {
+  const checks = [
+    {
+      key: 'active',
+      label: 'Tenant is active',
+      passed: tenant.isActive,
+    },
+    {
+      key: 'domain',
+      label: 'Custom domain configured',
+      passed: tenant.domains.length > 0,
+    },
+    {
+      key: 'support',
+      label: 'Support contact configured',
+      passed: Boolean(
+        tenant.branding.supportEmail?.trim() ||
+        tenant.branding.supportPhone?.trim(),
+      ),
+    },
+    {
+      key: 'branding',
+      label: 'Launch copy is populated',
+      passed: Boolean(
+        tenant.branding.displayName.trim() &&
+        tenant.branding.tagline?.trim() &&
+        tenant.branding.heroTitle?.trim(),
+      ),
+    },
+    {
+      key: 'features',
+      label: 'Core investor and admin features enabled',
+      passed: Boolean(
+        tenant.features.farms &&
+        tenant.features.investments &&
+        tenant.features.wallet &&
+        tenant.features.transactions &&
+        tenant.features.adminPortal,
+      ),
+    },
+  ]
+
+  const passedChecks = checks.filter((check) => check.passed).length
+  const blockers = checks
+    .filter((check) => !check.passed)
+    .map((check) => check.label)
+
+  const status =
+    blockers.length === 0
+      ? 'launch-ready'
+      : blockers.length === 1 && blockers[0] === 'Custom domain configured'
+        ? 'demo-ready'
+        : 'needs-attention'
+
+  return { score: `${passedChecks}/${checks.length}`, status, blockers }
+}
+
+export function useTenants() {
+  const tenantsQuery = useQuery({
+    queryKey: api.tenants.list.$use(),
+    queryFn: () => api.$use.tenants.list(),
+  })
+
+  const sortedTenants = useMemo(
+    () =>
+      [...(tenantsQuery.data?.tenants || [])].sort((first, second) =>
+        first.slug.localeCompare(second.slug),
+      ),
+    [tenantsQuery.data?.tenants],
+  )
+
+  const tenantStats = useMemo(
+    () => ({
+      total: sortedTenants.length,
+      active: sortedTenants.filter((t) => t.isActive).length,
+      inactive: sortedTenants.filter((t) => !t.isActive).length,
+      withDomains: sortedTenants.filter((t) => t.domains.length > 0).length,
+    }),
+    [sortedTenants],
+  )
+
+  return { tenantsQuery, sortedTenants, tenantStats }
+}

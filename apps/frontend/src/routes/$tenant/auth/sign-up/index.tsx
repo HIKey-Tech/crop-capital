@@ -56,7 +56,7 @@ function SignUpPage() {
         onSuccess: () => {
           toast.success('Account created successfully!')
           navigate({
-            to: '/$tenant/dashboard',
+            to: '/$tenant/onboarding',
             params: { tenant: tenantParam },
           })
         },
