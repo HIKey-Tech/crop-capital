@@ -71,7 +71,9 @@ function LandingPage() {
               <Button variant="ghost">Sign In</Button>
             </Link>
             <Link to="/$tenant/auth" params={{ tenant: tenantParam }}>
-              <Button className="btn-primary-gradient">Get Started</Button>
+              <Button className="btn-primary-gradient">
+                {tenant.ctaPrimaryLabel}
+              </Button>
             </Link>
           </div>
         </div>
@@ -188,18 +190,17 @@ function LandingPage() {
       <section className="py-20 px-4">
         <div className="container mx-auto text-center">
           <h2 className="text-3xl font-bold text-foreground mb-4">
-            Ready to Start Investing?
+            Ready to start with {tenant.displayName}?
           </h2>
           <p className="text-xl text-muted-foreground mb-8 max-w-xl mx-auto">
-            Join thousands of investors building wealth while supporting African
-            agriculture.
+            {tenant.tagline}
           </p>
           <Link to="/$tenant/auth" params={{ tenant: tenantParam }}>
             <Button
               size="lg"
               className="btn-primary-gradient h-14 px-8 text-lg"
             >
-              Create Free Account
+              {tenant.ctaPrimaryLabel}
               <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
           </Link>
@@ -209,24 +210,36 @@ function LandingPage() {
       {/* Footer */}
       <footer className="py-8 px-4 border-t border-border">
         <div className="container mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-              {tenant.logoUrl ? (
-                <img
-                  src={tenant.logoUrl}
-                  alt={tenant.displayName}
-                  className="w-5 h-5 object-contain"
-                />
-              ) : (
-                <span className="text-primary-foreground font-bold text-xs">
-                  {tenant.shortName}
-                </span>
-              )}
+          <div className="flex flex-col gap-2 md:flex-row md:items-center md:gap-3">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
+                {tenant.logoUrl ? (
+                  <img
+                    src={tenant.logoUrl}
+                    alt={tenant.displayName}
+                    className="w-5 h-5 object-contain"
+                  />
+                ) : (
+                  <span className="text-primary-foreground font-bold text-xs">
+                    {tenant.shortName}
+                  </span>
+                )}
+              </div>
+              <span className="text-sm text-muted-foreground">
+                © {new Date().getFullYear()} {tenant.legalName}. All rights
+                reserved.
+              </span>
             </div>
-            <span className="text-sm text-muted-foreground">
-              © {new Date().getFullYear()} {tenant.legalName}. All rights
-              reserved.
-            </span>
+            {tenant.websiteUrl && (
+              <a
+                href={tenant.websiteUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="text-sm text-primary hover:underline"
+              >
+                Visit Website
+              </a>
+            )}
           </div>
           <div className="flex gap-6 text-sm text-muted-foreground">
             <a

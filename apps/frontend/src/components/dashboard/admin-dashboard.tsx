@@ -1,3 +1,4 @@
+import { Link, useParams } from '@tanstack/react-router'
 import { Coins, FolderOpen, TrendingUp } from 'lucide-react'
 import {
   Bar,
@@ -14,6 +15,7 @@ import {
 import type { ChartConfig } from '@/components/ui/chart'
 
 import { StatsCard } from '@/components/dashboard/stats-card'
+import { Button } from '@/components/ui/button'
 import {
   Card,
   CardContent,
@@ -28,11 +30,15 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from '@/components/ui/chart'
+import { useTenant } from '@/contexts/tenant'
 import { useFarms } from '@/hooks'
 import { formatCurrency } from '@/lib/format-currency'
 
 export function AdminDashboard() {
+  const params = useParams({ strict: false })
+  const { tenant } = useTenant()
   const { data, error } = useFarms()
+  const tenantParam = params.tenant ?? tenant.slug
 
   const farms = data?.farms ?? []
 
@@ -113,6 +119,39 @@ export function AdminDashboard() {
 
   return (
     <div className="space-y-8 animate-fade-in max-w-6xl mx-auto">
+      <section className="rounded-3xl border border-border bg-[radial-gradient(circle_at_top_left,hsl(var(--primary)/0.16),transparent_34%),linear-gradient(160deg,hsl(var(--card)),hsl(var(--muted))_58%,hsl(var(--card)))] p-6 shadow-sm">
+        <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+          <div className="max-w-3xl space-y-2">
+            <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-primary">
+              Admin workspace
+            </div>
+            <h1 className="text-3xl font-bold tracking-tight text-foreground">
+              Operate {tenant.displayName}
+            </h1>
+            <p className="text-base text-muted-foreground">
+              {tenant.tagline}
+              {tenant.supportEmail ? ` Contact: ${tenant.supportEmail}.` : ''}
+            </p>
+          </div>
+
+          <div className="flex flex-col gap-3 sm:flex-row">
+            <Button asChild className="btn-primary-gradient">
+              <Link to="/$tenant/admin/farms" params={{ tenant: tenantParam }}>
+                Manage Farms
+              </Link>
+            </Button>
+            <Button asChild variant="outline">
+              <Link
+                to="/$tenant/admin/investors"
+                params={{ tenant: tenantParam }}
+              >
+                Investor Directory
+              </Link>
+            </Button>
+          </div>
+        </div>
+      </section>
+
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <StatsCard
           label="Total Farms"

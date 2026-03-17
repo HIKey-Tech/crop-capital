@@ -10,9 +10,9 @@ function VerifyEmailPage() {
   const { tenant } = Route.useParams()
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
-      <div className="w-full max-w-sm bg-white rounded-2xl shadow-lg p-8 text-center animate-fade-in">
-        <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
+    <div className="min-h-screen flex items-center justify-center bg-background p-4">
+      <div className="w-full max-w-sm rounded-2xl border border-border bg-card p-8 text-center shadow-lg animate-fade-in">
+        <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full border border-brand-secondary/20 bg-secondary text-brand-secondary">
           <Mail className="h-8 w-8" />
         </div>
         <h1 className="text-2xl font-bold mb-2">Check your email</h1>

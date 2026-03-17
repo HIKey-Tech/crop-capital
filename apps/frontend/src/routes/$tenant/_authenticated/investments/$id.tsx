@@ -76,7 +76,7 @@ function InvestmentDetailsPage() {
       return (
         <Badge
           variant="outline"
-          className="bg-blue-50 text-blue-700 border-blue-200"
+          className="border-primary/20 bg-primary/10 text-primary"
         >
           Completed
         </Badge>
@@ -86,7 +86,7 @@ function InvestmentDetailsPage() {
       return (
         <Badge
           variant="outline"
-          className="bg-green-50 text-green-700 border-green-200"
+          className="border-brand-secondary/20 bg-secondary text-secondary-foreground"
         >
           Active
         </Badge>
@@ -95,7 +95,7 @@ function InvestmentDetailsPage() {
     return (
       <Badge
         variant="outline"
-        className="bg-yellow-50 text-yellow-700 border-yellow-200"
+        className="border-brand-accent/25 bg-accent text-accent-foreground"
       >
         Pending
       </Badge>
@@ -146,7 +146,7 @@ function InvestmentDetailsPage() {
           <div className="flex items-center gap-2 text-muted-foreground text-xs uppercase font-semibold mb-2">
             <TrendingUp className="h-4 w-4" /> Expected Return
           </div>
-          <div className="text-2xl font-bold text-green-600">
+          <div className="text-2xl font-bold text-primary">
             {formatCurrency(expectedReturn)}{' '}
             <span className="text-sm font-medium text-muted-foreground">
               ({investment.roi}%)
@@ -169,9 +169,9 @@ function InvestmentDetailsPage() {
             <span>Progress</span>
             <span>{progress}%</span>
           </div>
-          <div className="h-2 w-full bg-gray-100 rounded-full overflow-hidden">
+          <div className="h-2 w-full rounded-full overflow-hidden bg-muted">
             <div
-              className="h-full bg-green-500 transition-all duration-1000"
+              className="h-full bg-primary transition-all duration-1000"
               style={{ width: `${progress}%` }}
             />
           </div>
@@ -191,9 +191,9 @@ function InvestmentDetailsPage() {
             <TabsContent value="timeline" className="space-y-6">
               <div className="bg-card rounded-xl border p-6">
                 <h3 className="font-semibold mb-4">Investment Milestones</h3>
-                <div className="relative border-l border-gray-200 ml-3 space-y-8 pl-8 py-2">
+                <div className="relative ml-3 space-y-8 border-l border-border pl-8 py-2">
                   <div className="relative">
-                    <div className="absolute -left-9.75 h-5 w-5 rounded-full border-2 border-white bg-green-500 ring-4 ring-green-50" />
+                    <div className="absolute -left-9.75 h-5 w-5 rounded-full border-2 border-card bg-primary ring-4 ring-primary/10" />
                     <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-1">
                       <div>
                         <h4 className="font-medium text-foreground">
@@ -204,7 +204,7 @@ function InvestmentDetailsPage() {
                           {formatCurrency(investment.amount)} in {farm.name}
                         </p>
                       </div>
-                      <span className="text-xs text-gray-400 whitespace-nowrap">
+                      <span className="text-xs text-muted-foreground whitespace-nowrap">
                         {formatDate(investment.createdAt)}
                       </span>
                     </div>
@@ -212,7 +212,7 @@ function InvestmentDetailsPage() {
 
                   {investment.status === 'completed' && (
                     <div className="relative">
-                      <div className="absolute -left-9.75 h-5 w-5 rounded-full border-2 border-white bg-green-500 ring-4 ring-green-50" />
+                      <div className="absolute -left-9.75 h-5 w-5 rounded-full border-2 border-card bg-brand-secondary ring-4 ring-secondary" />
                       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-1">
                         <div>
                           <h4 className="font-medium text-foreground">
@@ -222,7 +222,7 @@ function InvestmentDetailsPage() {
                             Your payment was successfully processed via Paystack
                           </p>
                         </div>
-                        <span className="text-xs text-gray-400 whitespace-nowrap">
+                        <span className="text-xs text-muted-foreground whitespace-nowrap">
                           {formatDate(investment.updatedAt)}
                         </span>
                       </div>
@@ -231,7 +231,7 @@ function InvestmentDetailsPage() {
 
                   {investment.roiPaid && (
                     <div className="relative">
-                      <div className="absolute -left-9.75 h-5 w-5 rounded-full border-2 border-white bg-blue-500 ring-4 ring-blue-50" />
+                      <div className="absolute -left-9.75 h-5 w-5 rounded-full border-2 border-card bg-brand-accent ring-4 ring-accent" />
                       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-1">
                         <div>
                           <h4 className="font-medium text-foreground">
@@ -247,7 +247,7 @@ function InvestmentDetailsPage() {
 
                   {!investment.roiPaid && investment.status === 'completed' && (
                     <div className="relative">
-                      <div className="absolute -left-9.75 h-5 w-5 rounded-full border-2 border-white bg-gray-300 ring-4 ring-gray-50" />
+                      <div className="absolute -left-9.75 h-5 w-5 rounded-full border-2 border-card bg-muted-foreground/30 ring-4 ring-muted" />
                       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-1">
                         <div>
                           <h4 className="font-medium text-muted-foreground">
@@ -340,7 +340,7 @@ function InvestmentDetailsPage() {
                     <span className="text-muted-foreground">
                       Expected Return
                     </span>
-                    <span className="font-medium text-green-600">
+                    <span className="font-medium text-primary">
                       {formatCurrency(expectedReturn)}
                     </span>
                   </div>
@@ -371,16 +371,16 @@ function InvestmentDetailsPage() {
                 <h3 className="font-bold text-lg mb-1">{farm.name}</h3>
               </Link>
               <p className="text-sm text-muted-foreground flex items-center gap-1">
-                <CheckCircle2 className="h-3.5 w-3.5 text-green-500" /> Verified
+                <CheckCircle2 className="h-3.5 w-3.5 text-primary" /> Verified
                 Project
               </p>
               <p className="text-sm text-muted-foreground mt-2">
                 {farm.location}
               </p>
-              <div className="mt-4 pt-4 border-t border-gray-100">
+              <div className="mt-4 border-t border-border pt-4">
                 <div className="flex justify-between items-center">
                   <span className="text-sm font-medium">Have questions?</span>
-                  <Button variant="link" className="px-0 h-auto text-green-600">
+                  <Button variant="link" className="px-0 h-auto text-primary">
                     Contact Support
                   </Button>
                 </div>

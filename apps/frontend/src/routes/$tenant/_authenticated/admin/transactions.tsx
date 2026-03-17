@@ -5,11 +5,14 @@ import type { Farm, Investment, User } from '@/types'
 
 import { DataTable } from '@/components/data-table'
 import { Badge } from '@/components/ui/badge'
+import { useTenant } from '@/contexts/tenant'
 import { useAllInvestments } from '@/hooks'
 import { formatDate } from '@/lib/format-date'
 import { formatCurrency } from '@/lib/format-currency'
 
-export const Route = createFileRoute('/$tenant/_authenticated/admin/transactions')({
+export const Route = createFileRoute(
+  '/$tenant/_authenticated/admin/transactions',
+)({
   component: AdminTransactionsPage,
 })
 
@@ -109,6 +112,7 @@ const columns: Array<ColumnDef<Investment>> = [
 ]
 
 function AdminTransactionsPage() {
+  const { tenant } = useTenant()
   const { data, isLoading, error } = useAllInvestments()
   const transactions = data?.investments ?? []
 
@@ -125,19 +129,22 @@ function AdminTransactionsPage() {
   return (
     <div className="space-y-8 animate-fade-in max-w-screen-2xl mx-auto px-4 mb-10">
       <header className="pt-3 mb-2 flex flex-col gap-1">
+        <span className="text-xs text-muted-foreground">
+          {tenant.displayName} admin · Transactions
+        </span>
         <h1 className="text-3xl font-bold text-foreground tracking-tight">
-          All Platform Transactions
+          Transactions across {tenant.displayName}
         </h1>
         <p className="text-base text-muted-foreground">
-          Monitor all transactions including investments and payouts made by
-          users.
+          Monitor investments and ROI payouts made by users inside{' '}
+          {tenant.displayName}.
         </p>
       </header>
 
       <section className="bg-card rounded-xl border border-border overflow-hidden">
         <header className="px-6 py-3 border-b border-border">
           <h2 className="text-lg font-semibold text-foreground tracking-tight">
-            Transactions Overview
+            Transaction overview
           </h2>
         </header>
         <div className="p-4">

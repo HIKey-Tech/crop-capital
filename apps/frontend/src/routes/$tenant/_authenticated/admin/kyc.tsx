@@ -10,6 +10,7 @@ import { StatsCard } from '@/components/dashboard/stats-card'
 import { DataTable } from '@/components/data-table'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { useTenant } from '@/contexts/tenant'
 import { useApproveKyc, useKycSubmissions, useRejectKyc } from '@/hooks'
 import { formatDate } from '@/lib/format-date'
 
@@ -35,6 +36,7 @@ const DOCUMENT_TYPE_LABELS: Record<string, string> = {
 }
 
 function KYCPage() {
+  const { tenant } = useTenant()
   const [statusFilter, setStatusFilter] = useState('')
   const [selectedKyc, setSelectedKyc] = useState<KycRow | null>(null)
   const [rejectReason, setRejectReason] = useState('')
@@ -156,11 +158,15 @@ function KYCPage() {
   return (
     <div className="space-y-8 animate-fade-in max-w-screen-2xl mx-auto px-4 mb-10">
       <header className="pt-3 mb-2 flex flex-col gap-1">
+        <span className="text-xs text-muted-foreground">
+          {tenant.displayName} admin · KYC
+        </span>
         <h1 className="text-3xl font-bold text-foreground tracking-tight">
-          KYC Reviews
+          KYC reviews for {tenant.displayName}
         </h1>
         <p className="text-base text-muted-foreground">
-          Review and manage investor identity verification submissions.
+          Review and manage investor identity verification submissions for{' '}
+          {tenant.displayName}.
         </p>
       </header>
 

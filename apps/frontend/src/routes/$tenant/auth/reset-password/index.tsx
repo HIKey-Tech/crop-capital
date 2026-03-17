@@ -11,6 +11,7 @@ import { resetPasswordSchema } from '@/api/auth/schema'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { useTenant } from '@/contexts/tenant'
 
 export const Route = createFileRoute('/$tenant/auth/reset-password/')({
   component: ResetPasswordPage,
@@ -24,6 +25,7 @@ export const Route = createFileRoute('/$tenant/auth/reset-password/')({
 function ResetPasswordPage() {
   const { tenant } = Route.useParams()
   const { token } = Route.useSearch()
+  const { tenant: tenantConfig } = useTenant()
 
   const [isSuccess, setIsSuccess] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
@@ -70,7 +72,8 @@ function ResetPasswordPage() {
             Invalid Reset Link
           </h1>
           <p className="text-muted-foreground">
-            This password reset link is invalid or has expired.
+            This {tenantConfig.displayName} password reset link is invalid or
+            has expired.
           </p>
         </div>
         <Link to="/$tenant/auth/forgot-password" params={{ tenant }}>
@@ -91,8 +94,8 @@ function ResetPasswordPage() {
             Password Reset Complete!
           </h1>
           <p className="text-muted-foreground">
-            Your password has been successfully reset. You can now sign in with
-            your new password.
+            Your {tenantConfig.displayName} password has been reset. You can now
+            sign in with your new password.
           </p>
         </div>
         <Link to="/$tenant/auth/sign-in" params={{ tenant }}>
@@ -110,7 +113,9 @@ function ResetPasswordPage() {
         <h1 className="text-3xl font-bold text-foreground mb-2">
           Reset your password
         </h1>
-        <p className="text-muted-foreground">Enter your new password below.</p>
+        <p className="text-muted-foreground">
+          Enter a new password for your {tenantConfig.displayName} account.
+        </p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-5">

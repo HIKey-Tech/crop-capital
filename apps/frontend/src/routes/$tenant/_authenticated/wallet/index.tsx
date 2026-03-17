@@ -65,7 +65,7 @@ const getColumns = (tenant: string): Array<ColumnDef<WalletTransaction>> => [
       return (
         <span
           className={
-            isPositive ? 'text-green-600 font-medium' : 'text-foreground'
+            isPositive ? 'font-medium text-primary' : 'text-foreground'
           }
         >
           {isPositive ? '+' : '-'}
@@ -81,8 +81,8 @@ const getColumns = (tenant: string): Array<ColumnDef<WalletTransaction>> => [
       <span
         className={`text-xs px-2 py-1 rounded-full capitalize ${
           getValue() === 'completed'
-            ? 'bg-green-100 text-green-700'
-            : 'bg-yellow-100 text-yellow-700'
+            ? 'bg-secondary text-secondary-foreground'
+            : 'bg-accent text-accent-foreground'
         }`}
       >
         {getValue() as string}
@@ -192,7 +192,7 @@ function WalletPage() {
             Track your investments and returns.
           </p>
         </div>
-        <Button asChild className="bg-primary hover:bg-primary/90">
+        <Button asChild className="btn-primary-gradient">
           <Link to="/$tenant/farms" params={{ tenant }}>
             <TrendingUp className="h-4 w-4 mr-2" /> Invest Now
           </Link>
@@ -200,12 +200,15 @@ function WalletPage() {
       </header>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="md:col-span-1 bg-gradient-to-br from-green-600 to-green-800 rounded-2xl p-6 text-white shadow-lg relative overflow-hidden">
+        <div
+          className="relative overflow-hidden rounded-2xl p-6 text-brand-secondary-foreground shadow-lg md:col-span-1"
+          style={{ background: 'var(--gradient-secondary)' }}
+        >
           <div className="absolute top-0 right-0 p-4 opacity-10">
             <WalletIcon className="h-32 w-32" />
           </div>
           <div className="relative z-10">
-            <p className="text-green-100 text-sm font-medium mb-1">
+            <p className="mb-1 text-sm font-medium text-brand-secondary-foreground/80">
               Total Invested
             </p>
             <h2 className="text-4xl font-bold mb-6">
@@ -224,12 +227,12 @@ function WalletPage() {
           <StatsCard
             label="Total Returns Received"
             value={formatCurrency(totalReturns)}
-            icon={<DollarSign className="h-4 w-4 text-green-600" />}
+            icon={<DollarSign className="h-4 w-4 text-primary" />}
           />
           <StatsCard
             label="Pending Returns"
             value={formatCurrency(pendingReturns)}
-            icon={<ArrowUpRight className="h-4 w-4 text-blue-600" />}
+            icon={<ArrowUpRight className="h-4 w-4 text-brand-secondary" />}
           />
         </div>
       </div>
@@ -243,7 +246,7 @@ function WalletPage() {
             </Link>
           </Button>
         </div>
-        <div className="bg-white border rounded-xl overflow-hidden shadow-sm">
+        <div className="overflow-hidden rounded-xl border bg-card shadow-sm">
           {transactions.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-16 text-center">
               <WalletIcon className="h-12 w-12 text-muted-foreground/50 mb-3" />

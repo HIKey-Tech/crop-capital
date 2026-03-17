@@ -26,6 +26,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
+import { useTenant } from '@/contexts/tenant'
 import { useDeleteFarm, useFarms } from '@/hooks'
 import { formatCurrency } from '@/lib/format-currency'
 
@@ -35,6 +36,7 @@ export const Route = createFileRoute('/$tenant/_authenticated/admin/farms/')({
 
 function AdminFarmPage() {
   const { tenant } = Route.useParams()
+  const { tenant: tenantConfig } = useTenant()
   const { data, isLoading, error } = useFarms()
 
   const deleteFarm = useDeleteFarm()
@@ -181,20 +183,23 @@ function AdminFarmPage() {
     <div className="max-w-screen-2xl mx-auto px-4 mb-10 space-y-8">
       {/* Hierarchy */}
       <header className="pt-6 pb-2 flex flex-col gap-1">
-        <span className="text-xs text-muted-foreground">Admin » Farms</span>
+        <span className="text-xs text-muted-foreground">
+          {tenantConfig.displayName} admin · Farms
+        </span>
         <h1 className="text-3xl font-bold text-foreground tracking-tight">
-          Manage Farms
+          Manage farms for {tenantConfig.displayName}
         </h1>
         <p className="text-base text-muted-foreground max-w-xl">
-          View, edit, and manage all farm opportunities on the platform.
+          Create, review, and maintain the opportunities investors see inside{' '}
+          {tenantConfig.displayName}.
         </p>
       </header>
 
       <div className="flex justify-end">
         <Link to="/$tenant/admin/farms/new" params={{ tenant }}>
-          <Button className="flex items-center px-5 h-11 rounded-lg font-semibold bg-primary text-primary-foreground hover:bg-primary/90 transition-colors">
+          <Button className="btn-primary-gradient flex items-center px-5 h-11 rounded-lg font-semibold">
             <Plus className="w-5 h-5 mr-2" />
-            <span>Add New Opportunity</span>
+            <span>Add Farm Opportunity</span>
           </Button>
         </Link>
       </div>

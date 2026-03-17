@@ -42,10 +42,11 @@ export function InvestmentCard({ investment }: InvestmentCardProps) {
     bold?: boolean
   }) => (
     <span
-      className={`inline-flex items-center px-3 py-1 rounded-md ${
-        bold ? 'bg-[#FFF8E1] text-[#AB8300]' : 'bg-muted text-foreground/90'
-      } text-[15px] font-medium mr-2 mb-2 whitespace-nowrap`}
-      style={bold ? { border: '1px solid #FFD740' } : {}}
+      className={`inline-flex items-center rounded-md border px-3 py-1 text-[15px] font-medium mr-2 mb-2 whitespace-nowrap ${
+        bold
+          ? 'border-brand-accent/30 bg-accent text-accent-foreground'
+          : 'border-border bg-muted text-foreground/90'
+      }`}
     >
       {bold ? (
         <>
@@ -66,7 +67,7 @@ export function InvestmentCard({ investment }: InvestmentCardProps) {
 
   if (!farm) {
     return (
-      <div className="rounded-xl overflow-hidden border border-border bg-white p-5">
+      <div className="rounded-xl overflow-hidden border border-border bg-card p-5">
         <p className="text-muted-foreground">Loading farm details...</p>
       </div>
     )
@@ -78,7 +79,7 @@ export function InvestmentCard({ investment }: InvestmentCardProps) {
   )
 
   return (
-    <div className="rounded-xl overflow-hidden border border-border bg-white transition-shadow duration-300 group">
+    <div className="rounded-xl overflow-hidden border border-border bg-card transition-shadow duration-300 group">
       <div className="relative aspect-16/10 overflow-hidden">
         <img
           src={farm.images[0]}
@@ -92,12 +93,14 @@ export function InvestmentCard({ investment }: InvestmentCardProps) {
           <h3 className="font-bold text-xl text-foreground leading-snug truncate">
             {farm.name}
           </h3>
-          <span className="ml-3 text-xs text-foreground/70 font-semibold px-2 py-0.5 rounded bg-accent">
-            <span className="text-primary font-bold">{daysRemaining}</span> Days
-            Left
+          <span className="ml-3 rounded-md border border-brand-secondary/25 bg-secondary px-2 py-0.5 text-xs font-semibold text-secondary-foreground">
+            <span className="text-brand-secondary font-bold">
+              {daysRemaining}
+            </span>{' '}
+            Days Left
           </span>
         </div>
-        <p className="text-base text-gray-500 mb-1">{farm.location}</p>
+        <p className="text-base text-muted-foreground mb-1">{farm.location}</p>
 
         {/* Info Pills Row */}
         <div className="flex flex-wrap gap-1 mb-4">
@@ -108,17 +111,16 @@ export function InvestmentCard({ investment }: InvestmentCardProps) {
         {/* Progress bar label */}
         <div className="mb-3">
           <div className="flex items-center justify-between text-xs font-semibold mb-1">
-            <span className="uppercase tracking-wider text-[#A6A6A6]">
+            <span className="uppercase tracking-wider text-muted-foreground">
               Cycle Progress
             </span>
             <span className="text-primary">{progress}%</span>
           </div>
-          <div className="w-full h-2.5 rounded-full bg-[#ECECEC] overflow-hidden relative">
+          <div className="w-full h-2.5 rounded-full bg-muted overflow-hidden relative">
             <div
-              className="h-full rounded-full"
+              className="h-full rounded-full bg-brand-accent"
               style={{
                 width: `${progress}%`,
-                background: '#FFD740',
               }}
             />
           </div>
@@ -127,13 +129,13 @@ export function InvestmentCard({ investment }: InvestmentCardProps) {
         {/* Amount Invested & Expected Return */}
         <div className="flex items-center justify-between text-xs mb-4">
           <span>
-            <span className="text-[#807300] font-bold">
+            <span className="text-brand-accent font-bold">
               ${investment.amount.toLocaleString()}
             </span>{' '}
             <span className="text-muted-foreground">invested</span>
           </span>
           <span>
-            <span className="text-green-700 font-bold">
+            <span className="text-primary font-bold">
               ${expectedReturn.toLocaleString()}
             </span>{' '}
             <span className="text-muted-foreground">expected return</span>
@@ -143,13 +145,13 @@ export function InvestmentCard({ investment }: InvestmentCardProps) {
         {/* Action Buttons */}
         <div className="flex gap-2">
           <button
-            className="flex-1 h-10 border border-primary text-primary font-semibold bg-white rounded-lg transition-colors hover:bg-accent focus:outline-none text-sm"
+            className="flex-1 h-10 rounded-lg border border-brand-secondary/30 bg-card text-brand-secondary font-semibold transition-colors hover:bg-secondary focus:outline-none text-sm"
             type="button"
           >
             View Details
           </button>
           <button
-            className="flex-1 h-10 bg-primary text-white font-semibold rounded-lg transition-colors hover:brightness-105 focus:outline-none text-sm"
+            className="btn-primary-gradient flex-1 h-10 rounded-lg font-semibold focus:outline-none text-sm"
             type="button"
           >
             Invest Again

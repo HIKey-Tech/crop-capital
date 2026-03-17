@@ -272,6 +272,8 @@ export interface TenantBranding {
   logoUrl?: string
   faviconUrl?: string
   primaryColor?: string
+  secondaryColor?: string
+  accentColor?: string
   tagline?: string
   heroTitle?: string
   heroDescription?: string

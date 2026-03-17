@@ -23,6 +23,10 @@
   --color-primary-foreground: hsl(var(--primary-foreground));
   --color-secondary: hsl(var(--secondary));
   --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-brand-secondary: hsl(var(--brand-secondary));
+  --color-brand-secondary-foreground: hsl(var(--brand-secondary-foreground));
+  --color-brand-accent: hsl(var(--brand-accent));
+  --color-brand-accent-foreground: hsl(var(--brand-accent-foreground));
 
   /* State */
   --color-muted: hsl(var(--muted));
@@ -55,14 +59,18 @@
     --primary: 142 64% 32%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 142 30% 95%;
-    --secondary-foreground: 142 64% 25%;
+    --secondary: 352 24% 95%;
+    --secondary-foreground: 352 42% 24%;
+    --brand-secondary: 352 47% 29%;
+    --brand-secondary-foreground: 0 0% 100%;
 
     --muted: 220 14% 96%;
     --muted-foreground: 220 10% 46%;
 
-    --accent: 142 30% 95%;
-    --accent-foreground: 142 64% 25%;
+    --accent: 43 65% 92%;
+    --accent-foreground: 36 78% 24%;
+    --brand-accent: 43 92% 52%;
+    --brand-accent-foreground: 36 78% 18%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
@@ -80,25 +88,20 @@
     --sidebar-foreground: 220 10% 40%;
     --sidebar-primary: 142 64% 32%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 142 30% 95%;
-    --sidebar-accent-foreground: 142 64% 25%;
+    --sidebar-accent: 352 24% 95%;
+    --sidebar-accent-foreground: 352 42% 24%;
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 142 64% 32%;
-
-    /* Custom brand tokens */
-    --brand-green-50: 142 50% 96%;
-    --brand-green-100: 142 45% 90%;
-    --brand-green-500: 142 64% 32%;
-    --brand-green-600: 142 64% 25%;
-    --brand-green-700: 142 64% 20%;
-
-    --brand-gold-500: 45 93% 47%;
-    --brand-gold-100: 45 93% 90%;
 
     --gradient-primary: linear-gradient(
       135deg,
       hsl(142 64% 32%) 0%,
       hsl(142 64% 40%) 100%
+    );
+    --gradient-secondary: linear-gradient(
+      135deg,
+      hsl(352 47% 29%) 0%,
+      hsl(352 43% 37%) 100%
     );
     --gradient-card: linear-gradient(
       180deg,
@@ -130,14 +133,18 @@
     --primary: 142 50% 45%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 142 30% 15%;
-    --secondary-foreground: 142 50% 80%;
+    --secondary: 352 24% 18%;
+    --secondary-foreground: 352 65% 86%;
+    --brand-secondary: 352 58% 58%;
+    --brand-secondary-foreground: 0 0% 100%;
 
     --muted: 220 15% 18%;
     --muted-foreground: 220 10% 60%;
 
-    --accent: 45 80% 50%;
-    --accent-foreground: 45 80% 95%;
+    --accent: 43 55% 20%;
+    --accent-foreground: 43 88% 82%;
+    --brand-accent: 43 92% 58%;
+    --brand-accent-foreground: 32 90% 10%;
 
     --destructive: 0 62% 50%;
     --destructive-foreground: 0 0% 100%;
@@ -153,8 +160,8 @@
     --sidebar-foreground: 220 10% 70%;
     --sidebar-primary: 142 50% 45%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 142 30% 15%;
-    --sidebar-accent-foreground: 142 50% 80%;
+    --sidebar-accent: 352 24% 18%;
+    --sidebar-accent-foreground: 352 65% 86%;
     --sidebar-border: 220 15% 20%;
     --sidebar-ring: 142 50% 45%;
   }
@@ -182,6 +189,16 @@
 
   .btn-primary-gradient:hover {
     filter: brightness(1.1);
+    @apply shadow-lg;
+  }
+
+  .btn-secondary-gradient {
+    background: var(--gradient-secondary);
+    @apply text-brand-secondary-foreground font-medium transition-all duration-200;
+  }
+
+  .btn-secondary-gradient:hover {
+    filter: brightness(1.08);
     @apply shadow-lg;
   }
 
@@ -225,6 +242,20 @@
 
   .badge-active {
     @apply inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-semibold bg-secondary text-secondary-foreground;
+  }
+
+  .badge-brand-secondary {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-semibold;
+    background: hsl(var(--secondary));
+    color: hsl(var(--secondary-foreground));
+    border: 1px solid hsl(var(--brand-secondary) / 0.18);
+  }
+
+  .badge-brand-accent {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-semibold;
+    background: hsl(var(--accent));
+    color: hsl(var(--accent-foreground));
+    border: 1px solid hsl(var(--brand-accent) / 0.24);
   }
 
   .badge-closed {

@@ -40,7 +40,12 @@ export function AuthLayout() {
             </span>
           </div>
 
-          <p className="text-muted-foreground mb-12">{tenant.tagline}</p>
+          <h1 className="text-3xl font-bold tracking-tight text-foreground">
+            {tenant.heroTitle}
+          </h1>
+          <p className="mt-4 text-muted-foreground mb-12">
+            {tenant.heroDescription}
+          </p>
 
           {/* Illustration placeholder */}
           <div className="relative mx-auto w-64 h-80">
@@ -101,6 +106,10 @@ export function AuthLayout() {
             <span className="text-xl font-bold text-foreground">
               {tenant.displayName}
             </span>
+          </div>
+
+          <div className="mb-8 text-center lg:hidden">
+            <p className="text-sm text-muted-foreground">{tenant.tagline}</p>
           </div>
 
           <Outlet />

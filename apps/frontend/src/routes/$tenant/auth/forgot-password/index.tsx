@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { forgotPasswordSchema } from '@/api/auth/schema'
 import { api } from '@/lib/api-builder'
+import { useTenant } from '@/contexts/tenant'
 
 export const Route = createFileRoute('/$tenant/auth/forgot-password/')({
   component: ForgotPasswordPage,
@@ -18,6 +19,7 @@ export const Route = createFileRoute('/$tenant/auth/forgot-password/')({
 
 function ForgotPasswordPage() {
   const { tenant } = Route.useParams()
+  const { tenant: tenantConfig } = useTenant()
   const [isSubmitted, setIsSubmitted] = useState(false)
 
   const form = useForm({
@@ -55,7 +57,7 @@ function ForgotPasswordPage() {
             Check your email
           </h1>
           <p className="text-muted-foreground">
-            We&apos;ve sent a password reset link to{' '}
+            We&apos;ve sent a {tenantConfig.displayName} password reset link to{' '}
             <span className="font-medium text-foreground">
               {form.values.email}
             </span>
@@ -110,7 +112,8 @@ function ForgotPasswordPage() {
           Forgot password?
         </h1>
         <p className="text-muted-foreground">
-          No worries, we&apos;ll send you reset instructions.
+          No worries. We&apos;ll send reset instructions for your{' '}
+          {tenantConfig.displayName} account.
         </p>
       </div>
 

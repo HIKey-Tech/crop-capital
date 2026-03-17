@@ -167,6 +167,9 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
               <span className="text-sm font-semibold text-foreground leading-tight">
                 {tenant.displayName}
               </span>
+              <span className="max-w-32 truncate text-xs text-muted-foreground leading-tight">
+                {tenant.tagline}
+              </span>
             </div>
           </Link>
 

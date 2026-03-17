@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button'
 import { EmptyState } from '@/components/ui/empty-state'
 import { LoadingSpinner } from '@/components/ui/loading'
 import { useMyInvestments, useWatchlist } from '@/hooks'
+import { useTenant } from '@/contexts/tenant'
 
 export const Route = createFileRoute('/$tenant/_authenticated/investments/')({
   component: MyInvestmentsPage,
@@ -16,6 +17,7 @@ export const Route = createFileRoute('/$tenant/_authenticated/investments/')({
 
 function MyInvestmentsPage() {
   const { tenant } = Route.useParams()
+  const { tenant: tenantConfig } = useTenant()
   const [activeTab, setActiveTab] = useState('active')
   const { data, isLoading, error } = useMyInvestments()
   const { data: watchlistData, isLoading: watchlistLoading } = useWatchlist()
@@ -49,12 +51,13 @@ function MyInvestmentsPage() {
         <div>
           <h1 className="text-2xl font-bold text-foreground">My Investments</h1>
           <p className="text-muted-foreground">
-            Track the progress of your active and completed farm investments.
+            Track the progress of your active and completed investments with{' '}
+            {tenantConfig.displayName}.
           </p>
         </div>
-        <Button asChild className="bg-green-600 hover:bg-green-700">
+        <Button asChild className="btn-primary-gradient">
           <Link to="/$tenant/farms" params={{ tenant }}>
-            Browse Farms
+            {tenantConfig.ctaSecondaryLabel}
           </Link>
         </Button>
       </div>

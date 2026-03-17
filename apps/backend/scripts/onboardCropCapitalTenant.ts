@@ -146,6 +146,8 @@ const onboardCropCapitalTenant = async () => {
           shortName: "CC",
           legalName: "CropCapital",
           primaryColor: "142 64% 32%",
+          secondaryColor: "352 47% 29%",
+          accentColor: "43 92% 52%",
           tagline:
             "Empowering African agriculture through community-driven investments.",
           heroTitle: "Invest in African Agriculture",

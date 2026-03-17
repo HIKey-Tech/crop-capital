@@ -99,10 +99,21 @@ function TenantsPage() {
       displayName: '',
       shortName: '',
       legalName: '',
+      logoUrl: '',
+      faviconUrl: '',
       primaryColor: '142 64% 32%',
+      secondaryColor: '352 47% 29%',
+      accentColor: '43 92% 52%',
       tagline: '',
+      ctaPrimaryLabel: '',
+      ctaSecondaryLabel: '',
       supportEmail: '',
       supportPhone: '',
+      supportWhatsapp: '',
+      address: '',
+      websiteUrl: '',
+      termsUrl: '',
+      privacyUrl: '',
       heroTitle: '',
       heroDescription: '',
       features: { ...defaultTenantFeatures },
@@ -132,10 +143,21 @@ function TenantsPage() {
       displayName: tenant.branding.displayName,
       shortName: tenant.branding.shortName ?? '',
       legalName: tenant.branding.legalName ?? '',
+      logoUrl: tenant.branding.logoUrl ?? '',
+      faviconUrl: tenant.branding.faviconUrl ?? '',
       primaryColor: tenant.branding.primaryColor ?? '142 64% 32%',
+      secondaryColor: tenant.branding.secondaryColor ?? '352 47% 29%',
+      accentColor: tenant.branding.accentColor ?? '43 92% 52%',
       tagline: tenant.branding.tagline ?? '',
+      ctaPrimaryLabel: tenant.branding.ctaPrimaryLabel ?? '',
+      ctaSecondaryLabel: tenant.branding.ctaSecondaryLabel ?? '',
       supportEmail: tenant.branding.supportEmail ?? '',
       supportPhone: tenant.branding.supportPhone ?? '',
+      supportWhatsapp: tenant.branding.supportWhatsapp ?? '',
+      address: tenant.branding.address ?? '',
+      websiteUrl: tenant.branding.websiteUrl ?? '',
+      termsUrl: tenant.branding.termsUrl ?? '',
+      privacyUrl: tenant.branding.privacyUrl ?? '',
       heroTitle: tenant.branding.heroTitle ?? '',
       heroDescription: tenant.branding.heroDescription ?? '',
       features: { ...defaultTenantFeatures, ...tenant.features },
@@ -176,10 +198,21 @@ function TenantsPage() {
         displayName: values.displayName.trim(),
         shortName: values.shortName.trim(),
         legalName: values.legalName.trim(),
+        logoUrl: values.logoUrl.trim(),
+        faviconUrl: values.faviconUrl.trim(),
         primaryColor: values.primaryColor.trim(),
+        secondaryColor: values.secondaryColor.trim(),
+        accentColor: values.accentColor.trim(),
         tagline: values.tagline.trim(),
+        ctaPrimaryLabel: values.ctaPrimaryLabel.trim(),
+        ctaSecondaryLabel: values.ctaSecondaryLabel.trim(),
         supportEmail: values.supportEmail.trim(),
         supportPhone: values.supportPhone.trim(),
+        supportWhatsapp: values.supportWhatsapp.trim(),
+        address: values.address.trim(),
+        websiteUrl: values.websiteUrl.trim(),
+        termsUrl: values.termsUrl.trim(),
+        privacyUrl: values.privacyUrl.trim(),
         heroTitle: values.heroTitle.trim(),
         heroDescription: values.heroDescription.trim(),
       },
@@ -526,9 +559,38 @@ function TenantsPage() {
                     <Input {...form.getInputProps('shortName')} />
                   </div>
                 </div>
-                <div className="space-y-1.5">
-                  <Label className="text-xs">Primary Color (HSL triplet)</Label>
-                  <Input {...form.getInputProps('primaryColor')} />
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-1.5">
+                    <Label className="text-xs">Logo URL</Label>
+                    <Input {...form.getInputProps('logoUrl')} />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label className="text-xs">Favicon URL</Label>
+                    <Input {...form.getInputProps('faviconUrl')} />
+                  </div>
+                </div>
+                <div className="grid grid-cols-3 gap-3">
+                  <div className="space-y-1.5">
+                    <Label className="text-xs">Primary Color</Label>
+                    <Input
+                      {...form.getInputProps('primaryColor')}
+                      placeholder="142 64% 32% or #218641"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label className="text-xs">Secondary Color</Label>
+                    <Input
+                      {...form.getInputProps('secondaryColor')}
+                      placeholder="352 47% 29% or #6d1f2a"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label className="text-xs">Accent Color</Label>
+                    <Input
+                      {...form.getInputProps('accentColor')}
+                      placeholder="43 92% 52% or #f4b51f"
+                    />
+                  </div>
                 </div>
                 <div className="space-y-1.5">
                   <Label className="text-xs">Tagline</Label>
@@ -545,6 +607,16 @@ function TenantsPage() {
                     rows={2}
                   />
                 </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-1.5">
+                    <Label className="text-xs">Primary CTA Label</Label>
+                    <Input {...form.getInputProps('ctaPrimaryLabel')} />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label className="text-xs">Secondary CTA Label</Label>
+                    <Input {...form.getInputProps('ctaSecondaryLabel')} />
+                  </div>
+                </div>
               </div>
             </fieldset>
 
@@ -552,14 +624,40 @@ function TenantsPage() {
               <legend className="text-sm font-semibold text-foreground">
                 Contact
               </legend>
-              <div className="grid grid-cols-2 gap-3">
-                <div className="space-y-1.5">
-                  <Label className="text-xs">Support Email</Label>
-                  <Input {...form.getInputProps('supportEmail')} />
+              <div className="grid gap-3">
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-1.5">
+                    <Label className="text-xs">Support Email</Label>
+                    <Input {...form.getInputProps('supportEmail')} />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label className="text-xs">Support Phone</Label>
+                    <Input {...form.getInputProps('supportPhone')} />
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-1.5">
+                    <Label className="text-xs">Support WhatsApp</Label>
+                    <Input {...form.getInputProps('supportWhatsapp')} />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label className="text-xs">Website URL</Label>
+                    <Input {...form.getInputProps('websiteUrl')} />
+                  </div>
                 </div>
                 <div className="space-y-1.5">
-                  <Label className="text-xs">Support Phone</Label>
-                  <Input {...form.getInputProps('supportPhone')} />
+                  <Label className="text-xs">Address</Label>
+                  <Textarea {...form.getInputProps('address')} rows={2} />
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-1.5">
+                    <Label className="text-xs">Terms URL</Label>
+                    <Input {...form.getInputProps('termsUrl')} />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label className="text-xs">Privacy URL</Label>
+                    <Input {...form.getInputProps('privacyUrl')} />
+                  </div>
                 </div>
               </div>
             </fieldset>

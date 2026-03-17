@@ -15,6 +15,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { useTenant } from '@/contexts/tenant'
+import { useViewMode } from '@/contexts/view-mode'
 import { useLogout, useNotifications } from '@/hooks'
 
 interface HeaderProps {
@@ -26,7 +28,9 @@ export function Header({ onMenuClick }: HeaderProps) {
   const params = useParams({ strict: false })
   const { notifications, unreadCount } = useNotifications()
   const { mutate: logout } = useLogout()
-  const tenant = params.tenant ?? ''
+  const { tenant } = useTenant()
+  const { viewMode } = useViewMode()
+  const tenantParam = params.tenant ?? ''
 
   const navigate = useNavigate()
 
@@ -39,7 +43,10 @@ export function Header({ onMenuClick }: HeaderProps) {
   const handleLogout = () => {
     logout(undefined, {
       onSuccess: () => {
-        navigate({ to: '/$tenant/auth/sign-in', params: { tenant } })
+        navigate({
+          to: '/$tenant/auth/sign-in',
+          params: { tenant: tenantParam },
+        })
         toast.success('Signed out successfully')
       },
     })
@@ -54,7 +61,15 @@ export function Header({ onMenuClick }: HeaderProps) {
         >
           <Menu className="w-5 h-5" />
         </button>
-        <h1 className="text-2xl font-bold text-foreground">Hi, {firstName}</h1>
+        <div className="min-w-0">
+          <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-primary">
+            {tenant.displayName} ·{' '}
+            {viewMode === 'admin' ? 'Admin workspace' : 'Investor workspace'}
+          </div>
+          <h1 className="truncate text-2xl font-bold text-foreground">
+            Hi, {firstName}
+          </h1>
+        </div>
       </div>
 
       <div className="flex items-center gap-3">
@@ -94,7 +109,10 @@ export function Header({ onMenuClick }: HeaderProps) {
               </div>
             )}
             <DropdownMenuItem className="justify-center text-primary" asChild>
-              <Link to="/$tenant/notifications" params={{ tenant }}>
+              <Link
+                to="/$tenant/notifications"
+                params={{ tenant: tenantParam }}
+              >
                 View all notifications
               </Link>
             </DropdownMenuItem>
@@ -116,7 +134,7 @@ export function Header({ onMenuClick }: HeaderProps) {
             <DropdownMenuItem asChild>
               <Link
                 to="/$tenant/settings"
-                params={{ tenant }}
+                params={{ tenant: tenantParam }}
                 className="w-full"
               >
                 Profile Settings
@@ -126,7 +144,7 @@ export function Header({ onMenuClick }: HeaderProps) {
               <DropdownMenuItem asChild>
                 <Link
                   to="/$tenant/admin"
-                  params={{ tenant }}
+                  params={{ tenant: tenantParam }}
                   className="w-full"
                 >
                   Admin Dashboard

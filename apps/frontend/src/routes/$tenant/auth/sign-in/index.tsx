@@ -56,11 +56,12 @@ function SignInPage() {
     <>
       <div className="mb-8">
         <p className="text-muted-foreground mb-1">
-          Welcome back! Please sign in to your account.
+          Continue into {tenant.displayName}.
         </p>
         <h1 className="text-3xl font-bold text-foreground">
           Sign In to <span className="text-primary">{tenant.shortName}</span>
         </h1>
+        <p className="mt-2 text-sm text-muted-foreground">{tenant.tagline}</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-5">

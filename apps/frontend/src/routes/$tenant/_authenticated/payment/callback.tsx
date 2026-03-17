@@ -73,8 +73,8 @@ function PaymentCallbackPage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center space-y-6 max-w-md mx-auto px-4">
-          <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center mx-auto">
-            <CheckCircle className="w-12 h-12 text-green-600" />
+          <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full border border-brand-secondary/20 bg-secondary">
+            <CheckCircle className="h-12 w-12 text-brand-secondary" />
           </div>
           <h1 className="text-3xl font-bold text-foreground">
             Payment Successful!

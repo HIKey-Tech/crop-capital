@@ -7,6 +7,7 @@ import type { Farm, Investment, User } from '@/types'
 import { DataTable } from '@/components/data-table'
 import { Badge } from '@/components/ui/badge'
 import { StatsCard } from '@/components/dashboard/stats-card'
+import { useTenant } from '@/contexts/tenant'
 import { LoadingSpinner } from '@/components/ui/loading'
 import { useAllInvestments } from '@/hooks'
 import { formatCurrency } from '@/lib/format-currency'
@@ -105,6 +106,7 @@ const columns: Array<ColumnDef<PayoutRow>> = [
 ]
 
 function PayoutsPage() {
+  const { tenant } = useTenant()
   const { data, isLoading } = useAllInvestments()
 
   if (isLoading) {
@@ -156,8 +158,13 @@ function PayoutsPage() {
   return (
     <div className="space-y-6 animate-fade-in max-w-screen-2xl mx-auto">
       <div>
-        <h1 className="text-2xl font-bold">Payouts Management</h1>
-        <p className="text-muted-foreground">Track ROI payouts to investors</p>
+        <div className="text-xs text-muted-foreground uppercase tracking-[0.16em]">
+          {tenant.displayName} admin · Payouts
+        </div>
+        <h1 className="text-2xl font-bold">Payouts for {tenant.displayName}</h1>
+        <p className="text-muted-foreground">
+          Track ROI payouts owed to investors inside {tenant.displayName}.
+        </p>
       </div>
 
       {/* Stats */}

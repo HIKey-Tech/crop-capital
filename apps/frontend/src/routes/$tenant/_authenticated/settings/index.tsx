@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { useTenant } from '@/contexts/tenant'
 import { useUpdateProfile } from '@/hooks/use-auth'
 
 export const Route = createFileRoute('/$tenant/_authenticated/settings/')({
@@ -16,6 +17,7 @@ export const Route = createFileRoute('/$tenant/_authenticated/settings/')({
 
 function ProfileSettingsPage() {
   const { user } = Route.useRouteContext()
+  const { tenant } = useTenant()
   const { mutate: updateProfile, isPending } = useUpdateProfile()
 
   const form = useForm({
@@ -118,7 +120,7 @@ function ProfileSettingsPage() {
             />
           </div>
           <p className="text-xs text-muted-foreground">
-            Contact support to change your email address.
+            Contact {tenant.displayName} support to change your email address.
           </p>
         </div>
 
@@ -147,6 +149,18 @@ function ProfileSettingsPage() {
           </Button>
         </div>
       </form>
+
+      <section className="rounded-2xl border border-border bg-card p-5 shadow-sm">
+        <h3 className="text-base font-semibold text-foreground">Support</h3>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Need help with your {tenant.displayName} account?
+        </p>
+        <div className="mt-4 space-y-2 text-sm text-muted-foreground">
+          <div>{tenant.supportEmail}</div>
+          <div>{tenant.supportPhone}</div>
+          {tenant.supportWhatsapp && <div>{tenant.supportWhatsapp}</div>}
+        </div>
+      </section>
     </div>
   )
 }

@@ -229,8 +229,8 @@ function OnboardingPage() {
             Create your tenant account first
           </h1>
           <p className="mt-2 text-sm text-muted-foreground">
-            Onboarding becomes available after you create or sign in to your
-            tenant-linked account.
+            Onboarding for {tenant.displayName} becomes available after you
+            create or sign in to your tenant-linked account.
           </p>
           <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center">
             <Button asChild className="btn-primary-gradient">
@@ -253,7 +253,7 @@ function OnboardingPage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[linear-gradient(180deg,#f8fbf7_0%,#edf5ef_100%)] p-4">
         <div className="w-full max-w-2xl rounded-4xl border border-border bg-white p-8 shadow-xl">
-          <div className="inline-flex items-center gap-2 rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-emerald-800">
+          <div className="inline-flex items-center gap-2 rounded-full border border-brand-secondary/20 bg-secondary px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-secondary-foreground">
             <BadgeCheck className="h-3.5 w-3.5" />
             Onboarding Complete
           </div>
@@ -262,7 +262,8 @@ function OnboardingPage() {
           </h1>
           <p className="mt-3 text-sm text-muted-foreground">
             Your tenant profile and onboarding preferences are saved. Continue
-            to the dashboard to explore farms, investments, and tenant updates.
+            to the dashboard to explore farms, investments, and updates from{' '}
+            {tenant.displayName}.
           </p>
 
           <div className="mt-6 grid gap-4 sm:grid-cols-3">
@@ -323,11 +324,10 @@ function OnboardingPage() {
             Tenant Onboarding
           </div>
           <h1 className="mt-5 text-4xl font-bold tracking-tight text-foreground">
-            Start investing inside {tenant.displayName}
+            {tenant.heroTitle}
           </h1>
           <p className="mt-4 max-w-xl text-base text-muted-foreground">
-            Finish a short setup so the tenant can tailor its onboarding,
-            opportunity mix, and investor guidance to your profile.
+            {tenant.heroDescription}
           </p>
 
           <div className="mt-8 grid gap-4 sm:grid-cols-3">
@@ -346,7 +346,7 @@ function OnboardingPage() {
                 Set your investing intent
               </h2>
               <p className="mt-1 text-sm text-muted-foreground">
-                Help the tenant match your goals and experience level.
+                Help {tenant.displayName} match your goals and experience level.
               </p>
             </div>
             <div className="rounded-2xl border border-border bg-white/80 p-4 shadow-sm">
@@ -355,7 +355,8 @@ function OnboardingPage() {
                 Confirm terms
               </h2>
               <p className="mt-1 text-sm text-muted-foreground">
-                Accept the tenant rules before entering the dashboard.
+                Accept the {tenant.displayName} rules before entering the
+                dashboard.
               </p>
             </div>
           </div>
@@ -372,7 +373,8 @@ function OnboardingPage() {
                 2. Your onboarding preferences are stored for this tenant only.
               </li>
               <li>
-                3. You land on the dashboard ready to browse farms and invest.
+                3. You land on the dashboard ready to browse farms and invest
+                with {tenant.displayName}.
               </li>
             </ul>
           </div>
@@ -380,7 +382,7 @@ function OnboardingPage() {
 
         <section className="w-full overflow-hidden rounded-4xl border border-border bg-white shadow-xl animate-fade-in">
           <div className="px-8 pt-8 pb-4 text-center">
-            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-green-100 text-green-600">
+            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary">
               {step === 1 && <CircleUserRound />}
               {step === 2 && <Sprout />}
               {step === 3 && <ShieldCheck />}
@@ -395,7 +397,7 @@ function OnboardingPage() {
             </p>
             <div className="mt-4 h-1.5 w-full overflow-hidden rounded-full bg-gray-100">
               <div
-                className="h-full bg-green-500 transition-all duration-500 ease-out"
+                className="h-full bg-primary transition-all duration-500 ease-out"
                 style={{ width: `${progress}%` }}
               />
             </div>
@@ -440,7 +442,8 @@ function OnboardingPage() {
             {step === 2 && (
               <div className="space-y-6 animate-slide-in-right">
                 <p className="text-center text-sm text-muted-foreground">
-                  Help the tenant shape a more relevant investment experience.
+                  Help {tenant.displayName} shape a more relevant investment
+                  experience.
                 </p>
 
                 <div className="grid gap-3">
@@ -449,9 +452,9 @@ function OnboardingPage() {
                       key={option.value}
                       type="button"
                       onClick={() => setGoal(option.value)}
-                      className={`flex items-center gap-3 rounded-xl border p-3 text-left transition ${goal === option.value ? 'border-green-500 bg-green-50 shadow-sm' : 'hover:border-green-500 hover:bg-green-50'}`}
+                      className={`flex items-center gap-3 rounded-xl border p-3 text-left transition ${goal === option.value ? 'border-primary bg-primary/5 shadow-sm' : 'hover:border-primary hover:bg-primary/5'}`}
                     >
-                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 font-bold text-blue-600">
+                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 font-bold text-primary">
                         {option.value === 'income'
                           ? '$'
                           : option.value === 'growth'

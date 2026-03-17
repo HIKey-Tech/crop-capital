@@ -9,6 +9,7 @@ import { StatsCard } from '@/components/dashboard/stats-card'
 import { DataTable } from '@/components/data-table'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { useTenant } from '@/contexts/tenant'
 import {
   useCurrentUser,
   useDemoteUser,
@@ -26,6 +27,7 @@ export const Route = createFileRoute('/$tenant/_authenticated/admin/investors')(
 )
 
 function AdminInvestorPage() {
+  const { tenant } = useTenant()
   const {
     data: usersData,
     isLoading: usersLoading,
@@ -219,12 +221,15 @@ function AdminInvestorPage() {
   return (
     <div className="space-y-8 animate-fade-in max-w-screen-2xl mx-auto px-4 mb-10">
       <header className="pt-3 mb-2 flex flex-col gap-1">
+        <span className="text-xs text-muted-foreground">
+          {tenant.displayName} admin · Users
+        </span>
         <h1 className="text-3xl font-bold text-foreground tracking-tight">
-          Tenant Users
+          Users for {tenant.displayName}
         </h1>
         <p className="text-base text-muted-foreground">
-          Review investors, promote trusted operators to tenant admin access,
-          and keep the tenancy team current.
+          Review investors, promote trusted operators to admin access, and keep
+          the {tenant.displayName} team current.
         </p>
       </header>
 

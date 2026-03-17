@@ -123,7 +123,7 @@ function AddNewInvestment() {
         <Link
           to="/$tenant/admin/farms"
           params={{ tenant }}
-          className="p-2 rounded-lg border border-border hover:bg-accent transition-colors"
+          className="p-2 rounded-lg border border-border hover:bg-secondary transition-colors"
         >
           <ArrowLeft className="w-5 h-5" />
         </Link>
@@ -132,7 +132,7 @@ function AddNewInvestment() {
         </h1>
       </div>
       <form
-        className="space-y-0 bg-white rounded-2xl border border-border shadow-sm"
+        className="space-y-0 rounded-2xl border border-border bg-card shadow-sm"
         onSubmit={form.onSubmit(handleSubmit)}
       >
         <div className="p-8 pb-4 md:pb-4">
@@ -379,14 +379,14 @@ function AddNewInvestment() {
                   <button
                     type="button"
                     onClick={() => handleRemoveImage(img.id)}
-                    className="absolute top-1 right-1 bg-white rounded-full p-0.5 hover:bg-red-100 border border-border"
+                    className="absolute top-1 right-1 rounded-full border border-border bg-card p-0.5 hover:bg-destructive/10"
                   >
                     <XCircle size={18} className="text-red-500" />
                   </button>
                 </div>
               ))}
               {images.length < 5 && (
-                <label className="w-28 h-20 border-2 border-dashed border-border flex flex-col items-center justify-center rounded-lg cursor-pointer hover:bg-accent relative transition">
+                <label className="relative flex h-20 w-28 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-border transition hover:bg-secondary">
                   <Plus className="text-muted-foreground mb-1" />
                   <span className="text-xs text-muted-foreground">
                     Add Image
@@ -420,7 +420,7 @@ function AddNewInvestment() {
             <Button
               type="submit"
               disabled={isUploading || createFarm.isPending}
-              className="h-12 px-10 text-base font-semibold bg-primary text-white border border-primary rounded-lg hover:bg-primary/90 active:bg-primary/80 focus:outline-none shadow disabled:opacity-50 disabled:cursor-not-allowed"
+              className="btn-primary-gradient h-12 px-10 text-base font-semibold rounded-lg focus:outline-none shadow disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isUploading || createFarm.isPending
                 ? 'Creating...'

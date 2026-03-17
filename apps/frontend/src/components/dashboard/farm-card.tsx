@@ -14,10 +14,11 @@ interface InfoPillProps {
 function InfoPill({ label, value, bold }: InfoPillProps) {
   return (
     <span
-      className={`inline-flex items-center px-3 py-1 rounded-md ${
-        bold ? 'bg-[#FFF8E1] text-[#AB8300]' : 'bg-muted text-foreground/90'
-      } text-[15px] font-medium mr-2 mb-2 whitespace-nowrap`}
-      style={bold ? { border: '1px solid #FFD740' } : {}}
+      className={`inline-flex items-center rounded-md border px-3 py-1 text-[15px] font-medium mr-2 mb-2 whitespace-nowrap ${
+        bold
+          ? 'border-brand-accent/30 bg-accent text-accent-foreground'
+          : 'border-border bg-muted text-foreground/90'
+      }`}
     >
       {bold ? (
         <>
@@ -49,16 +50,8 @@ export function FarmCard({ farm, variant = 'default' }: FarmCardProps) {
   const status = isFunded ? 'active' : 'funding'
 
   const statusBadge = {
-    funding: (
-      <Badge className="text-xs px-2.5 py-0.5 rounded bg-yellow-100 text-yellow-800">
-        Funding
-      </Badge>
-    ),
-    active: (
-      <Badge className="text-xs px-2.5 py-0.5 rounded bg-green-100 text-green-800">
-        Active
-      </Badge>
-    ),
+    funding: <Badge className="badge-brand-accent">Funding</Badge>,
+    active: <Badge className="badge-brand-secondary">Active</Badge>,
   }
 
   if (variant === 'compact') {
@@ -85,7 +78,7 @@ export function FarmCard({ farm, variant = 'default' }: FarmCardProps) {
   }
 
   return (
-    <div className="card-elevated rounded-xl overflow-hidden border border-border bg-white transition-shadow duration-300 group h-full flex flex-col">
+    <div className="card-elevated rounded-xl overflow-hidden border border-border bg-card transition-shadow duration-300 group h-full flex flex-col">
       <div className="relative aspect-16/10 overflow-hidden">
         <img
           src={farm.images[0]}
@@ -100,7 +93,7 @@ export function FarmCard({ farm, variant = 'default' }: FarmCardProps) {
             {farm.name}
           </h3>
         </div>
-        <p className="text-base text-gray-500 mb-1">{farm.location}</p>
+        <p className="text-base text-muted-foreground mb-1">{farm.location}</p>
         <div className="flex flex-wrap gap-0.5 mb-4">
           <InfoPill value={`${farm.roi}%`} label="ROI" bold />
           <InfoPill value={`${farm.durationMonths}`} label="Months" bold />
@@ -108,12 +101,12 @@ export function FarmCard({ farm, variant = 'default' }: FarmCardProps) {
 
         <div className="mb-3 flex-1 flex flex-col justify-end">
           <div className="flex items-center justify-between text-xs font-medium mb-1">
-            <span className="uppercase tracking-wider text-[#A6A6A6]">
+            <span className="uppercase tracking-wider text-muted-foreground">
               Funding
             </span>
             <span className="text-primary">{progress}%</span>
           </div>
-          <div className="w-full h-2.5 rounded-full bg-[#F0F0F0] overflow-hidden relative">
+          <div className="w-full h-2.5 rounded-full bg-muted overflow-hidden relative">
             <div
               className="h-full rounded-full bg-primary transition-all duration-500"
               style={{
@@ -130,7 +123,7 @@ export function FarmCard({ farm, variant = 'default' }: FarmCardProps) {
             className="w-1/2"
           >
             <Button
-              className="w-full h-11 border-2 border-[#39A86B] text-[#218641] font-semibold bg-white rounded-lg transition-colors hover:bg-accent focus:outline-none text-base"
+              className="w-full h-11 border-2 border-brand-secondary/30 text-brand-secondary font-semibold bg-card rounded-lg transition-colors hover:bg-secondary focus:outline-none text-base"
               type="button"
               variant="outline"
             >
@@ -146,7 +139,7 @@ export function FarmCard({ farm, variant = 'default' }: FarmCardProps) {
             className="w-1/2"
           >
             <Button
-              className="w-full h-11 bg-[#218641] text-white font-bold rounded-lg transition-colors hover:brightness-110 focus:outline-none text-base"
+              className="btn-primary-gradient w-full h-11 font-bold rounded-lg focus:outline-none text-base"
               type="button"
             >
               <span className="inline-block font-bold tracking-tight">

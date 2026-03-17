@@ -18,6 +18,11 @@ export const Route = createFileRoute('/$tenant/support')({
 
 function SupportPage() {
   const { tenant } = useTenant()
+  const websiteUrl = tenant.websiteUrl?.trim()
+  const supportWhatsapp = tenant.supportWhatsapp?.trim()
+  const whatsappHref = supportWhatsapp
+    ? `https://wa.me/${supportWhatsapp.replace(/[^\d]/g, '')}`
+    : null
 
   return (
     <div className="max-w-4xl mx-auto space-y-10 animate-fade-in px-4">
@@ -26,6 +31,11 @@ function SupportPage() {
         <p className="text-muted-foreground text-lg">
           Find answers or contact the {tenant.displayName} support team.
         </p>
+        {tenant.tagline && (
+          <p className="mx-auto max-w-2xl text-sm text-muted-foreground">
+            {tenant.tagline}
+          </p>
+        )}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -60,7 +70,38 @@ function SupportPage() {
               <div className="flex items-center gap-2">
                 <Phone className="h-4 w-4" /> {tenant.supportPhone}
               </div>
+              {supportWhatsapp && (
+                <div className="flex items-center gap-2">
+                  <MessagesSquare className="h-4 w-4" /> {supportWhatsapp}
+                </div>
+              )}
+              {tenant.address && (
+                <div className="flex items-start gap-2">
+                  <HelpCircle className="mt-0.5 h-4 w-4 shrink-0" />
+                  <span>{tenant.address}</span>
+                </div>
+              )}
             </div>
+
+            {(websiteUrl || whatsappHref) && (
+              <div className="mt-4 flex flex-wrap gap-3">
+                {websiteUrl && (
+                  <Button asChild variant="outline" size="sm">
+                    <a href={websiteUrl} target="_blank" rel="noreferrer">
+                      Visit Website
+                      <ExternalLink className="h-4 w-4" />
+                    </a>
+                  </Button>
+                )}
+                {whatsappHref && (
+                  <Button asChild className="btn-primary-gradient" size="sm">
+                    <a href={whatsappHref} target="_blank" rel="noreferrer">
+                      WhatsApp Support
+                    </a>
+                  </Button>
+                )}
+              </div>
+            )}
           </div>
         </div>
 
@@ -80,7 +121,9 @@ function SupportPage() {
                 className="min-h-30"
               />
             </div>
-            <Button className="w-full">Send Message</Button>
+            <Button className="w-full btn-primary-gradient">
+              Send Message
+            </Button>
           </form>
         </div>
       </div>

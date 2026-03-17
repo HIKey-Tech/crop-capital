@@ -24,6 +24,7 @@ import type { ActivityType, UserWithStats } from '@/types'
 
 import { StatsCard } from '@/components/dashboard/stats-card'
 import { DataTable } from '@/components/data-table'
+import { useTenant } from '@/contexts/tenant'
 import { useActivities, useFarms, useUserStats, useUsers } from '@/hooks'
 import { formatDate } from '@/lib/format-date'
 
@@ -70,6 +71,7 @@ const topInvestorColumns: Array<ColumnDef<UserWithStats>> = [
 ]
 
 function AdminReportsPage() {
+  const { tenant } = useTenant()
   const { data: usersData, isLoading: usersLoading } = useUsers()
   const { data: statsData, isLoading: statsLoading } = useUserStats()
   const { data: farmsData, isLoading: farmsLoading } = useFarms()
@@ -100,12 +102,15 @@ function AdminReportsPage() {
   return (
     <div className="max-w-screen-2xl mx-auto px-4 mb-10 animate-fade-in space-y-8">
       <header className="pt-6 pb-2 flex flex-col gap-1">
-        <span className="text-xs text-muted-foreground">Admin » Reports</span>
+        <span className="text-xs text-muted-foreground">
+          {tenant.displayName} admin · Reports
+        </span>
         <h1 className="text-3xl font-bold text-foreground tracking-tight">
-          Reports & Platform Analytics
+          Reports for {tenant.displayName}
         </h1>
         <p className="text-base text-muted-foreground">
-          Visualize platform performance, key numbers, and leading investors.
+          Visualize tenant performance, key numbers, and leading investors for{' '}
+          {tenant.displayName}.
         </p>
       </header>
 
