@@ -2,7 +2,7 @@
   "name": "crop-capital",
   "private": true,
   "version": "0.1.0",
-  "packageManager": "pnpm@10.17.1",
+  "packageManager": "pnpm@9.14.4",
   "scripts": {
     "dev": "turbo run dev --parallel",
     "build": "turbo run build",
