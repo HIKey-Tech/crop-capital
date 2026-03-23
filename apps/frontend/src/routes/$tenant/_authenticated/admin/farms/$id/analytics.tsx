@@ -48,6 +48,7 @@ function FarmAnalyticsPage() {
   }
 
   const farm = farmData.farm
+  const currency = farm.currency || 'NGN'
   const allInvestments = investmentsData?.investments || []
 
   // Filter investments for this farm
@@ -120,9 +121,9 @@ function FarmAnalyticsPage() {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <StatsCard
           label="Total Raised"
-          value={formatCurrency(totalRaised)}
+          value={formatCurrency(totalRaised, currency)}
           icon={<DollarSign className="w-5 h-5 text-primary" />}
-          description={`${fundingPercentage.toFixed(0)}% of ${formatCurrency(farm.investmentGoal)} goal`}
+          description={`${fundingPercentage.toFixed(0)}% of ${formatCurrency(farm.investmentGoal, currency)} goal`}
         />
         <StatsCard
           label="Total Investors"
@@ -132,7 +133,7 @@ function FarmAnalyticsPage() {
         />
         <StatsCard
           label="Avg Investment"
-          value={formatCurrency(avgInvestment)}
+          value={formatCurrency(avgInvestment, currency)}
           icon={<TrendingUp className="w-5 h-5 text-primary" />}
           description="Per investor"
         />
@@ -165,7 +166,7 @@ function FarmAnalyticsPage() {
                         style={{ height: `${height}%` }}
                       />
                       <div className="opacity-0 group-hover:opacity-100 absolute -top-14 left-1/2 -translate-x-1/2 bg-black text-white text-xs py-1 px-2 rounded whitespace-nowrap z-10">
-                        {formatCurrency(amount)}
+                        {formatCurrency(amount, currency)}
                         <br />
                         {date}
                       </div>
@@ -208,13 +209,13 @@ function FarmAnalyticsPage() {
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Investment Goal</span>
                 <span className="font-medium">
-                  {formatCurrency(farm.investmentGoal)}
+                  {formatCurrency(farm.investmentGoal, currency)}
                 </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Amount Raised</span>
                 <span className="font-medium text-green-700">
-                  {formatCurrency(totalRaised)}
+                  {formatCurrency(totalRaised, currency)}
                 </span>
               </div>
               <div className="flex justify-between">
@@ -222,6 +223,7 @@ function FarmAnalyticsPage() {
                 <span className="font-medium">
                   {formatCurrency(
                     Math.max(0, farm.investmentGoal - totalRaised),
+                    currency,
                   )}
                 </span>
               </div>
@@ -268,7 +270,7 @@ function FarmAnalyticsPage() {
                   </div>
                   <div className="text-right">
                     <div className="font-bold">
-                      {formatCurrency(inv.amount)}
+                      {formatCurrency(inv.amount, currency)}
                     </div>
                     <div className="text-xs text-muted-foreground">
                       +{inv.roi}% ROI

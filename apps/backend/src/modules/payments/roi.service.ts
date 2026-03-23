@@ -1,3 +1,24 @@
+function getCurrencyLocale(currency: string): string {
+  switch (currency) {
+    case "USD":
+      return "en-US";
+    case "GHS":
+      return "en-GH";
+    case "KES":
+      return "en-KE";
+    case "NGN":
+    default:
+      return "en-NG";
+  }
+}
+
+function formatMoney(amount: number, currency: string): string {
+  return new Intl.NumberFormat(getCurrencyLocale(currency), {
+    style: "currency",
+    currency,
+    maximumFractionDigits: 0,
+  }).format(amount);
+}
 import { PAYSTACK_SECRET_KEY } from "@/config/env";
 import { IInvestment } from "../investments/investment.model";
 
@@ -107,6 +128,7 @@ export async function payROI(
 
   const roiAmount = investment.projectedReturn();
   const reference = `roi-${investment._id}-${Date.now()}`;
+  const currency = investment.currency || "NGN";
 
   const transfer = await initiateTransfer(
     roiAmount,
@@ -121,7 +143,7 @@ export async function payROI(
   await investment.save();
 
   console.log(
-    `ROI of ₦${roiAmount.toLocaleString()} payout initiated for investment ${investment._id}`,
+    `ROI of ${formatMoney(roiAmount, currency)} payout initiated for investment ${investment._id}`,
   );
   return transfer;
 }

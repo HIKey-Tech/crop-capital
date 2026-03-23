@@ -36,6 +36,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { HuePicker } from '@/components/ui/hue-picker'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import {
@@ -50,7 +51,9 @@ import { Textarea } from '@/components/ui/textarea'
 import {
   defaultTenantFeatures,
   featureLabels,
+  getTenantActivationBadgeClassName,
   getTenantReadiness,
+  getTenantReadinessAppearance,
   useTenants,
 } from '@/lib/super-admin'
 
@@ -101,9 +104,7 @@ function TenantsPage() {
       legalName: '',
       logoUrl: '',
       faviconUrl: '',
-      primaryColor: '142 64% 32%',
-      secondaryColor: '352 47% 29%',
-      accentColor: '43 92% 52%',
+      primaryHue: 142,
       tagline: '',
       ctaPrimaryLabel: '',
       ctaSecondaryLabel: '',
@@ -145,9 +146,7 @@ function TenantsPage() {
       legalName: tenant.branding.legalName ?? '',
       logoUrl: tenant.branding.logoUrl ?? '',
       faviconUrl: tenant.branding.faviconUrl ?? '',
-      primaryColor: tenant.branding.primaryColor ?? '142 64% 32%',
-      secondaryColor: tenant.branding.secondaryColor ?? '352 47% 29%',
-      accentColor: tenant.branding.accentColor ?? '43 92% 52%',
+      primaryHue: tenant.branding.primaryHue ?? 142,
       tagline: tenant.branding.tagline ?? '',
       ctaPrimaryLabel: tenant.branding.ctaPrimaryLabel ?? '',
       ctaSecondaryLabel: tenant.branding.ctaSecondaryLabel ?? '',
@@ -200,9 +199,7 @@ function TenantsPage() {
         legalName: values.legalName.trim(),
         logoUrl: values.logoUrl.trim(),
         faviconUrl: values.faviconUrl.trim(),
-        primaryColor: values.primaryColor.trim(),
-        secondaryColor: values.secondaryColor.trim(),
-        accentColor: values.accentColor.trim(),
+        primaryHue: values.primaryHue,
         tagline: values.tagline.trim(),
         ctaPrimaryLabel: values.ctaPrimaryLabel.trim(),
         ctaSecondaryLabel: values.ctaSecondaryLabel.trim(),
@@ -319,25 +316,25 @@ function TenantsPage() {
             </Button>
           </div>
           <div className="mt-3 flex flex-wrap gap-2 text-xs">
-            <span className="rounded-full bg-white/80 border border-emerald-200 px-2.5 py-1 text-emerald-900">
+            <span className="rounded-full border border-emerald-200 bg-background/90 px-2.5 py-1 text-emerald-900">
               {lastDeletedCleanup.usersDeleted} users
             </span>
-            <span className="rounded-full bg-white/80 border border-emerald-200 px-2.5 py-1 text-emerald-900">
+            <span className="rounded-full border border-emerald-200 bg-background/90 px-2.5 py-1 text-emerald-900">
               {lastDeletedCleanup.farmsDeleted} farms
             </span>
-            <span className="rounded-full bg-white/80 border border-emerald-200 px-2.5 py-1 text-emerald-900">
+            <span className="rounded-full border border-emerald-200 bg-background/90 px-2.5 py-1 text-emerald-900">
               {lastDeletedCleanup.investmentsDeleted} investments
             </span>
-            <span className="rounded-full bg-white/80 border border-emerald-200 px-2.5 py-1 text-emerald-900">
+            <span className="rounded-full border border-emerald-200 bg-background/90 px-2.5 py-1 text-emerald-900">
               {lastDeletedCleanup.kycDocumentsDeleted} KYC docs
             </span>
-            <span className="rounded-full bg-white/80 border border-emerald-200 px-2.5 py-1 text-emerald-900">
+            <span className="rounded-full border border-emerald-200 bg-background/90 px-2.5 py-1 text-emerald-900">
               {lastDeletedCleanup.activitiesDeleted} activities
             </span>
-            <span className="rounded-full bg-white/80 border border-emerald-200 px-2.5 py-1 text-emerald-900">
+            <span className="rounded-full border border-emerald-200 bg-background/90 px-2.5 py-1 text-emerald-900">
               {lastDeletedCleanup.farmImagesDeleted} farm images
             </span>
-            <span className="rounded-full bg-white/80 border border-emerald-200 px-2.5 py-1 text-emerald-900">
+            <span className="rounded-full border border-emerald-200 bg-background/90 px-2.5 py-1 text-emerald-900">
               {lastDeletedCleanup.kycImagesDeleted} KYC images
             </span>
             {(lastDeletedCleanup.farmImagesFailed > 0 ||
@@ -397,6 +394,9 @@ function TenantsPage() {
               <tbody>
                 {sortedTenants.map((tenant) => {
                   const readiness = getTenantReadiness(tenant)
+                  const readinessAppearance = getTenantReadinessAppearance(
+                    readiness.status,
+                  )
                   const features = {
                     ...defaultTenantFeatures,
                     ...tenant.features,
@@ -428,11 +428,9 @@ function TenantsPage() {
                       <td className="px-4 py-3">
                         <Badge
                           variant={tenant.isActive ? 'default' : 'secondary'}
-                          className={
-                            tenant.isActive
-                              ? 'bg-emerald-100 text-emerald-800 border-emerald-200'
-                              : ''
-                          }
+                          className={getTenantActivationBadgeClassName(
+                            tenant.isActive,
+                          )}
                         >
                           {tenant.isActive ? 'Active' : 'Inactive'}
                         </Badge>
@@ -440,19 +438,9 @@ function TenantsPage() {
                       <td className="px-4 py-3">
                         <Badge
                           variant="outline"
-                          className={
-                            readiness.status === 'launch-ready'
-                              ? 'border-emerald-200 bg-emerald-50 text-emerald-800'
-                              : readiness.status === 'demo-ready'
-                                ? 'border-sky-200 bg-sky-50 text-sky-800'
-                                : 'border-amber-200 bg-amber-50 text-amber-900'
-                          }
+                          className={readinessAppearance.badgeClassName}
                         >
-                          {readiness.status === 'launch-ready'
-                            ? 'Launch Ready'
-                            : readiness.status === 'demo-ready'
-                              ? 'Demo Ready'
-                              : 'Needs Attention'}
+                          {readinessAppearance.label}
                         </Badge>
                       </td>
                       <td className="px-4 py-3">
@@ -524,7 +512,7 @@ function TenantsPage() {
                   <Label className="text-xs">Tenant Name *</Label>
                   <Input {...form.getInputProps('name')} />
                 </div>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid gap-3 sm:grid-cols-2">
                   <div className="space-y-1.5">
                     <Label className="text-xs">Slug *</Label>
                     <Input {...form.getInputProps('slug')} />
@@ -549,7 +537,7 @@ function TenantsPage() {
                 Branding
               </legend>
               <div className="grid gap-3">
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid gap-3 sm:grid-cols-2">
                   <div className="space-y-1.5">
                     <Label className="text-xs">Display Name *</Label>
                     <Input {...form.getInputProps('displayName')} />
@@ -559,7 +547,7 @@ function TenantsPage() {
                     <Input {...form.getInputProps('shortName')} />
                   </div>
                 </div>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid gap-3 sm:grid-cols-2">
                   <div className="space-y-1.5">
                     <Label className="text-xs">Logo URL</Label>
                     <Input {...form.getInputProps('logoUrl')} />
@@ -569,29 +557,11 @@ function TenantsPage() {
                     <Input {...form.getInputProps('faviconUrl')} />
                   </div>
                 </div>
-                <div className="grid grid-cols-3 gap-3">
-                  <div className="space-y-1.5">
-                    <Label className="text-xs">Primary Color</Label>
-                    <Input
-                      {...form.getInputProps('primaryColor')}
-                      placeholder="142 64% 32% or #218641"
-                    />
-                  </div>
-                  <div className="space-y-1.5">
-                    <Label className="text-xs">Secondary Color</Label>
-                    <Input
-                      {...form.getInputProps('secondaryColor')}
-                      placeholder="352 47% 29% or #6d1f2a"
-                    />
-                  </div>
-                  <div className="space-y-1.5">
-                    <Label className="text-xs">Accent Color</Label>
-                    <Input
-                      {...form.getInputProps('accentColor')}
-                      placeholder="43 92% 52% or #f4b51f"
-                    />
-                  </div>
-                </div>
+                <HuePicker
+                  label="Brand Color"
+                  value={form.values.primaryHue}
+                  onChange={(hue) => form.setFieldValue('primaryHue', hue)}
+                />
                 <div className="space-y-1.5">
                   <Label className="text-xs">Tagline</Label>
                   <Textarea {...form.getInputProps('tagline')} rows={2} />
@@ -607,7 +577,7 @@ function TenantsPage() {
                     rows={2}
                   />
                 </div>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid gap-3 sm:grid-cols-2">
                   <div className="space-y-1.5">
                     <Label className="text-xs">Primary CTA Label</Label>
                     <Input {...form.getInputProps('ctaPrimaryLabel')} />
@@ -625,7 +595,7 @@ function TenantsPage() {
                 Contact
               </legend>
               <div className="grid gap-3">
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid gap-3 sm:grid-cols-2">
                   <div className="space-y-1.5">
                     <Label className="text-xs">Support Email</Label>
                     <Input {...form.getInputProps('supportEmail')} />
@@ -635,7 +605,7 @@ function TenantsPage() {
                     <Input {...form.getInputProps('supportPhone')} />
                   </div>
                 </div>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid gap-3 sm:grid-cols-2">
                   <div className="space-y-1.5">
                     <Label className="text-xs">Support WhatsApp</Label>
                     <Input {...form.getInputProps('supportWhatsapp')} />
@@ -649,7 +619,7 @@ function TenantsPage() {
                   <Label className="text-xs">Address</Label>
                   <Textarea {...form.getInputProps('address')} rows={2} />
                 </div>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid gap-3 sm:grid-cols-2">
                   <div className="space-y-1.5">
                     <Label className="text-xs">Terms URL</Label>
                     <Input {...form.getInputProps('termsUrl')} />
@@ -666,7 +636,7 @@ function TenantsPage() {
               <legend className="text-sm font-semibold text-foreground">
                 Features
               </legend>
-              <div className="grid grid-cols-2 gap-2.5">
+              <div className="grid gap-2.5 sm:grid-cols-2">
                 {featureLabels.map((feature) => (
                   <label
                     key={feature.key}

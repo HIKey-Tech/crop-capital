@@ -21,6 +21,7 @@ export function useNotifications() {
     const notifs: Array<Notification> = data.investments.flatMap(
       (inv: Investment) => {
         const farm = inv.farm as Farm
+        const currency = inv.currency || farm.currency || 'NGN'
         const result: Array<Notification> = []
 
         // Investment created notification
@@ -29,7 +30,7 @@ export function useNotifications() {
             id: `${inv._id}-pending`,
             type: 'investment',
             title: 'Investment Pending',
-            message: `Your investment of ${formatCurrency(inv.amount)} in ${farm.name || 'a farm'} is awaiting payment confirmation.`,
+            message: `Your investment of ${formatCurrency(inv.amount, currency)} in ${farm.name || 'a farm'} is awaiting payment confirmation.`,
             date: inv.createdAt,
             investmentId: inv._id,
           })
@@ -41,7 +42,7 @@ export function useNotifications() {
             id: `${inv._id}-confirmed`,
             type: 'investment',
             title: 'Investment Confirmed',
-            message: `Your investment of ${formatCurrency(inv.amount)} in ${farm.name || 'a farm'} has been confirmed.`,
+            message: `Your investment of ${formatCurrency(inv.amount, currency)} in ${farm.name || 'a farm'} has been confirmed.`,
             date: inv.updatedAt,
             investmentId: inv._id,
           })
@@ -56,7 +57,7 @@ export function useNotifications() {
             id: `${inv._id}-payout`,
             type: 'payout',
             title: 'ROI Payout Received',
-            message: `You have received ${formatCurrency(roiAmount)} returns from ${farm.name || 'your investment'}.`,
+            message: `You have received ${formatCurrency(roiAmount, currency)} returns from ${farm.name || 'your investment'}.`,
             date: inv.updatedAt,
             investmentId: inv._id,
           })

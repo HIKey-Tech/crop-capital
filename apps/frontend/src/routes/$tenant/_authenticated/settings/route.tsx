@@ -55,7 +55,7 @@ function SettingsLayout() {
         </nav>
       </aside>
 
-      <main className="flex-1 bg-white border rounded-xl p-6 md:p-8 min-h-125 shadow-sm">
+      <main className="min-h-125 flex-1 rounded-xl border border-border bg-card p-6 shadow-sm md:p-8">
         <Outlet />
       </main>
     </div>

@@ -10,9 +10,9 @@ export const NotFound = () => {
     <div className="min-h-screen flex flex-col items-center justify-center bg-background px-4 text-center">
       <div className="space-y-6 max-w-md">
         {/* Illustration or Icon */}
-        <div className="relative mx-auto flex h-40 w-40 items-center justify-center rounded-full bg-secondary">
-          <div className="absolute inset-0 rounded-full border border-brand-secondary/20 animate-ping opacity-25" />
-          <span className="text-6xl font-bold text-brand-secondary">404</span>
+        <div className="relative mx-auto flex h-40 w-40 items-center justify-center rounded-full bg-secondary/10">
+          <div className="absolute inset-0 rounded-full border border-secondary/20 animate-ping opacity-25" />
+          <span className="text-6xl font-bold text-secondary">404</span>
         </div>
 
         <div className="space-y-2">

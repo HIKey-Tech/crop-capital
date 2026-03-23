@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import { useEffect } from 'react'
 import {
   ArrowRight,
   Check,
@@ -6,30 +7,25 @@ import {
   DollarSign,
   MapPin,
   Plus,
-  Shield,
   Target,
   TrendingUp,
 } from 'lucide-react'
 import { toast } from 'sonner'
 
 import { z } from 'zod'
-import { useForm } from '@mantine/form'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Input } from '@/components/ui/input'
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import { Label } from '@/components/ui/label'
 import {
   useAddToWatchlist,
   useFarm,
-  useInvest,
   useIsInWatchlist,
   useRemoveFromWatchlist,
 } from '@/hooks'
 import { formatCurrency } from '@/lib/format-currency'
 import { getFarmImages } from '@/lib/farm-utils'
 import { ImageGallery } from '@/components/ui/image-gallery'
+import { LoadingSpinner } from '@/components/ui/loading'
 
 function calculateFundingProgress(current: number, target: number): number {
   if (target <= 0) return 0
@@ -69,23 +65,16 @@ function FarmDetailsPage() {
   const removeFromWatchlist = useRemoveFromWatchlist()
 
   const navigate = useNavigate()
-  const investMutation = useInvest()
 
-  const form = useForm({
-    initialValues: {
-      amount: 1000,
-      paymentMethod: 'card',
-    },
-    validate: {
-      amount: (value) => {
-        if (!data?.farm) return null
-        if (value < data.farm.minimumInvestment) {
-          return `Minimum investment is ${formatCurrency(data.farm.minimumInvestment)}`
-        }
-        return null
-      },
-    },
-  })
+  useEffect(() => {
+    if (!invest) return
+
+    navigate({
+      to: '/$tenant/farms/$id/invest',
+      params: { tenant, id },
+      replace: true,
+    })
+  }, [id, invest, navigate, tenant])
 
   const handleWatchlistToggle = async () => {
     try {
@@ -118,180 +107,14 @@ function FarmDetailsPage() {
   }
 
   const farm = data.farm
+  const currency = farm.currency || 'NGN'
   const progress = calculateFundingProgress(
     farm.fundedAmount,
     farm.investmentGoal,
   )
 
-  const expectedPayoutDate = new Date()
-  expectedPayoutDate.setMonth(
-    expectedPayoutDate.getMonth() + farm.durationMonths,
-  )
-
-  const handleInvest = form.onSubmit(async (values) => {
-    try {
-      const result = await investMutation.mutateAsync({
-        farmId: farm._id,
-        amount: values.amount,
-      })
-
-      if (result.authorizationUrl) {
-        // Redirect to Paystack payment page
-        window.location.href = result.authorizationUrl
-      } else {
-        toast.success('Investment Successful!', {
-          description: `Your investment in '${farm.name}' is confirmed.`,
-        })
-
-        setTimeout(() => {
-          navigate({ to: '/$tenant/investments', params: { tenant } })
-        }, 1500)
-      }
-    } catch (err) {
-      toast.error('Investment failed. Please try again.')
-    }
-  })
-
   if (invest) {
-    return (
-      <div className="max-w-6xl mx-auto animate-fade-in">
-        <h1 className="text-3xl font-bold text-foreground mb-2">{farm.name}</h1>
-        <p className="text-muted-foreground mb-8">
-          Enter your investment details below to proceed.
-        </p>
-
-        <form onSubmit={handleInvest}>
-          <div className="flex flex-col lg:flex-row gap-8">
-            {/* Farm Image Gallery */}
-            <div className="flex-1">
-              <ImageGallery
-                images={getFarmImages(farm)}
-                alt={farm.name}
-                aspectRatio="wide"
-              />
-            </div>
-
-            {/* Investment Form */}
-            <div className="w-full lg:w-96">
-              <div className="bg-card rounded-xl border border-border p-6">
-                <div className="mb-6">
-                  <Label htmlFor="amount">Enter Amount (USD)</Label>
-                  <div className="relative mt-1.5">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
-                      $
-                    </span>
-                    <Input
-                      id="amount"
-                      type="number"
-                      {...form.getInputProps('amount')}
-                      className="pl-7 text-lg"
-                      min={farm.minimumInvestment}
-                    />
-                  </div>
-                  {form.errors.amount && (
-                    <p className="text-sm text-destructive mt-1">
-                      {form.errors.amount}
-                    </p>
-                  )}
-                </div>
-
-                <div className="flex items-center justify-between mb-6">
-                  <div>
-                    <p className="text-sm text-primary mb-1">Projected ROI</p>
-                    <p className="text-xl font-bold">{farm.roi}% APY</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-sm text-primary mb-1">Expected Payout</p>
-                    <p className="text-xl font-bold">
-                      {expectedPayoutDate.toLocaleDateString('en-US', {
-                        month: 'short',
-                        day: 'numeric',
-                        year: 'numeric',
-                      })}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="mb-6">
-                  <Label className="mb-3 block">Payment Method</Label>
-                  <RadioGroup
-                    value={form.values.paymentMethod}
-                    onValueChange={(value) =>
-                      form.setFieldValue('paymentMethod', value)
-                    }
-                  >
-                    <div
-                      className={`flex items-center justify-between p-4 rounded-lg border cursor-pointer transition-colors ${form.values.paymentMethod === 'card' ? 'border-primary bg-secondary' : 'border-border'}`}
-                      onClick={() =>
-                        form.setFieldValue('paymentMethod', 'card')
-                      }
-                    >
-                      <Label
-                        htmlFor="card"
-                        className="flex flex-col cursor-pointer"
-                      >
-                        <span className="font-medium">Pay with Card</span>
-                        <span className="text-sm text-muted-foreground">
-                          Paystack
-                        </span>
-                      </Label>
-                      <RadioGroupItem value="card" id="card" />
-                    </div>
-                    <div
-                      className={`flex items-center justify-between p-4 rounded-lg border cursor-pointer transition-colors mt-2 ${form.values.paymentMethod === 'wallet' ? 'border-primary bg-secondary' : 'border-border'}`}
-                      onClick={() =>
-                        form.setFieldValue('paymentMethod', 'wallet')
-                      }
-                    >
-                      <Label
-                        htmlFor="wallet"
-                        className="flex flex-col cursor-pointer"
-                      >
-                        <span className="font-medium">Pay with Wallet</span>
-                        <span className="text-sm text-muted-foreground">
-                          Use your CropCapital balance
-                        </span>
-                      </Label>
-                      <RadioGroupItem value="wallet" id="wallet" />
-                    </div>
-                  </RadioGroup>
-                </div>
-
-                <Button
-                  type="submit"
-                  className="w-full h-12 bg-primary text-primary-foreground font-semibold rounded-lg"
-                  disabled={investMutation.isPending}
-                >
-                  {investMutation.isPending ? (
-                    'Processing...'
-                  ) : (
-                    <>
-                      Proceed to Payment
-                      <ArrowRight className="w-4 h-4 ml-2" />
-                    </>
-                  )}
-                </Button>
-
-                <div className="flex items-center justify-center gap-2 mt-4 text-sm text-primary">
-                  <Shield className="w-4 h-4" />
-                  <span>Secure SSL Encryption Payment</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </form>
-
-        <div className="text-center mt-8">
-          <a
-            href="#"
-            className="text-primary text-sm hover:underline flex items-center justify-center gap-2"
-          >
-            <Shield className="w-4 h-4" />
-            Need help? Read our investment FAQs or Contact Support
-          </a>
-        </div>
-      </div>
-    )
+    return <LoadingSpinner />
   }
 
   return (
@@ -355,7 +178,7 @@ function FarmDetailsPage() {
                   <InvestmentDetail
                     icon={DollarSign}
                     label="Min. Invest"
-                    value={formatCurrency(farm.minimumInvestment)}
+                    value={formatCurrency(farm.minimumInvestment, currency)}
                   />
                   <InvestmentDetail
                     icon={TrendingUp}
@@ -479,7 +302,7 @@ function FarmDetailsPage() {
                   <Target className="w-3 h-3" /> Funding Goal
                 </p>
                 <p className="font-medium text-foreground text-sm">
-                  {formatCurrency(farm.investmentGoal)}
+                  {formatCurrency(farm.investmentGoal, currency)}
                 </p>
               </div>
             </div>
@@ -503,8 +326,8 @@ function FarmDetailsPage() {
                 />
               </div>
               <p className="text-xs text-muted-foreground">
-                {formatCurrency(farm.fundedAmount)} of{' '}
-                {formatCurrency(farm.investmentGoal)}
+                {formatCurrency(farm.fundedAmount, currency)} of{' '}
+                {formatCurrency(farm.investmentGoal, currency)}
               </p>
             </div>
 
@@ -534,7 +357,12 @@ function FarmDetailsPage() {
               </Button>
               <Button
                 className="w-full h-11 bg-primary text-primary-foreground font-semibold rounded-lg hover:bg-primary/90"
-                onClick={() => {}}
+                onClick={() =>
+                  navigate({
+                    to: '/$tenant/farms/$id/invest',
+                    params: { tenant, id },
+                  })
+                }
               >
                 Invest Now
                 <ArrowRight className="w-4 h-4 ml-2" />

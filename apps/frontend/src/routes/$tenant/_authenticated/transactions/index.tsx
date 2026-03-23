@@ -75,8 +75,8 @@ const getColumns = (tenant: string): Array<ColumnDef<Transaction>> => [
         <span
           className={
             isPositive
-              ? 'text-green-600 font-bold'
-              : 'text-foreground font-medium'
+              ? 'font-bold text-primary'
+              : 'font-medium text-foreground'
           }
         >
           {isPositive ? '+' : '-'}
@@ -93,7 +93,7 @@ const getColumns = (tenant: string): Array<ColumnDef<Transaction>> => [
       return (
         <Badge
           variant="outline"
-          className={`capitalize ${status === 'completed' ? 'border-green-200 text-green-700 bg-green-50' : 'border-yellow-200 text-yellow-700 bg-yellow-50'}`}
+          className={`capitalize ${status === 'completed' ? 'border-primary/20 bg-primary/10 text-primary' : 'border-accent/25 bg-accent/15 text-foreground'}`}
         >
           {status}
         </Badge>
@@ -198,7 +198,7 @@ function TransactionsPage() {
         </Button>
       </div>
 
-      <div className="bg-white border rounded-xl overflow-hidden shadow-sm">
+      <div className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
         <div className="p-4 border-b flex items-center gap-3">
           <div className="relative max-w-sm w-full">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />

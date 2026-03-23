@@ -6,9 +6,9 @@ export interface ITenantBranding {
   legalName?: string;
   logoUrl?: string;
   faviconUrl?: string;
-  primaryColor?: string;
-  secondaryColor?: string;
-  accentColor?: string;
+  primaryHue?: number;
+  secondaryHue?: number;
+  accentHue?: number;
   tagline?: string;
   heroTitle?: string;
   heroDescription?: string;
@@ -116,9 +116,9 @@ const TenantSchema = new Schema<ITenant>(
       legalName: { type: String },
       logoUrl: { type: String },
       faviconUrl: { type: String },
-      primaryColor: { type: String },
-      secondaryColor: { type: String },
-      accentColor: { type: String },
+      primaryHue: { type: Number },
+      secondaryHue: { type: Number },
+      accentHue: { type: Number },
       tagline: { type: String },
       heroTitle: { type: String },
       heroDescription: { type: String },

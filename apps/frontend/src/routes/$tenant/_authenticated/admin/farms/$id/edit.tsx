@@ -19,12 +19,20 @@ import type { CreateFarmRequest } from '@/types'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { useAddFarmUpdate, useFarm, useUpdateFarm } from '@/hooks'
 import { createFarmSchema } from '@/api/farms/schema'
 import { LoadingSpinner } from '@/components/ui/loading'
 import { formatDate } from '@/lib/format-date'
 
 import { fileToBase64 } from '@/lib/file-utils'
+import { currencyOptions } from '@/lib/format-currency'
 
 export const Route = createFileRoute(
   '/$tenant/_authenticated/admin/farms/$id/edit',
@@ -60,6 +68,7 @@ function EditFarmPage() {
         location: data.farm.location,
         latitude: data.farm.coordinates?.latitude,
         longitude: data.farm.coordinates?.longitude,
+        currency: data.farm.currency || 'NGN',
         images: data.farm.images,
         investmentGoal: data.farm.investmentGoal,
         minimumInvestment: data.farm.minimumInvestment,
@@ -117,6 +126,7 @@ function EditFarmPage() {
       const updateData: Partial<CreateFarmRequest> = {
         name: rest.name,
         location: rest.location,
+        currency: rest.currency,
         investmentGoal: rest.investmentGoal,
         minimumInvestment: rest.minimumInvestment,
         roi: rest.roi,
@@ -288,7 +298,40 @@ function EditFarmPage() {
             <h2 className="text-lg font-semibold text-foreground mb-6 border-b border-border pb-2">
               Financial & Farm Details
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-6 mb-6">
+              <div>
+                <Label
+                  htmlFor="currency"
+                  className="mb-2 block font-medium tracking-tight"
+                >
+                  Currency
+                </Label>
+                <Select
+                  value={form.values.currency}
+                  onValueChange={(value) =>
+                    form.setFieldValue(
+                      'currency',
+                      value as CreateFarmInput['currency'],
+                    )
+                  }
+                >
+                  <SelectTrigger id="currency" className="w-full bg-accent">
+                    <SelectValue placeholder="Select currency" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {currencyOptions.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {form.errors.currency && (
+                  <p className="text-sm text-red-600 mt-1">
+                    {form.errors.currency}
+                  </p>
+                )}
+              </div>
               <div>
                 <Label
                   htmlFor="investmentGoal"

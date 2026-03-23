@@ -1,4 +1,5 @@
 import type { Farm, Investment } from '@/types'
+import { formatCurrency } from '@/lib/format-currency'
 
 // Helper to compute derived investment values
 function computeInvestmentMetrics(investment: Investment, _farm: Farm) {
@@ -44,7 +45,7 @@ export function InvestmentCard({ investment }: InvestmentCardProps) {
     <span
       className={`inline-flex items-center rounded-md border px-3 py-1 text-[15px] font-medium mr-2 mb-2 whitespace-nowrap ${
         bold
-          ? 'border-brand-accent/30 bg-accent text-accent-foreground'
+          ? 'border-accent/30 bg-accent/10 text-accent'
           : 'border-border bg-muted text-foreground/90'
       }`}
     >
@@ -77,6 +78,7 @@ export function InvestmentCard({ investment }: InvestmentCardProps) {
     investment,
     farm,
   )
+  const currency = investment.currency || farm.currency || 'NGN'
 
   return (
     <div className="rounded-xl overflow-hidden border border-border bg-card transition-shadow duration-300 group">
@@ -93,10 +95,8 @@ export function InvestmentCard({ investment }: InvestmentCardProps) {
           <h3 className="font-bold text-xl text-foreground leading-snug truncate">
             {farm.name}
           </h3>
-          <span className="ml-3 rounded-md border border-brand-secondary/25 bg-secondary px-2 py-0.5 text-xs font-semibold text-secondary-foreground">
-            <span className="text-brand-secondary font-bold">
-              {daysRemaining}
-            </span>{' '}
+          <span className="ml-3 rounded-md border border-secondary/25 bg-secondary/10 px-2 py-0.5 text-xs font-semibold text-secondary">
+            <span className="text-secondary font-bold">{daysRemaining}</span>{' '}
             Days Left
           </span>
         </div>
@@ -118,7 +118,7 @@ export function InvestmentCard({ investment }: InvestmentCardProps) {
           </div>
           <div className="w-full h-2.5 rounded-full bg-muted overflow-hidden relative">
             <div
-              className="h-full rounded-full bg-brand-accent"
+              className="h-full rounded-full bg-accent"
               style={{
                 width: `${progress}%`,
               }}
@@ -129,14 +129,14 @@ export function InvestmentCard({ investment }: InvestmentCardProps) {
         {/* Amount Invested & Expected Return */}
         <div className="flex items-center justify-between text-xs mb-4">
           <span>
-            <span className="text-brand-accent font-bold">
-              ${investment.amount.toLocaleString()}
+            <span className="text-accent font-bold">
+              {formatCurrency(investment.amount, currency)}
             </span>{' '}
             <span className="text-muted-foreground">invested</span>
           </span>
           <span>
             <span className="text-primary font-bold">
-              ${expectedReturn.toLocaleString()}
+              {formatCurrency(expectedReturn, currency)}
             </span>{' '}
             <span className="text-muted-foreground">expected return</span>
           </span>
@@ -145,7 +145,7 @@ export function InvestmentCard({ investment }: InvestmentCardProps) {
         {/* Action Buttons */}
         <div className="flex gap-2">
           <button
-            className="flex-1 h-10 rounded-lg border border-brand-secondary/30 bg-card text-brand-secondary font-semibold transition-colors hover:bg-secondary focus:outline-none text-sm"
+            className="flex-1 h-10 rounded-lg border border-secondary/30 bg-card text-secondary font-semibold transition-colors hover:bg-secondary/10 focus:outline-none text-sm"
             type="button"
           >
             View Details

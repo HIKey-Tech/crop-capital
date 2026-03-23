@@ -16,7 +16,7 @@ function InfoPill({ label, value, bold }: InfoPillProps) {
     <span
       className={`inline-flex items-center rounded-md border px-3 py-1 text-[15px] font-medium mr-2 mb-2 whitespace-nowrap ${
         bold
-          ? 'border-brand-accent/30 bg-accent text-accent-foreground'
+          ? 'border-accent/30 bg-accent/10 text-accent'
           : 'border-border bg-muted text-foreground/90'
       }`}
     >
@@ -50,8 +50,8 @@ export function FarmCard({ farm, variant = 'default' }: FarmCardProps) {
   const status = isFunded ? 'active' : 'funding'
 
   const statusBadge = {
-    funding: <Badge className="badge-brand-accent">Funding</Badge>,
-    active: <Badge className="badge-brand-secondary">Active</Badge>,
+    funding: <Badge className="badge-accent">Funding</Badge>,
+    active: <Badge className="badge-secondary">Active</Badge>,
   }
 
   if (variant === 'compact') {
@@ -123,7 +123,7 @@ export function FarmCard({ farm, variant = 'default' }: FarmCardProps) {
             className="w-1/2"
           >
             <Button
-              className="w-full h-11 border-2 border-brand-secondary/30 text-brand-secondary font-semibold bg-card rounded-lg transition-colors hover:bg-secondary focus:outline-none text-base"
+              className="w-full h-11 border-2 border-secondary/30 text-secondary font-semibold bg-card rounded-lg transition-colors hover:bg-secondary/10 focus:outline-none text-base"
               type="button"
               variant="outline"
             >
@@ -133,9 +133,8 @@ export function FarmCard({ farm, variant = 'default' }: FarmCardProps) {
             </Button>
           </Link>
           <Link
-            to="/$tenant/farms/$id"
+            to="/$tenant/farms/$id/invest"
             params={{ tenant, id: farm._id }}
-            search={{ invest: true }}
             className="w-1/2"
           >
             <Button

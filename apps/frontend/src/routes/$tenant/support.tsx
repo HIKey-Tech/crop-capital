@@ -105,7 +105,7 @@ function SupportPage() {
           </div>
         </div>
 
-        <div className="bg-white border rounded-xl p-6 shadow-sm h-fit">
+        <div className="h-fit rounded-xl border border-border bg-card p-6 shadow-sm">
           <h2 className="text-xl font-semibold mb-6 flex items-center gap-2">
             <MessagesSquare className="h-5 w-5" /> Send us a message
           </h2>

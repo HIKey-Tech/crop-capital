@@ -5,8 +5,31 @@ import {
   initializeTransaction,
   verifyTransaction,
 } from "../payments/payment.service";
+import { FRONTEND_URL } from "@/config/env";
 import { AppError } from "@/utils/AppError";
 import { sendEmail } from "@/utils/email";
+
+const getCurrencyLocale = (currency: string) => {
+  switch (currency) {
+    case "USD":
+      return "en-US";
+    case "GHS":
+      return "en-GH";
+    case "KES":
+      return "en-KE";
+    case "NGN":
+    default:
+      return "en-NG";
+  }
+};
+
+const formatMoney = (amount: number, currency: string) =>
+  new Intl.NumberFormat(getCurrencyLocale(currency), {
+    style: "currency",
+    currency,
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(amount);
 
 const sendInvestmentEmailBestEffort = async (
   email: string,
@@ -37,10 +60,12 @@ export const investInFarm = async (
     });
     if (!farm) return next(new AppError("Farm not found", 404));
 
+    const currency = farm.currency || "NGN";
+
     if (amount < farm.minimumInvestment) {
       return next(
         new AppError(
-          `Minimum investment is ₦${farm.minimumInvestment.toLocaleString()}`,
+          `Minimum investment is ${formatMoney(farm.minimumInvestment, currency)}`,
           400,
         ),
       );
@@ -52,10 +77,15 @@ export const investInFarm = async (
       investor: investor._id,
       farm: farm._id,
       amount,
+      currency,
       roi: farm.roi,
       durationMonths: farm.durationMonths,
       status: "pending",
     });
+
+    const callbackUrl = req.tenant?.slug
+      ? `${FRONTEND_URL}/${req.tenant.slug}/payment/callback`
+      : `${FRONTEND_URL}/payment/callback`;
 
     // Initialize Paystack transaction with metadata
     const paystackResponse = await initializeTransaction(
@@ -67,7 +97,10 @@ export const investInFarm = async (
         tenantSlug: req.tenant?.slug,
         farmId: farm._id.toString(),
         farmName: farm.name,
+        currency,
       },
+      currency,
+      callbackUrl,
     );
 
     // Store Paystack reference and access code
@@ -80,7 +113,7 @@ export const investInFarm = async (
       investor.email,
       "Investment Created - Complete Your Payment",
       `<h1>Investment Pending</h1>
-            <p>You're investing ₦${amount.toLocaleString()} in <strong>${farm.name}</strong>.</p>
+        <p>You're investing ${formatMoney(amount, currency)} in <strong>${farm.name}</strong>.</p>
             <p>Please complete your payment to finalize the investment.</p>
             <p><a href="${paystackResponse.data.authorization_url}" style="background-color: #00C853; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block;">Complete Payment</a></p>`,
     );
@@ -92,6 +125,7 @@ export const investInFarm = async (
       accessCode: paystackResponse.data.access_code,
       reference: paystackResponse.data.reference,
       investmentId: investment._id,
+      currency,
     });
   } catch (err: unknown) {
     const error = err as Error;
@@ -143,6 +177,7 @@ export const verifyPayment = async (
       investment: {
         _id: investment._id,
         amount: investment.amount,
+        currency: investment.currency,
         status: investment.status,
         projectedReturn: investment.projectedReturn(),
       },
@@ -188,7 +223,7 @@ export const completeInvestment = async (
       "Investment Completed",
       `<h1>Congratulations!</h1>
             <p>Your investment in ${farm.name} has been completed.</p>
-            <p>Projected Return: ₦${investment.projectedReturn().toLocaleString()}</p>`,
+        <p>Projected Return: ${formatMoney(investment.projectedReturn(), investment.currency || "NGN")}</p>`,
     );
 
     res.json({
@@ -221,6 +256,7 @@ export const getMyInvestments = async (
       _id: inv._id,
       farm: inv.farm,
       amount: inv.amount,
+      currency: inv.currency,
       status: inv.status,
       roi: inv.roi,
       projectedReturn: inv.projectedReturn(),
@@ -274,6 +310,7 @@ export const getInvestmentById = async (
         _id: investment._id,
         farm: investment.farm,
         amount: investment.amount,
+        currency: investment.currency,
         status: investment.status,
         roi: investment.roi,
         projectedReturn: investment.projectedReturn(),
@@ -307,6 +344,7 @@ export const getAllInvestments = async (
       investor: inv.investor,
       farm: inv.farm,
       amount: inv.amount,
+      currency: inv.currency,
       status: inv.status,
       roi: inv.roi,
       projectedReturn: inv.projectedReturn(),

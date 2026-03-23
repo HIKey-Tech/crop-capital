@@ -39,6 +39,57 @@ export const featureLabels: Array<{
   { key: 'adminReports', label: 'Admin Reports' },
 ]
 
+export type TenantReadinessStatus =
+  | 'launch-ready'
+  | 'demo-ready'
+  | 'needs-attention'
+
+const tenantReadinessAppearance: Record<
+  TenantReadinessStatus,
+  {
+    label: string
+    badgeClassName: string
+    meterClassName: string
+    summaryCardClassName: string
+    summaryLabelClassName: string
+    summaryValueClassName: string
+  }
+> = {
+  'launch-ready': {
+    label: 'Launch Ready',
+    badgeClassName: 'border-emerald-200 bg-emerald-50 text-emerald-800',
+    meterClassName: 'bg-emerald-500',
+    summaryCardClassName:
+      'rounded-2xl border border-emerald-200 bg-emerald-50/80 p-4 shadow-sm',
+    summaryLabelClassName: 'text-xs uppercase tracking-wide text-emerald-700',
+    summaryValueClassName: 'mt-2 text-2xl font-semibold text-emerald-900',
+  },
+  'demo-ready': {
+    label: 'Demo Ready',
+    badgeClassName: 'border-sky-200 bg-sky-50 text-sky-800',
+    meterClassName: 'bg-sky-500',
+    summaryCardClassName:
+      'rounded-2xl border border-sky-200 bg-sky-50/80 p-4 shadow-sm',
+    summaryLabelClassName: 'text-xs uppercase tracking-wide text-sky-700',
+    summaryValueClassName: 'mt-2 text-2xl font-semibold text-sky-900',
+  },
+  'needs-attention': {
+    label: 'Needs Attention',
+    badgeClassName: 'border-amber-200 bg-amber-50 text-amber-900',
+    meterClassName: 'bg-amber-500',
+    summaryCardClassName:
+      'rounded-2xl border border-amber-200 bg-amber-50/80 p-4 shadow-sm',
+    summaryLabelClassName: 'text-xs uppercase tracking-wide text-amber-700',
+    summaryValueClassName: 'mt-2 text-2xl font-semibold text-amber-900',
+  },
+}
+
+export const getTenantReadinessAppearance = (status: TenantReadinessStatus) =>
+  tenantReadinessAppearance[status]
+
+export const getTenantActivationBadgeClassName = (isActive: boolean) =>
+  isActive ? 'bg-emerald-100 text-emerald-800 border-emerald-200' : ''
+
 export const getBrowserOrigin = () => {
   if (typeof window === 'undefined') return ''
   return window.location.origin.replace(/\/$/, '')
@@ -112,7 +163,11 @@ export const getTenantReadiness = (tenant: TenantSummary) => {
         ? 'demo-ready'
         : 'needs-attention'
 
-  return { score: `${passedChecks}/${checks.length}`, status, blockers }
+  return {
+    score: `${passedChecks}/${checks.length}`,
+    status: status as TenantReadinessStatus,
+    blockers,
+  }
 }
 
 export function useTenants() {

@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button'
 import {
   getBrowserOrigin,
   getTenantAccessUrls,
+  getTenantActivationBadgeClassName,
   useTenants,
 } from '@/lib/super-admin'
 
@@ -15,9 +16,13 @@ export const Route = createFileRoute('/super-admin/access')({
   component: AccessGuidePage,
 })
 
-function copyToClipboard(text: string) {
-  navigator.clipboard.writeText(text)
-  toast.success('Copied to clipboard')
+async function copyToClipboard(text: string) {
+  try {
+    await navigator.clipboard.writeText(text)
+    toast.success('Copied to clipboard')
+  } catch {
+    toast.error('Unable to copy link')
+  }
 }
 
 function AccessGuidePage() {
@@ -56,11 +61,7 @@ function AccessGuidePage() {
                 </div>
                 <Badge
                   variant={tenant.isActive ? 'default' : 'secondary'}
-                  className={
-                    tenant.isActive
-                      ? 'bg-emerald-100 text-emerald-800 border-emerald-200'
-                      : ''
-                  }
+                  className={getTenantActivationBadgeClassName(tenant.isActive)}
                 >
                   {tenant.isActive ? 'Active' : 'Inactive'}
                 </Badge>

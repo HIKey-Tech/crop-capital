@@ -1,8 +1,11 @@
 import { z } from 'zod'
 
+export const currencyCodeSchema = z.enum(['NGN', 'USD', 'GHS', 'KES'])
+
 export const createFarmSchema = z.object({
   name: z.string().min(1, 'Farm name is required'),
   location: z.string().min(1, 'Location is required'),
+  currency: currencyCodeSchema,
   latitude: z
     .union([z.string(), z.number()])
     .transform(Number)

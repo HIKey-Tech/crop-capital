@@ -1,9 +1,14 @@
-import { createFileRoute, Link } from '@tanstack/react-router'
+import { Link, createFileRoute } from '@tanstack/react-router'
 import { useMemo } from 'react'
 import { Building2, Globe2, ShieldCheck, Sparkles } from 'lucide-react'
 
 import { Badge } from '@/components/ui/badge'
-import { useTenants, getTenantReadiness } from '@/lib/super-admin'
+import {
+  getTenantActivationBadgeClassName,
+  getTenantReadiness,
+  getTenantReadinessAppearance,
+  useTenants,
+} from '@/lib/super-admin'
 
 export const Route = createFileRoute('/super-admin/')({
   component: OverviewPage,
@@ -160,6 +165,9 @@ function OverviewPage() {
               <tbody>
                 {sortedTenants.map((tenant) => {
                   const readiness = getTenantReadiness(tenant)
+                  const readinessAppearance = getTenantReadinessAppearance(
+                    readiness.status,
+                  )
                   return (
                     <tr
                       key={tenant.id}
@@ -172,11 +180,9 @@ function OverviewPage() {
                       <td className="px-4 py-3">
                         <Badge
                           variant={tenant.isActive ? 'default' : 'secondary'}
-                          className={
-                            tenant.isActive
-                              ? 'bg-emerald-100 text-emerald-800 border-emerald-200'
-                              : ''
-                          }
+                          className={getTenantActivationBadgeClassName(
+                            tenant.isActive,
+                          )}
                         >
                           {tenant.isActive ? 'Active' : 'Inactive'}
                         </Badge>
@@ -184,19 +190,9 @@ function OverviewPage() {
                       <td className="px-4 py-3">
                         <Badge
                           variant="outline"
-                          className={
-                            readiness.status === 'launch-ready'
-                              ? 'border-emerald-200 bg-emerald-50 text-emerald-800'
-                              : readiness.status === 'demo-ready'
-                                ? 'border-sky-200 bg-sky-50 text-sky-800'
-                                : 'border-amber-200 bg-amber-50 text-amber-900'
-                          }
+                          className={readinessAppearance.badgeClassName}
                         >
-                          {readiness.status === 'launch-ready'
-                            ? 'Launch Ready'
-                            : readiness.status === 'demo-ready'
-                              ? 'Demo Ready'
-                              : 'Needs Attention'}
+                          {readinessAppearance.label}
                         </Badge>
                       </td>
                       <td className="px-4 py-3 text-muted-foreground">

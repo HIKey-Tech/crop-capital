@@ -96,9 +96,13 @@ function AdminFarmPage() {
     {
       accessorKey: 'investmentGoal',
       header: 'Goal',
-      cell: ({ getValue }) => {
+      cell: ({ getValue, row }) => {
         const goal = getValue() as number
-        return <span className="font-medium">{formatCurrency(goal)}</span>
+        return (
+          <span className="font-medium">
+            {formatCurrency(goal, row.original.currency || 'NGN')}
+          </span>
+        )
       },
     },
     {

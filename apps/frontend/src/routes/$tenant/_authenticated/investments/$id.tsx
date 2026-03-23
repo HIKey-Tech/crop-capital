@@ -50,6 +50,7 @@ function InvestmentDetailsPage() {
 
   const investment = data.investment
   const farm = investment.farm as Farm
+  const currency = investment.currency || farm.currency || 'NGN'
 
   // Calculate derived values
   const startDate = new Date(investment.createdAt)
@@ -86,7 +87,7 @@ function InvestmentDetailsPage() {
       return (
         <Badge
           variant="outline"
-          className="border-brand-secondary/20 bg-secondary text-secondary-foreground"
+          className="border-secondary/20 bg-secondary/10 text-secondary"
         >
           Active
         </Badge>
@@ -95,7 +96,7 @@ function InvestmentDetailsPage() {
     return (
       <Badge
         variant="outline"
-        className="border-brand-accent/25 bg-accent text-accent-foreground"
+        className="border-accent/25 bg-accent/10 text-accent"
       >
         Pending
       </Badge>
@@ -139,7 +140,7 @@ function InvestmentDetailsPage() {
             <DollarSign className="h-4 w-4" /> Invested Amount
           </div>
           <div className="text-2xl font-bold">
-            {formatCurrency(investment.amount)}
+            {formatCurrency(investment.amount, currency)}
           </div>
         </div>
         <div className="bg-card border rounded-xl p-5 shadow-sm">
@@ -147,7 +148,7 @@ function InvestmentDetailsPage() {
             <TrendingUp className="h-4 w-4" /> Expected Return
           </div>
           <div className="text-2xl font-bold text-primary">
-            {formatCurrency(expectedReturn)}{' '}
+            {formatCurrency(expectedReturn, currency)}{' '}
             <span className="text-sm font-medium text-muted-foreground">
               ({investment.roi}%)
             </span>
@@ -201,7 +202,8 @@ function InvestmentDetailsPage() {
                         </h4>
                         <p className="text-sm text-muted-foreground mt-1">
                           You initiated an investment of{' '}
-                          {formatCurrency(investment.amount)} in {farm.name}
+                          {formatCurrency(investment.amount, currency)} in{' '}
+                          {farm.name}
                         </p>
                       </div>
                       <span className="text-xs text-muted-foreground whitespace-nowrap">
@@ -212,7 +214,7 @@ function InvestmentDetailsPage() {
 
                   {investment.status === 'completed' && (
                     <div className="relative">
-                      <div className="absolute -left-9.75 h-5 w-5 rounded-full border-2 border-card bg-brand-secondary ring-4 ring-secondary" />
+                      <div className="absolute -left-9.75 h-5 w-5 rounded-full border-2 border-card bg-secondary ring-4 ring-secondary/15" />
                       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-1">
                         <div>
                           <h4 className="font-medium text-foreground">
@@ -231,7 +233,7 @@ function InvestmentDetailsPage() {
 
                   {investment.roiPaid && (
                     <div className="relative">
-                      <div className="absolute -left-9.75 h-5 w-5 rounded-full border-2 border-card bg-brand-accent ring-4 ring-accent" />
+                      <div className="absolute -left-9.75 h-5 w-5 rounded-full border-2 border-card bg-accent ring-4 ring-accent/15" />
                       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-1">
                         <div>
                           <h4 className="font-medium text-foreground">
@@ -323,7 +325,7 @@ function InvestmentDetailsPage() {
                       Amount Invested
                     </span>
                     <span className="font-medium">
-                      {formatCurrency(investment.amount)}
+                      {formatCurrency(investment.amount, currency)}
                     </span>
                   </div>
                   <div className="flex justify-between py-2 border-b">
@@ -341,7 +343,7 @@ function InvestmentDetailsPage() {
                       Expected Return
                     </span>
                     <span className="font-medium text-primary">
-                      {formatCurrency(expectedReturn)}
+                      {formatCurrency(expectedReturn, currency)}
                     </span>
                   </div>
                   <div className="flex justify-between py-2">

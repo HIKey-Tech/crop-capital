@@ -1,5 +1,8 @@
 import mongoose, { Schema, Document } from "mongoose";
 
+export const SUPPORTED_FARM_CURRENCIES = ["NGN", "USD", "GHS", "KES"] as const;
+export type FarmCurrency = (typeof SUPPORTED_FARM_CURRENCIES)[number];
+
 export interface IFarm extends Document {
   tenantId?: mongoose.Types.ObjectId;
   name: string;
@@ -10,6 +13,7 @@ export interface IFarm extends Document {
   };
   images: string[];
   imagePublicIds: string[];
+  currency: FarmCurrency;
   investmentGoal: number;
   minimumInvestment: number;
   roi: number;
@@ -34,6 +38,12 @@ const FarmSchema = new Schema<IFarm>(
     },
     images: { type: [String], required: true },
     imagePublicIds: { type: [String], required: true },
+    currency: {
+      type: String,
+      enum: SUPPORTED_FARM_CURRENCIES,
+      default: "NGN",
+      required: true,
+    },
     investmentGoal: { type: Number, required: true },
     minimumInvestment: { type: Number, required: true },
     roi: { type: Number, required: true },

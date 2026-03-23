@@ -3,7 +3,11 @@ import { useMemo } from 'react'
 import { CheckCircle2, TriangleAlert } from 'lucide-react'
 
 import { Badge } from '@/components/ui/badge'
-import { getTenantReadiness, useTenants } from '@/lib/super-admin'
+import {
+  getTenantReadiness,
+  getTenantReadinessAppearance,
+  useTenants,
+} from '@/lib/super-admin'
 
 export const Route = createFileRoute('/super-admin/readiness')({
   component: ReadinessPage,
@@ -11,6 +15,10 @@ export const Route = createFileRoute('/super-admin/readiness')({
 
 function ReadinessPage() {
   const { sortedTenants } = useTenants()
+  const launchReadyAppearance = getTenantReadinessAppearance('launch-ready')
+  const demoReadyAppearance = getTenantReadinessAppearance('demo-ready')
+  const needsAttentionAppearance =
+    getTenantReadinessAppearance('needs-attention')
 
   const readinessSummaries = useMemo(
     () =>
@@ -49,27 +57,27 @@ function ReadinessPage() {
       </div>
 
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-        <div className="rounded-2xl border border-emerald-200 bg-emerald-50/80 p-4 shadow-sm">
-          <div className="text-xs uppercase tracking-wide text-emerald-700">
-            Launch Ready
+        <div className={launchReadyAppearance.summaryCardClassName}>
+          <div className={launchReadyAppearance.summaryLabelClassName}>
+            {launchReadyAppearance.label}
           </div>
-          <div className="mt-2 text-2xl font-semibold text-emerald-900">
+          <div className={launchReadyAppearance.summaryValueClassName}>
             {readinessStats.launchReady}
           </div>
         </div>
-        <div className="rounded-2xl border border-sky-200 bg-sky-50/80 p-4 shadow-sm">
-          <div className="text-xs uppercase tracking-wide text-sky-700">
-            Demo Ready
+        <div className={demoReadyAppearance.summaryCardClassName}>
+          <div className={demoReadyAppearance.summaryLabelClassName}>
+            {demoReadyAppearance.label}
           </div>
-          <div className="mt-2 text-2xl font-semibold text-sky-900">
+          <div className={demoReadyAppearance.summaryValueClassName}>
             {readinessStats.demoReady}
           </div>
         </div>
-        <div className="rounded-2xl border border-amber-200 bg-amber-50/80 p-4 shadow-sm">
-          <div className="text-xs uppercase tracking-wide text-amber-700">
-            Needs Attention
+        <div className={needsAttentionAppearance.summaryCardClassName}>
+          <div className={needsAttentionAppearance.summaryLabelClassName}>
+            {needsAttentionAppearance.label}
           </div>
-          <div className="mt-2 text-2xl font-semibold text-amber-900">
+          <div className={needsAttentionAppearance.summaryValueClassName}>
             {readinessStats.needsAttention}
           </div>
         </div>
@@ -79,6 +87,9 @@ function ReadinessPage() {
         {readinessSummaries.map(({ tenant, readiness }) => {
           const [passed, total] = readiness.score.split('/').map(Number)
           const pct = total > 0 ? (passed / total) * 100 : 0
+          const readinessAppearance = getTenantReadinessAppearance(
+            readiness.status,
+          )
 
           return (
             <article
@@ -96,32 +107,16 @@ function ReadinessPage() {
                 </div>
                 <Badge
                   variant="outline"
-                  className={
-                    readiness.status === 'launch-ready'
-                      ? 'border-emerald-200 bg-emerald-50 text-emerald-800'
-                      : readiness.status === 'demo-ready'
-                        ? 'border-sky-200 bg-sky-50 text-sky-800'
-                        : 'border-amber-200 bg-amber-50 text-amber-900'
-                  }
+                  className={readinessAppearance.badgeClassName}
                 >
-                  {readiness.status === 'launch-ready'
-                    ? 'Launch Ready'
-                    : readiness.status === 'demo-ready'
-                      ? 'Demo Ready'
-                      : 'Needs Attention'}
+                  {readinessAppearance.label}
                 </Badge>
               </div>
 
               <div className="p-5 space-y-3">
                 <div className="h-2 w-full rounded-full bg-muted overflow-hidden">
                   <div
-                    className={`h-full rounded-full transition-all ${
-                      readiness.status === 'launch-ready'
-                        ? 'bg-emerald-500'
-                        : readiness.status === 'demo-ready'
-                          ? 'bg-sky-500'
-                          : 'bg-amber-500'
-                    }`}
+                    className={`h-full rounded-full transition-all ${readinessAppearance.meterClassName}`}
                     style={{ width: `${pct}%` }}
                   />
                 </div>

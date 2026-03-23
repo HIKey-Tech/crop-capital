@@ -7,6 +7,28 @@ import { sendEmail } from "@/utils/email";
 import { WebhookEvent } from "./webhookEvent.model";
 import { logActivity } from "@/modules/activities/activity.service";
 
+function getCurrencyLocale(currency: string): string {
+  switch (currency) {
+    case "USD":
+      return "en-US";
+    case "GHS":
+      return "en-GH";
+    case "KES":
+      return "en-KE";
+    case "NGN":
+    default:
+      return "en-NG";
+  }
+}
+
+function formatMoney(amount: number, currency: string): string {
+  return new Intl.NumberFormat(getCurrencyLocale(currency), {
+    style: "currency",
+    currency,
+    maximumFractionDigits: 0,
+  }).format(amount);
+}
+
 interface PaystackWebhookEvent {
   event: string;
   data: {
@@ -122,6 +144,7 @@ async function handleChargeSuccess(
   investment.status = "completed";
   investment.paystackReference = reference;
   await investment.save();
+  const currency = investment.currency || data.currency || "NGN";
 
   // Update farm funded amount
   const farm = investment.farm as IFarm;
@@ -147,14 +170,14 @@ async function handleChargeSuccess(
       investor.email,
       "Investment Completed Successfully! 🎉",
       `<h1>Congratulations!</h1>
-            <p>Your investment of ₦${(amount / 100).toLocaleString()} in <strong>${farm.name}</strong> has been completed successfully.</p>
+        <p>Your investment of ${formatMoney(amount / 100, currency)} in <strong>${farm.name}</strong> has been completed successfully.</p>
             <p><strong>Investment Details:</strong></p>
             <ul>
                 <li>Farm: ${farm.name}</li>
-                <li>Amount: ₦${investment.amount.toLocaleString()}</li>
+          <li>Amount: ${formatMoney(investment.amount, currency)}</li>
                 <li>Expected ROI: ${investment.roi}%</li>
                 <li>Duration: ${investment.durationMonths} months</li>
-                <li>Projected Return: ₦${investment.projectedReturn().toLocaleString()}</li>
+          <li>Projected Return: ${formatMoney(investment.projectedReturn(), currency)}</li>
             </ul>
             <p>Thank you for investing with CropCapital!</p>`,
     );
@@ -163,7 +186,7 @@ async function handleChargeSuccess(
   logActivity({
     type: "investment_completed",
     title: "Investment Completed",
-    description: `${investor?.name ?? "An investor"} invested ₦${investment.amount.toLocaleString()} in ${farm.name}`,
+    description: `${investor?.name ?? "An investor"} invested ${formatMoney(investment.amount, currency)} in ${farm.name}`,
     actor: investment.investor as any,
     resourceId: investment._id,
     resourceType: "Investment",

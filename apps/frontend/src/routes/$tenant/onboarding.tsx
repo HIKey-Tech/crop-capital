@@ -253,7 +253,7 @@ function OnboardingPage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[linear-gradient(180deg,#f8fbf7_0%,#edf5ef_100%)] p-4">
         <div className="w-full max-w-2xl rounded-4xl border border-border bg-white p-8 shadow-xl">
-          <div className="inline-flex items-center gap-2 rounded-full border border-brand-secondary/20 bg-secondary px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-secondary-foreground">
+          <div className="inline-flex items-center gap-2 rounded-full border border-secondary/20 bg-secondary/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-secondary">
             <BadgeCheck className="h-3.5 w-3.5" />
             Onboarding Complete
           </div>

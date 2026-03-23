@@ -1,3 +1,5 @@
+export type CurrencyCode = 'NGN' | 'USD' | 'GHS' | 'KES'
+
 export interface User {
   _id: string
   name: string
@@ -14,6 +16,7 @@ export interface Farm {
   _id: string
   name: string
   location: string
+  currency: CurrencyCode
   coordinates?: {
     latitude: number
     longitude: number
@@ -42,6 +45,7 @@ export interface Investment {
   investor: string | User
   farm: string | Farm
   amount: number
+  currency: CurrencyCode
   roi: number
   durationMonths: number
   roiPaid: boolean
@@ -73,6 +77,7 @@ export interface InvestmentResponse {
   accessCode: string
   reference: string
   investmentId: string
+  currency: CurrencyCode
 }
 
 export interface InvestmentsListResponse {
@@ -115,6 +120,7 @@ export interface InvestRequest {
 export interface CreateFarmRequest {
   name: string
   location: string
+  currency: CurrencyCode
   coordinates?: {
     latitude: number
     longitude: number
@@ -271,9 +277,7 @@ export interface TenantBranding {
   legalName?: string
   logoUrl?: string
   faviconUrl?: string
-  primaryColor?: string
-  secondaryColor?: string
-  accentColor?: string
+  primaryHue?: number
   tagline?: string
   heroTitle?: string
   heroDescription?: string

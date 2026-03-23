@@ -23,16 +23,12 @@
   --color-primary-foreground: hsl(var(--primary-foreground));
   --color-secondary: hsl(var(--secondary));
   --color-secondary-foreground: hsl(var(--secondary-foreground));
-  --color-brand-secondary: hsl(var(--brand-secondary));
-  --color-brand-secondary-foreground: hsl(var(--brand-secondary-foreground));
-  --color-brand-accent: hsl(var(--brand-accent));
-  --color-brand-accent-foreground: hsl(var(--brand-accent-foreground));
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
 
   /* State */
   --color-muted: hsl(var(--muted));
   --color-muted-foreground: hsl(var(--muted-foreground));
-  --color-accent: hsl(var(--accent));
-  --color-accent-foreground: hsl(var(--accent-foreground));
   --color-destructive: hsl(var(--destructive));
   --color-destructive-foreground: hsl(var(--destructive-foreground));
   --color-success: hsl(var(--success));
@@ -47,6 +43,9 @@
 
 @layer base {
   :root {
+    /* Hue primitive — only this changes per tenant */
+    --hue-primary: 142;
+
     --background: 0 0% 98%;
     --foreground: 220 20% 10%;
 
@@ -56,52 +55,43 @@
     --popover: 0 0% 100%;
     --popover-foreground: 220 20% 10%;
 
-    --primary: 142 64% 32%;
+    --primary: var(--hue-primary) 64% 32%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 352 24% 95%;
-    --secondary-foreground: 352 42% 24%;
-    --brand-secondary: 352 47% 29%;
-    --brand-secondary-foreground: 0 0% 100%;
+    --secondary: var(--hue-primary) 35% 22%;
+    --secondary-foreground: 0 0% 100%;
 
     --muted: 220 14% 96%;
     --muted-foreground: 220 10% 46%;
 
-    --accent: 43 65% 92%;
-    --accent-foreground: 36 78% 24%;
-    --brand-accent: 43 92% 52%;
-    --brand-accent-foreground: 36 78% 18%;
+    --accent: var(--hue-primary) 85% 50%;
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --success: 142 64% 32%;
+    --success: var(--hue-primary) 64% 32%;
     --success-foreground: 0 0% 100%;
 
     --border: 220 13% 91%;
     --input: 220 13% 91%;
-    --ring: 142 64% 32%;
+    --ring: var(--hue-primary) 64% 32%;
 
     --radius: 0.75rem;
 
     --sidebar-background: 0 0% 100%;
     --sidebar-foreground: 220 10% 40%;
-    --sidebar-primary: 142 64% 32%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 352 24% 95%;
-    --sidebar-accent-foreground: 352 42% 24%;
     --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 142 64% 32%;
 
     --gradient-primary: linear-gradient(
       135deg,
-      hsl(142 64% 32%) 0%,
-      hsl(142 64% 40%) 100%
+      hsl(var(--hue-primary) 64% 32%) 0%,
+      hsl(var(--hue-primary) 64% 40%) 100%
     );
     --gradient-secondary: linear-gradient(
       135deg,
-      hsl(352 47% 29%) 0%,
-      hsl(352 43% 37%) 100%
+      hsl(var(--hue-primary) 35% 22%) 0%,
+      hsl(var(--hue-primary) 30% 30%) 100%
     );
     --gradient-card: linear-gradient(
       180deg,
@@ -130,40 +120,31 @@
     --popover: 220 20% 12%;
     --popover-foreground: 0 0% 98%;
 
-    --primary: 142 50% 45%;
+    --primary: var(--hue-primary) 50% 45%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 352 24% 18%;
-    --secondary-foreground: 352 65% 86%;
-    --brand-secondary: 352 58% 58%;
-    --brand-secondary-foreground: 0 0% 100%;
+    --secondary: var(--hue-primary) 40% 55%;
+    --secondary-foreground: 0 0% 100%;
 
     --muted: 220 15% 18%;
     --muted-foreground: 220 10% 60%;
 
-    --accent: 43 55% 20%;
-    --accent-foreground: 43 88% 82%;
-    --brand-accent: 43 92% 58%;
-    --brand-accent-foreground: 32 90% 10%;
+    --accent: var(--hue-primary) 80% 58%;
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 62% 50%;
     --destructive-foreground: 0 0% 100%;
 
-    --success: 142 50% 45%;
+    --success: var(--hue-primary) 50% 45%;
     --success-foreground: 0 0% 100%;
 
     --border: 220 15% 20%;
     --input: 220 15% 20%;
-    --ring: 142 50% 45%;
+    --ring: var(--hue-primary) 50% 45%;
 
     --sidebar-background: 220 20% 10%;
     --sidebar-foreground: 220 10% 70%;
-    --sidebar-primary: 142 50% 45%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 352 24% 18%;
-    --sidebar-accent-foreground: 352 65% 86%;
     --sidebar-border: 220 15% 20%;
-    --sidebar-ring: 142 50% 45%;
   }
 }
 
@@ -182,6 +163,21 @@
 }
 
 @layer components {
+  .hue-slider::-webkit-slider-thumb {
+    @apply h-5 w-5 appearance-none rounded-full border-2 border-white bg-current shadow-md;
+    cursor: grab;
+  }
+  .hue-slider::-moz-range-thumb {
+    @apply h-5 w-5 appearance-none rounded-full border-2 border-white bg-current shadow-md;
+    cursor: grab;
+  }
+  .hue-slider::-webkit-slider-thumb:active {
+    cursor: grabbing;
+  }
+  .hue-slider::-moz-range-thumb:active {
+    cursor: grabbing;
+  }
+
   .btn-primary-gradient {
     background: var(--gradient-primary);
     @apply text-primary-foreground font-medium transition-all duration-200;
@@ -194,7 +190,7 @@
 
   .btn-secondary-gradient {
     background: var(--gradient-secondary);
-    @apply text-brand-secondary-foreground font-medium transition-all duration-200;
+    @apply text-secondary-foreground font-medium transition-all duration-200;
   }
 
   .btn-secondary-gradient:hover {
@@ -233,29 +229,23 @@
   }
 
   .nav-link.active {
-    @apply bg-secondary text-secondary-foreground;
+    @apply bg-muted text-foreground;
   }
 
   .badge-funding {
-    @apply inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-semibold bg-accent/20 text-accent-foreground;
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-semibold bg-accent/15 text-accent;
   }
 
   .badge-active {
-    @apply inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-semibold bg-secondary text-secondary-foreground;
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-semibold bg-secondary/15 text-secondary;
   }
 
-  .badge-brand-secondary {
-    @apply inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-semibold;
-    background: hsl(var(--secondary));
-    color: hsl(var(--secondary-foreground));
-    border: 1px solid hsl(var(--brand-secondary) / 0.18);
+  .badge-secondary {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-semibold bg-secondary/15 text-secondary;
   }
 
-  .badge-brand-accent {
-    @apply inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-semibold;
-    background: hsl(var(--accent));
-    color: hsl(var(--accent-foreground));
-    border: 1px solid hsl(var(--brand-accent) / 0.24);
+  .badge-accent {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-semibold bg-accent/15 text-accent;
   }
 
   .badge-closed {

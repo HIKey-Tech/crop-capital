@@ -1,11 +1,21 @@
 import mongoose, { Schema, Document, Types } from "mongoose";
 import { IFarm } from "../farms/farm.model";
 
+export const SUPPORTED_INVESTMENT_CURRENCIES = [
+  "NGN",
+  "USD",
+  "GHS",
+  "KES",
+] as const;
+export type InvestmentCurrency =
+  (typeof SUPPORTED_INVESTMENT_CURRENCIES)[number];
+
 export interface IInvestment extends Document {
   tenantId?: Types.ObjectId;
   investor: Types.ObjectId; // reference to User
   farm: Types.ObjectId | IFarm; // populated
   amount: number;
+  currency: InvestmentCurrency;
   roi: number;
   durationMonths: number;
   roiPaid: boolean;
@@ -25,6 +35,12 @@ const InvestmentSchema = new Schema<IInvestment>(
     investor: { type: Schema.Types.ObjectId, ref: "User", required: true },
     farm: { type: Schema.Types.ObjectId, ref: "Farm", required: true },
     amount: { type: Number, required: true },
+    currency: {
+      type: String,
+      enum: SUPPORTED_INVESTMENT_CURRENCIES,
+      default: "NGN",
+      required: true,
+    },
     roi: { type: Number, required: true },
     roiPaid: { type: Boolean, default: false },
     paystackReference: { type: String },

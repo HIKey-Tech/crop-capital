@@ -12,7 +12,7 @@ function VerifyEmailPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <div className="w-full max-w-sm rounded-2xl border border-border bg-card p-8 text-center shadow-lg animate-fade-in">
-        <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full border border-brand-secondary/20 bg-secondary text-brand-secondary">
+        <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full border border-secondary/20 bg-secondary/10 text-secondary">
           <Mail className="h-8 w-8" />
         </div>
         <h1 className="text-2xl font-bold mb-2">Check your email</h1>

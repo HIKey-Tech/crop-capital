@@ -22,8 +22,8 @@ function ProfileSettingsPage() {
 
   const form = useForm({
     initialValues: {
-      name: user?.name || '',
-      country: user?.country || '',
+      name: user.name,
+      country: user.country || '',
     },
   })
 
@@ -53,14 +53,6 @@ function ProfileSettingsPage() {
       .slice(0, 2)
   }
 
-  if (!user) {
-    return (
-      <div className="flex items-center justify-center py-12">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
-      </div>
-    )
-  }
-
   return (
     <div className="space-y-8 animate-fade-in max-w-2xl">
       <div className="flex items-center gap-6 pb-6 border-b border-border">
@@ -78,14 +70,14 @@ function ProfileSettingsPage() {
           {user.isVerified ? (
             <Badge
               variant="outline"
-              className="mt-2 bg-green-50 text-green-700 border-green-200"
+              className="mt-2 border-primary/20 bg-primary/10 text-primary"
             >
               Verified
             </Badge>
           ) : (
             <Badge
               variant="outline"
-              className="mt-2 bg-yellow-50 text-yellow-700 border-yellow-200"
+              className="mt-2 border-accent/25 bg-accent/15 text-foreground"
             >
               Unverified
             </Badge>

@@ -201,14 +201,14 @@ function WalletPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div
-          className="relative overflow-hidden rounded-2xl p-6 text-brand-secondary-foreground shadow-lg md:col-span-1"
+          className="relative overflow-hidden rounded-2xl p-6 text-secondary-foreground shadow-lg md:col-span-1"
           style={{ background: 'var(--gradient-secondary)' }}
         >
           <div className="absolute top-0 right-0 p-4 opacity-10">
             <WalletIcon className="h-32 w-32" />
           </div>
           <div className="relative z-10">
-            <p className="mb-1 text-sm font-medium text-brand-secondary-foreground/80">
+            <p className="mb-1 text-sm font-medium text-secondary-foreground/80">
               Total Invested
             </p>
             <h2 className="text-4xl font-bold mb-6">
@@ -232,7 +232,7 @@ function WalletPage() {
           <StatsCard
             label="Pending Returns"
             value={formatCurrency(pendingReturns)}
-            icon={<ArrowUpRight className="h-4 w-4 text-brand-secondary" />}
+            icon={<ArrowUpRight className="h-4 w-4 text-secondary" />}
           />
         </div>
       </div>
