@@ -25,6 +25,7 @@ import { Route as TenantAuthRouteRouteImport } from './routes/$tenant/auth/route
 import { Route as TenantAuthenticatedRouteRouteImport } from './routes/$tenant/_authenticated/route'
 import { Route as TenantAuthIndexRouteImport } from './routes/$tenant/auth/index'
 import { Route as TenantAuthVerifyEmailRouteImport } from './routes/$tenant/auth/verify-email'
+import { Route as TenantAuthActivateRouteImport } from './routes/$tenant/auth/activate'
 import { Route as TenantAuthenticatedNewsRouteImport } from './routes/$tenant/_authenticated/news'
 import { Route as TenantAuthenticatedAdminRouteImport } from './routes/$tenant/_authenticated/admin'
 import { Route as TenantAuthenticatedSettingsRouteRouteImport } from './routes/$tenant/_authenticated/settings/route'
@@ -138,6 +139,11 @@ const TenantAuthIndexRoute = TenantAuthIndexRouteImport.update({
 const TenantAuthVerifyEmailRoute = TenantAuthVerifyEmailRouteImport.update({
   id: '/verify-email',
   path: '/verify-email',
+  getParentRoute: () => TenantAuthRouteRoute,
+} as any)
+const TenantAuthActivateRoute = TenantAuthActivateRouteImport.update({
+  id: '/activate',
+  path: '/activate',
   getParentRoute: () => TenantAuthRouteRoute,
 } as any)
 const TenantAuthenticatedNewsRoute = TenantAuthenticatedNewsRouteImport.update({
@@ -354,6 +360,7 @@ export interface FileRoutesByFullPath {
   '/$tenant/settings': typeof TenantAuthenticatedSettingsRouteRouteWithChildren
   '/$tenant/admin': typeof TenantAuthenticatedAdminRouteWithChildren
   '/$tenant/news': typeof TenantAuthenticatedNewsRoute
+  '/$tenant/auth/activate': typeof TenantAuthActivateRoute
   '/$tenant/auth/verify-email': typeof TenantAuthVerifyEmailRoute
   '/$tenant/auth/': typeof TenantAuthIndexRoute
   '/$tenant/admin/investors': typeof TenantAuthenticatedAdminInvestorsRoute
@@ -400,6 +407,7 @@ export interface FileRoutesByTo {
   '/super-admin/tenants': typeof SuperAdminTenantsRoute
   '/super-admin': typeof SuperAdminIndexRoute
   '/$tenant/news': typeof TenantAuthenticatedNewsRoute
+  '/$tenant/auth/activate': typeof TenantAuthActivateRoute
   '/$tenant/auth/verify-email': typeof TenantAuthVerifyEmailRoute
   '/$tenant/auth': typeof TenantAuthIndexRoute
   '/$tenant/admin/investors': typeof TenantAuthenticatedAdminInvestorsRoute
@@ -452,6 +460,7 @@ export interface FileRoutesById {
   '/$tenant/_authenticated/settings': typeof TenantAuthenticatedSettingsRouteRouteWithChildren
   '/$tenant/_authenticated/admin': typeof TenantAuthenticatedAdminRouteWithChildren
   '/$tenant/_authenticated/news': typeof TenantAuthenticatedNewsRoute
+  '/$tenant/auth/activate': typeof TenantAuthActivateRoute
   '/$tenant/auth/verify-email': typeof TenantAuthVerifyEmailRoute
   '/$tenant/auth/': typeof TenantAuthIndexRoute
   '/$tenant/_authenticated/admin/investors': typeof TenantAuthenticatedAdminInvestorsRoute
@@ -505,6 +514,7 @@ export interface FileRouteTypes {
     | '/$tenant/settings'
     | '/$tenant/admin'
     | '/$tenant/news'
+    | '/$tenant/auth/activate'
     | '/$tenant/auth/verify-email'
     | '/$tenant/auth/'
     | '/$tenant/admin/investors'
@@ -551,6 +561,7 @@ export interface FileRouteTypes {
     | '/super-admin/tenants'
     | '/super-admin'
     | '/$tenant/news'
+    | '/$tenant/auth/activate'
     | '/$tenant/auth/verify-email'
     | '/$tenant/auth'
     | '/$tenant/admin/investors'
@@ -602,6 +613,7 @@ export interface FileRouteTypes {
     | '/$tenant/_authenticated/settings'
     | '/$tenant/_authenticated/admin'
     | '/$tenant/_authenticated/news'
+    | '/$tenant/auth/activate'
     | '/$tenant/auth/verify-email'
     | '/$tenant/auth/'
     | '/$tenant/_authenticated/admin/investors'
@@ -761,6 +773,13 @@ declare module '@tanstack/react-router' {
       path: '/verify-email'
       fullPath: '/$tenant/auth/verify-email'
       preLoaderRoute: typeof TenantAuthVerifyEmailRouteImport
+      parentRoute: typeof TenantAuthRouteRoute
+    }
+    '/$tenant/auth/activate': {
+      id: '/$tenant/auth/activate'
+      path: '/activate'
+      fullPath: '/$tenant/auth/activate'
+      preLoaderRoute: typeof TenantAuthActivateRouteImport
       parentRoute: typeof TenantAuthRouteRoute
     }
     '/$tenant/_authenticated/news': {
@@ -1128,6 +1147,7 @@ const TenantAuthenticatedRouteRouteWithChildren =
   )
 
 interface TenantAuthRouteRouteChildren {
+  TenantAuthActivateRoute: typeof TenantAuthActivateRoute
   TenantAuthVerifyEmailRoute: typeof TenantAuthVerifyEmailRoute
   TenantAuthIndexRoute: typeof TenantAuthIndexRoute
   TenantAuthForgotPasswordIndexRoute: typeof TenantAuthForgotPasswordIndexRoute
@@ -1137,6 +1157,7 @@ interface TenantAuthRouteRouteChildren {
 }
 
 const TenantAuthRouteRouteChildren: TenantAuthRouteRouteChildren = {
+  TenantAuthActivateRoute: TenantAuthActivateRoute,
   TenantAuthVerifyEmailRoute: TenantAuthVerifyEmailRoute,
   TenantAuthIndexRoute: TenantAuthIndexRoute,
   TenantAuthForgotPasswordIndexRoute: TenantAuthForgotPasswordIndexRoute,

@@ -381,3 +381,25 @@ export interface AssignUsersResponse {
   message: string
   updatedCount: number
 }
+
+export interface InviteAdminRequest {
+  email: string
+}
+
+export interface InviteAdminResponse {
+  success: boolean
+  message: string
+}
+
+export interface ActivateAdminRequest {
+  token: string
+  name: string
+  password: string
+}
+
+export interface ActivateAdminResponse {
+  success: boolean
+  token: string
+  refreshToken: string
+  user: User
+}

@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { DollarSign, ShieldCheck, Users } from 'lucide-react'
+import { DollarSign, Download, ShieldCheck, Users } from 'lucide-react'
 import { toast } from 'sonner'
 import type { ColumnDef } from '@tanstack/react-table'
 
@@ -17,6 +17,7 @@ import {
   useUserStats,
   useUsers,
 } from '@/hooks'
+import { exportToCSV } from '@/lib/export-csv'
 import { formatDate } from '@/lib/format-date'
 import { formatCurrency } from '@/lib/format-currency'
 
@@ -199,6 +200,24 @@ function AdminInvestorPage() {
     },
   ]
 
+  const handleExport = () => {
+    const safeName = tenant.displayName.toLowerCase().replace(/[^a-z0-9]/g, '-')
+    exportToCSV(
+      users,
+      [
+        { header: 'Name', value: (u) => u.name },
+        { header: 'Email', value: (u) => u.email },
+        { header: 'Role', value: (u) => u.role },
+        { header: 'Country', value: (u) => u.country ?? '' },
+        { header: 'Total Invested', value: (u) => u.totalInvested },
+        { header: 'Active Projects', value: (u) => u.activeProjects },
+        { header: 'Verified', value: (u) => (u.isVerified ? 'Yes' : 'No') },
+        { header: 'Joined', value: (u) => formatDate(u.createdAt) },
+      ],
+      `${safeName}-investors-${new Date().toISOString().slice(0, 10)}`,
+    )
+  }
+
   if (usersError) {
     return (
       <div className="flex items-center justify-center h-96">
@@ -224,13 +243,27 @@ function AdminInvestorPage() {
         <span className="text-xs text-muted-foreground">
           {tenant.displayName} admin · Users
         </span>
-        <h1 className="text-3xl font-bold text-foreground tracking-tight">
-          Users for {tenant.displayName}
-        </h1>
-        <p className="text-base text-muted-foreground">
-          Review investors, promote trusted operators to admin access, and keep
-          the {tenant.displayName} team current.
-        </p>
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-bold text-foreground tracking-tight">
+              Users for {tenant.displayName}
+            </h1>
+            <p className="text-base text-muted-foreground">
+              Review investors, promote trusted operators to admin access, and
+              keep the {tenant.displayName} team current.
+            </p>
+          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            className="shrink-0 mt-1"
+            onClick={handleExport}
+            disabled={usersLoading || !users.length}
+          >
+            <Download className="w-4 h-4 mr-2" />
+            Export CSV
+          </Button>
+        </div>
       </header>
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">

@@ -13,6 +13,8 @@ export interface IUser extends Document {
   watchlist: mongoose.Types.ObjectId[];
   passwordResetToken?: string;
   passwordResetExpires?: Date;
+  inviteToken?: string;
+  inviteTokenExpires?: Date;
   comparePassword(candidate: string): Promise<boolean>;
   createdAt: Date;
 }
@@ -34,6 +36,8 @@ const UserSchema = new Schema<IUser>(
     watchlist: [{ type: Schema.Types.ObjectId, ref: "Farm", default: [] }],
     passwordResetToken: { type: String },
     passwordResetExpires: { type: Date },
+    inviteToken: { type: String },
+    inviteTokenExpires: { type: Date },
     createdAt: { type: Date, default: Date.now },
   },
   { timestamps: true },

@@ -6,6 +6,7 @@ import { toast } from 'sonner'
 import {
   Building2,
   DatabaseZap,
+  Mail,
   MoreHorizontal,
   Pencil,
   Plus,
@@ -72,6 +73,10 @@ function TenantsPage() {
   const [lastDeletedCleanup, setLastDeletedCleanup] = useState<
     DeleteTenantResponse['cleanup'] | null
   >(null)
+  const [invitingTenant, setInvitingTenant] = useState<TenantSummary | null>(
+    null,
+  )
+  const [inviteEmail, setInviteEmail] = useState('')
 
   const createTenantMutation = useMutation({
     mutationFn: api.$use.tenants.create,
@@ -91,6 +96,20 @@ function TenantsPage() {
     mutationFn: api.$use.tenants.delete,
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: api.tenants.list.$use() })
+    },
+  })
+
+  const inviteAdminMutation = useMutation({
+    mutationFn: api.$use.tenants.inviteAdmin,
+    onSuccess: () => {
+      setInvitingTenant(null)
+      setInviteEmail('')
+      toast.success('Invitation sent successfully')
+    },
+    onError: (error) => {
+      toast.error(
+        error instanceof Error ? error.message : 'Failed to send invitation',
+      )
     },
   })
 
@@ -276,6 +295,14 @@ function TenantsPage() {
 
   const isSaving =
     createTenantMutation.isPending || updateTenantMutation.isPending
+
+  const sendInvite = async () => {
+    if (!invitingTenant || !inviteEmail.trim()) return
+    await inviteAdminMutation.mutateAsync({
+      id: invitingTenant.id,
+      email: inviteEmail.trim(),
+    })
+  }
 
   return (
     <div className="space-y-6 max-w-screen-2xl mx-auto">
@@ -468,6 +495,15 @@ function TenantsPage() {
                             >
                               <Power className="h-4 w-4" />
                               {tenant.isActive ? 'Deactivate' : 'Activate'}
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() => {
+                                setInvitingTenant(tenant)
+                                setInviteEmail('')
+                              }}
+                            >
+                              <Mail className="h-4 w-4" />
+                              Invite Admin
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem
@@ -700,6 +736,55 @@ function TenantsPage() {
               disabled={deleteTenantMutation.isPending}
             >
               {deleteTenantMutation.isPending ? 'Deleting...' : 'Delete Tenant'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog
+        open={invitingTenant !== null}
+        onOpenChange={(open) => {
+          if (!open) setInvitingTenant(null)
+        }}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              Invite Admin to {invitingTenant?.name}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              Enter the email address of the person to invite as a tenant
+              administrator. They'll receive an activation link by email.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <div className="py-2">
+            <Label htmlFor="invite-email" className="text-sm">
+              Email Address
+            </Label>
+            <Input
+              id="invite-email"
+              type="email"
+              placeholder="admin@example.com"
+              value={inviteEmail}
+              onChange={(e) => setInviteEmail(e.target.value)}
+              className="mt-1.5"
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') void sendInvite()
+              }}
+            />
+          </div>
+          <AlertDialogFooter>
+            <AlertDialogCancel
+              disabled={inviteAdminMutation.isPending}
+              onClick={() => setInvitingTenant(null)}
+            >
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => void sendInvite()}
+              disabled={inviteAdminMutation.isPending || !inviteEmail.trim()}
+            >
+              {inviteAdminMutation.isPending ? 'Sending...' : 'Send Invite'}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

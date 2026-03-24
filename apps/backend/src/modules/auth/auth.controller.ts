@@ -8,6 +8,7 @@ import {
   resetPassword,
   updateUserProfile,
   updateUserPassword,
+  activateAdminAccount,
 } from "./auth.service";
 import { AppError } from "@/utils/AppError";
 import { logActivity } from "@/modules/activities/activity.service";
@@ -177,6 +178,26 @@ export const updatePassword = async (
       success: true,
       message: "Password updated successfully",
     });
+  } catch (err: any) {
+    next(new AppError(err.message, 400));
+  }
+};
+
+// Activate an invited admin account
+export const activateAdmin = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { token, name, password } = req.body;
+    const tenantId = req.tenant?._id?.toString();
+    const user = await activateAdminAccount(token, name, password, tenantId);
+    const authToken = createToken(user.id, user.role, tenantId);
+    const refreshToken = createRefreshToken(user.id, tenantId);
+    res
+      .status(200)
+      .json({ success: true, token: authToken, refreshToken, user });
   } catch (err: any) {
     next(new AppError(err.message, 400));
   }

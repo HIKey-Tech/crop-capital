@@ -4,6 +4,7 @@ import {
   login,
   requestPasswordReset,
   resetPasswordHandler,
+  activateAdmin,
   getMe,
   updateProfile,
   updatePassword,
@@ -16,6 +17,7 @@ router.post("/signup", signup);
 router.post("/login", login);
 router.post("/forgot-password", requestPasswordReset);
 router.post("/reset-password", resetPasswordHandler);
+router.post("/activate", activateAdmin);
 
 // Protected routes
 router.get("/me", protect, getMe);

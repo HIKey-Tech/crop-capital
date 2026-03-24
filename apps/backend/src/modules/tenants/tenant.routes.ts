@@ -5,6 +5,7 @@ import {
   createTenant,
   deleteTenant,
   getTenantBootstrap,
+  inviteAdmin,
   listTenants,
   updateTenant,
 } from "./tenant.controller";
@@ -29,6 +30,12 @@ router.post(
   protect,
   restrictTo("super_admin"),
   assignUsersToTenant,
+);
+router.post(
+  "/:id/invite-admin",
+  protect,
+  restrictTo("super_admin"),
+  inviteAdmin,
 );
 
 export default router;

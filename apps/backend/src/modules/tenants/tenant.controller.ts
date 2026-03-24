@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import { AppError } from "@/utils/AppError";
 import { Tenant } from "./tenant.model";
 import { User } from "@/modules/users/user.model";
@@ -9,6 +9,7 @@ import { Activity } from "@/modules/activities/activity.model";
 import { logActivity } from "@/modules/activities/activity.service";
 import { WebhookEvent } from "@/modules/payments/webhookEvent.model";
 import { deleteImage } from "@/utils/cloudinary";
+import { inviteTenantAdmin } from "@/modules/auth/auth.service";
 
 const serializeTenant = (tenant: any) => ({
   id: tenant._id,
@@ -357,4 +358,33 @@ export const assignUsersToTenant = async (req: Request, res: Response) => {
     message: "Selected users assigned to tenant",
     updatedCount: result.modifiedCount,
   });
+};
+
+export const inviteAdmin = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { id } = req.params;
+    const { email } = req.body as { email?: string };
+
+    if (!email) {
+      throw new AppError("Email is required", 400);
+    }
+
+    const tenant = await Tenant.findById(id);
+    if (!tenant) {
+      throw new AppError("Tenant not found", 404);
+    }
+
+    const result = await inviteTenantAdmin(
+      email,
+      tenant._id.toString(),
+      tenant.slug,
+    );
+    res.status(200).json({ success: true, ...result });
+  } catch (err: any) {
+    next(new AppError(err.message, 400));
+  }
 };

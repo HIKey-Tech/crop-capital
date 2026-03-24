@@ -1,4 +1,5 @@
 import type {
+  ActivateAdminResponse,
   ActivitiesListResponse,
   AuthResponse,
   CreateFarmRequest,
@@ -6,6 +7,7 @@ import type {
   DeleteTenantResponse,
   FarmResponse,
   FarmsListResponse,
+  InviteAdminResponse,
   InvestRequest,
   InvestmentDetailResponse,
   InvestmentResponse,
@@ -206,6 +208,16 @@ export const tenantApi = {
       method: 'DELETE',
     })
   },
+
+  inviteAdmin: async (
+    id: string,
+    email: string,
+  ): Promise<InviteAdminResponse> => {
+    return request<InviteAdminResponse>(`/tenants/${id}/invite-admin`, {
+      method: 'POST',
+      body: JSON.stringify({ email }),
+    })
+  },
 }
 
 // Auth API
@@ -292,6 +304,24 @@ export const authApi = {
         body: JSON.stringify({ token, password }),
       },
     )
+  },
+
+  activateAdmin: async (
+    token: string,
+    name: string,
+    password: string,
+  ): Promise<ActivateAdminResponse> => {
+    const response = await request<ActivateAdminResponse>('/auth/activate', {
+      method: 'POST',
+      body: JSON.stringify({ token, name, password }),
+    })
+    if (response.token) {
+      setAuthToken(response.token)
+    }
+    if (response.refreshToken) {
+      setRefreshToken(response.refreshToken)
+    }
+    return response
   },
 }
 

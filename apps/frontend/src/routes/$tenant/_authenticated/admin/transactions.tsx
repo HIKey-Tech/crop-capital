@@ -1,12 +1,15 @@
 import { createFileRoute } from '@tanstack/react-router'
+import { Download } from 'lucide-react'
 import type { ColumnDef } from '@tanstack/react-table'
 
 import type { Farm, Investment, User } from '@/types'
 
 import { DataTable } from '@/components/data-table'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import { useTenant } from '@/contexts/tenant'
 import { useAllInvestments } from '@/hooks'
+import { exportToCSV } from '@/lib/export-csv'
 import { formatDate } from '@/lib/format-date'
 import { formatCurrency } from '@/lib/format-currency'
 
@@ -116,6 +119,38 @@ function AdminTransactionsPage() {
   const { data, isLoading, error } = useAllInvestments()
   const transactions = data?.investments ?? []
 
+  const handleExport = () => {
+    const safeName = tenant.displayName.toLowerCase().replace(/[^a-z0-9]/g, '-')
+    exportToCSV(
+      transactions,
+      [
+        { header: 'Date', value: (t) => formatDate(t.createdAt) },
+        {
+          header: 'Investor',
+          value: (t) =>
+            typeof t.investor === 'string' ? t.investor : t.investor.name,
+        },
+        {
+          header: 'Email',
+          value: (t) =>
+            typeof t.investor === 'string' ? '' : t.investor.email,
+        },
+        {
+          header: 'Farm',
+          value: (t) => (typeof t.farm === 'string' ? t.farm : t.farm.name),
+        },
+        { header: 'Amount', value: (t) => t.amount },
+        { header: 'Currency', value: (t) => t.currency },
+        {
+          header: 'Type',
+          value: (t) => (t.roiPaid ? 'ROI Payout' : 'Investment'),
+        },
+        { header: 'Status', value: (t) => t.status },
+      ],
+      `${safeName}-transactions-${new Date().toISOString().slice(0, 10)}`,
+    )
+  }
+
   if (error) {
     return (
       <div className="flex items-center justify-center h-96">
@@ -142,10 +177,19 @@ function AdminTransactionsPage() {
       </header>
 
       <section className="bg-card rounded-xl border border-border overflow-hidden">
-        <header className="px-6 py-3 border-b border-border">
+        <header className="px-6 py-3 border-b border-border flex items-center justify-between gap-4">
           <h2 className="text-lg font-semibold text-foreground tracking-tight">
             Transaction overview
           </h2>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleExport}
+            disabled={isLoading || !transactions.length}
+          >
+            <Download className="w-4 h-4 mr-2" />
+            Export CSV
+          </Button>
         </header>
         <div className="p-4">
           <DataTable

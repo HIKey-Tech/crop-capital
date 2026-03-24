@@ -1,6 +1,8 @@
 import { createBuilder } from '@ibnlanre/builder'
 import type {
+  ActivateAdminRequest,
   CreateFarmRequest,
+  InviteAdminRequest,
   InvestRequest,
   KycSubmitRequest,
   LoginRequest,
@@ -25,6 +27,8 @@ export const api = createBuilder({
     forgotPassword: (email: string) => authApi.forgotPassword(email),
     resetPassword: ({ token, password }: { token: string; password: string }) =>
       authApi.resetPassword(token, password),
+    activateAdmin: (data: ActivateAdminRequest) =>
+      authApi.activateAdmin(data.token, data.name, data.password),
     updateProfile: (data: {
       name?: string
       country?: string
@@ -90,5 +94,7 @@ export const api = createBuilder({
       data: Parameters<typeof tenantApi.update>[1]
     }) => tenantApi.update(id, data),
     delete: (id: string) => tenantApi.delete(id),
+    inviteAdmin: ({ id, email }: InviteAdminRequest & { id: string }) =>
+      tenantApi.inviteAdmin(id, email),
   },
 })

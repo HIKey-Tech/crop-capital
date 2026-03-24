@@ -1,5 +1,11 @@
 import nodemailer from "nodemailer";
-import { EMAIL_HOST, EMAIL_PORT, EMAIL_PASS, EMAIL_USER } from "../config/env";
+import {
+  EMAIL_HOST,
+  EMAIL_PORT,
+  EMAIL_PASS,
+  EMAIL_USER,
+  EMAIL_FROM,
+} from "../config/env";
 
 function hasPlaceholderValue(value?: string | null): boolean {
   if (!value) return true;
@@ -14,7 +20,7 @@ function hasPlaceholderValue(value?: string | null): boolean {
   );
 }
 
-function assertEmailConfig(): void {
+export function assertEmailConfig(): void {
   if (
     hasPlaceholderValue(EMAIL_HOST) ||
     hasPlaceholderValue(EMAIL_USER) ||
@@ -27,11 +33,11 @@ function assertEmailConfig(): void {
 export const sendEmail = async (to: string, subject: string, html: string) => {
   assertEmailConfig();
 
-  // Create transporter
+  const port = Number(EMAIL_PORT) || 587;
   const transporter = nodemailer.createTransport({
-    host: EMAIL_HOST, // e.g., smtp.gmail.com
-    port: Number(EMAIL_PORT) || 587,
-    secure: false, // true for 465
+    host: EMAIL_HOST,
+    port,
+    secure: port === 465,
     connectionTimeout: 5000,
     greetingTimeout: 5000,
     socketTimeout: 10000,
@@ -41,9 +47,10 @@ export const sendEmail = async (to: string, subject: string, html: string) => {
     },
   });
 
-  // Send email
   await transporter.sendMail({
-    from: `"CropCapital" <${EMAIL_USER}>`,
+    from: EMAIL_FROM
+      ? `"CropCapital" <${EMAIL_FROM}>`
+      : `"CropCapital" <${EMAIL_USER}>`,
     to,
     subject,
     html,

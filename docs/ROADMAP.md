@@ -56,6 +56,14 @@ The partnership with AGRA is expected to bring access to their network of farmer
 
 The roadmap is structured in five phases, each building on the previous one. The phases are designed to deliver value early and often, while progressively expanding the platform's capabilities toward the full AGRA vision.
 
+### Overall Progress
+
+- [ ] **Phase 1 — Finish the Foundation**
+- [ ] **Phase 2 — Introduce the Farmer**
+- [ ] **Phase 3 — Track Production and Aggregation**
+- [ ] **Phase 4 — Traceability and Analytics**
+- [ ] **Phase 5 — Scale and Sustain**
+
 ---
 
 ### Phase 1: Finish the Foundation
@@ -64,27 +72,27 @@ The roadmap is structured in five phases, each building on the previous one. The
 
 This phase is about completing what is already started. Nothing new is added — the focus is on closing gaps in the current product so that a live demonstration does not hit dead ends.
 
-**1.1 — Complete the Investment Checkout Flow**
+- [x] **1.1 — Complete the Investment Checkout Flow**
 
 Right now, an investor can browse farms but the actual payment journey (select amount, choose payment method, confirm, receive receipt) has gaps. This must work end-to-end before any serious demo. An investor should be able to go from "Invest Now" to "Payment Confirmed" without confusion.
 
-**1.2 — Validate Payment Success Against a Live Gateway**
+- [ ] **1.2 — Validate Payment Success Against a Live Gateway**
 
 The failure path for payment callbacks has been tested, but a successful payment using a real Paystack transaction has not been verified against the live gateway. This must be done before any money changes hands on the platform.
 
-**1.3 — Build a Notification Inbox**
+- [x] **1.3 — Build a Notification Inbox**
 
 Investors need to see meaningful notifications — "Your investment in Maize Farm Kaduna was confirmed", "ROI payment of ₦45,000 has been processed", "Farm ABC posted a new update." This is not optional for a production platform; users expect it.
 
-**1.4 — Add Data Export for Admins**
+- [x] **1.4 — Add Data Export for Admins**
 
 Tenant admins and super admins need to download reports — investor lists, transaction histories, farm performance — as CSV or PDF. This is especially important for AGRA, where program officers need to report to donors and stakeholders using data they can share outside the platform.
 
-**1.5 — Define Tenant Admin Activation**
+- [x] **1.5 — Define Tenant Admin Activation**
 
 When a super admin creates a new tenant (say, for an AGRA country program), there needs to be a clear flow for how the first tenant admin gets access. Right now, this path is undefined. The flow should be: super admin creates tenant → invites tenant admin via email → tenant admin sets password → tenant admin begins operating.
 
-**1.6 — Harden Error Handling and Empty States**
+- [ ] **1.6 — Harden Error Handling and Empty States**
 
 Every page must handle errors gracefully and show useful empty states. A programme officer in Nairobi reviewing a newly created tenant should see helpful guidance ("No farms have been added yet"), not a blank screen or a crash.
 
@@ -98,7 +106,7 @@ Every page must handle errors gracefully and show useful empty states. A program
 
 This is the critical expansion. Today, CropCapital knows about farms (as investment vehicles) and investors (as people who put money in). It does not know about **farmers** (as people who do the work). AGRA's value proposition is their network of smallholder farmers and aggregators. CropCapital needs a way to register, profile, and track them.
 
-**2.1 — Farmer Registration Module**
+- [ ] **2.1 — Farmer Registration Module**
 
 Build a new module for farmer profiles. A farmer record should capture:
 
@@ -110,7 +118,7 @@ Build a new module for farmer profiles. A farmer record should capture:
 
 Farmers are not investors and they do not log in. Their data is entered by field agents or aggregators through the platform. In AGRA's model, farmers are participants in a programme, not platform users.
 
-**2.2 — Field Agent Interface**
+- [ ] **2.2 — Field Agent Interface**
 
 AGRA works through field agents — people on the ground who visit farmers, collect data, and coordinate activities. These agents need a lightweight, mobile-friendly interface where they can:
 
@@ -121,7 +129,7 @@ AGRA works through field agents — people on the ground who visit farmers, coll
 
 This interface should work on low-cost Android smartphones and handle poor network connectivity. Data should be captured offline and synced when a connection is available.
 
-**2.3 — Link Farmers to Farms**
+- [ ] **2.3 — Link Farmers to Farms**
 
 Today, a "farm" is an investment listing. Going forward, a farm should also have a connection to the actual farmers working the land. This means:
 
@@ -131,7 +139,7 @@ Today, a "farm" is an investment listing. Going forward, a farm should also have
 
 This creates the bridge between the investment world and the agricultural reality.
 
-**2.4 — Farmer Dashboard for Tenant Admins**
+- [ ] **2.4 — Farmer Dashboard for Tenant Admins**
 
 Tenant admins (in the case of AGRA, programme coordinators) need a dedicated view to manage farmers:
 
@@ -149,7 +157,7 @@ Tenant admins (in the case of AGRA, programme coordinators) need a dedicated vie
 
 AGRA's letter specifically calls for "real-time tracking of production cycles" and "transparent aggregation and supply chain monitoring." This phase delivers both.
 
-**3.1 — Production Cycle Tracking**
+- [ ] **3.1 — Production Cycle Tracking**
 
 Each farm should have a structured production timeline that tracks key stages:
 
@@ -164,7 +172,7 @@ Field agents record these stages through the mobile interface. Each entry is tim
 
 Currently, the platform has a basic "farm updates" feature (stage progression with titles and descriptions). This needs to be expanded into a structured, data-driven production tracking system.
 
-**3.2 — Aggregator Module**
+- [ ] **3.2 — Aggregator Module**
 
 In Africa's agricultural value chains, aggregators are the people and companies that buy from smallholders, bulk the produce, and sell onward. AGRA works closely with aggregators to ensure farmer produce reaches markets.
 
@@ -177,7 +185,7 @@ The platform needs:
 
 This is where the platform moves from farm-level tracking to value-chain tracking.
 
-**3.3 — Input Tracking**
+- [ ] **3.3 — Input Tracking**
 
 A major focus of AGRA programmes is ensuring farmers receive quality inputs (seeds, fertiliser) at the right time. The platform should track:
 
@@ -187,7 +195,7 @@ A major focus of AGRA programmes is ensuring farmers receive quality inputs (see
 
 This data is gold for AGRA's programme evaluation.
 
-**3.4 — Weather and Context Data Integration**
+- [ ] **3.4 — Weather and Context Data Integration**
 
 Where possible, integrate with public weather APIs to overlay weather data on production records. This is not about building a weather app — it is about being able to say "Farmer X planted maize on 15 March in a region that received 40mm of rainfall that week." This context makes production data much more valuable for analysis.
 
@@ -199,7 +207,7 @@ Where possible, integrate with public weather APIs to overlay weather data on pr
 
 **Goal:** Connect the dots — from investor capital, through farm operations, to crop output — and make the data useful.
 
-**4.1 — End-to-End Traceability**
+- [ ] **4.1 — End-to-End Traceability**
 
 This is the headline capability for institutional partners like AGRA. The platform should be able to answer questions like:
 
@@ -211,7 +219,7 @@ Traceability means assigning identifiers to batches of produce and linking them 
 
 This is not blockchain (which is expensive and rarely needed at this stage). It is structured data with clear links between records, presented in a way that auditors, donors, and buyers can verify.
 
-**4.2 — Programme Analytics Dashboard**
+- [ ] **4.2 — Programme Analytics Dashboard**
 
 AGRA needs analytics. Not the kind that tell an investor how much money they made, but the kind that tell a programme officer how a $10 million initiative is performing across 5 countries and 50,000 farmers.
 
@@ -225,7 +233,7 @@ The analytics dashboard should provide:
 
 This requires a reporting layer that can aggregate data across tenants (since each AGRA country programme might be a separate tenant).
 
-**4.3 — Stakeholder Reporting**
+- [ ] **4.3 — Stakeholder Reporting**
 
 AGRA reports to donors (Bill & Melinda Gates Foundation, USAID, DFID, and others). These reports require specific formats and metrics. CropCapital should support:
 
@@ -234,7 +242,7 @@ AGRA reports to donors (Bill & Melinda Gates Foundation, USAID, DFID, and others
 - Automated data collection for standard indicators
 - PDF export with branding and proper formatting
 
-**4.4 — Cross-Tenant Analytics for Super Admins**
+- [ ] **4.4 — Cross-Tenant Analytics for Super Admins**
 
 The super-admin console should evolve to show portfolio-level insights across all tenants:
 
@@ -251,7 +259,7 @@ The super-admin console should evolve to show portfolio-level insights across al
 
 **Goal:** Make the platform reliable, accessible, and commercially sustainable across multiple African markets.
 
-**5.1 — Mobile Application**
+- [ ] **5.1 — Mobile Application**
 
 The field agent interface (Phase 2) needs to become a proper mobile app. A progressive web app (PWA) may be sufficient initially, but a native Android app will be needed for:
 
@@ -263,7 +271,7 @@ The field agent interface (Phase 2) needs to become a proper mobile app. A progr
 
 iOS can follow later, but Android is the priority — over 80% of smartphone users in sub-Saharan Africa are on Android.
 
-**5.2 — Multi-Language Support**
+- [ ] **5.2 — Multi-Language Support**
 
 AGRA operates in 11 African countries. While English is the working language for most programme staff, field agents and farmers may work in French (West Africa), Swahili (East Africa), or local languages. The platform should support at minimum:
 
@@ -273,7 +281,7 @@ AGRA operates in 11 African countries. While English is the working language for
 
 Translation should be applied to the field agent interface and any farmer-facing materials.
 
-**5.3 — SMS and USSD Integration**
+- [ ] **5.3 — SMS and USSD Integration**
 
 Not every farmer has a smartphone. In many parts of Africa, the most reliable way to reach farmers is through SMS and USSD (the \*123# style menus on basic phones). For the platform to be truly inclusive, it should support:
 
@@ -281,7 +289,7 @@ Not every farmer has a smartphone. In many parts of Africa, the most reliable wa
 - USSD menu for farmers to check their records (deliveries, payments owed)
 - Integration with services like Africa's Talking, Twilio, or local telecom APIs
 
-**5.4 — Payment Expansion**
+- [ ] **5.4 — Payment Expansion**
 
 Paystack is well-established in Nigeria and Ghana, but AGRA operates across the continent. The platform needs:
 
@@ -289,7 +297,7 @@ Paystack is well-established in Nigeria and Ghana, but AGRA operates across the 
 - Multi-currency support (completing the partial implementation already in place for NGN, USD, GHS, KES, and extending to UGX, TZS, RWF, XOF, and others as needed)
 - Farmer payment disbursement (paying farmers through mobile money for produce delivered to aggregators)
 
-**5.5 — API and Integration Layer**
+- [ ] **5.5 — API and Integration Layer**
 
 As CropCapital becomes infrastructure, other systems will need to connect to it:
 
@@ -298,7 +306,7 @@ As CropCapital becomes infrastructure, other systems will need to connect to it:
 - Integration with government agricultural databases where available
 - Webhook support for real-time data sharing with partner platforms
 
-**5.6 — Data Privacy and Compliance**
+- [ ] **5.6 — Data Privacy and Compliance**
 
 As the platform handles farmer data across multiple countries, compliance becomes critical:
 
@@ -307,7 +315,7 @@ As the platform handles farmer data across multiple countries, compliance become
 - Compliance with national data protection laws (Nigeria's NDPA, Kenya's DPA, etc.)
 - Secure handling of identity documents collected through KYC
 
-**5.7 — Commercial Model**
+- [ ] **5.7 — Commercial Model**
 
 CropCapital needs a sustainable revenue model. Possible approaches:
 
@@ -375,11 +383,11 @@ The current codebase suggests a small team. Phases 2 through 5 require additiona
 
 ## Immediate Next Steps
 
-1. Complete Phase 1 items — these are blockers regardless of whether AGRA responds.
-2. Prepare a demo environment with sample data that mirrors an AGRA country programme (e.g. 500 simulated farmers in Nigeria, 3 aggregators, 10 farms) to make the platform tangible during the AGRA conversation.
-3. Draft a one-page partnership proposal for AGRA that maps CropCapital capabilities to AGRA's stated priorities.
-4. Begin wireframing the farmer registration and field agent interfaces (Phase 2) so that when the AGRA conversation advances, the technical team is not starting from zero.
-5. Identify integration points with AGRA's existing data systems to inform technical architecture decisions early.
+- [ ] Complete Phase 1 items — these are blockers regardless of whether AGRA responds.
+- [ ] Prepare a demo environment with sample data that mirrors an AGRA country programme (e.g. 500 simulated farmers in Nigeria, 3 aggregators, 10 farms) to make the platform tangible during the AGRA conversation.
+- [ ] Draft a one-page partnership proposal for AGRA that maps CropCapital capabilities to AGRA's stated priorities.
+- [ ] Begin wireframing the farmer registration and field agent interfaces (Phase 2) so that when the AGRA conversation advances, the technical team is not starting from zero.
+- [ ] Identify integration points with AGRA's existing data systems to inform technical architecture decisions early.
 
 ---
 

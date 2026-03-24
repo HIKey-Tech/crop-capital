@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import crypto from "crypto";
 import mongoose from "mongoose";
 import { FRONTEND_URL, JWT_SECRET } from "@/config/env";
-import { sendEmail } from "@/utils/email";
+import { assertEmailConfig, sendEmail } from "@/utils/email";
 
 export const createToken = (
   userId: string,
@@ -147,5 +147,91 @@ export const updateUserPassword = async (
 
   user.password = newPassword;
   await user.save();
+  return user;
+};
+
+export const inviteTenantAdmin = async (
+  email: string,
+  tenantId: string,
+  tenantSlug: string,
+) => {
+  // Fail fast — check email config before touching the database
+  assertEmailConfig();
+
+  const existing = await User.findOne({
+    email,
+    tenantId: new mongoose.Types.ObjectId(tenantId),
+  });
+  if (existing)
+    throw new Error("A user with that email already exists in this tenant");
+
+  const rawToken = crypto.randomBytes(32).toString("hex");
+  const hashedToken = crypto
+    .createHash("sha256")
+    .update(rawToken)
+    .digest("hex");
+  const tempPassword = crypto.randomBytes(16).toString("hex");
+
+  let createdUser;
+  try {
+    createdUser = await User.create({
+      name: email.split("@")[0],
+      email,
+      password: tempPassword,
+      role: "admin",
+      tenantId: new mongoose.Types.ObjectId(tenantId),
+      isVerified: false,
+      inviteToken: hashedToken,
+      inviteTokenExpires: new Date(Date.now() + 24 * 60 * 60 * 1000),
+    });
+  } catch (err: any) {
+    if (err.code === 11000) {
+      throw new Error("A user with that email already exists in this tenant");
+    }
+    throw err;
+  }
+
+  const activateUrl = `${FRONTEND_URL}/${tenantSlug}/auth/activate?token=${rawToken}`;
+  const html = `
+    <h1>You've been invited as a tenant administrator</h1>
+    <p>Click the link below to activate your account and set your name and password:</p>
+    <a href="${activateUrl}">Activate Account</a>
+    <p>This link will expire in 24 hours.</p>
+    <p>If you did not expect this invitation, you can safely ignore this email.</p>
+  `;
+
+  try {
+    await sendEmail(email, "Activate Your Admin Account", html);
+  } catch (err) {
+    // Roll back the user record so the invite can be retried
+    await User.findByIdAndDelete(createdUser._id);
+    throw err;
+  }
+
+  return { message: "Invitation sent successfully" };
+};
+
+export const activateAdminAccount = async (
+  token: string,
+  name: string,
+  password: string,
+  tenantId?: string,
+) => {
+  const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+  const user = await User.findOne({
+    inviteToken: hashedToken,
+    inviteTokenExpires: { $gt: Date.now() },
+    ...(tenantId ? { tenantId: new mongoose.Types.ObjectId(tenantId) } : {}),
+  });
+
+  if (!user) throw new Error("Invalid or expired invite token");
+
+  user.name = name;
+  user.password = password;
+  user.isVerified = true;
+  user.inviteToken = undefined;
+  user.inviteTokenExpires = undefined;
+  await user.save();
+
   return user;
 };

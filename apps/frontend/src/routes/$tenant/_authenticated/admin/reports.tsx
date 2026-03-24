@@ -5,6 +5,7 @@ import {
   Building2,
   CheckCircle,
   Coins,
+  Download,
   FileX2,
   LandPlot,
   ListChecks,
@@ -24,8 +25,10 @@ import type { ActivityType, UserWithStats } from '@/types'
 
 import { StatsCard } from '@/components/dashboard/stats-card'
 import { DataTable } from '@/components/data-table'
+import { Button } from '@/components/ui/button'
 import { useTenant } from '@/contexts/tenant'
 import { useActivities, useFarms, useUserStats, useUsers } from '@/hooks'
+import { exportToCSV } from '@/lib/export-csv'
 import { formatDate } from '@/lib/format-date'
 
 export const Route = createFileRoute('/$tenant/_authenticated/admin/reports')({
@@ -99,6 +102,21 @@ function AdminReportsPage() {
   // Platform revenue could be a percentage of total invested (e.g., 5%)
   const platformRevenue = Math.round(totalAmountInvested * 0.05)
 
+  const handleExportTopInvestors = () => {
+    const safeName = tenant.displayName.toLowerCase().replace(/[^a-z0-9]/g, '-')
+    exportToCSV(
+      topInvestors,
+      [
+        { header: 'Rank', value: (_, i) => i + 1 },
+        { header: 'Name', value: (u) => u.name },
+        { header: 'Email', value: (u) => u.email },
+        { header: 'Total Invested', value: (u) => u.totalInvested },
+        { header: 'Active Projects', value: (u) => u.activeProjects },
+      ],
+      `${safeName}-top-investors-${new Date().toISOString().slice(0, 10)}`,
+    )
+  }
+
   return (
     <div className="max-w-screen-2xl mx-auto px-4 mb-10 animate-fade-in space-y-8">
       <header className="pt-6 pb-2 flex flex-col gap-1">
@@ -139,10 +157,19 @@ function AdminReportsPage() {
 
       <div className="flex flex-col lg:flex-row gap-8">
         <section className="flex-1 bg-card rounded-xl border border-border overflow-hidden">
-          <header className="px-6 py-4 border-b border-border">
+          <header className="px-6 py-4 border-b border-border flex items-center justify-between gap-4">
             <h2 className="text-lg font-bold tracking-tight text-foreground">
               Top Investors
             </h2>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleExportTopInvestors}
+              disabled={isLoading || !topInvestors.length}
+            >
+              <Download className="w-4 h-4 mr-2" />
+              Export CSV
+            </Button>
           </header>
           <div className="p-4">
             <DataTable
