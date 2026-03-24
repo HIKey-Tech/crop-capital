@@ -1,70 +1,63 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
-import { ArrowLeft, Mail, MessageSquare, Phone, Zap, ChevronRight } from 'lucide-react'
+import { ArrowLeft, Mail, MessageSquare, Zap, ChevronRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useState } from 'react'
-import { useTenant } from '@/contexts/tenant'
 
-export const Route = createFileRoute('/$tenant/support')({
+export const Route = createFileRoute('/support')({
   component: SupportPage,
 })
 
 const faqs = [
   {
-    q: 'How do I start investing?',
-    a: 'Create an account, complete KYC verification (under 10 minutes), then browse available farm portfolios. Select an opportunity, review the prospectus, and fund your allocation. Your investment is live once payment is confirmed.',
+    q: 'How do I provision a new tenant?',
+    a: 'Navigate to your Super Admin dashboard and select "New Tenant". Fill in the required brand details, domain, and subscription tier. Provisioning completes in under 5 minutes.',
   },
   {
-    q: 'When are returns paid out?',
-    a: 'Returns are distributed quarterly, following the completion of each harvest cycle and financial reconciliation. You will receive a payout notification and detailed breakdown in your investor dashboard before each distribution.',
+    q: 'Can I assign a custom domain to a tenant?',
+    a: 'Yes. Each tenant can have a dedicated custom domain. Configure the domain in the tenant settings and update your DNS records to point to the CropCapital infrastructure. Propagation typically takes 15–60 minutes.',
   },
   {
-    q: 'Is my capital guaranteed?',
-    a: 'No investment in agricultural assets is fully guaranteed. However, all farm portfolios on this platform are covered by comprehensive agricultural insurance policies covering yield loss, weather events, and pest damage. Full risk disclosures are available in our Disclosures document.',
+    q: 'How does the subscription tier system work?',
+    a: 'Each tenant is assigned a subscription tier that controls which features are enabled — such as KYC, Wallet services, and Advanced Analytics. Tiers can be upgraded or downgraded from the operator console without redeployment.',
   },
   {
-    q: 'How long is each investment cycle?',
-    a: 'Investment cycles vary by crop type and region — typically 6 to 18 months. Each portfolio listing clearly states the expected cycle duration, projected returns, and harvest timeline before you commit capital.',
+    q: 'What does RBAC governance cover?',
+    a: 'Role-Based Access Control (RBAC) allows you to assign granular permissions to users across tenants. Roles include Platform Operator, Tenant Admin, Investor, and Read-Only Auditor. Users can be mapped to multiple tenants with different roles per tenant.',
   },
   {
-    q: 'Can I withdraw my investment early?',
-    a: 'Agricultural investments are illiquid by nature and cannot be redeemed early. Your capital is tied to the crop cycle. We recommend only investing funds you will not need access to for the duration of the stated cycle.',
+    q: 'Is there a staging environment available?',
+    a: 'Yes. All operator accounts include access to a staging environment that mirrors production. We strongly recommend testing all configuration changes in staging before promoting to live tenants.',
   },
   {
-    q: 'How does KYC verification work?',
-    a: 'KYC is completed during account setup. You will be asked to upload a government-issued ID and a selfie. Verification is processed automatically and usually completed in under 15 minutes during business hours.',
+    q: 'How do I export tenant data?',
+    a: 'Data exports are available from the tenant management panel in CSV and JSON formats. For large datasets or automated exports, use the CropCapital API with appropriate authorization credentials.',
   },
   {
-    q: 'What fees does the platform charge?',
-    a: 'We charge an annual management fee and a performance fee on returns above the stated target. All fees are disclosed in the product documentation before you invest. There are no hidden charges.',
+    q: 'What are the SLA terms for uptime?',
+    a: 'The platform maintains a 99.9% uptime SLA. Scheduled maintenance windows are communicated via email and status page at least 48 hours in advance. Emergency maintenance may occur with less notice in critical security situations.',
   },
   {
-    q: 'How do I report a problem with my account?',
-    a: 'Contact our investor support team via the email or phone number listed on this page. For urgent issues affecting active investments, use our priority support channel.',
+    q: 'How do I report a security vulnerability?',
+    a: 'Security vulnerabilities should be reported directly to security@cropcapital.com. Please do not disclose vulnerabilities publicly until we have had 90 days to investigate and remediate. We have a responsible disclosure program.',
   },
 ]
 
 function SupportPage() {
   const [openFaq, setOpenFaq] = useState<number | null>(null)
-  const { tenant: tenantParam } = Route.useParams()
-  const { tenant } = useTenant()
-
-  const whatsappHref = tenant.supportWhatsapp
-    ? `https://wa.me/${tenant.supportWhatsapp.replace(/[^\d]/g, '')}`
-    : null
 
   return (
     <div className="min-h-screen bg-background selection:bg-primary selection:text-primary-foreground">
       <nav className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-2xl border-b border-border py-5 px-8">
         <div className="premium-container flex items-center justify-between">
-          <Link to="/$tenant" params={{ tenant: tenantParam }} className="flex items-center gap-3 text-muted-foreground hover:text-primary transition-colors">
+          <Link to="/" className="flex items-center gap-3 text-muted-foreground hover:text-primary transition-colors">
             <ArrowLeft className="w-4 h-4" />
-            <span className="text-[11px] font-black uppercase tracking-[0.35em]">Back to {tenant.displayName}</span>
+            <span className="text-[11px] font-black uppercase tracking-[0.35em]">Back to Platform</span>
           </Link>
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 bg-primary flex items-center justify-center">
-              <span className="text-primary-foreground font-black text-xs">{tenant.shortName?.[0]}</span>
+              <span className="text-primary-foreground font-black text-xs">CC</span>
             </div>
-            <span className="text-sm font-black uppercase tracking-[0.2em] text-foreground">{tenant.displayName}</span>
+            <span className="text-sm font-black uppercase tracking-[0.2em] text-foreground">CropCapital</span>
           </div>
         </div>
       </nav>
@@ -76,11 +69,11 @@ function SupportPage() {
           <div className="premium-container relative z-10">
             <div className="flex items-center gap-4 mb-6">
               <div className="h-px bg-white/20 w-10" />
-              <span className="text-[11px] font-black uppercase tracking-[0.5em] text-white/50">Investor Support</span>
+              <span className="text-[11px] font-black uppercase tracking-[0.5em] text-white/50">Operator Support</span>
             </div>
             <h1 className="text-display text-[clamp(3rem,6vw,7rem)] text-white mb-4">Help Center</h1>
             <p className="text-xl text-white/55 font-medium max-w-xl leading-relaxed">
-              Find answers to common investor questions or get in touch with the {tenant.displayName} support team.
+              Find answers to common questions or get in touch with our operator support team.
             </p>
           </div>
         </div>
@@ -92,25 +85,23 @@ function SupportPage() {
               {
                 icon: Mail,
                 title: 'Email Support',
-                desc: 'For account issues, KYC queries, and investment questions.',
-                action: tenant.supportEmail || 'support@cropcapital.com',
-                href: `mailto:${tenant.supportEmail || 'support@cropcapital.com'}`,
+                desc: 'For technical issues, billing, and account management.',
+                action: 'support@cropcapital.com',
+                href: 'mailto:support@cropcapital.com',
               },
               {
-                icon: Phone,
-                title: 'Phone Support',
-                desc: 'Speak directly with an investor relations representative.',
-                action: tenant.supportPhone || 'See contact page',
-                href: tenant.supportPhone ? `tel:${tenant.supportPhone}` : '#',
+                icon: MessageSquare,
+                title: 'Platform Chat',
+                desc: 'Available in-app for authenticated operators during business hours.',
+                action: 'Open Platform',
+                href: '/auth',
               },
               {
-                icon: whatsappHref ? MessageSquare : Zap,
-                title: whatsappHref ? 'WhatsApp Support' : 'Priority Support',
-                desc: whatsappHref
-                  ? 'Chat with our team directly on WhatsApp during business hours.'
-                  : 'For urgent issues affecting active investments or payouts.',
-                action: whatsappHref ? 'Start Chat' : 'Contact Support',
-                href: whatsappHref || `mailto:${tenant.supportEmail || 'support@cropcapital.com'}`,
+                icon: Zap,
+                title: 'Emergency Line',
+                desc: 'For critical production incidents affecting live tenants.',
+                action: 'urgent@cropcapital.com',
+                href: 'mailto:urgent@cropcapital.com',
               },
             ].map((card, i) => {
               const Icon = card.icon
@@ -162,7 +153,7 @@ function SupportPage() {
             </div>
           </div>
 
-          {/* Contact callout */}
+          {/* Contact form callout */}
           <div className="mt-24 bg-muted/40 border border-border p-12 lg:p-16 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-10">
             <div>
               <div className="flex items-center gap-4 mb-4">
@@ -173,10 +164,10 @@ function SupportPage() {
                 Talk to our <span className="italic-serif text-primary">team.</span>
               </h3>
               <p className="text-base text-muted-foreground font-medium max-w-md">
-                Our investor success team is available Monday–Friday, 8am–6pm. Average response time is under 4 hours.
+                Our operator success team is available Monday–Friday, 8am–6pm WAT. Average response time is under 4 hours.
               </p>
             </div>
-            <a href={`mailto:${tenant.supportEmail || 'support@cropcapital.com'}`}>
+            <a href="mailto:support@cropcapital.com">
               <Button size="lg" className="btn-primary-gradient h-14 px-12 text-sm font-black uppercase tracking-[0.18em] whitespace-nowrap">
                 Email Support <Mail className="w-5 h-5 ml-3 inline" />
               </Button>
@@ -185,12 +176,11 @@ function SupportPage() {
 
           <div className="mt-16 pt-16 border-t border-border flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
             <p className="text-sm font-bold text-muted-foreground uppercase tracking-[0.2em]">
-              © {new Date().getFullYear()} {tenant.legalName || tenant.displayName}. All rights reserved.
+              © {new Date().getFullYear()} CropCapital Global Infrastructure
             </p>
             <div className="flex gap-8">
-              <Link to="/$tenant/privacy" params={{ tenant: tenantParam }} className="text-[11px] font-black uppercase tracking-[0.3em] text-muted-foreground hover:text-primary transition-colors">Privacy Policy</Link>
-              <Link to="/$tenant/terms" params={{ tenant: tenantParam }} className="text-[11px] font-black uppercase tracking-[0.3em] text-muted-foreground hover:text-primary transition-colors">Terms of Access</Link>
-              <Link to="/$tenant/disclosures" params={{ tenant: tenantParam }} className="text-[11px] font-black uppercase tracking-[0.3em] text-muted-foreground hover:text-primary transition-colors">Disclosures</Link>
+              <a href="/privacy" className="text-[11px] font-black uppercase tracking-[0.3em] text-muted-foreground hover:text-primary transition-colors">Privacy Policy</a>
+              <a href="/terms" className="text-[11px] font-black uppercase tracking-[0.3em] text-muted-foreground hover:text-primary transition-colors">Terms of Service</a>
             </div>
           </div>
         </div>

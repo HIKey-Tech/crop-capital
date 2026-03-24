@@ -9,6 +9,9 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TermsRouteImport } from './routes/terms'
+import { Route as SupportRouteImport } from './routes/support'
+import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as SuperAdminRouteRouteImport } from './routes/super-admin/route'
 import { Route as IndexRouteImport } from './routes/index'
@@ -21,6 +24,7 @@ import { Route as TenantTermsRouteImport } from './routes/$tenant/terms'
 import { Route as TenantSupportRouteImport } from './routes/$tenant/support'
 import { Route as TenantPrivacyRouteImport } from './routes/$tenant/privacy'
 import { Route as TenantOnboardingRouteImport } from './routes/$tenant/onboarding'
+import { Route as TenantDisclosuresRouteImport } from './routes/$tenant/disclosures'
 import { Route as TenantAuthRouteRouteImport } from './routes/$tenant/auth/route'
 import { Route as TenantAuthenticatedRouteRouteImport } from './routes/$tenant/_authenticated/route'
 import { Route as TenantAuthIndexRouteImport } from './routes/$tenant/auth/index'
@@ -59,6 +63,21 @@ import { Route as TenantAuthenticatedAdminFarmsNewRouteImport } from './routes/$
 import { Route as TenantAuthenticatedAdminFarmsIdEditRouteImport } from './routes/$tenant/_authenticated/admin/farms/$id/edit'
 import { Route as TenantAuthenticatedAdminFarmsIdAnalyticsRouteImport } from './routes/$tenant/_authenticated/admin/farms/$id/analytics'
 
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SupportRoute = SupportRouteImport.update({
+  id: '/support',
+  path: '/support',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
@@ -117,6 +136,11 @@ const TenantPrivacyRoute = TenantPrivacyRouteImport.update({
 const TenantOnboardingRoute = TenantOnboardingRouteImport.update({
   id: '/$tenant/onboarding',
   path: '/$tenant/onboarding',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TenantDisclosuresRoute = TenantDisclosuresRouteImport.update({
+  id: '/$tenant/disclosures',
+  path: '/$tenant/disclosures',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TenantAuthRouteRoute = TenantAuthRouteRouteImport.update({
@@ -340,8 +364,12 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/super-admin': typeof SuperAdminRouteRouteWithChildren
   '/auth': typeof AuthRoute
+  '/privacy': typeof PrivacyRoute
+  '/support': typeof SupportRoute
+  '/terms': typeof TermsRoute
   '/$tenant': typeof TenantAuthenticatedRouteRouteWithChildren
   '/$tenant/auth': typeof TenantAuthRouteRouteWithChildren
+  '/$tenant/disclosures': typeof TenantDisclosuresRoute
   '/$tenant/onboarding': typeof TenantOnboardingRoute
   '/$tenant/privacy': typeof TenantPrivacyRoute
   '/$tenant/support': typeof TenantSupportRoute
@@ -390,7 +418,11 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/privacy': typeof PrivacyRoute
+  '/support': typeof SupportRoute
+  '/terms': typeof TermsRoute
   '/$tenant': typeof TenantIndexRoute
+  '/$tenant/disclosures': typeof TenantDisclosuresRoute
   '/$tenant/onboarding': typeof TenantOnboardingRoute
   '/$tenant/privacy': typeof TenantPrivacyRoute
   '/$tenant/support': typeof TenantSupportRoute
@@ -438,8 +470,12 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/super-admin': typeof SuperAdminRouteRouteWithChildren
   '/auth': typeof AuthRoute
+  '/privacy': typeof PrivacyRoute
+  '/support': typeof SupportRoute
+  '/terms': typeof TermsRoute
   '/$tenant/_authenticated': typeof TenantAuthenticatedRouteRouteWithChildren
   '/$tenant/auth': typeof TenantAuthRouteRouteWithChildren
+  '/$tenant/disclosures': typeof TenantDisclosuresRoute
   '/$tenant/onboarding': typeof TenantOnboardingRoute
   '/$tenant/privacy': typeof TenantPrivacyRoute
   '/$tenant/support': typeof TenantSupportRoute
@@ -491,8 +527,12 @@ export interface FileRouteTypes {
     | '/'
     | '/super-admin'
     | '/auth'
+    | '/privacy'
+    | '/support'
+    | '/terms'
     | '/$tenant'
     | '/$tenant/auth'
+    | '/$tenant/disclosures'
     | '/$tenant/onboarding'
     | '/$tenant/privacy'
     | '/$tenant/support'
@@ -541,7 +581,11 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/auth'
+    | '/privacy'
+    | '/support'
+    | '/terms'
     | '/$tenant'
+    | '/$tenant/disclosures'
     | '/$tenant/onboarding'
     | '/$tenant/privacy'
     | '/$tenant/support'
@@ -588,8 +632,12 @@ export interface FileRouteTypes {
     | '/'
     | '/super-admin'
     | '/auth'
+    | '/privacy'
+    | '/support'
+    | '/terms'
     | '/$tenant/_authenticated'
     | '/$tenant/auth'
+    | '/$tenant/disclosures'
     | '/$tenant/onboarding'
     | '/$tenant/privacy'
     | '/$tenant/support'
@@ -640,8 +688,12 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   SuperAdminRouteRoute: typeof SuperAdminRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
+  PrivacyRoute: typeof PrivacyRoute
+  SupportRoute: typeof SupportRoute
+  TermsRoute: typeof TermsRoute
   TenantAuthenticatedRouteRoute: typeof TenantAuthenticatedRouteRouteWithChildren
   TenantAuthRouteRoute: typeof TenantAuthRouteRouteWithChildren
+  TenantDisclosuresRoute: typeof TenantDisclosuresRoute
   TenantOnboardingRoute: typeof TenantOnboardingRoute
   TenantPrivacyRoute: typeof TenantPrivacyRoute
   TenantSupportRoute: typeof TenantSupportRoute
@@ -651,6 +703,27 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/support': {
+      id: '/support'
+      path: '/support'
+      fullPath: '/support'
+      preLoaderRoute: typeof SupportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/auth': {
       id: '/auth'
       path: '/auth'
@@ -733,6 +806,13 @@ declare module '@tanstack/react-router' {
       path: '/$tenant/onboarding'
       fullPath: '/$tenant/onboarding'
       preLoaderRoute: typeof TenantOnboardingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/$tenant/disclosures': {
+      id: '/$tenant/disclosures'
+      path: '/$tenant/disclosures'
+      fullPath: '/$tenant/disclosures'
+      preLoaderRoute: typeof TenantDisclosuresRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/$tenant/auth': {
@@ -1153,8 +1233,12 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   SuperAdminRouteRoute: SuperAdminRouteRouteWithChildren,
   AuthRoute: AuthRoute,
+  PrivacyRoute: PrivacyRoute,
+  SupportRoute: SupportRoute,
+  TermsRoute: TermsRoute,
   TenantAuthenticatedRouteRoute: TenantAuthenticatedRouteRouteWithChildren,
   TenantAuthRouteRoute: TenantAuthRouteRouteWithChildren,
+  TenantDisclosuresRoute: TenantDisclosuresRoute,
   TenantOnboardingRoute: TenantOnboardingRoute,
   TenantPrivacyRoute: TenantPrivacyRoute,
   TenantSupportRoute: TenantSupportRoute,
