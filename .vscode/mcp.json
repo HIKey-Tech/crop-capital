@@ -1,0 +1,11 @@
+{
+  "servers": {
+    "Scout": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["--expose-gc", "./dist/index.mjs"],
+      "cwd": "/Users/ibnlanre/Desktop/workspace/scouting/apps/actor"
+    }
+  },
+  "inputs": []
+}

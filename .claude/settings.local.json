@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Users/david/.claude/skills/ui-ux-pro-max/**)",
+      "Bash(python scripts/search.py \"agricultural finance investment premium institutional landing page\" --design-system -p \"CropCapital\")"
+    ]
+  }
+}
