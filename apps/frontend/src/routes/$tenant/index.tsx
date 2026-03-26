@@ -76,7 +76,7 @@ function Navbar({ tenant, tenantParam }: { tenant: any; tenantParam: string }) {
   return (
     <nav
       className={cn(
-        'fixed top-0 left-0 right-0 z-50 transition-all duration-700 px-6 py-6',
+        'fixed top-0 left-0 right-0 z-50 transition-all duration-700 px-0 sm:px-6 py-6',
         isScrolled
           ? 'bg-background/95 backdrop-blur-2xl border-b border-border py-4 shadow-sm'
           : 'bg-transparent',
@@ -90,10 +90,10 @@ function Navbar({ tenant, tenantParam }: { tenant: any; tenantParam: string }) {
         >
           <div className="w-10 h-10 bg-primary flex items-center justify-center transition-all duration-300 group-hover:bg-primary/80">
             <span className="text-primary-foreground font-black text-sm">
-              {tenant.shortName?.[0]}
+              {tenant.shortName}
             </span>
           </div>
-          <div className="flex flex-col">
+          <div className="hidden sm:flex flex-col">
             <span className="text-base font-black uppercase tracking-[0.2em] text-foreground leading-none">
               {tenant.displayName}
             </span>
@@ -127,8 +127,9 @@ function Navbar({ tenant, tenantParam }: { tenant: any; tenantParam: string }) {
             </span>
           </Link>
           <Link to="/$tenant/auth" params={{ tenant: tenantParam }}>
-            <Button className="btn-primary-gradient h-11 px-8 text-xs font-black uppercase tracking-[0.18em]">
-              Get Access
+            <Button className="btn-primary-gradient h-11 px-5 sm:px-8 text-xs font-black uppercase tracking-[0.18em]">
+              <span className="hidden sm:inline">Get Access </span>
+              <ArrowRight className="w-4 h-4 sm:ml-2" />
             </Button>
           </Link>
           <button
@@ -151,7 +152,7 @@ function Navbar({ tenant, tenantParam }: { tenant: any; tenantParam: string }) {
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-primary flex items-center justify-center">
                 <span className="text-primary-foreground font-black text-sm">
-                  {tenant.shortName?.[0]}
+                  {tenant.shortName}
                 </span>
               </div>
               <span className="font-black uppercase tracking-[0.2em]">
@@ -939,7 +940,7 @@ function LandingPage() {
               <div className="flex items-center gap-3 mb-10">
                 <div className="w-10 h-10 bg-primary flex items-center justify-center">
                   <span className="text-primary-foreground font-black text-sm">
-                    {tenant.shortName[0]}
+                    {tenant.shortName}
                   </span>
                 </div>
                 <div>

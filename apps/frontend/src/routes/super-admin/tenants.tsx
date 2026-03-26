@@ -394,65 +394,45 @@ function TenantsPage() {
             </Button>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-border bg-muted/50">
-                  <th className="text-left px-4 py-3 font-medium text-muted-foreground">
-                    Tenant
-                  </th>
-                  <th className="text-left px-4 py-3 font-medium text-muted-foreground">
-                    Slug
-                  </th>
-                  <th className="text-left px-4 py-3 font-medium text-muted-foreground">
-                    Status
-                  </th>
-                  <th className="text-left px-4 py-3 font-medium text-muted-foreground">
-                    Readiness
-                  </th>
-                  <th className="text-left px-4 py-3 font-medium text-muted-foreground">
-                    Features
-                  </th>
-                  <th className="text-right px-4 py-3 font-medium text-muted-foreground">
-                    <span className="sr-only">Actions</span>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {sortedTenants.map((tenant) => {
-                  const readiness = getTenantReadiness(tenant)
-                  const readinessAppearance = getTenantReadinessAppearance(
-                    readiness.status,
-                  )
-                  const features = {
-                    ...defaultTenantFeatures,
-                    ...tenant.features,
-                  }
-                  const enabledCount =
-                    Object.values(features).filter(Boolean).length
-                  const totalCount = featureLabels.length
+          <>
+            {/* Mobile card list — visible below sm breakpoint */}
+            <div className="divide-y divide-border sm:hidden">
+              {sortedTenants.map((tenant) => {
+                const readiness = getTenantReadiness(tenant)
+                const readinessAppearance = getTenantReadinessAppearance(
+                  readiness.status,
+                )
+                const features = {
+                  ...defaultTenantFeatures,
+                  ...tenant.features,
+                }
+                const enabledCount =
+                  Object.values(features).filter(Boolean).length
+                const totalCount = featureLabels.length
 
-                  return (
-                    <tr
-                      key={tenant.id}
-                      className="border-b border-border last:border-0 transition-colors hover:bg-muted/30"
-                    >
-                      <td className="px-4 py-3">
-                        <div className="font-medium text-foreground">
+                return (
+                  <div
+                    key={tenant.id}
+                    className="flex items-start justify-between gap-3 p-4"
+                  >
+                    <div className="min-w-0 flex-1 space-y-2">
+                      <div>
+                        <p className="font-medium leading-tight text-foreground">
                           {tenant.name}
+                        </p>
+                        <div className="mt-0.5 flex items-center gap-1.5 text-xs text-muted-foreground">
+                          <span className="font-mono">{tenant.slug}</span>
+                          {tenant.domains.length > 0 && (
+                            <>
+                              <span>·</span>
+                              <span className="truncate">
+                                {tenant.domains[0]}
+                              </span>
+                            </>
+                          )}
                         </div>
-                        {tenant.domains.length > 0 && (
-                          <div className="mt-0.5 text-xs text-muted-foreground">
-                            {tenant.domains[0]}
-                            {tenant.domains.length > 1 &&
-                              ` +${tenant.domains.length - 1}`}
-                          </div>
-                        )}
-                      </td>
-                      <td className="px-4 py-3 text-muted-foreground font-mono text-xs">
-                        {tenant.slug}
-                      </td>
-                      <td className="px-4 py-3">
+                      </div>
+                      <div className="flex flex-wrap gap-1.5">
                         <Badge
                           variant={tenant.isActive ? 'default' : 'secondary'}
                           className={getTenantActivationBadgeClassName(
@@ -461,67 +441,187 @@ function TenantsPage() {
                         >
                           {tenant.isActive ? 'Active' : 'Inactive'}
                         </Badge>
-                      </td>
-                      <td className="px-4 py-3">
                         <Badge
                           variant="outline"
                           className={readinessAppearance.badgeClassName}
                         >
                           {readinessAppearance.label}
                         </Badge>
-                      </td>
-                      <td className="px-4 py-3">
                         <Badge variant="outline">
-                          {enabledCount}/{totalCount}
+                          {enabledCount}/{totalCount} features
                         </Badge>
-                      </td>
-                      <td className="px-4 py-3 text-right">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="icon-sm">
-                              <MoreHorizontal className="h-4 w-4" />
-                              <span className="sr-only">Actions</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuItem
-                              onClick={() => openEditSheet(tenant)}
-                            >
-                              <Pencil className="h-4 w-4" />
-                              Edit Tenant
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                              onClick={() => toggleActive(tenant)}
-                            >
-                              <Power className="h-4 w-4" />
-                              {tenant.isActive ? 'Deactivate' : 'Activate'}
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                              onClick={() => {
-                                setInvitingTenant(tenant)
-                                setInviteEmail('')
-                              }}
-                            >
-                              <Mail className="h-4 w-4" />
-                              Invite Admin
-                            </DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem
-                              className="text-destructive focus:text-destructive"
-                              onClick={() => setTenantPendingDelete(tenant)}
-                            >
-                              <Trash2 className="h-4 w-4" />
-                              Delete Tenant
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </td>
-                    </tr>
-                  )
-                })}
-              </tbody>
-            </table>
-          </div>
+                      </div>
+                    </div>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="icon-sm">
+                          <MoreHorizontal className="h-4 w-4" />
+                          <span className="sr-only">Actions</span>
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem onClick={() => openEditSheet(tenant)}>
+                          <Pencil className="h-4 w-4" />
+                          Edit Tenant
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => toggleActive(tenant)}>
+                          <Power className="h-4 w-4" />
+                          {tenant.isActive ? 'Deactivate' : 'Activate'}
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() => {
+                            setInvitingTenant(tenant)
+                            setInviteEmail('')
+                          }}
+                        >
+                          <Mail className="h-4 w-4" />
+                          Invite Admin
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem
+                          className="text-destructive focus:text-destructive"
+                          onClick={() => setTenantPendingDelete(tenant)}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                          Delete Tenant
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
+                )
+              })}
+            </div>
+
+            {/* Desktop/tablet table — visible at sm and above */}
+            <div className="hidden overflow-x-auto sm:block">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-border bg-muted/50">
+                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">
+                      Tenant
+                    </th>
+                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">
+                      Slug
+                    </th>
+                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">
+                      Status
+                    </th>
+                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">
+                      Readiness
+                    </th>
+                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">
+                      Features
+                    </th>
+                    <th className="px-4 py-3 text-right font-medium text-muted-foreground">
+                      <span className="sr-only">Actions</span>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {sortedTenants.map((tenant) => {
+                    const readiness = getTenantReadiness(tenant)
+                    const readinessAppearance = getTenantReadinessAppearance(
+                      readiness.status,
+                    )
+                    const features = {
+                      ...defaultTenantFeatures,
+                      ...tenant.features,
+                    }
+                    const enabledCount =
+                      Object.values(features).filter(Boolean).length
+                    const totalCount = featureLabels.length
+
+                    return (
+                      <tr
+                        key={tenant.id}
+                        className="border-b border-border last:border-0 transition-colors hover:bg-muted/30"
+                      >
+                        <td className="px-4 py-3">
+                          <div className="font-medium text-foreground">
+                            {tenant.name}
+                          </div>
+                          {tenant.domains.length > 0 && (
+                            <div className="mt-0.5 text-xs text-muted-foreground">
+                              {tenant.domains[0]}
+                              {tenant.domains.length > 1 &&
+                                ` +${tenant.domains.length - 1}`}
+                            </div>
+                          )}
+                        </td>
+                        <td className="px-4 py-3 font-mono text-xs text-muted-foreground">
+                          {tenant.slug}
+                        </td>
+                        <td className="px-4 py-3">
+                          <Badge
+                            variant={tenant.isActive ? 'default' : 'secondary'}
+                            className={getTenantActivationBadgeClassName(
+                              tenant.isActive,
+                            )}
+                          >
+                            {tenant.isActive ? 'Active' : 'Inactive'}
+                          </Badge>
+                        </td>
+                        <td className="px-4 py-3">
+                          <Badge
+                            variant="outline"
+                            className={readinessAppearance.badgeClassName}
+                          >
+                            {readinessAppearance.label}
+                          </Badge>
+                        </td>
+                        <td className="px-4 py-3">
+                          <Badge variant="outline">
+                            {enabledCount}/{totalCount}
+                          </Badge>
+                        </td>
+                        <td className="px-4 py-3 text-right">
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" size="icon-sm">
+                                <MoreHorizontal className="h-4 w-4" />
+                                <span className="sr-only">Actions</span>
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuItem
+                                onClick={() => openEditSheet(tenant)}
+                              >
+                                <Pencil className="h-4 w-4" />
+                                Edit Tenant
+                              </DropdownMenuItem>
+                              <DropdownMenuItem
+                                onClick={() => toggleActive(tenant)}
+                              >
+                                <Power className="h-4 w-4" />
+                                {tenant.isActive ? 'Deactivate' : 'Activate'}
+                              </DropdownMenuItem>
+                              <DropdownMenuItem
+                                onClick={() => {
+                                  setInvitingTenant(tenant)
+                                  setInviteEmail('')
+                                }}
+                              >
+                                <Mail className="h-4 w-4" />
+                                Invite Admin
+                              </DropdownMenuItem>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem
+                                className="text-destructive focus:text-destructive"
+                                onClick={() => setTenantPendingDelete(tenant)}
+                              >
+                                <Trash2 className="h-4 w-4" />
+                                Delete Tenant
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </>
         )}
       </div>
 

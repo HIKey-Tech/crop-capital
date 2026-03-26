@@ -137,7 +137,7 @@ function Navbar() {
   return (
     <nav
       className={cn(
-        'fixed top-0 left-0 right-0 z-50 transition-all duration-500 px-8 py-7',
+        'fixed top-0 left-0 right-0 z-50 transition-all duration-500 px-0 sm:px-8 py-7',
         isScrolled
           ? 'bg-background/95 backdrop-blur-2xl border-b border-border py-5 shadow-sm'
           : 'bg-transparent',
@@ -150,7 +150,7 @@ function Navbar() {
               CC
             </span>
           </div>
-          <div className="flex flex-col">
+          <div className="hidden sm:flex flex-col">
             <span className="text-base font-black uppercase tracking-[0.22em] text-foreground leading-none">
               CropCapital
             </span>
@@ -160,7 +160,7 @@ function Navbar() {
           </div>
         </div>
 
-        <div className="hidden md:flex items-center gap-10">
+        <div className="hidden lg:flex items-center gap-10">
           {navLinks.map((link) => (
             <a
               key={link.name}
@@ -180,12 +180,13 @@ function Navbar() {
             </Button>
           </Link>
           <Link to="/auth">
-            <Button className="btn-primary-gradient px-8 h-11 text-xs uppercase tracking-[0.18em] font-black">
-              Access Platform <ArrowRight className="w-4 h-4 ml-2 inline" />
+            <Button className="btn-primary-gradient px-5 sm:px-8 h-11 text-xs uppercase tracking-[0.18em] font-black">
+              <span className="hidden sm:inline">Access Platform </span>
+              <ArrowRight className="w-4 h-4 sm:ml-2" />
             </Button>
           </Link>
           <button
-            className="md:hidden p-2"
+            className="lg:hidden p-2"
             onClick={() => setIsMobileOpen(true)}
           >
             <Menu className="w-6 h-6 text-foreground" />
@@ -196,7 +197,7 @@ function Navbar() {
       {/* Mobile menu */}
       <div
         className={cn(
-          'fixed inset-0 z-60 bg-background backdrop-blur-2xl transition-all duration-700 md:hidden',
+          'fixed inset-0 z-60 bg-background backdrop-blur-2xl transition-all duration-700 lg:hidden',
           isMobileOpen ? 'translate-x-0' : 'translate-x-full',
         )}
       >

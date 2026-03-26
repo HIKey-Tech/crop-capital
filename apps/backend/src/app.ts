@@ -11,7 +11,7 @@ import kycRoutes from "./modules/kyc/kyc.routes";
 import activityRoutes from "./modules/activities/activity.routes";
 import tenantRoutes from "./modules/tenants/tenant.routes";
 import { paystackWebhook } from "./modules/payments/payment.webhook";
-import { FRONTEND_URL } from "./config/env";
+import { ALLOWED_ORIGINS } from "./config/env";
 import { portNumbers } from "get-port";
 import { resolveTenant } from "./middlewares/tenant.middleware";
 import { requireTenant } from "./middlewares/require-tenant.middleware";
@@ -29,7 +29,7 @@ const ports = portRange.map((port) => `http://localhost:${port}`);
 app.set("trust proxy", 1);
 
 const corsOptions = {
-  origin: [FRONTEND_URL].concat(ports).filter(Boolean),
+  origin: ALLOWED_ORIGINS.concat(ports),
   credentials: true,
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   allowedHeaders: [
