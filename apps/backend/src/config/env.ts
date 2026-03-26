@@ -17,6 +17,7 @@ export const JWT_SECRET = getRequiredEnv("JWT_SECRET");
 export const NODE_ENV = process.env.NODE_ENV ?? "development";
 export const PAYSTACK_SECRET_KEY = getRequiredEnv("PAYSTACK_SECRET_KEY");
 export const PAYSTACK_PUBLIC_KEY = process.env.PAYSTACK_PUBLIC_KEY;
+export const FRONTEND_URL = getRequiredEnv("FRONTEND_URL");
 export const EMAIL_HOST = process.env.EMAIL_HOST;
 export const EMAIL_PORT = process.env.EMAIL_PORT;
 export const EMAIL_USER = process.env.EMAIL_USER;
