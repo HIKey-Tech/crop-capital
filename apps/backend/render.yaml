@@ -32,7 +32,22 @@ services:
       - key: EMAIL_PASS
         sync: false
       - key: FRONTEND_URL
-        sync: false # Set to your Vercel frontend URL
+        sync: false # Set to your Vercel frontend URL (e.g. https://www.cropcapitals.com)
+
+      # --- Tenant resolution ---
+      - key: ALLOWED_ORIGINS
+        sync: false # Comma-separated list of trusted frontend origins, e.g. https://www.cropcapitals.com
+      - key: PLATFORM_ROOT_DOMAIN
+        sync:
+          false # Root domain for subdomain-based tenant resolution, e.g. cropcapitals.com
+          # Once set, a CNAME of cropcapital.cropcapitals.com → crop-capital.onrender.com
+          # is enough for the middleware to extract the tenant slug automatically.
+      - key: DEFAULT_TENANT_SLUG
+        sync: false # Fallback slug used only in non-production; leave blank in production
+      - key: TENANT_HEADER_SECRET
+        sync: false # Shared secret for server-to-server X-Tenant-Slug trust; optional
+      - key: TENANCY_STRICT_MODE
+        value: "false" # Set to "true" to reject requests that cannot resolve a tenant
 
     healthCheckPath: /
 

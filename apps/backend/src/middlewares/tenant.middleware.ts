@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { Tenant } from "@/modules/tenants/tenant.model";
 import {
+  ALLOWED_ORIGINS,
   DEFAULT_TENANT_SLUG,
   NODE_ENV,
   PLATFORM_ROOT_DOMAIN,
@@ -14,6 +15,16 @@ import { ITenant } from "@/modules/tenants/tenant.model";
 const cleanHost = (value?: string): string => {
   if (!value) return "";
   return value.trim().toLowerCase().split(":")[0];
+};
+
+const cleanOrigin = (value?: string): string => {
+  if (!value) return "";
+
+  try {
+    return new URL(value.trim()).origin.toLowerCase();
+  } catch {
+    return "";
+  }
 };
 
 const normalizeSlug = (value?: string): string | null => {
@@ -32,13 +43,30 @@ const isTenantOptionalPath = (path: string): boolean => {
   return path === "/" || path.startsWith("/api/webhooks/");
 };
 
+const allowedOrigins = new Set(
+  ALLOWED_ORIGINS.map((origin) => cleanOrigin(origin)).filter(Boolean),
+);
+
+const getRequestOrigin = (req: Request): string | null => {
+  const originHeader =
+    typeof req.headers.origin === "string" ? req.headers.origin : undefined;
+  const refererHeader =
+    typeof req.headers.referer === "string" ? req.headers.referer : undefined;
+
+  const requestOrigin = cleanOrigin(originHeader) || cleanOrigin(refererHeader);
+  return requestOrigin || null;
+};
+
 const isTrustedHeaderRequest = (req: Request): boolean => {
   const sharedSecret = req.headers["x-tenant-secret"];
   if (TENANT_HEADER_SECRET && sharedSecret === TENANT_HEADER_SECRET) {
     return true;
   }
 
-  return NODE_ENV !== "production";
+  if (NODE_ENV !== "production") return true;
+
+  const requestOrigin = getRequestOrigin(req);
+  return Boolean(requestOrigin && allowedOrigins.has(requestOrigin));
 };
 
 type CacheEntry = {
