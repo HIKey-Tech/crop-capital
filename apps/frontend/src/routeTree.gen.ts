@@ -20,6 +20,8 @@ import { Route as TenantIndexRouteImport } from './routes/$tenant/index'
 import { Route as SuperAdminTenantsRouteImport } from './routes/super-admin/tenants'
 import { Route as SuperAdminReadinessRouteImport } from './routes/super-admin/readiness'
 import { Route as SuperAdminAccessRouteImport } from './routes/super-admin/access'
+import { Route as AuthResetPasswordRouteImport } from './routes/auth.reset-password'
+import { Route as AuthForgotPasswordRouteImport } from './routes/auth.forgot-password'
 import { Route as TenantTermsRouteImport } from './routes/$tenant/terms'
 import { Route as TenantSupportRouteImport } from './routes/$tenant/support'
 import { Route as TenantPrivacyRouteImport } from './routes/$tenant/privacy'
@@ -118,6 +120,16 @@ const SuperAdminAccessRoute = SuperAdminAccessRouteImport.update({
   id: '/access',
   path: '/access',
   getParentRoute: () => SuperAdminRouteRoute,
+} as any)
+const AuthResetPasswordRoute = AuthResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthForgotPasswordRoute = AuthForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
+  getParentRoute: () => AuthRoute,
 } as any)
 const TenantTermsRoute = TenantTermsRouteImport.update({
   id: '/$tenant/terms',
@@ -369,7 +381,7 @@ const TenantAuthenticatedAdminFarmsIdAnalyticsRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/super-admin': typeof SuperAdminRouteRouteWithChildren
-  '/auth': typeof AuthRoute
+  '/auth': typeof AuthRouteWithChildren
   '/privacy': typeof PrivacyRoute
   '/support': typeof SupportRoute
   '/terms': typeof TermsRoute
@@ -380,6 +392,8 @@ export interface FileRoutesByFullPath {
   '/$tenant/privacy': typeof TenantPrivacyRoute
   '/$tenant/support': typeof TenantSupportRoute
   '/$tenant/terms': typeof TenantTermsRoute
+  '/auth/forgot-password': typeof AuthForgotPasswordRoute
+  '/auth/reset-password': typeof AuthResetPasswordRoute
   '/super-admin/access': typeof SuperAdminAccessRoute
   '/super-admin/readiness': typeof SuperAdminReadinessRoute
   '/super-admin/tenants': typeof SuperAdminTenantsRoute
@@ -424,7 +438,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/auth': typeof AuthRoute
+  '/auth': typeof AuthRouteWithChildren
   '/privacy': typeof PrivacyRoute
   '/support': typeof SupportRoute
   '/terms': typeof TermsRoute
@@ -434,6 +448,8 @@ export interface FileRoutesByTo {
   '/$tenant/privacy': typeof TenantPrivacyRoute
   '/$tenant/support': typeof TenantSupportRoute
   '/$tenant/terms': typeof TenantTermsRoute
+  '/auth/forgot-password': typeof AuthForgotPasswordRoute
+  '/auth/reset-password': typeof AuthResetPasswordRoute
   '/super-admin/access': typeof SuperAdminAccessRoute
   '/super-admin/readiness': typeof SuperAdminReadinessRoute
   '/super-admin/tenants': typeof SuperAdminTenantsRoute
@@ -477,7 +493,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/super-admin': typeof SuperAdminRouteRouteWithChildren
-  '/auth': typeof AuthRoute
+  '/auth': typeof AuthRouteWithChildren
   '/privacy': typeof PrivacyRoute
   '/support': typeof SupportRoute
   '/terms': typeof TermsRoute
@@ -488,6 +504,8 @@ export interface FileRoutesById {
   '/$tenant/privacy': typeof TenantPrivacyRoute
   '/$tenant/support': typeof TenantSupportRoute
   '/$tenant/terms': typeof TenantTermsRoute
+  '/auth/forgot-password': typeof AuthForgotPasswordRoute
+  '/auth/reset-password': typeof AuthResetPasswordRoute
   '/super-admin/access': typeof SuperAdminAccessRoute
   '/super-admin/readiness': typeof SuperAdminReadinessRoute
   '/super-admin/tenants': typeof SuperAdminTenantsRoute
@@ -546,6 +564,8 @@ export interface FileRouteTypes {
     | '/$tenant/privacy'
     | '/$tenant/support'
     | '/$tenant/terms'
+    | '/auth/forgot-password'
+    | '/auth/reset-password'
     | '/super-admin/access'
     | '/super-admin/readiness'
     | '/super-admin/tenants'
@@ -600,6 +620,8 @@ export interface FileRouteTypes {
     | '/$tenant/privacy'
     | '/$tenant/support'
     | '/$tenant/terms'
+    | '/auth/forgot-password'
+    | '/auth/reset-password'
     | '/super-admin/access'
     | '/super-admin/readiness'
     | '/super-admin/tenants'
@@ -653,6 +675,8 @@ export interface FileRouteTypes {
     | '/$tenant/privacy'
     | '/$tenant/support'
     | '/$tenant/terms'
+    | '/auth/forgot-password'
+    | '/auth/reset-password'
     | '/super-admin/access'
     | '/super-admin/readiness'
     | '/super-admin/tenants'
@@ -699,7 +723,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   SuperAdminRouteRoute: typeof SuperAdminRouteRouteWithChildren
-  AuthRoute: typeof AuthRoute
+  AuthRoute: typeof AuthRouteWithChildren
   PrivacyRoute: typeof PrivacyRoute
   SupportRoute: typeof SupportRoute
   TermsRoute: typeof TermsRoute
@@ -791,6 +815,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/super-admin/access'
       preLoaderRoute: typeof SuperAdminAccessRouteImport
       parentRoute: typeof SuperAdminRouteRoute
+    }
+    '/auth/reset-password': {
+      id: '/auth/reset-password'
+      path: '/reset-password'
+      fullPath: '/auth/reset-password'
+      preLoaderRoute: typeof AuthResetPasswordRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/auth/forgot-password': {
+      id: '/auth/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/auth/forgot-password'
+      preLoaderRoute: typeof AuthForgotPasswordRouteImport
+      parentRoute: typeof AuthRoute
     }
     '/$tenant/terms': {
       id: '/$tenant/terms'
@@ -1114,6 +1152,18 @@ const SuperAdminRouteRouteWithChildren = SuperAdminRouteRoute._addFileChildren(
   SuperAdminRouteRouteChildren,
 )
 
+interface AuthRouteChildren {
+  AuthForgotPasswordRoute: typeof AuthForgotPasswordRoute
+  AuthResetPasswordRoute: typeof AuthResetPasswordRoute
+}
+
+const AuthRouteChildren: AuthRouteChildren = {
+  AuthForgotPasswordRoute: AuthForgotPasswordRoute,
+  AuthResetPasswordRoute: AuthResetPasswordRoute,
+}
+
+const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
+
 interface TenantAuthenticatedSettingsRouteRouteChildren {
   TenantAuthenticatedSettingsNotificationsRoute: typeof TenantAuthenticatedSettingsNotificationsRoute
   TenantAuthenticatedSettingsSecurityRoute: typeof TenantAuthenticatedSettingsSecurityRoute
@@ -1253,7 +1303,7 @@ const TenantAuthRouteRouteWithChildren = TenantAuthRouteRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   SuperAdminRouteRoute: SuperAdminRouteRouteWithChildren,
-  AuthRoute: AuthRoute,
+  AuthRoute: AuthRouteWithChildren,
   PrivacyRoute: PrivacyRoute,
   SupportRoute: SupportRoute,
   TermsRoute: TermsRoute,

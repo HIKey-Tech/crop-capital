@@ -83,9 +83,13 @@ export const investInFarm = async (
       status: "pending",
     });
 
-    const callbackUrl = req.tenant?.slug
-      ? `${FRONTEND_URL}/${req.tenant.slug}/payment/callback`
-      : `${FRONTEND_URL}/payment/callback`;
+    if (!req.tenant?.slug) {
+      return next(
+        new AppError("Tenant slug is required for payment callback", 400),
+      );
+    }
+
+    const callbackUrl = `${FRONTEND_URL}/${req.tenant.slug}/payment/callback`;
 
     // Initialize Paystack transaction with metadata
     const paystackResponse = await initializeTransaction(

@@ -1,5 +1,5 @@
 import crypto from "crypto";
-import { FRONTEND_URL, PAYSTACK_SECRET_KEY } from "@/config/env";
+import { PAYSTACK_SECRET_KEY } from "@/config/env";
 
 const PAYSTACK_BASE_URL = "https://api.paystack.co";
 
@@ -57,7 +57,7 @@ export async function initializeTransaction(
   amount: number,
   metadata: Record<string, unknown> = {},
   currency = "NGN",
-  callbackUrl?: string,
+  callbackUrl: string,
 ): Promise<PaystackInitializeResponse> {
   const response = await fetch(`${PAYSTACK_BASE_URL}/transaction/initialize`, {
     method: "POST",
@@ -70,7 +70,7 @@ export async function initializeTransaction(
       amount: Math.round(amount * 100), // Paystack expects kobo (subunit)
       currency,
       reference: generateReference(),
-      callback_url: callbackUrl || `${FRONTEND_URL}/payment/callback`,
+      callback_url: callbackUrl,
       metadata,
       channels: ["card", "bank", "ussd", "bank_transfer"],
     }),

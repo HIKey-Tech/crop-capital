@@ -68,7 +68,8 @@ export const requestPasswordReset = async (
   try {
     const { email } = req.body;
     const tenantId = req.tenant?._id?.toString();
-    const result = await forgotPassword(email, tenantId);
+    const tenantSlug = req.tenant?.slug;
+    const result = await forgotPassword(email, tenantId, tenantSlug);
     res.status(200).json({ success: true, ...result });
   } catch (err: any) {
     next(new AppError(err.message, 404));

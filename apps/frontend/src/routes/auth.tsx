@@ -95,7 +95,10 @@ function PlatformAccessPage() {
         </div>
 
         <div className="relative max-w-xl space-y-8">
-          <Link to="/" className="inline-flex items-center gap-3 rounded-full border border-border/80 bg-background/70 px-4 py-2 backdrop-blur">
+          <Link
+            to="/"
+            className="inline-flex items-center gap-3 rounded-full border border-border/80 bg-background/70 px-4 py-2 backdrop-blur"
+          >
             <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-lg shadow-primary/20">
               <Building2 className="h-5 w-5" />
             </div>
@@ -173,18 +176,21 @@ function PlatformAccessPage() {
       <section className="flex min-h-screen items-center justify-center px-6 py-10 sm:px-8 lg:px-12">
         <div className="w-full max-w-md rounded-4xl border border-border bg-card/95 p-6 shadow-xl shadow-primary/5 backdrop-blur sm:p-8">
           <div className="mb-8 lg:hidden">
-              <Link to="/" className="mb-5 inline-flex items-center gap-3 rounded-full border border-border px-4 py-2">
-                <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary text-primary-foreground">
-                  <Building2 className="h-5 w-5" />
-                </div>
-                <div>
-                  <p className="text-sm font-semibold text-foreground">
-                    CropCapital
-                  </p>
-                  <p className="text-xs text-muted-foreground">
-                    Platform operations workspace
-                  </p>
-                </div>
+            <Link
+              to="/"
+              className="mb-5 inline-flex items-center gap-3 rounded-full border border-border px-4 py-2"
+            >
+              <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary text-primary-foreground">
+                <Building2 className="h-5 w-5" />
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-foreground">
+                  CropCapital
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  Platform operations workspace
+                </p>
+              </div>
             </Link>
           </div>
 
@@ -251,6 +257,15 @@ function PlatformAccessPage() {
               {isPending ? 'Signing in...' : 'Sign In'}
             </Button>
           </form>
+
+          <div className="mt-4 text-right">
+            <Link
+              to="/auth/forgot-password"
+              className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+            >
+              Forgot password?
+            </Link>
+          </div>
         </div>
       </section>
     </div>

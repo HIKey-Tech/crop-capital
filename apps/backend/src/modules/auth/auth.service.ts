@@ -89,7 +89,11 @@ export const loginUser = async (
   if (!isMatch) throw new Error("Invalid email or password");
   return user;
 };
-export const forgotPassword = async (email: string, tenantId?: string) => {
+export const forgotPassword = async (
+  email: string,
+  tenantId?: string,
+  tenantSlug?: string,
+) => {
   const user = await User.findOne(
     tenantId
       ? { email, tenantId: new mongoose.Types.ObjectId(tenantId) }
@@ -106,8 +110,15 @@ export const forgotPassword = async (email: string, tenantId?: string) => {
   user.passwordResetExpires = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
   await user.save();
 
+  if (!tenantSlug) {
+    throw new Error(
+      "Password reset requires a tenant slug. Request it from the tenant sign-in page.",
+    );
+  }
+
   // Send email
-  const resetUrl = `${FRONTEND_URL}/auth/reset-password?token=${resetToken}`;
+  const resetPath = `/${tenantSlug}/auth/reset-password?token=${resetToken}`;
+  const resetUrl = `${FRONTEND_URL}${resetPath}`;
   const html = `
         <h1>Password Reset Request</h1>
         <p>You requested a password reset. Click the link below to reset your password:</p>
