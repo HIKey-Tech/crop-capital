@@ -70,10 +70,20 @@ function AddNewInvestment() {
       file,
     }))
     setImages((prev) => [...prev, ...newImgs])
+
+    newImgs.forEach((img) => {
+      form.insertListItem('images', img.url)
+    })
+
+    form.clearFieldError('images')
   }
 
   function handleRemoveImage(id: number) {
+    const imageIndex = images.findIndex((img) => img.id === id)
+    if (imageIndex === -1) return
+
     setImages((imgs) => imgs.filter((img) => img.id !== id))
+    form.removeListItem('images', imageIndex)
   }
 
   async function handleSubmit(values: CreateFarmInput) {
@@ -405,8 +415,12 @@ function AddNewInvestment() {
               Farm Images
             </h2>
             <Label className="block mb-3 font-medium tracking-tight text-muted-foreground text-[15px]">
-              Upload up to 5 farm images (JPG or PNG only)
+              Required: upload at least 1 and up to 5 farm images (JPG or PNG
+              only)
             </Label>
+            <p className="mb-3 text-sm text-muted-foreground">
+              A farm image is required before this opportunity can be created.
+            </p>
             <div className="flex items-center gap-4 flex-wrap mb-1">
               {images.map((img) => (
                 <div
@@ -444,6 +458,9 @@ function AddNewInvestment() {
               )}
             </div>
             <p className="text-xs text-muted-foreground mt-2">Max 5 images.</p>
+            {form.errors.images && (
+              <p className="text-sm text-red-600 mt-2">{form.errors.images}</p>
+            )}
           </div>
 
           {/* Submission Buttons */}
