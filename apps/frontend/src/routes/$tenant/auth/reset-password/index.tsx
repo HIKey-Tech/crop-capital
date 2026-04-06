@@ -7,7 +7,10 @@ import { useState } from 'react'
 import { toast } from 'sonner'
 
 import { api } from '@/lib/api-builder'
-import { resetPasswordSchema } from '@/api/auth/schema'
+import {
+  PASSWORD_REQUIREMENTS_HINT,
+  resetPasswordSchema,
+} from '@/api/auth/schema'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -37,7 +40,12 @@ function ResetPasswordPage() {
       confirmPassword: '',
     },
     validate: zodResolver(resetPasswordSchema),
+    validateInputOnBlur: true,
+    validateInputOnChange: ['password', 'confirmPassword'],
   })
+
+  const passwordInputProps = form.getInputProps('password')
+  const confirmPasswordInputProps = form.getInputProps('confirmPassword')
 
   const resetPasswordMutation = useMutation({
     mutationFn: api.$use.auth.resetPassword,
@@ -52,17 +60,27 @@ function ResetPasswordPage() {
     },
   })
 
-  const handleSubmit = form.onSubmit(async (values) => {
-    if (!token) {
-      toast.error('Invalid reset token')
-      return
-    }
+  const handleSubmit = form.onSubmit(
+    async (values) => {
+      if (!token) {
+        toast.error('Invalid reset token')
+        return
+      }
 
-    await resetPasswordMutation.mutateAsync({
-      token,
-      password: values.password,
-    })
-  })
+      await resetPasswordMutation.mutateAsync({
+        token,
+        password: values.password,
+      })
+    },
+    (validationErrors) => {
+      const message =
+        validationErrors.confirmPassword ||
+        validationErrors.password ||
+        'Please fix the highlighted fields before continuing'
+
+      toast.error(String(message))
+    },
+  )
 
   if (!token) {
     return (
@@ -126,7 +144,11 @@ function ResetPasswordPage() {
               id="password"
               type={showPassword ? 'text' : 'password'}
               placeholder="Enter new password"
-              {...form.getInputProps('password')}
+              {...passwordInputProps}
+              onChange={(event) => {
+                passwordInputProps.onChange(event)
+                form.validateField('confirmPassword')
+              }}
               className="pr-20"
             />
             <button
@@ -144,6 +166,9 @@ function ResetPasswordPage() {
           {form.errors.password && (
             <p className="text-sm text-red-500 mt-1">{form.errors.password}</p>
           )}
+          <p className="text-xs text-muted-foreground mt-1.5">
+            {PASSWORD_REQUIREMENTS_HINT}
+          </p>
         </div>
 
         <div>
@@ -153,7 +178,7 @@ function ResetPasswordPage() {
               id="confirmPassword"
               type={showConfirmPassword ? 'text' : 'password'}
               placeholder="Confirm new password"
-              {...form.getInputProps('confirmPassword')}
+              {...confirmPasswordInputProps}
               className="pr-20"
             />
             <button

@@ -1,19 +1,38 @@
 import { z } from 'zod'
 
+export const PASSWORD_REQUIREMENTS_HINT =
+  'Use at least 8 characters with uppercase, lowercase, number, and special character.'
+
+export const passwordSchema = z
+  .string()
+  .min(8, 'Password must be at least 8 characters')
+  .regex(/[a-z]/, 'Password must include a lowercase letter')
+  .regex(/[A-Z]/, 'Password must include an uppercase letter')
+  .regex(/\d/, 'Password must include a number')
+  .regex(/[^A-Za-z0-9]/, 'Password must include a special character')
+
+export const passwordConfirmationSchema = z
+  .object({
+    password: passwordSchema,
+    confirmPassword: passwordSchema,
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ['confirmPassword'],
+  })
+
 // Auth schemas
 export const loginSchema = z.object({
   email: z.email('Please enter a valid email address'),
-  password: z.string().min(8, 'Password must be at least 8 characters'),
+  password: passwordSchema,
 })
 
 export const registerSchema = z
   .object({
     name: z.string().min(2, 'Name must be at least 2 characters'),
     email: z.email('Please enter a valid email address'),
-    password: z.string().min(8, 'Password must be at least 8 characters'),
-    confirmPassword: z
-      .string()
-      .min(8, 'Password must be at least 8 characters'),
+    password: passwordSchema,
+    confirmPassword: passwordSchema,
     country: z.string().optional(),
   })
   .refine((data) => data.password === data.confirmPassword, {
@@ -25,25 +44,13 @@ export const forgotPasswordSchema = z.object({
   email: z.email('Please enter a valid email address'),
 })
 
-export const resetPasswordSchema = z
-  .object({
-    password: z.string().min(8, 'Password must be at least 8 characters'),
-    confirmPassword: z
-      .string()
-      .min(8, 'Password must be at least 8 characters'),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords don't match",
-    path: ['confirmPassword'],
-  })
+export const resetPasswordSchema = passwordConfirmationSchema
 
 export const activateAdminSchema = z
   .object({
     name: z.string().min(2, 'Name must be at least 2 characters'),
-    password: z.string().min(8, 'Password must be at least 8 characters'),
-    confirmPassword: z
-      .string()
-      .min(8, 'Password must be at least 8 characters'),
+    password: passwordSchema,
+    confirmPassword: passwordSchema,
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords don't match",

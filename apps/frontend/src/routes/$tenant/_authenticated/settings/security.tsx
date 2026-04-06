@@ -6,9 +6,16 @@ import { Eye, EyeOff, Lock, Save, Shield } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import {
+  PASSWORD_REQUIREMENTS_HINT,
+  passwordConfirmationSchema,
+  passwordSchema,
+} from '@/api/auth/schema'
 import { useUpdatePassword } from '@/hooks/use-auth'
 
-export const Route = createFileRoute('/$tenant/_authenticated/settings/security')({
+export const Route = createFileRoute(
+  '/$tenant/_authenticated/settings/security',
+)({
   component: SecuritySettingsPage,
 })
 
@@ -28,13 +35,25 @@ function SecuritySettingsPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (formData.newPassword !== formData.confirmPassword) {
-      toast.error('New passwords do not match')
+    const passwordResult = passwordSchema.safeParse(formData.newPassword)
+    if (!passwordResult.success) {
+      toast.error(passwordResult.error.issues[0]?.message ?? 'Invalid password')
       return
     }
 
-    if (formData.newPassword.length < 8) {
-      toast.error('Password must be at least 8 characters long')
+    const confirmPasswordResult = passwordConfirmationSchema.safeParse({
+      password: formData.newPassword,
+      confirmPassword: formData.confirmPassword,
+    })
+    if (!confirmPasswordResult.success) {
+      const confirmPasswordError = confirmPasswordResult.error.issues.find(
+        (issue) => issue.path[0] === 'confirmPassword',
+      )
+
+      toast.error(
+        confirmPasswordError?.message ??
+          'Please confirm your password before continuing',
+      )
       return
     }
 
@@ -138,7 +157,7 @@ function SecuritySettingsPage() {
             </button>
           </div>
           <p className="text-xs text-muted-foreground">
-            Must be at least 8 characters long.
+            {PASSWORD_REQUIREMENTS_HINT}
           </p>
         </div>
 

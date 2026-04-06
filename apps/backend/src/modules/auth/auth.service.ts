@@ -9,6 +9,25 @@ import {
   sendEmail,
 } from "@/utils/email";
 
+const PASSWORD_REQUIREMENTS_MESSAGE =
+  "Password must be at least 8 characters and include uppercase, lowercase, number, and special character";
+
+const hasPasswordRequirements = (password: string) => {
+  return (
+    password.length >= 8 &&
+    /[a-z]/.test(password) &&
+    /[A-Z]/.test(password) &&
+    /\d/.test(password) &&
+    /[^A-Za-z0-9]/.test(password)
+  );
+};
+
+const assertPasswordRequirements = (password: string) => {
+  if (!hasPasswordRequirements(password)) {
+    throw new Error(PASSWORD_REQUIREMENTS_MESSAGE);
+  }
+};
+
 export const createToken = (
   userId: string,
   role: string,
@@ -35,6 +54,8 @@ export const signupUser = async (
   if (!tenantId) {
     throw new Error("Tenant context is required for signup");
   }
+
+  assertPasswordRequirements(password);
 
   const existing = await User.findOne(
     tenantId
@@ -115,6 +136,8 @@ export const resetPassword = async (
 
   if (!user) throw new Error("Invalid or expired reset token");
 
+  assertPasswordRequirements(newPassword);
+
   user.password = newPassword;
   user.passwordResetToken = undefined;
   user.passwordResetExpires = undefined;
@@ -148,6 +171,8 @@ export const updateUserPassword = async (
 
   const isMatch = await user.comparePassword(currentPassword);
   if (!isMatch) throw new Error("Current password is incorrect");
+
+  assertPasswordRequirements(newPassword);
 
   user.password = newPassword;
   await user.save();
@@ -246,6 +271,8 @@ export const activateAdminAccount = async (
   });
 
   if (!user) throw new Error("Invalid or expired invite token");
+
+  assertPasswordRequirements(password);
 
   user.name = name;
   user.password = password;

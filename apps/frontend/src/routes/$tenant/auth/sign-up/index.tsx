@@ -17,7 +17,7 @@ import {
 } from '@/components/ui/select'
 import { countries } from '@/components/layout/auth-layout'
 import { useRegister } from '@/hooks/use-auth'
-import { registerSchema } from '@/api/auth/schema'
+import { PASSWORD_REQUIREMENTS_HINT, registerSchema } from '@/api/auth/schema'
 import { useTenant } from '@/contexts/tenant'
 
 export const Route = createFileRoute('/$tenant/auth/sign-up/')({
@@ -42,30 +42,47 @@ function SignUpPage() {
       country: '',
     },
     validate: zodResolver(registerSchema),
+    validateInputOnBlur: true,
+    validateInputOnChange: ['password', 'confirmPassword'],
   })
 
-  const handleSubmit = form.onSubmit((values) => {
-    register(
-      {
-        name: values.name,
-        email: values.email,
-        password: values.password,
-        country: values.country,
-      },
-      {
-        onSuccess: () => {
-          toast.success('Account created successfully!')
-          navigate({
-            to: '/$tenant/onboarding',
-            params: { tenant: tenantParam },
-          })
+  const passwordInputProps = form.getInputProps('password')
+  const confirmPasswordInputProps = form.getInputProps('confirmPassword')
+
+  const handleSubmit = form.onSubmit(
+    (values) => {
+      register(
+        {
+          name: values.name,
+          email: values.email,
+          password: values.password,
+          country: values.country,
         },
-        onError: (error: Error) => {
-          toast.error(error.message || 'Failed to create account')
+        {
+          onSuccess: () => {
+            toast.success('Account created successfully!')
+            navigate({
+              to: '/$tenant/onboarding',
+              params: { tenant: tenantParam },
+            })
+          },
+          onError: (error: Error) => {
+            toast.error(error.message || 'Failed to create account')
+          },
         },
-      },
-    )
-  })
+      )
+    },
+    (validationErrors) => {
+      const message =
+        validationErrors.confirmPassword ||
+        validationErrors.password ||
+        validationErrors.email ||
+        validationErrors.name ||
+        'Please fix the highlighted fields before continuing'
+
+      toast.error(String(message))
+    },
+  )
 
   return (
     <>
@@ -122,7 +139,11 @@ function SignUpPage() {
               id="password"
               type={showPassword ? 'text' : 'password'}
               placeholder="Enter your password"
-              {...form.getInputProps('password')}
+              {...passwordInputProps}
+              onChange={(event) => {
+                passwordInputProps.onChange(event)
+                form.validateField('confirmPassword')
+              }}
               className="pr-20"
             />
             <button
@@ -140,6 +161,9 @@ function SignUpPage() {
           {form.errors.password && (
             <p className="text-sm text-red-500 mt-1">{form.errors.password}</p>
           )}
+          <p className="text-xs text-muted-foreground mt-1.5">
+            {PASSWORD_REQUIREMENTS_HINT}
+          </p>
         </div>
 
         <div>
@@ -149,7 +173,7 @@ function SignUpPage() {
               id="confirmPassword"
               type={showConfirmPassword ? 'text' : 'password'}
               placeholder="Confirm your password"
-              {...form.getInputProps('confirmPassword')}
+              {...confirmPasswordInputProps}
               className="pr-20"
             />
             <button

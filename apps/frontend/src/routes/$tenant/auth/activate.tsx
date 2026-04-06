@@ -6,7 +6,10 @@ import { zodResolver } from 'mantine-form-zod-resolver'
 import { useState } from 'react'
 import { toast } from 'sonner'
 
-import { activateAdminSchema } from '@/api/auth/schema'
+import {
+  PASSWORD_REQUIREMENTS_HINT,
+  activateAdminSchema,
+} from '@/api/auth/schema'
 import { api } from '@/lib/api-builder'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -39,7 +42,12 @@ function ActivateAdminPage() {
       confirmPassword: '',
     },
     validate: zodResolver(activateAdminSchema),
+    validateInputOnBlur: true,
+    validateInputOnChange: ['password', 'confirmPassword'],
   })
+
+  const passwordInputProps = form.getInputProps('password')
+  const confirmPasswordInputProps = form.getInputProps('confirmPassword')
 
   const activateMutation = useMutation({
     mutationFn: api.$use.auth.activateAdmin,
@@ -53,18 +61,29 @@ function ActivateAdminPage() {
     },
   })
 
-  const handleSubmit = form.onSubmit(async (values) => {
-    if (!token) {
-      toast.error('Invalid activation token')
-      return
-    }
+  const handleSubmit = form.onSubmit(
+    async (values) => {
+      if (!token) {
+        toast.error('Invalid activation token')
+        return
+      }
 
-    await activateMutation.mutateAsync({
-      token,
-      name: values.name,
-      password: values.password,
-    })
-  })
+      await activateMutation.mutateAsync({
+        token,
+        name: values.name,
+        password: values.password,
+      })
+    },
+    (validationErrors) => {
+      const message =
+        validationErrors.confirmPassword ||
+        validationErrors.password ||
+        validationErrors.name ||
+        'Please fix the highlighted fields before continuing'
+
+      toast.error(String(message))
+    },
+  )
 
   if (!token) {
     return (
@@ -144,7 +163,11 @@ function ActivateAdminPage() {
               id="password"
               type={showPassword ? 'text' : 'password'}
               placeholder="Create a password"
-              {...form.getInputProps('password')}
+              {...passwordInputProps}
+              onChange={(event) => {
+                passwordInputProps.onChange(event)
+                form.validateField('confirmPassword')
+              }}
               className="pr-20"
             />
             <button
@@ -162,6 +185,9 @@ function ActivateAdminPage() {
           {form.errors.password && (
             <p className="text-sm text-red-500 mt-1">{form.errors.password}</p>
           )}
+          <p className="text-xs text-muted-foreground mt-1.5">
+            {PASSWORD_REQUIREMENTS_HINT}
+          </p>
         </div>
 
         <div>
@@ -171,7 +197,7 @@ function ActivateAdminPage() {
               id="confirmPassword"
               type={showConfirmPassword ? 'text' : 'password'}
               placeholder="Confirm your password"
-              {...form.getInputProps('confirmPassword')}
+              {...confirmPasswordInputProps}
               className="pr-20"
             />
             <button
