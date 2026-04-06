@@ -880,6 +880,7 @@ function TenantsPage() {
       <AlertDialog
         open={invitingTenant !== null}
         onOpenChange={(open) => {
+          if (inviteAdminMutation.isPending) return
           if (!open) setInvitingTenant(null)
         }}
       >
@@ -916,12 +917,13 @@ function TenantsPage() {
             >
               Cancel
             </AlertDialogCancel>
-            <AlertDialogAction
+            <Button
+              type="button"
               onClick={() => void sendInvite()}
               disabled={inviteAdminMutation.isPending || !inviteEmail.trim()}
             >
               {inviteAdminMutation.isPending ? 'Sending...' : 'Send Invite'}
-            </AlertDialogAction>
+            </Button>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

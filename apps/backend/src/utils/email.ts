@@ -1,14 +1,7 @@
-import nodemailer from "nodemailer";
-import {
-  EMAIL_HOST,
-  EMAIL_PORT,
-  EMAIL_PASS,
-  EMAIL_USER,
-  EMAIL_FROM,
-} from "../config/env";
+import { EMAIL_FROM, EMAIL_PASS } from "../config/env";
 
 export function assertEmailConfig(): void {
-  if (!EMAIL_HOST || !EMAIL_USER || !EMAIL_PASS || !EMAIL_FROM) {
+  if (!EMAIL_PASS || !EMAIL_FROM) {
     throw new Error("Email service is not configured");
   }
 }
@@ -16,30 +9,28 @@ export function assertEmailConfig(): void {
 export const sendEmail = async (to: string, subject: string, html: string) => {
   assertEmailConfig();
 
-  const port = Number(EMAIL_PORT) || 587;
-  const transporter = nodemailer.createTransport({
-    host: EMAIL_HOST,
-    port,
-    secure: port === 465,
-    connectionTimeout: 5000,
-    greetingTimeout: 5000,
-    socketTimeout: 10000,
-    auth: {
-      user: EMAIL_USER,
-      pass: EMAIL_PASS,
+  const response = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${EMAIL_PASS}`,
+      "Content-Type": "application/json",
     },
-  });
-
-  try {
-    await transporter.sendMail({
-      from: `"CropCapital" <${EMAIL_FROM}>`,
-      to,
+    body: JSON.stringify({
+      from: `CropCapital <${EMAIL_FROM}>`,
+      to: [to],
       subject,
       html,
-    });
-  } catch (error) {
+    }),
+  });
+
+  if (!response.ok) {
+    const data = (await response.json().catch(() => null)) as {
+      message?: string;
+      error?: string;
+      name?: string;
+    } | null;
     throw new Error(
-      error instanceof Error ? error.message : "Email delivery failed",
+      data?.message || data?.error || data?.name || "Email delivery failed",
     );
   }
 };
