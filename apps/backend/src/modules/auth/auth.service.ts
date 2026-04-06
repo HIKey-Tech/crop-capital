@@ -162,12 +162,11 @@ export const inviteTenantAdmin = async (
   // Fail fast — check email config before touching the database
   assertEmailConfig();
 
+  const normalizedTenantId = new mongoose.Types.ObjectId(tenantId);
   const existing = await User.findOne({
     email,
-    tenantId: new mongoose.Types.ObjectId(tenantId),
+    tenantId: normalizedTenantId,
   });
-  if (existing)
-    throw new Error("A user with that email already exists in this tenant");
 
   const rawToken = crypto.randomBytes(32).toString("hex");
   const hashedToken = crypto
@@ -176,23 +175,34 @@ export const inviteTenantAdmin = async (
     .digest("hex");
   const tempPassword = crypto.randomBytes(16).toString("hex");
 
-  let createdUser;
-  try {
-    createdUser = await User.create({
-      name: email.split("@")[0],
-      email,
-      password: tempPassword,
-      role: "admin",
-      tenantId: new mongoose.Types.ObjectId(tenantId),
-      isVerified: false,
-      inviteToken: hashedToken,
-      inviteTokenExpires: new Date(Date.now() + 24 * 60 * 60 * 1000),
-    });
-  } catch (err: any) {
-    if (err.code === 11000) {
+  let invitedUser;
+  if (existing) {
+    if (existing.isVerified || existing.role !== "admin") {
       throw new Error("A user with that email already exists in this tenant");
     }
-    throw err;
+
+    existing.password = tempPassword;
+    existing.inviteToken = hashedToken;
+    existing.inviteTokenExpires = new Date(Date.now() + 24 * 60 * 60 * 1000);
+    invitedUser = await existing.save();
+  } else {
+    try {
+      invitedUser = await User.create({
+        name: email.split("@")[0],
+        email,
+        password: tempPassword,
+        role: "admin",
+        tenantId: normalizedTenantId,
+        isVerified: false,
+        inviteToken: hashedToken,
+        inviteTokenExpires: new Date(Date.now() + 24 * 60 * 60 * 1000),
+      });
+    } catch (err: any) {
+      if (err.code === 11000) {
+        throw new Error("A user with that email already exists in this tenant");
+      }
+      throw err;
+    }
   }
 
   const activateUrl = `${FRONTEND_URL}/${tenantSlug}/auth/activate?token=${rawToken}`;
@@ -213,8 +223,9 @@ export const inviteTenantAdmin = async (
   try {
     await sendEmail(email, "Activate Your Admin Account", html);
   } catch (err) {
-    // Roll back the user record so the invite can be retried
-    await User.findByIdAndDelete(createdUser._id);
+    if (!existing) {
+      await User.findByIdAndDelete(invitedUser._id);
+    }
     throw err;
   }
 
