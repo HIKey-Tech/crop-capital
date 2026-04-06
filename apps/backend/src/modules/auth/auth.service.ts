@@ -3,7 +3,11 @@ import jwt from "jsonwebtoken";
 import crypto from "crypto";
 import mongoose from "mongoose";
 import { FRONTEND_URL, JWT_SECRET } from "@/config/env";
-import { assertEmailConfig, sendEmail } from "@/utils/email";
+import {
+  assertEmailConfig,
+  renderEmailTemplate,
+  sendEmail,
+} from "@/utils/email";
 
 export const createToken = (
   userId: string,
@@ -192,13 +196,19 @@ export const inviteTenantAdmin = async (
   }
 
   const activateUrl = `${FRONTEND_URL}/${tenantSlug}/auth/activate?token=${rawToken}`;
-  const html = `
-    <h1>You've been invited as a tenant administrator</h1>
-    <p>Click the link below to activate your account and set your name and password:</p>
-    <a href="${activateUrl}">Activate Account</a>
-    <p>This link will expire in 24 hours.</p>
-    <p>If you did not expect this invitation, you can safely ignore this email.</p>
-  `;
+  const html = renderEmailTemplate({
+    eyebrow: "Admin access",
+    title: "Activate your admin account",
+    intro:
+      "You have been invited to help manage a CropCapital tenant workspace. Finish setup to claim your access and start operating the platform.",
+    ctaLabel: "Activate account",
+    ctaUrl: activateUrl,
+    supportingCopy: [
+      "This activation flow lets you set your name and password before you enter the admin workspace.",
+      "If you were not expecting this invitation, you can safely ignore this email.",
+    ],
+    notice: "This activation link expires in 24 hours.",
+  });
 
   try {
     await sendEmail(email, "Activate Your Admin Account", html);
