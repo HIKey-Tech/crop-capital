@@ -127,11 +127,13 @@ function ChartTooltipContent({
   const { config } = useChart()
 
   const tooltipLabel = React.useMemo(() => {
-    if (hideLabel || !payload.length) {
+    const tooltipPayload = payload ?? []
+
+    if (hideLabel || tooltipPayload.length === 0) {
       return null
     }
 
-    const [item] = payload
+    const [item] = tooltipPayload
     const key = `${labelKey || item.dataKey || item.name || 'value'}`
     const itemConfig = getPayloadConfigFromPayload(config, item, key)
     const value =
@@ -142,7 +144,7 @@ function ChartTooltipContent({
     if (labelFormatter) {
       return (
         <div className={cn('font-medium', labelClassName)}>
-          {labelFormatter(value, payload)}
+          {labelFormatter(value, tooltipPayload)}
         </div>
       )
     }
