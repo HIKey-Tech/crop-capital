@@ -76,7 +76,7 @@ function AdminFarmPage() {
         return (
           <div className="flex items-center gap-3">
             <img
-              src={farm.images?.[0]}
+              src={farm.images[0]}
               alt={farm.name}
               className="w-11 h-11 rounded-lg object-cover border border-border"
             />
@@ -100,7 +100,7 @@ function AdminFarmPage() {
         const goal = getValue() as number
         return (
           <span className="font-medium">
-            {formatCurrency(goal, row.original.currency || 'NGN')}
+            {formatCurrency(goal, row.original.currency)}
           </span>
         )
       },

@@ -21,7 +21,7 @@ export function useNotifications() {
     const notifs: Array<Notification> = data.investments.flatMap(
       (inv: Investment) => {
         const farm = inv.farm as Farm
-        const currency = inv.currency || farm.currency || 'NGN'
+        const currency = inv.currency
         const result: Array<Notification> = []
 
         // Investment created notification

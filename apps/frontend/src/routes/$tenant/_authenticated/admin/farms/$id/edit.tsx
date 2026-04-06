@@ -68,7 +68,7 @@ function EditFarmPage() {
         location: data.farm.location,
         latitude: data.farm.coordinates?.latitude,
         longitude: data.farm.coordinates?.longitude,
-        currency: data.farm.currency || 'NGN',
+        currency: data.farm.currency,
         images: data.farm.images,
         investmentGoal: data.farm.investmentGoal,
         minimumInvestment: data.farm.minimumInvestment,

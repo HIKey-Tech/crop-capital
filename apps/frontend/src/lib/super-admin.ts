@@ -114,16 +114,19 @@ export const getTenantReadiness = (tenant: TenantSummary) => {
     {
       key: 'active',
       label: 'Tenant is active',
+      blockerLabel: 'Activate the tenant workspace',
       passed: tenant.isActive,
     },
     {
       key: 'domain',
       label: 'Custom domain configured',
+      blockerLabel: 'Add a custom domain',
       passed: tenant.domains.length > 0,
     },
     {
       key: 'support',
       label: 'Support contact configured',
+      blockerLabel: 'Add a support email or phone number',
       passed: Boolean(
         tenant.branding.supportEmail?.trim() ||
         tenant.branding.supportPhone?.trim(),
@@ -132,6 +135,7 @@ export const getTenantReadiness = (tenant: TenantSummary) => {
     {
       key: 'branding',
       label: 'Launch copy is populated',
+      blockerLabel: 'Add launch copy for tagline and hero content',
       passed: Boolean(
         tenant.branding.displayName.trim() &&
         tenant.branding.tagline?.trim() &&
@@ -141,6 +145,7 @@ export const getTenantReadiness = (tenant: TenantSummary) => {
     {
       key: 'features',
       label: 'Core investor and admin features enabled',
+      blockerLabel: 'Enable the core investor and admin features',
       passed: Boolean(
         tenant.features.farms &&
         tenant.features.investments &&
@@ -154,12 +159,12 @@ export const getTenantReadiness = (tenant: TenantSummary) => {
   const passedChecks = checks.filter((check) => check.passed).length
   const blockers = checks
     .filter((check) => !check.passed)
-    .map((check) => check.label)
+    .map((check) => check.blockerLabel)
 
   const status =
     blockers.length === 0
       ? 'launch-ready'
-      : blockers.length === 1 && blockers[0] === 'Custom domain configured'
+      : blockers.length === 1 && blockers[0] === 'Add a custom domain'
         ? 'demo-ready'
         : 'needs-attention'
 

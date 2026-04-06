@@ -1,5 +1,4 @@
-import { Link } from '@tanstack/react-router'
-import { useParams } from '@tanstack/react-router'
+import { Link, useParams } from '@tanstack/react-router'
 import {
   ArrowLeftRight,
   Bell,
@@ -15,10 +14,11 @@ import {
   Wallet,
   X,
 } from 'lucide-react'
-import { cn } from '@/lib/utils'
-import { useViewMode } from '@/contexts/view-mode'
+
 import { NavLink } from '@/components/nav-link'
 import { useTenant } from '@/contexts/tenant'
+import { useViewMode } from '@/contexts/view-mode'
+import { cn } from '@/lib/utils'
 
 interface SidebarProps {
   isOpen?: boolean

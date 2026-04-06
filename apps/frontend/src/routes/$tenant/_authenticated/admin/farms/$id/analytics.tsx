@@ -48,7 +48,7 @@ function FarmAnalyticsPage() {
   }
 
   const farm = farmData.farm
-  const currency = farm.currency || 'NGN'
+  const currency = farm.currency
   const allInvestments = investmentsData?.investments || []
 
   // Filter investments for this farm

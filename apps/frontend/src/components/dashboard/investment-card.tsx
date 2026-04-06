@@ -78,7 +78,7 @@ export function InvestmentCard({ investment }: InvestmentCardProps) {
     investment,
     farm,
   )
-  const currency = investment.currency || farm.currency || 'NGN'
+  const currency = investment.currency
 
   return (
     <div className="rounded-xl overflow-hidden border border-border bg-card transition-shadow duration-300 group">

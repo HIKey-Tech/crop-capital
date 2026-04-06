@@ -21,7 +21,9 @@ import { Badge } from '@/components/ui/badge'
 import { useMyKyc, useResubmitKyc, useSubmitKyc } from '@/hooks'
 import { fileToBase64 } from '@/lib/file-utils'
 
-export const Route = createFileRoute('/$tenant/_authenticated/settings/verification')({
+export const Route = createFileRoute(
+  '/$tenant/_authenticated/settings/verification',
+)({
   component: VerificationPage,
 })
 
@@ -198,7 +200,7 @@ function VerificationPage() {
         </p>
       </div>
 
-      {isResubmission && kyc?.rejectionReason && (
+      {isResubmission && kyc.rejectionReason && (
         <div className="flex items-start gap-3 p-4 border border-red-200 bg-red-50/50 rounded-xl">
           <AlertCircle className="h-5 w-5 text-red-500 mt-0.5 shrink-0" />
           <div>

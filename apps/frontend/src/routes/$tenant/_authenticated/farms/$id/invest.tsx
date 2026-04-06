@@ -55,7 +55,7 @@ function InvestPage() {
   }
 
   const farm = data.farm
-  const currency = farm.currency || 'NGN'
+  const currency = farm.currency
   const heroImage = getFarmImages(farm)[0]
   const investmentAmount = Number(amount)
   const hasAmount = Number.isFinite(investmentAmount) && investmentAmount > 0

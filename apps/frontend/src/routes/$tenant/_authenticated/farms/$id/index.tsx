@@ -85,7 +85,7 @@ function FarmDetailsPage() {
         await addToWatchlist.mutateAsync(id)
         toast.success('Added to watchlist')
       }
-    } catch (error) {
+    } catch {
       toast.error('Failed to update watchlist')
     }
   }
@@ -107,7 +107,7 @@ function FarmDetailsPage() {
   }
 
   const farm = data.farm
-  const currency = farm.currency || 'NGN'
+  const currency = farm.currency
   const progress = calculateFundingProgress(
     farm.fundedAmount,
     farm.investmentGoal,

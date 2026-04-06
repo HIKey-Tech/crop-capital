@@ -7,11 +7,11 @@ import type {
   DeleteTenantResponse,
   FarmResponse,
   FarmsListResponse,
-  InviteAdminResponse,
   InvestRequest,
   InvestmentDetailResponse,
   InvestmentResponse,
   InvestmentsListResponse,
+  InviteAdminResponse,
   KycDetailResponse,
   KycListResponse,
   KycMyResponse,
@@ -112,9 +112,7 @@ function resolveTenantSlugFromHost(): string | null {
   if (typeof window === 'undefined') return null
 
   const host = window.location.hostname.toLowerCase()
-  const platformRoot = import.meta.env.VITE_PLATFORM_ROOT_DOMAIN as
-    | string
-    | undefined
+  const platformRoot = import.meta.env.VITE_PLATFORM_ROOT_DOMAIN
 
   if (!platformRoot) return null
 

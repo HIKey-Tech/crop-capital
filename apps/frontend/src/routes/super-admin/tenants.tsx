@@ -106,11 +106,6 @@ function TenantsPage() {
       setInviteEmail('')
       toast.success('Invitation sent successfully')
     },
-    onError: (error) => {
-      toast.error(
-        error instanceof Error ? error.message : 'Failed to send invitation',
-      )
-    },
   })
 
   const form = useForm({
@@ -118,6 +113,7 @@ function TenantsPage() {
       name: '',
       slug: '',
       domains: '',
+      adminInviteEmail: '',
       displayName: '',
       shortName: '',
       legalName: '',
@@ -160,6 +156,7 @@ function TenantsPage() {
       name: tenant.name,
       slug: tenant.slug,
       domains: tenant.domains.join(', '),
+      adminInviteEmail: '',
       displayName: tenant.branding.displayName,
       shortName: tenant.branding.shortName ?? '',
       legalName: tenant.branding.legalName ?? '',
@@ -194,6 +191,7 @@ function TenantsPage() {
     const editingTenant = editingTenantId
       ? sortedTenants.find((t) => t.id === editingTenantId)
       : null
+    const adminInviteEmail = values.adminInviteEmail.trim().toLowerCase()
 
     if (
       !values.name.trim() ||
@@ -236,19 +234,35 @@ function TenantsPage() {
     }
 
     try {
-      editingTenantId
+      const response = editingTenantId
         ? await updateTenantMutation.mutateAsync({
             id: editingTenantId,
             data: payload,
           })
         : await createTenantMutation.mutateAsync(payload)
 
+      if (!editingTenantId && adminInviteEmail) {
+        try {
+          await inviteAdminMutation.mutateAsync({
+            id: response.tenant.id,
+            email: adminInviteEmail,
+          })
+          toast.success('Tenant created and admin invitation sent')
+        } catch (inviteError) {
+          console.error(inviteError)
+          toast.error(
+            'Tenant created, but the admin invite email could not be sent',
+          )
+        }
+      } else {
+        toast.success(
+          editingTenantId
+            ? 'Tenant updated successfully'
+            : 'Tenant created successfully',
+        )
+      }
+
       closeSheet()
-      toast.success(
-        editingTenantId
-          ? 'Tenant updated successfully'
-          : 'Tenant created successfully',
-      )
     } catch (error) {
       console.error(error)
       toast.error(
@@ -294,14 +308,22 @@ function TenantsPage() {
   }
 
   const isSaving =
-    createTenantMutation.isPending || updateTenantMutation.isPending
+    createTenantMutation.isPending ||
+    updateTenantMutation.isPending ||
+    inviteAdminMutation.isPending
 
   const sendInvite = async () => {
     if (!invitingTenant || !inviteEmail.trim()) return
-    await inviteAdminMutation.mutateAsync({
-      id: invitingTenant.id,
-      email: inviteEmail.trim(),
-    })
+    try {
+      await inviteAdminMutation.mutateAsync({
+        id: invitingTenant.id,
+        email: inviteEmail.trim(),
+      })
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : 'Failed to send invitation',
+      )
+    }
   }
 
   return (
@@ -665,6 +687,20 @@ function TenantsPage() {
                     placeholder="tenant.yourplatform.com, clientdomain.com"
                   />
                 </div>
+                {!editingTenantId && (
+                  <div className="space-y-1.5">
+                    <Label className="text-xs">Admin Invite Email</Label>
+                    <Input
+                      type="email"
+                      placeholder="admin@example.com"
+                      {...form.getInputProps('adminInviteEmail')}
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      Optional. If provided, we’ll email this person an
+                      activation link immediately after the tenant is created.
+                    </p>
+                  </div>
+                )}
               </div>
             </fieldset>
 

@@ -50,7 +50,7 @@ function InvestmentDetailsPage() {
 
   const investment = data.investment
   const farm = investment.farm as Farm
-  const currency = investment.currency || farm.currency || 'NGN'
+  const currency = investment.currency
 
   // Calculate derived values
   const startDate = new Date(investment.createdAt)

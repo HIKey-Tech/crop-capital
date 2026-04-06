@@ -2,8 +2,8 @@ import { createBuilder } from '@ibnlanre/builder'
 import type {
   ActivateAdminRequest,
   CreateFarmRequest,
-  InviteAdminRequest,
   InvestRequest,
+  InviteAdminRequest,
   KycSubmitRequest,
   LoginRequest,
   RegisterRequest,

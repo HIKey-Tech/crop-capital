@@ -130,7 +130,7 @@ function ReadinessPage() {
                   <div className="rounded-xl border border-amber-200 bg-amber-50/80 p-3 text-sm text-amber-950">
                     <div className="flex items-center gap-2 font-medium">
                       <TriangleAlert className="h-4 w-4 shrink-0" />
-                      Remaining blockers
+                      Remaining setup items
                     </div>
                     <ul className="mt-2 space-y-1 text-sm list-disc list-inside">
                       {readiness.blockers.map((blocker) => (
