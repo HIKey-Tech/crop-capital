@@ -76,6 +76,10 @@ type CacheEntry = {
 
 const tenantCache = new Map<string, CacheEntry>();
 
+export const clearTenantResolutionCache = () => {
+  tenantCache.clear();
+};
+
 const getCachedTenant = (key: string): ITenant | null | undefined => {
   const entry = tenantCache.get(key);
   if (!entry) return undefined;
@@ -86,7 +90,7 @@ const getCachedTenant = (key: string): ITenant | null | undefined => {
   return entry.tenant;
 };
 
-const setCachedTenant = (key: string, tenant: ITenant | null) => {
+const setCachedTenant = (key: string, tenant: ITenant) => {
   const ttl = Math.max(1, TENANT_CACHE_TTL_SECONDS);
   tenantCache.set(key, {
     tenant,
@@ -173,8 +177,6 @@ export const resolveTenant = async (
       });
     }
 
-    setCachedTenant(cacheKey, tenant);
-
     if (!tenant) {
       if (TENANCY_STRICT_MODE) {
         return next(
@@ -189,6 +191,8 @@ export const resolveTenant = async (
       }
       return next();
     }
+
+    setCachedTenant(cacheKey, tenant);
 
     req.tenant = tenant;
     next();

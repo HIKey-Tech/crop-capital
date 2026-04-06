@@ -10,6 +10,7 @@ import { logActivity } from "@/modules/activities/activity.service";
 import { WebhookEvent } from "@/modules/payments/webhookEvent.model";
 import { deleteImage } from "@/utils/cloudinary";
 import { inviteTenantAdmin } from "@/modules/auth/auth.service";
+import { clearTenantResolutionCache } from "@/middlewares/tenant.middleware";
 
 const serializeTenant = (tenant: any) => ({
   id: tenant._id,
@@ -167,6 +168,8 @@ export const createTenant = async (req: Request, res: Response) => {
     },
   });
 
+  clearTenantResolutionCache();
+
   res.status(201).json({ success: true, tenant: serializeTenant(tenant) });
 };
 
@@ -223,6 +226,8 @@ export const updateTenant = async (req: Request, res: Response) => {
       },
     });
   }
+
+  clearTenantResolutionCache();
 
   res.status(200).json({ success: true, tenant: serializeTenant(tenant) });
 };
@@ -305,6 +310,8 @@ export const deleteTenant = async (req: Request, res: Response) => {
     resourceType: "Tenant",
     metadata: cleanup,
   });
+
+  clearTenantResolutionCache();
 
   res.status(200).json({
     success: true,
