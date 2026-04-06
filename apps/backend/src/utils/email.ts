@@ -7,25 +7,8 @@ import {
   EMAIL_FROM,
 } from "../config/env";
 
-function hasPlaceholderValue(value?: string | null): boolean {
-  if (!value) return true;
-
-  const normalized = value.trim().toLowerCase();
-  return (
-    normalized.length === 0 ||
-    normalized.includes("your_email") ||
-    normalized.includes("your-password") ||
-    normalized.includes("app_password") ||
-    normalized.includes("example.com")
-  );
-}
-
 export function assertEmailConfig(): void {
-  if (
-    hasPlaceholderValue(EMAIL_HOST) ||
-    hasPlaceholderValue(EMAIL_USER) ||
-    hasPlaceholderValue(EMAIL_PASS)
-  ) {
+  if (!EMAIL_HOST || !EMAIL_USER || !EMAIL_PASS || !EMAIL_FROM) {
     throw new Error("Email service is not configured");
   }
 }
@@ -47,12 +30,16 @@ export const sendEmail = async (to: string, subject: string, html: string) => {
     },
   });
 
-  await transporter.sendMail({
-    from: EMAIL_FROM
-      ? `"CropCapital" <${EMAIL_FROM}>`
-      : `"CropCapital" <${EMAIL_USER}>`,
-    to,
-    subject,
-    html,
-  });
+  try {
+    await transporter.sendMail({
+      from: `"CropCapital" <${EMAIL_FROM}>`,
+      to,
+      subject,
+      html,
+    });
+  } catch (error) {
+    throw new Error(
+      error instanceof Error ? error.message : "Email delivery failed",
+    );
+  }
 };

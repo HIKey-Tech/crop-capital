@@ -385,6 +385,15 @@ export const inviteAdmin = async (
     );
     res.status(200).json({ success: true, ...result });
   } catch (err: any) {
-    next(new AppError(err.message, 400));
+    const message = err?.message || "Failed to send invitation";
+    const statusCode =
+      message.includes("Email delivery") ||
+      message.includes("Email authentication") ||
+      message.includes("Unable to connect to the email server") ||
+      message.includes("Email service is not configured")
+        ? 503
+        : 400;
+
+    next(new AppError(message, statusCode));
   }
 };
