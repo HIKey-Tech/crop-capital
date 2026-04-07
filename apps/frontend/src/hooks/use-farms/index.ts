@@ -1,6 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
-import type { CreateFarmRequest } from '@/types'
+import type {
+  CreateFarmMultipartRequest,
+  UpdateFarmRequest,
+  AddFarmUpdateRequest,
+} from '@/types'
 import { api } from '@/lib/api-builder'
 
 export function useFarms() {
@@ -23,7 +27,8 @@ export function useCreateFarm() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (data: CreateFarmRequest) => api.$use.farms.create(data),
+    mutationFn: (data: CreateFarmMultipartRequest) =>
+      api.$use.farms.create(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: api.farms.list.$use() })
     },
@@ -34,13 +39,8 @@ export function useUpdateFarm() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: ({
-      id,
-      data,
-    }: {
-      id: string
-      data: Partial<CreateFarmRequest>
-    }) => api.$use.farms.update(id, data),
+    mutationFn: ({ id, data }: { id: string; data: UpdateFarmRequest }) =>
+      api.$use.farms.update(id, data),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({
         queryKey: api.farms.detail.$use(variables.id),
@@ -70,7 +70,7 @@ export function useAddFarmUpdate() {
       update,
     }: {
       id: string
-      update: { stage: string; image?: string }
+      update: AddFarmUpdateRequest
     }) => api.$use.farms.addUpdate(id, update),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({

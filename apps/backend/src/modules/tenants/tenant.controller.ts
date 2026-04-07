@@ -241,9 +241,10 @@ export const deleteTenant = async (req: Request, res: Response) => {
   }
 
   const tenantId = tenant._id;
-  const [farms, kycDocuments] = await Promise.all([
+  const [farms, kycDocuments, users] = await Promise.all([
     Farm.find({ tenantId }),
     KycDocument.find({ tenantId }),
+    User.find({ tenantId }).select("photoPublicId"),
   ]);
 
   const farmImagePublicIds = farms.flatMap((farm) => [
@@ -260,9 +261,14 @@ export const deleteTenant = async (req: Request, res: Response) => {
     ])
     .filter((publicId): publicId is string => Boolean(publicId));
 
+  const userPhotoPublicIds = users
+    .map((user) => user.photoPublicId)
+    .filter((publicId): publicId is string => Boolean(publicId));
+
   const [
     farmImageCleanup,
     kycImageCleanup,
+    userPhotoCleanup,
     investmentsResult,
     activitiesResult,
     usersResult,
@@ -273,6 +279,7 @@ export const deleteTenant = async (req: Request, res: Response) => {
   ] = await Promise.all([
     deleteImagesBestEffort(farmImagePublicIds),
     deleteImagesBestEffort(kycImagePublicIds),
+    deleteImagesBestEffort(userPhotoPublicIds),
     Investment.deleteMany({ tenantId }),
     Activity.deleteMany({ tenantId }),
     User.deleteMany({ tenantId }),
@@ -299,6 +306,8 @@ export const deleteTenant = async (req: Request, res: Response) => {
     farmImagesFailed: farmImageCleanup.failed,
     kycImagesDeleted: kycImageCleanup.deleted,
     kycImagesFailed: kycImageCleanup.failed,
+    userPhotosDeleted: userPhotoCleanup.deleted,
+    userPhotosFailed: userPhotoCleanup.failed,
   };
 
   logActivity({

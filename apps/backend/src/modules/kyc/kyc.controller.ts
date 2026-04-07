@@ -2,9 +2,21 @@ import { Request, Response, NextFunction } from "express";
 import { AppError } from "@/utils/AppError";
 import { KycDocument } from "./kyc.model";
 import { User } from "@/modules/users/user.model";
-import { uploadImage, deleteImage } from "@/utils/cloudinary";
+import { uploadImageBuffer, deleteImage } from "@/utils/cloudinary";
 import { sendEmail } from "@/utils/email";
 import { logActivity } from "@/modules/activities/activity.service";
+
+const getKycImageFile = (
+  req: Request,
+  fieldName: "documentImage" | "selfieImage",
+): Express.Multer.File | undefined => {
+  if (!req.files || Array.isArray(req.files)) {
+    return undefined;
+  }
+
+  const files = req.files[fieldName];
+  return Array.isArray(files) ? files[0] : undefined;
+};
 
 // Investor: submit KYC documents
 export const submitKyc = async (
@@ -15,7 +27,9 @@ export const submitKyc = async (
   try {
     const userId = req.user?._id;
     const tenantId = req.tenant?._id;
-    const { documentType, documentImage, selfieImage } = req.body;
+    const { documentType } = req.body;
+    const documentImage = getKycImageFile(req, "documentImage");
+    const selfieImage = getKycImageFile(req, "selfieImage");
 
     if (!documentType || !documentImage) {
       return next(
@@ -44,8 +58,8 @@ export const submitKyc = async (
     }
 
     // Upload document image to Cloudinary
-    const { url: docUrl, publicId: docPublicId } = await uploadImage(
-      documentImage,
+    const { url: docUrl, publicId: docPublicId } = await uploadImageBuffer(
+      documentImage.buffer,
       "kyc-documents",
     );
 
@@ -60,10 +74,8 @@ export const submitKyc = async (
 
     // Upload selfie if provided
     if (selfieImage) {
-      const { url: selfieUrl, publicId: selfiePublicId } = await uploadImage(
-        selfieImage,
-        "kyc-selfies",
-      );
+      const { url: selfieUrl, publicId: selfiePublicId } =
+        await uploadImageBuffer(selfieImage.buffer, "kyc-selfies");
       kycData.selfieImage = selfieUrl;
       kycData.selfieImagePublicId = selfiePublicId;
     }
@@ -142,7 +154,9 @@ export const resubmitKyc = async (
   try {
     const userId = req.user?._id;
     const tenantId = req.tenant?._id;
-    const { documentType, documentImage, selfieImage } = req.body;
+    const { documentType } = req.body;
+    const documentImage = getKycImageFile(req, "documentImage");
+    const selfieImage = getKycImageFile(req, "selfieImage");
 
     if (!documentType || !documentImage) {
       return next(
@@ -172,8 +186,8 @@ export const resubmitKyc = async (
     }
 
     // Upload new document image
-    const { url: docUrl, publicId: docPublicId } = await uploadImage(
-      documentImage,
+    const { url: docUrl, publicId: docPublicId } = await uploadImageBuffer(
+      documentImage.buffer,
       "kyc-documents",
     );
 
@@ -187,12 +201,13 @@ export const resubmitKyc = async (
 
     // Upload new selfie if provided
     if (selfieImage) {
-      const { url: selfieUrl, publicId: selfiePublicId } = await uploadImage(
-        selfieImage,
-        "kyc-selfies",
-      );
+      const { url: selfieUrl, publicId: selfiePublicId } =
+        await uploadImageBuffer(selfieImage.buffer, "kyc-selfies");
       rejected.selfieImage = selfieUrl;
       rejected.selfieImagePublicId = selfiePublicId;
+    } else {
+      rejected.selfieImage = undefined;
+      rejected.selfieImagePublicId = undefined;
     }
 
     await rejected.save();

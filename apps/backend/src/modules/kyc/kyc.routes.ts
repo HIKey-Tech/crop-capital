@@ -11,13 +11,26 @@ import {
 import { protect } from "@/middlewares/auth.middleware";
 import { restrictTo } from "@/middlewares/role.middleware";
 import { requireTenantFeature } from "@/middlewares/feature.middleware";
+import { kycImagesUpload } from "@/middlewares/upload.middleware";
 
 const router = Router();
 
 // Investor routes
-router.post("/submit", protect, restrictTo("investor"), submitKyc);
+router.post(
+  "/submit",
+  protect,
+  restrictTo("investor"),
+  kycImagesUpload,
+  submitKyc,
+);
 router.get("/me", protect, restrictTo("investor"), getMyKyc);
-router.put("/resubmit", protect, restrictTo("investor"), resubmitKyc);
+router.put(
+  "/resubmit",
+  protect,
+  restrictTo("investor"),
+  kycImagesUpload,
+  resubmitKyc,
+);
 
 // Admin routes
 router.get(

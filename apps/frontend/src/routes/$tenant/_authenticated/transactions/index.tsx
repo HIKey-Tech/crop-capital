@@ -22,6 +22,7 @@ interface Transaction {
   date: string
   description: string
   amount: number
+  currency?: Investment['currency']
   status: string
   type: 'investment' | 'payout'
   investmentId: string
@@ -80,7 +81,7 @@ const getColumns = (tenant: string): Array<ColumnDef<Transaction>> => [
           }
         >
           {isPositive ? '+' : '-'}
-          {formatCurrency(Math.abs(tx.amount))}
+          {formatCurrency(Math.abs(tx.amount), tx.currency)}
         </span>
       )
     },
@@ -129,12 +130,12 @@ function TransactionsPage() {
         date: inv.createdAt,
         description: `Investment: ${farm.name || 'Farm'}`,
         amount: inv.amount,
+        currency: inv.currency,
         status: inv.status,
         type: 'investment',
         investmentId: inv._id,
       })
 
-      // ROI payout transaction (if paid)
       if (inv.roiPaid) {
         const roiAmount = inv.projectedReturn
           ? inv.projectedReturn - inv.amount
@@ -142,8 +143,9 @@ function TransactionsPage() {
         txs.push({
           id: `PAY-${inv._id.slice(-8).toUpperCase()}`,
           date: inv.updatedAt,
-          description: `ROI Payout: ${farm.name || 'Farm'}`,
+          description: `Bank Return Payout: ${farm.name || 'Farm'}`,
           amount: roiAmount,
+          currency: inv.currency,
           status: 'completed',
           type: 'payout',
           investmentId: inv._id,
@@ -190,7 +192,7 @@ function TransactionsPage() {
             Transaction History
           </h1>
           <p className="text-muted-foreground">
-            View and download your financial records.
+            View and download your investment and bank payout records.
           </p>
         </div>
         <Button variant="outline">

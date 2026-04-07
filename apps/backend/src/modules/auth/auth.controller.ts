@@ -12,6 +12,13 @@ import {
 } from "./auth.service";
 import { AppError } from "@/utils/AppError";
 import { logActivity } from "@/modules/activities/activity.service";
+import { deleteImage, uploadImageBuffer } from "@/utils/cloudinary";
+
+const toOptionalTrimmedString = (value: unknown) => {
+  if (typeof value !== "string") return undefined;
+  const normalized = value.trim();
+  return normalized.length > 0 ? normalized : undefined;
+};
 
 export const signup = async (
   req: Request,
@@ -111,6 +118,7 @@ export const getMe = async (
         role: req.user.role,
         country: req.user.country,
         photo: req.user.photo,
+        bankAccount: req.user.bankAccount,
         isVerified: req.user.isVerified,
         createdAt: req.user.createdAt,
       },
@@ -131,11 +139,49 @@ export const updateProfile = async (
       throw new AppError("Not authenticated", 401);
     }
 
-    const { name, country, photo } = req.body;
+    const name = toOptionalTrimmedString(req.body.name);
+    const country = toOptionalTrimmedString(req.body.country);
+    const removePhoto = req.body.removePhoto === "true";
+
+    const bankAccount = Object.prototype.hasOwnProperty.call(
+      req.body,
+      "bankAccount.accountName",
+    )
+      ? {
+          accountName: toOptionalTrimmedString(
+            req.body["bankAccount.accountName"],
+          ),
+          bankName: toOptionalTrimmedString(req.body["bankAccount.bankName"]),
+          bankCode: toOptionalTrimmedString(req.body["bankAccount.bankCode"]),
+          accountNumber: toOptionalTrimmedString(
+            req.body["bankAccount.accountNumber"],
+          ),
+        }
+      : undefined;
+
+    let photo: string | undefined;
+    let photoPublicId: string | undefined;
+
+    if (req.file) {
+      const uploadedPhoto = await uploadImageBuffer(
+        req.file.buffer,
+        "profile-photos",
+      );
+      photo = uploadedPhoto.url;
+      photoPublicId = uploadedPhoto.publicId;
+    }
+
+    if ((removePhoto || req.file) && req.user.photoPublicId) {
+      await deleteImage(req.user.photoPublicId);
+    }
+
     const user = await updateUserProfile(req.user._id.toString(), {
       name,
       country,
       photo,
+      photoPublicId,
+      removePhoto,
+      bankAccount,
     });
 
     res.status(200).json({
@@ -148,6 +194,7 @@ export const updateProfile = async (
         role: user.role,
         country: user.country,
         photo: user.photo,
+        bankAccount: user.bankAccount,
         isVerified: user.isVerified,
         createdAt: user.createdAt,
       },

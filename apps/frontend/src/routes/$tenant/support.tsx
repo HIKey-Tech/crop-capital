@@ -22,7 +22,7 @@ const faqs = [
   },
   {
     q: 'When are returns paid out?',
-    a: 'Returns are distributed quarterly, following the completion of each harvest cycle and financial reconciliation. You will receive a payout notification and detailed breakdown in your investor dashboard before each distribution.',
+    a: 'Returns are distributed quarterly, following the completion of each harvest cycle and financial reconciliation. Once approved, they are sent directly to your bank account and reflected in your investor dashboard.',
   },
   {
     q: 'Is my capital guaranteed?',

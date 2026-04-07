@@ -13,7 +13,7 @@ import {
 import { toast } from 'sonner'
 import type { ChangeEvent } from 'react'
 
-import type { CreateFarmInput } from '@/api/farms/schema'
+import type { CreateFarmFormValues, CreateFarmInput } from '@/api/farms/schema'
 import type { CreateFarmRequest } from '@/types'
 
 import { Button } from '@/components/ui/button'
@@ -31,7 +31,6 @@ import { createFarmSchema } from '@/api/farms/schema'
 import { LoadingSpinner } from '@/components/ui/loading'
 import { formatDate } from '@/lib/format-date'
 
-import { fileToBase64 } from '@/lib/file-utils'
 import { currencyOptions } from '@/lib/format-currency'
 
 export const Route = createFileRoute(
@@ -43,6 +42,7 @@ export const Route = createFileRoute(
 interface ImagePreview {
   id: number
   url: string
+  publicId?: string
   file?: File
   isExisting?: boolean
 }
@@ -56,8 +56,24 @@ function EditFarmPage() {
   const [images, setImages] = useState<Array<ImagePreview>>([])
   const [hasImageChanges, setHasImageChanges] = useState(false)
 
-  const form = useForm<CreateFarmInput>({
+  const form = useForm<
+    CreateFarmFormValues,
+    (values: CreateFarmFormValues) => CreateFarmInput
+  >({
     validate: zodResolver(createFarmSchema),
+    initialValues: {
+      name: '',
+      location: '',
+      latitude: '',
+      longitude: '',
+      currency: 'NGN',
+      images: [],
+      investmentGoal: '',
+      minimumInvestment: '',
+      roi: '',
+      durationMonths: '',
+    },
+    transformValues: (values) => createFarmSchema.parse(values),
   })
 
   // Pre-fill form when data is loaded
@@ -66,20 +82,21 @@ function EditFarmPage() {
       form.setValues({
         name: data.farm.name,
         location: data.farm.location,
-        latitude: data.farm.coordinates?.latitude,
-        longitude: data.farm.coordinates?.longitude,
+        latitude: data.farm.coordinates?.latitude.toString() ?? '',
+        longitude: data.farm.coordinates?.longitude.toString() ?? '',
         currency: data.farm.currency,
         images: data.farm.images,
-        investmentGoal: data.farm.investmentGoal,
-        minimumInvestment: data.farm.minimumInvestment,
-        roi: data.farm.roi,
-        durationMonths: data.farm.durationMonths,
+        investmentGoal: data.farm.investmentGoal.toString(),
+        minimumInvestment: data.farm.minimumInvestment.toString(),
+        roi: data.farm.roi.toString(),
+        durationMonths: data.farm.durationMonths.toString(),
       })
 
       setImages(
         data.farm.images.map((url, idx) => ({
           id: idx + 1,
           url,
+          publicId: data.farm.imagePublicIds[idx],
           isExisting: true,
         })),
       )
@@ -120,7 +137,7 @@ function EditFarmPage() {
     setHasImageChanges(true)
   }
 
-  async function handleSubmit(values: CreateFarmInput) {
+  function handleSubmit(values: CreateFarmInput) {
     try {
       const { latitude, longitude, ...rest } = values
       const updateData: Partial<CreateFarmRequest> = {
@@ -134,29 +151,38 @@ function EditFarmPage() {
         ...(latitude != null && longitude != null
           ? {
               coordinates: {
-                latitude: Number(latitude),
-                longitude: Number(longitude),
+                latitude,
+                longitude,
               },
             }
           : {}),
       }
 
-      // Only send images if they changed
-      if (hasImageChanges) {
-        const base64Images = await Promise.all(
-          images.map(async (img) => {
-            if (img.file) {
-              return fileToBase64(img.file)
-            }
-            // Existing image URL — keep as-is
-            return img.url
-          }),
-        )
-        updateData.images = base64Images
-      }
-
       updateFarmMutation.mutate(
-        { id, data: updateData },
+        {
+          id,
+          data: {
+            data: updateData,
+            hasImageChanges,
+            retainedImagePublicIds: hasImageChanges
+              ? images
+                  .filter(
+                    (img): img is ImagePreview & { publicId: string } =>
+                      img.isExisting === true &&
+                      typeof img.publicId === 'string',
+                  )
+                  .map((img) => img.publicId)
+              : undefined,
+            newImages: hasImageChanges
+              ? images
+                  .filter(
+                    (img): img is ImagePreview & { file: File } =>
+                      img.file instanceof File,
+                  )
+                  .map((img) => img.file)
+              : undefined,
+          },
+        },
         {
           onSuccess: () => {
             toast.success('Farm updated successfully')
@@ -523,9 +549,7 @@ function EditFarmPage() {
 function FarmUpdateForm({ farmId }: { farmId: string }) {
   const addUpdate = useAddFarmUpdate()
   const [stage, setStage] = useState('')
-  const [updateImageBase64, setUpdateImageBase64] = useState<string | null>(
-    null,
-  )
+  const [updateImageFile, setUpdateImageFile] = useState<File | null>(null)
   const [updateImagePreview, setUpdateImagePreview] = useState<string | null>(
     null,
   )
@@ -533,12 +557,8 @@ function FarmUpdateForm({ farmId }: { farmId: string }) {
   function handleUpdateImageUpload(e: ChangeEvent<HTMLInputElement>) {
     if (e.target.files?.length) {
       const file = e.target.files[0]
-      const reader = new FileReader()
-      reader.onload = () => {
-        setUpdateImageBase64(reader.result as string)
-        setUpdateImagePreview(URL.createObjectURL(file))
-      }
-      reader.readAsDataURL(file)
+      setUpdateImageFile(file)
+      setUpdateImagePreview(URL.createObjectURL(file))
     }
   }
 
@@ -553,14 +573,14 @@ function FarmUpdateForm({ farmId }: { farmId: string }) {
         id: farmId,
         update: {
           stage: stage.trim(),
-          ...(updateImageBase64 ? { image: updateImageBase64 } : {}),
+          ...(updateImageFile ? { image: updateImageFile } : {}),
         },
       },
       {
         onSuccess: () => {
           toast.success('Update published!')
           setStage('')
-          setUpdateImageBase64(null)
+          setUpdateImageFile(null)
           setUpdateImagePreview(null)
         },
         onError: (err) => {
@@ -600,7 +620,7 @@ function FarmUpdateForm({ farmId }: { farmId: string }) {
               <button
                 type="button"
                 onClick={() => {
-                  setUpdateImageBase64(null)
+                  setUpdateImageFile(null)
                   setUpdateImagePreview(null)
                 }}
                 className="absolute top-0.5 right-0.5 bg-white rounded-full p-0.5"

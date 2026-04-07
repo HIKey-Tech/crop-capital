@@ -1,8 +1,112 @@
 import { Request, Response, NextFunction } from "express";
 import { AppError } from "@/utils/AppError";
 import { Farm } from "./farm.model";
-import { uploadImage, deleteImage } from "@/utils/cloudinary";
+import { uploadImageBuffer, deleteImage } from "@/utils/cloudinary";
 import { logActivity } from "@/modules/activities/activity.service";
+
+const asNonEmptyString = (value: unknown, fieldName: string): string => {
+  if (typeof value !== "string" || value.trim().length === 0) {
+    throw new AppError(`${fieldName} is required`, 400);
+  }
+
+  return value.trim();
+};
+
+const asOptionalString = (value: unknown): string | undefined => {
+  if (typeof value !== "string") return undefined;
+  const trimmed = value.trim();
+  return trimmed.length > 0 ? trimmed : undefined;
+};
+
+const asRequiredNumber = (value: unknown, fieldName: string): number => {
+  const parsed = Number(value);
+
+  if (!Number.isFinite(parsed)) {
+    throw new AppError(`${fieldName} must be a valid number`, 400);
+  }
+
+  return parsed;
+};
+
+const asOptionalCoordinate = (
+  value: unknown,
+  fieldName: string,
+  min: number,
+  max: number,
+): number | undefined => {
+  const normalized = asOptionalString(value);
+  if (normalized == null) return undefined;
+
+  const parsed = Number(normalized);
+  if (!Number.isFinite(parsed) || parsed < min || parsed > max) {
+    throw new AppError(
+      `${fieldName} must be a valid number between ${min} and ${max}`,
+      400,
+    );
+  }
+
+  return parsed;
+};
+
+const toStringArray = (value: unknown): string[] => {
+  if (Array.isArray(value)) {
+    return value
+      .filter((item): item is string => typeof item === "string")
+      .map((item) => item.trim())
+      .filter(Boolean);
+  }
+
+  if (typeof value === "string" && value.trim().length > 0) {
+    return [value.trim()];
+  }
+
+  return [];
+};
+
+const getUploadedFiles = (req: Request): Express.Multer.File[] => {
+  if (Array.isArray(req.files)) {
+    return req.files;
+  }
+
+  return [];
+};
+
+const parseFarmPayload = (
+  body: Record<string, unknown>,
+): {
+  name: string;
+  location: string;
+  currency: string;
+  coordinates?: { latitude: number; longitude: number };
+  investmentGoal: number;
+  minimumInvestment: number;
+  roi: number;
+  durationMonths: number;
+} => {
+  const latitude = asOptionalCoordinate(body.latitude, "Latitude", -90, 90);
+  const longitude = asOptionalCoordinate(
+    body.longitude,
+    "Longitude",
+    -180,
+    180,
+  );
+
+  return {
+    name: asNonEmptyString(body.name, "Name"),
+    location: asNonEmptyString(body.location, "Location"),
+    currency: asNonEmptyString(body.currency, "Currency"),
+    investmentGoal: asRequiredNumber(body.investmentGoal, "Investment goal"),
+    minimumInvestment: asRequiredNumber(
+      body.minimumInvestment,
+      "Minimum investment",
+    ),
+    roi: asRequiredNumber(body.roi, "ROI"),
+    durationMonths: asRequiredNumber(body.durationMonths, "Duration months"),
+    ...(latitude != null && longitude != null
+      ? { coordinates: { latitude, longitude } }
+      : {}),
+  };
+};
 
 // Admin: create farm
 export const createFarm = async (
@@ -12,15 +116,16 @@ export const createFarm = async (
 ) => {
   try {
     const tenantId = req.tenant?._id;
-    const { images, ...farmData } = req.body;
+    const imageFiles = getUploadedFiles(req);
+    const farmData = parseFarmPayload(req.body as Record<string, unknown>);
 
-    if (!images?.length) {
+    if (!imageFiles.length) {
       return next(new AppError("At least one farm image is required", 400));
     }
 
     // Upload all images to Cloudinary
     const uploadResults = await Promise.all(
-      images.map((img: string) => uploadImage(img, "farms")),
+      imageFiles.map((file) => uploadImageBuffer(file.buffer, "farms")),
     );
 
     const farm = await Farm.create({
@@ -55,7 +160,12 @@ export const updateFarm = async (
 ) => {
   try {
     const tenantId = req.tenant?._id;
-    const { images, ...farmData } = req.body;
+    const farmData = parseFarmPayload(req.body as Record<string, unknown>);
+    const imageFiles = getUploadedFiles(req);
+    const hasImageChanges = req.body.hasImageChanges === "true";
+    const retainedImagePublicIds = toStringArray(
+      req.body.retainedImagePublicIds,
+    );
 
     const farm = await Farm.findOne({
       _id: req.params.id,
@@ -64,23 +174,59 @@ export const updateFarm = async (
     if (!farm) return next(new AppError("Farm not found", 404));
 
     // Handle images update
-    if (images?.length) {
-      // Delete all old images from Cloudinary
-      if (farm.imagePublicIds?.length) {
-        await Promise.all(
-          farm.imagePublicIds.map((pid: string) => deleteImage(pid)),
-        );
+    if (hasImageChanges) {
+      const existingImagesByPublicId = new Map(
+        farm.imagePublicIds.map((publicId: string, index: number) => [
+          publicId,
+          {
+            publicId,
+            url: farm.images[index],
+          },
+        ]),
+      );
+
+      const retainedImages = retainedImagePublicIds.map((publicId) => {
+        const existingImage = existingImagesByPublicId.get(publicId);
+
+        if (!existingImage) {
+          throw new AppError(
+            "One or more retained farm images are invalid",
+            400,
+          );
+        }
+
+        return existingImage;
+      });
+
+      const removedImagePublicIds = farm.imagePublicIds.filter(
+        (publicId: string) => !retainedImagePublicIds.includes(publicId),
+      );
+
+      if (removedImagePublicIds.length) {
+        await Promise.all(removedImagePublicIds.map((pid) => deleteImage(pid)));
       }
 
-      // Upload all new images
-      const uploadResults = await Promise.all(
-        images.map((img: string) => uploadImage(img, "farms")),
+      const uploadedImages = await Promise.all(
+        imageFiles.map((file) => uploadImageBuffer(file.buffer, "farms")),
       );
 
-      farmData.images = uploadResults.map((r: { url: string }) => r.url);
-      farmData.imagePublicIds = uploadResults.map(
-        (r: { publicId: string }) => r.publicId,
-      );
+      const nextImages = [
+        ...retainedImages.map((image) => image.url),
+        ...uploadedImages.map((image) => image.url),
+      ];
+      const nextImagePublicIds = [
+        ...retainedImages.map((image) => image.publicId),
+        ...uploadedImages.map((image) => image.publicId),
+      ];
+
+      if (!nextImages.length) {
+        return next(new AppError("At least one farm image is required", 400));
+      }
+
+      Object.assign(farmData, {
+        images: nextImages,
+        imagePublicIds: nextImagePublicIds,
+      });
     }
 
     const updatedFarm = await Farm.findOneAndUpdate(
@@ -192,7 +338,8 @@ export const addFarmUpdate = async (
 ) => {
   try {
     const tenantId = req.tenant?._id;
-    const { stage, image } = req.body;
+    const { stage } = req.body;
+    const imageFile = req.file;
 
     if (!stage) {
       return next(new AppError("Update stage is required", 400));
@@ -210,8 +357,11 @@ export const addFarmUpdate = async (
     };
 
     // If image is provided, upload it to Cloudinary
-    if (image) {
-      const { url, publicId } = await uploadImage(image, "farm-updates");
+    if (imageFile) {
+      const { url, publicId } = await uploadImageBuffer(
+        imageFile.buffer,
+        "farm-updates",
+      );
       updateData.image = url;
       updateData.imagePublicId = publicId;
     }

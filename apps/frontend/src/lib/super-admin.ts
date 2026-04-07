@@ -25,7 +25,7 @@ export const featureLabels: Array<{
   label: string
 }> = [
   { key: 'investments', label: 'Investments' },
-  { key: 'wallet', label: 'Wallet' },
+  { key: 'wallet', label: 'Returns Hub' },
   { key: 'transactions', label: 'Transactions' },
   { key: 'farms', label: 'Farms' },
   { key: 'news', label: 'News' },
@@ -34,7 +34,7 @@ export const featureLabels: Array<{
   { key: 'adminFarms', label: 'Admin Farms' },
   { key: 'adminInvestors', label: 'Admin Investors' },
   { key: 'adminTransactions', label: 'Admin Transactions' },
-  { key: 'adminPayouts', label: 'Admin Payouts' },
+  { key: 'adminPayouts', label: 'Admin Bank Payouts' },
   { key: 'adminKyc', label: 'Admin KYC' },
   { key: 'adminReports', label: 'Admin Reports' },
 ]

@@ -1,6 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
-import type { LoginRequest, RegisterRequest } from '@/types'
+import type {
+  LoginRequest,
+  RegisterRequest,
+  UpdateProfileRequest,
+} from '@/types'
 import { api } from '@/lib/api-builder'
 import { clearAuthToken } from '@/lib/api-client'
 
@@ -53,7 +57,7 @@ export function useUpdateProfile() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (data: { name?: string; country?: string; photo?: string }) =>
+    mutationFn: (data: UpdateProfileRequest) =>
       api.$use.auth.updateProfile(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: api.auth.me.$use() })
@@ -65,5 +69,45 @@ export function useUpdatePassword() {
   return useMutation({
     mutationFn: (data: { currentPassword: string; newPassword: string }) =>
       api.$use.auth.updatePassword(data),
+  })
+}
+
+export function usePaystackBanks(country?: string) {
+  const normalizedCountry = country?.trim() ?? ''
+
+  return useQuery({
+    queryKey: ['paystack-banks', normalizedCountry],
+    queryFn: () => api.$use.payments.banks(normalizedCountry),
+    enabled: normalizedCountry.length > 0,
+    staleTime: 1000 * 60 * 60,
+  })
+}
+
+export function usePaystackAccountResolution(
+  bankCode?: string,
+  accountNumber?: string,
+  enabled = true,
+) {
+  const normalizedBankCode = bankCode?.trim() ?? ''
+  const normalizedAccountNumber = accountNumber?.replace(/\s+/g, '') ?? ''
+
+  return useQuery({
+    queryKey: [
+      'paystack-account-resolution',
+      normalizedBankCode,
+      normalizedAccountNumber,
+    ],
+    queryFn: () =>
+      api.$use.payments.resolveAccount(
+        normalizedBankCode,
+        normalizedAccountNumber,
+      ),
+    enabled:
+      enabled &&
+      normalizedBankCode.length > 0 &&
+      normalizedAccountNumber.length >= 6 &&
+      normalizedAccountNumber.length <= 20,
+    retry: false,
+    staleTime: 1000 * 60 * 10,
   })
 }

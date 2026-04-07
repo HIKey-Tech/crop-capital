@@ -11,6 +11,7 @@ import kycRoutes from "./modules/kyc/kyc.routes";
 import activityRoutes from "./modules/activities/activity.routes";
 import tenantRoutes from "./modules/tenants/tenant.routes";
 import { paystackWebhook } from "./modules/payments/payment.webhook";
+import paymentRoutes from "./modules/payments/payment.routes";
 import { ALLOWED_ORIGINS } from "./config/env";
 import { portNumbers } from "get-port";
 import { resolveTenant } from "./middlewares/tenant.middleware";
@@ -19,6 +20,7 @@ import { requireTenant } from "./middlewares/require-tenant.middleware";
 const app = express();
 const portRange = Array.from(portNumbers(3000, 3100));
 const ports = portRange.map((port) => `http://localhost:${port}`);
+const JSON_BODY_LIMIT = "1mb";
 
 /**
  * Trust only the first proxy (Render's load balancer) for correct client IP detection.
@@ -70,10 +72,14 @@ app.use(
 );
 
 /* Paystack Webhook - Must be before express.json() middleware for raw body access */
-app.post("/api/webhooks/paystack", express.json(), paystackWebhook);
+app.post(
+  "/api/webhooks/paystack",
+  express.json({ limit: JSON_BODY_LIMIT }),
+  paystackWebhook,
+);
 
 /* Parse JSON for all other routes */
-app.use(express.json());
+app.use(express.json({ limit: JSON_BODY_LIMIT }));
 
 /* Require tenant for all API routes (webhooks are mounted above and bypass this) */
 app.use("/api", requireTenant);
@@ -90,6 +96,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/kyc", kycRoutes);
 app.use("/api/activities", activityRoutes);
 app.use("/api/tenants", tenantRoutes);
+app.use("/api/payments", paymentRoutes);
 
 /* Error Handler (must be last) */
 app.use(errorHandler);

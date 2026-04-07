@@ -237,10 +237,11 @@ function InvestmentDetailsPage() {
                       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-1">
                         <div>
                           <h4 className="font-medium text-foreground">
-                            ROI Paid
+                            Return Paid to Bank
                           </h4>
                           <p className="text-sm text-muted-foreground mt-1">
-                            Your returns have been credited to your account
+                            Your investment returns have been released for
+                            direct bank payout
                           </p>
                         </div>
                       </div>
@@ -256,7 +257,7 @@ function InvestmentDetailsPage() {
                             Awaiting Maturity
                           </h4>
                           <p className="text-sm text-muted-foreground mt-1">
-                            Your investment is growing. Expected payout on{' '}
+                            Your investment is growing. Expected bank payout on{' '}
                             {formatDate(endDate.toISOString())}
                           </p>
                         </div>

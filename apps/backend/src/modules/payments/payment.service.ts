@@ -35,6 +35,42 @@ interface PaystackVerifyResponse {
   };
 }
 
+export interface PaystackBank {
+  id: number;
+  name: string;
+  code: string;
+  longcode?: string;
+  gateway?: string;
+  pay_with_bank?: boolean;
+  active: boolean;
+  is_deleted?: boolean;
+  country?: string;
+  currency?: string;
+  type?: string;
+}
+
+interface PaystackBanksResponse {
+  status: boolean;
+  message: string;
+  data: PaystackBank[];
+}
+
+interface PaystackResolveAccountResponse {
+  status: boolean;
+  message: string;
+  data: {
+    account_number: string;
+    account_name: string;
+    bank_id: number;
+  };
+}
+
+export interface ResolvedPaystackAccount {
+  accountNumber: string;
+  accountName: string;
+  bankId: number;
+}
+
 /**
  * Generate a unique transaction reference
  */
@@ -109,6 +145,74 @@ export async function verifyTransaction(
   }
 
   return response.json();
+}
+
+export async function listBanks(country: string): Promise<PaystackBank[]> {
+  const normalizedCountry = country.trim().toLowerCase();
+
+  const searchParams = new URLSearchParams({
+    country: normalizedCountry,
+    perPage: "100",
+  });
+
+  const response = await fetch(`${PAYSTACK_BASE_URL}/bank?${searchParams}`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${PAYSTACK_SECRET_KEY}`,
+    },
+  });
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => null);
+
+    if (response.status >= 400 && response.status < 500) {
+      return [];
+    }
+
+    throw new Error(error?.message || "Failed to fetch Paystack banks");
+  }
+
+  const payload = (await response.json()) as PaystackBanksResponse;
+
+  return payload.data.filter((bank) => bank.active && !bank.is_deleted);
+}
+
+export async function resolveAccountNumber(
+  accountNumber: string,
+  bankCode: string,
+): Promise<ResolvedPaystackAccount | null> {
+  const searchParams = new URLSearchParams({
+    account_number: accountNumber.trim(),
+    bank_code: bankCode.trim(),
+  });
+
+  const response = await fetch(
+    `${PAYSTACK_BASE_URL}/bank/resolve?${searchParams.toString()}`,
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${PAYSTACK_SECRET_KEY}`,
+      },
+    },
+  );
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => null);
+
+    if (response.status >= 400 && response.status < 500) {
+      return null;
+    }
+
+    throw new Error(error?.message || "Failed to resolve bank account");
+  }
+
+  const payload = (await response.json()) as PaystackResolveAccountResponse;
+
+  return {
+    accountNumber: payload.data.account_number,
+    accountName: payload.data.account_name,
+    bankId: payload.data.bank_id,
+  };
 }
 
 /**

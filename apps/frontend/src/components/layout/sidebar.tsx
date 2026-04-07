@@ -35,7 +35,7 @@ const investorNavItems = [
   },
   {
     to: '/$tenant/wallet',
-    label: 'Wallet',
+    label: 'Returns',
     icon: Wallet,
     feature: 'wallet' as const,
   },
@@ -88,7 +88,7 @@ const adminNavItems = [
   },
   {
     to: '/$tenant/admin/payouts',
-    label: 'Payouts',
+    label: 'Bank Payouts',
     icon: Wallet,
     feature: 'adminPayouts' as const,
   },

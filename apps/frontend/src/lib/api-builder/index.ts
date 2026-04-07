@@ -1,12 +1,16 @@
 import { createBuilder } from '@ibnlanre/builder'
 import type {
   ActivateAdminRequest,
-  CreateFarmRequest,
+  AccountResolutionResponse,
+  AddFarmUpdateRequest,
+  BanksListResponse,
+  CreateFarmMultipartRequest,
   InvestRequest,
   InviteAdminRequest,
   KycSubmitRequest,
   LoginRequest,
   RegisterRequest,
+  UpdateProfileRequest,
 } from '@/types'
 import {
   activitiesApi,
@@ -14,6 +18,7 @@ import {
   farmsApi,
   investmentsApi,
   kycApi,
+  paymentsApi,
   tenantApi,
   usersApi,
 } from '@/lib/api-client'
@@ -29,22 +34,27 @@ export const api = createBuilder({
       authApi.resetPassword(token, password),
     activateAdmin: (data: ActivateAdminRequest) =>
       authApi.activateAdmin(data.token, data.name, data.password),
-    updateProfile: (data: {
-      name?: string
-      country?: string
-      photo?: string
-    }) => authApi.updateProfile(data),
+    updateProfile: (data: UpdateProfileRequest) => authApi.updateProfile(data),
     updatePassword: (data: { currentPassword: string; newPassword: string }) =>
       authApi.updatePassword(data),
+  },
+  payments: {
+    banks: (country: string): Promise<BanksListResponse> =>
+      paymentsApi.getBanks(country),
+    resolveAccount: (
+      bankCode: string,
+      accountNumber: string,
+    ): Promise<AccountResolutionResponse> =>
+      paymentsApi.resolveAccount(bankCode, accountNumber),
   },
   farms: {
     list: () => farmsApi.getAll(),
     detail: (id: string) => farmsApi.getById(id),
-    create: (data: CreateFarmRequest) => farmsApi.create(data),
-    update: (id: string, data: Partial<CreateFarmRequest>) =>
+    create: (data: CreateFarmMultipartRequest) => farmsApi.create(data),
+    update: (id: string, data: Parameters<typeof farmsApi.update>[1]) =>
       farmsApi.update(id, data),
     delete: (id: string) => farmsApi.delete(id),
-    addUpdate: (id: string, update: { stage: string; image?: string }) =>
+    addUpdate: (id: string, update: AddFarmUpdateRequest) =>
       farmsApi.addUpdate(id, update),
   },
   investments: {

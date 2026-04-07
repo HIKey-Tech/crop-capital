@@ -638,7 +638,7 @@ function ProcessSection() {
       number: '04',
       icon: CheckCircle2,
       title: 'Receive Returns',
-      desc: 'Quarterly distributions directly to your wallet, with full reporting and tax statements.',
+      desc: 'Quarterly distributions sent directly to your bank account, with full reporting and tax statements.',
     },
   ]
   return (

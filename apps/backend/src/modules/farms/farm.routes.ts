@@ -13,6 +13,10 @@ import {
   requireRoleBasedTenantFeature,
   requireTenantFeature,
 } from "@/middlewares/feature.middleware";
+import {
+  farmImagesUpload,
+  farmUpdateImageUpload,
+} from "@/middlewares/upload.middleware";
 
 const router = Router();
 
@@ -22,6 +26,7 @@ router.post(
   protect,
   restrictTo("admin"),
   requireTenantFeature("adminFarms"),
+  farmImagesUpload,
   createFarm,
 );
 router.patch(
@@ -29,6 +34,7 @@ router.patch(
   protect,
   restrictTo("admin"),
   requireTenantFeature("adminFarms"),
+  farmImagesUpload,
   updateFarm,
 );
 router.delete(
@@ -43,6 +49,7 @@ router.post(
   protect,
   restrictTo("admin"),
   requireTenantFeature("adminFarms"),
+  farmUpdateImageUpload,
   addFarmUpdate,
 );
 

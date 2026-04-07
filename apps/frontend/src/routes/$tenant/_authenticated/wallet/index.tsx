@@ -1,6 +1,7 @@
 import { Link, createFileRoute } from '@tanstack/react-router'
 import {
   ArrowUpRight,
+  Landmark,
   DollarSign,
   TrendingUp,
   Wallet as WalletIcon,
@@ -26,8 +27,49 @@ interface WalletTransaction {
   type: string
   ref: string
   amount: number
+  currency?: Investment['currency']
   status: string
   investmentId: string
+}
+
+function getReturnAmount(inv: Investment) {
+  return inv.projectedReturn
+    ? inv.projectedReturn - inv.amount
+    : inv.amount * (inv.roi / 100)
+}
+
+function summarizeAmounts(
+  investments: Array<Investment>,
+  selector: (investment: Investment) => number,
+) {
+  const currencies = Array.from(
+    new Set(investments.map((investment) => investment.currency || 'NGN')),
+  )
+
+  if (investments.length === 0) {
+    return {
+      value: formatCurrency(0),
+      description: 'No recorded activity yet',
+    }
+  }
+
+  if (currencies.length === 1) {
+    const currency = currencies[0]
+    const total = investments.reduce(
+      (sum, investment) => sum + selector(investment),
+      0,
+    )
+
+    return {
+      value: formatCurrency(total, currency),
+      description: `All amounts shown in ${currency}`,
+    }
+  }
+
+  return {
+    value: 'Multiple currencies',
+    description: currencies.join(' · '),
+  }
 }
 
 const getColumns = (tenant: string): Array<ColumnDef<WalletTransaction>> => [
@@ -61,7 +103,7 @@ const getColumns = (tenant: string): Array<ColumnDef<WalletTransaction>> => [
     header: 'Amount',
     cell: ({ row }) => {
       const tx = row.original
-      const isPositive = tx.type === 'ROI Payout'
+      const isPositive = tx.type !== 'Investment'
       return (
         <span
           className={
@@ -69,7 +111,7 @@ const getColumns = (tenant: string): Array<ColumnDef<WalletTransaction>> => [
           }
         >
           {isPositive ? '+' : '-'}
-          {formatCurrency(Math.abs(tx.amount))}
+          {formatCurrency(Math.abs(tx.amount), tx.currency)}
         </span>
       )
     },
@@ -96,34 +138,30 @@ function WalletPage() {
   const { data, isLoading, error } = useMyInvestments()
   const columns = getColumns(tenant)
 
-  // Calculate wallet stats from investments
   const investments = data?.investments || []
   const completedInvestments = investments.filter(
     (inv: Investment) => inv.status === 'completed',
   )
 
-  const totalInvested = completedInvestments.reduce(
-    (sum: number, inv: Investment) => sum + inv.amount,
-    0,
+  const paidReturnInvestments = completedInvestments.filter(
+    (inv: Investment) => inv.roiPaid,
+  )
+  const pendingReturnInvestments = completedInvestments.filter(
+    (inv: Investment) => !inv.roiPaid,
   )
 
-  const totalReturns = completedInvestments
-    .filter((inv: Investment) => inv.roiPaid)
-    .reduce((sum: number, inv: Investment) => {
-      const roi = inv.projectedReturn
-        ? inv.projectedReturn - inv.amount
-        : inv.amount * (inv.roi / 100)
-      return sum + roi
-    }, 0)
-
-  const pendingReturns = completedInvestments
-    .filter((inv: Investment) => !inv.roiPaid)
-    .reduce((sum: number, inv: Investment) => {
-      const roi = inv.projectedReturn
-        ? inv.projectedReturn - inv.amount
-        : inv.amount * (inv.roi / 100)
-      return sum + roi
-    }, 0)
+  const investedSummary = summarizeAmounts(
+    completedInvestments,
+    (investment) => investment.amount,
+  )
+  const paidReturnsSummary = summarizeAmounts(
+    paidReturnInvestments,
+    getReturnAmount,
+  )
+  const pendingReturnsSummary = summarizeAmounts(
+    pendingReturnInvestments,
+    getReturnAmount,
+  )
 
   // Transform investments to transactions
   const transactions: Array<WalletTransaction> = investments.flatMap(
@@ -137,21 +175,20 @@ function WalletPage() {
         type: 'Investment',
         ref: `INV-${inv._id.slice(-8).toUpperCase()}`,
         amount: inv.amount,
+        currency: inv.currency,
         status: inv.status,
         investmentId: inv._id,
       })
 
-      // ROI payout (if paid)
       if (inv.roiPaid) {
-        const roiAmount = inv.projectedReturn
-          ? inv.projectedReturn - inv.amount
-          : inv.amount * (inv.roi / 100)
+        const roiAmount = getReturnAmount(inv)
         txs.push({
           id: `${inv._id}-roi`,
           date: inv.updatedAt,
-          type: 'ROI Payout',
-          ref: `PAY-${inv._id.slice(-8).toUpperCase()}`,
+          type: 'Bank Return Payout',
+          ref: `ROI-${inv._id.slice(-8).toUpperCase()}`,
           amount: roiAmount,
+          currency: inv.currency,
           status: 'completed',
           investmentId: inv._id,
         })
@@ -177,7 +214,7 @@ function WalletPage() {
   if (error) {
     return (
       <div className="flex flex-col items-center justify-center h-96 gap-4">
-        <p className="text-muted-foreground">Failed to load wallet data</p>
+        <p className="text-muted-foreground">Failed to load returns data</p>
         <Button onClick={() => window.location.reload()}>Retry</Button>
       </div>
     )
@@ -187,9 +224,10 @@ function WalletPage() {
     <div className="max-w-5xl mx-auto space-y-8 animate-fade-in">
       <header className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">My Wallet</h1>
+          <h1 className="text-3xl font-bold tracking-tight">My Returns</h1>
           <p className="text-muted-foreground">
-            Track your investments and returns.
+            Track funded capital, expected returns, and bank payouts from your
+            investments.
           </p>
         </div>
         <Button asChild className="btn-primary-gradient">
@@ -209,30 +247,33 @@ function WalletPage() {
           </div>
           <div className="relative z-10">
             <p className="mb-1 text-sm font-medium text-secondary-foreground/80">
-              Total Invested
+              Funded Capital
             </p>
-            <h2 className="text-4xl font-bold mb-6">
-              {formatCurrency(totalInvested)}
-            </h2>
+            <h2 className="text-4xl font-bold mb-6">{investedSummary.value}</h2>
             <div className="flex gap-2">
               <div className="bg-white/10 px-3 py-1.5 rounded-lg backdrop-blur-sm text-xs">
-                {completedInvestments.length} Active Investment
+                {completedInvestments.length} Completed Investment
                 {completedInvestments.length !== 1 ? 's' : ''}
               </div>
             </div>
+            <p className="mt-3 text-xs text-secondary-foreground/80">
+              {investedSummary.description}
+            </p>
           </div>
         </div>
 
         <div className="md:col-span-2 grid grid-cols-2 gap-6">
           <StatsCard
-            label="Total Returns Received"
-            value={formatCurrency(totalReturns)}
+            label="Paid to Bank"
+            value={paidReturnsSummary.value}
             icon={<DollarSign className="h-4 w-4 text-primary" />}
+            description={paidReturnsSummary.description}
           />
           <StatsCard
-            label="Pending Returns"
-            value={formatCurrency(pendingReturns)}
-            icon={<ArrowUpRight className="h-4 w-4 text-secondary" />}
+            label="Pending Bank Payouts"
+            value={pendingReturnsSummary.value}
+            icon={<Landmark className="h-4 w-4 text-secondary" />}
+            description={pendingReturnsSummary.description}
           />
         </div>
       </div>
@@ -252,7 +293,7 @@ function WalletPage() {
               <WalletIcon className="h-12 w-12 text-muted-foreground/50 mb-3" />
               <p className="text-muted-foreground mb-2">No activity yet</p>
               <p className="text-sm text-muted-foreground mb-4">
-                Start investing to see your transaction history
+                Start investing to see your returns and payout history
               </p>
               <Button asChild>
                 <Link to="/$tenant/farms" params={{ tenant }}>

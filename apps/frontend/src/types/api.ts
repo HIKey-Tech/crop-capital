@@ -1,5 +1,47 @@
 export type CurrencyCode = 'NGN' | 'USD' | 'GHS' | 'KES'
 
+export interface BankAccountDetails {
+  accountName: string
+  bankName: string
+  bankCode?: string
+  accountNumber: string
+}
+
+export interface UpdateProfileRequest {
+  name?: string
+  country?: string
+  photo?: File | null
+  removePhoto?: boolean
+  bankAccount?: {
+    accountName?: string
+    bankName?: string
+    bankCode?: string
+    accountNumber?: string
+  }
+}
+
+export interface PaystackBank {
+  id: number
+  name: string
+  code: string
+  longcode?: string
+  currency?: string
+  country?: string
+}
+
+export interface BanksListResponse {
+  success: boolean
+  supported: boolean
+  banks: Array<PaystackBank>
+}
+
+export interface AccountResolutionResponse {
+  success: boolean
+  resolved: boolean
+  accountName: string | null
+  accountNumber: string | null
+}
+
 export interface User {
   _id: string
   name: string
@@ -7,6 +49,7 @@ export interface User {
   role: 'investor' | 'admin' | 'super_admin'
   country?: string
   photo?: string
+  bankAccount?: BankAccountDetails
   isVerified: boolean
   createdAt: string
   updatedAt: string
@@ -125,11 +168,27 @@ export interface CreateFarmRequest {
     latitude: number
     longitude: number
   }
-  images: Array<string>
   investmentGoal: number
   minimumInvestment: number
   roi: number
   durationMonths: number
+}
+
+export interface CreateFarmMultipartRequest {
+  data: CreateFarmRequest
+  images: Array<File>
+}
+
+export interface UpdateFarmRequest {
+  data: Partial<CreateFarmRequest>
+  hasImageChanges?: boolean
+  retainedImagePublicIds?: Array<string>
+  newImages?: Array<File>
+}
+
+export interface AddFarmUpdateRequest {
+  stage: string
+  image?: File | null
 }
 
 // User with stats (for admin)
@@ -224,8 +283,8 @@ export interface KycReviewResponse {
 
 export interface KycSubmitRequest {
   documentType: KycDocumentType
-  documentImage: string
-  selfieImage?: string
+  documentImage: File
+  selfieImage?: File
 }
 
 // Activity types

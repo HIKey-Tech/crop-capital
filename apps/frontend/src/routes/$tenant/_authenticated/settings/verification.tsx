@@ -13,13 +13,12 @@ import { useForm } from '@mantine/form'
 import { zodResolver } from 'mantine-form-zod-resolver'
 
 import type { KycDocumentType } from '@/types'
-import type { KycSubmitInput } from '@/api/kyc/schema'
+import type { KycSubmitFormValues, KycSubmitInput } from '@/api/kyc/schema'
 import { kycSubmitSchema } from '@/api/kyc/schema'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
 import { useMyKyc, useResubmitKyc, useSubmitKyc } from '@/hooks'
-import { fileToBase64 } from '@/lib/file-utils'
 
 export const Route = createFileRoute(
   '/$tenant/_authenticated/settings/verification',
@@ -58,13 +57,17 @@ function VerificationPage() {
   const [selfiePreview, setSelfiePreview] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const form = useForm<KycSubmitInput>({
+  const form = useForm<
+    KycSubmitFormValues,
+    (values: KycSubmitFormValues) => KycSubmitInput
+  >({
     initialValues: {
       documentType: 'passport',
-      documentImage: '',
-      selfieImage: '',
+      documentImage: null,
+      selfieImage: null,
     },
     validate: zodResolver(kycSubmitSchema),
+    transformValues: (values) => kycSubmitSchema.parse(values),
   })
 
   const kyc = data?.kyc
@@ -73,32 +76,25 @@ function VerificationPage() {
     const file = e.target.files?.[0]
     if (!file) return
     setDocumentPreview(URL.createObjectURL(file))
-    const base64 = await fileToBase64(file)
-    form.setFieldValue('documentImage', base64)
+    form.setFieldValue('documentImage', file)
   }
 
   async function handleSelfieUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
     if (!file) return
     setSelfiePreview(URL.createObjectURL(file))
-    const base64 = await fileToBase64(file)
-    form.setFieldValue('selfieImage', base64)
+    form.setFieldValue('selfieImage', file)
   }
 
   async function handleSubmit(values: KycSubmitInput) {
     try {
       setIsSubmitting(true)
-      const payload = {
-        documentType: values.documentType,
-        documentImage: values.documentImage,
-        selfieImage: values.selfieImage || undefined,
-      }
 
       if (kyc?.status === 'rejected') {
-        await resubmitKyc.mutateAsync(payload)
+        await resubmitKyc.mutateAsync(values)
         toast.success('Documents resubmitted for review')
       } else {
-        await submitKyc.mutateAsync(payload)
+        await submitKyc.mutateAsync(values)
         toast.success('Documents submitted for verification')
       }
 
@@ -258,7 +254,7 @@ function VerificationPage() {
                 type="button"
                 onClick={() => {
                   setDocumentPreview(null)
-                  form.setFieldValue('documentImage', '')
+                  form.setFieldValue('documentImage', null)
                 }}
                 className="absolute top-2 right-2 p-1.5 bg-white rounded-full border border-border hover:bg-red-50 transition-colors"
               >
@@ -308,7 +304,7 @@ function VerificationPage() {
                 type="button"
                 onClick={() => {
                   setSelfiePreview(null)
-                  form.setFieldValue('selfieImage', '')
+                  form.setFieldValue('selfieImage', null)
                 }}
                 className="absolute top-2 right-2 p-1.5 bg-white rounded-full border border-border hover:bg-red-50 transition-colors"
               >

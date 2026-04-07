@@ -451,7 +451,7 @@ function FeaturesSection() {
       icon: Settings2,
       label: 'Configuration Engine',
       title: 'Granular Feature Flags',
-      body: 'Deploy updates per tenant without touching code. Toggle KYC validation, Wallet services, or Advanced Analytics instantly.',
+      body: 'Deploy updates per tenant without touching code. Toggle KYC validation, returns tracking, or advanced analytics instantly.',
       bullets: [
         'Hot-Swappable Modules',
         'Dynamic Configuration',
@@ -570,7 +570,7 @@ function ProcessSection() {
     {
       number: '02',
       title: 'Assign Subscription Tier',
-      desc: 'Select from configured tiers to unlock specific modules — KYC, Wallet, Analytics — with zero code changes.',
+      desc: 'Select from configured tiers to unlock specific modules — KYC, returns tracking, analytics — with zero code changes.',
     },
     {
       number: '03',

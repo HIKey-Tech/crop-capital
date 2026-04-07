@@ -5,7 +5,7 @@ import { zodResolver } from 'mantine-form-zod-resolver'
 import { ArrowLeft, Plus, XCircle } from 'lucide-react'
 import { toast } from 'sonner'
 
-import type { CreateFarmInput } from '@/api/farms/schema'
+import type { CreateFarmFormValues, CreateFarmInput } from '@/api/farms/schema'
 import { Breadcrumbs } from '@/components/breadcrumbs'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -19,7 +19,6 @@ import {
 } from '@/components/ui/select'
 import { useCreateFarm } from '@/hooks'
 import { createFarmSchema } from '@/api/farms/schema'
-import { fileToBase64 } from '@/lib/file-utils'
 import { currencyOptions } from '@/lib/format-currency'
 
 export const Route = createFileRoute('/$tenant/_authenticated/admin/farms/new')(
@@ -41,20 +40,24 @@ function AddNewInvestment() {
   const navigate = useNavigate()
   const createFarm = useCreateFarm()
 
-  const form = useForm<CreateFarmInput>({
+  const form = useForm<
+    CreateFarmFormValues,
+    (values: CreateFarmFormValues) => CreateFarmInput
+  >({
     initialValues: {
       name: '',
       location: '',
-      latitude: undefined,
-      longitude: undefined,
+      latitude: '',
+      longitude: '',
       currency: 'NGN',
       images: [],
-      investmentGoal: 0,
-      minimumInvestment: 0,
-      roi: 0,
-      durationMonths: 0,
+      investmentGoal: '',
+      minimumInvestment: '',
+      roi: '',
+      durationMonths: '',
     },
     validate: zodResolver(createFarmSchema),
+    transformValues: (values) => createFarmSchema.parse(values),
   })
 
   function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
@@ -95,25 +98,21 @@ function AddNewInvestment() {
     try {
       setIsUploading(true)
 
-      // Convert all images to base64
-      const base64Images = await Promise.all(
-        images.map((img) => fileToBase64(img.file)),
-      )
-
       const { latitude, longitude, ...rest } = values
 
-      // Create farm with all images and optional coordinates
       await createFarm.mutateAsync({
-        ...rest,
-        images: base64Images,
-        ...(latitude != null && longitude != null
-          ? {
-              coordinates: {
-                latitude: Number(latitude),
-                longitude: Number(longitude),
-              },
-            }
-          : {}),
+        data: {
+          ...rest,
+          ...(latitude != null && longitude != null
+            ? {
+                coordinates: {
+                  latitude,
+                  longitude,
+                },
+              }
+            : {}),
+        },
+        images: images.map((img) => img.file),
       })
 
       toast.success('Farm opportunity created successfully!')

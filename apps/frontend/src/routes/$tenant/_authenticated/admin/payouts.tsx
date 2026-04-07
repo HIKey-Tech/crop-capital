@@ -23,11 +23,42 @@ interface PayoutRow {
   investorEmail: string
   farmName: string
   amount: number
+  currency: Investment['currency']
   roi: number
   projectedReturn: number
   status: 'pending' | 'paid'
   investmentDate: string
   durationMonths: number
+}
+
+function summarizePayouts(
+  rows: Array<PayoutRow>,
+  selector: (row: PayoutRow) => number,
+) {
+  const currencies = Array.from(
+    new Set(rows.map((row) => row.currency || 'NGN')),
+  )
+
+  if (rows.length === 0) {
+    return {
+      value: formatCurrency(0),
+      description: 'No payout activity yet',
+    }
+  }
+
+  if (currencies.length === 1) {
+    const currency = currencies[0]
+    const total = rows.reduce((sum, row) => sum + selector(row), 0)
+    return {
+      value: formatCurrency(total, currency),
+      description: `All amounts shown in ${currency}`,
+    }
+  }
+
+  return {
+    value: 'Multiple currencies',
+    description: currencies.join(' · '),
+  }
 }
 
 const columns: Array<ColumnDef<PayoutRow>> = [
@@ -58,9 +89,9 @@ const columns: Array<ColumnDef<PayoutRow>> = [
   {
     accessorKey: 'amount',
     header: 'Investment',
-    cell: ({ getValue }) => (
+    cell: ({ row }) => (
       <span className="font-medium">
-        {formatCurrency(getValue() as number)}
+        {formatCurrency(row.original.amount, row.original.currency)}
       </span>
     ),
   },
@@ -70,7 +101,7 @@ const columns: Array<ColumnDef<PayoutRow>> = [
     cell: ({ row }) => (
       <div>
         <div className="font-bold text-green-700">
-          {formatCurrency(row.original.projectedReturn)}
+          {formatCurrency(row.original.projectedReturn, row.original.currency)}
         </div>
         <div className="text-xs text-muted-foreground">
           +{row.original.roi}% ROI
@@ -132,6 +163,7 @@ function PayoutsPage() {
         investorEmail: investor.email || '',
         farmName: farm.name || 'Unknown Farm',
         amount: inv.amount,
+        currency: inv.currency,
         roi: inv.roi,
         projectedReturn:
           inv.projectedReturn || inv.amount * (1 + inv.roi / 100),
@@ -146,24 +178,31 @@ function PayoutsPage() {
   const pendingPayouts = payoutRows.filter((p) => p.status === 'pending')
   const paidPayouts = payoutRows.filter((p) => p.status === 'paid')
 
-  const totalPendingAmount = pendingPayouts.reduce(
-    (sum, p) => sum + p.projectedReturn,
-    0,
+  const pendingSummary = summarizePayouts(
+    pendingPayouts,
+    (payout) => payout.projectedReturn,
   )
-  const totalPaidAmount = paidPayouts.reduce(
-    (sum, p) => sum + p.projectedReturn,
-    0,
+  const paidSummary = summarizePayouts(
+    paidPayouts,
+    (payout) => payout.projectedReturn,
+  )
+  const averageSummary = summarizePayouts(
+    payoutRows,
+    (payout) => payout.projectedReturn / payoutRows.length,
   )
 
   return (
     <div className="space-y-6 animate-fade-in max-w-screen-2xl mx-auto">
       <div>
         <div className="text-xs text-muted-foreground uppercase tracking-[0.16em]">
-          {tenant.displayName} admin · Payouts
+          {tenant.displayName} admin · Bank payouts
         </div>
-        <h1 className="text-2xl font-bold">Payouts for {tenant.displayName}</h1>
+        <h1 className="text-2xl font-bold">
+          Bank Payouts for {tenant.displayName}
+        </h1>
         <p className="text-muted-foreground">
-          Track ROI payouts owed to investors inside {tenant.displayName}.
+          Track direct bank payouts owed to investors inside{' '}
+          {tenant.displayName}.
         </p>
       </div>
 
@@ -173,13 +212,13 @@ function PayoutsPage() {
           label="Pending Payouts"
           value={pendingPayouts.length.toString()}
           icon={<DollarSign className="w-5 h-5 text-yellow-600" />}
-          description={`${formatCurrency(totalPendingAmount)} total`}
+          description={`${pendingSummary.value} total${pendingSummary.description ? ` · ${pendingSummary.description}` : ''}`}
         />
         <StatsCard
           label="Completed Payouts"
           value={paidPayouts.length.toString()}
           icon={<Check className="w-5 h-5 text-green-600" />}
-          description={`${formatCurrency(totalPaidAmount)} paid out`}
+          description={`${paidSummary.value} paid out${paidSummary.description ? ` · ${paidSummary.description}` : ''}`}
         />
         <StatsCard
           label="Total Investors"
@@ -191,14 +230,13 @@ function PayoutsPage() {
         />
         <StatsCard
           label="Average Payout"
-          value={formatCurrency(
-            payoutRows.length > 0
-              ? payoutRows.reduce((sum, p) => sum + p.projectedReturn, 0) /
-                  payoutRows.length
-              : 0,
-          )}
+          value={averageSummary.value}
           icon={<DollarSign className="w-5 h-5 text-primary" />}
-          description="Per investment"
+          description={
+            averageSummary.description
+              ? `Per investment · ${averageSummary.description}`
+              : 'Per investment'
+          }
         />
       </div>
 
@@ -218,9 +256,9 @@ function PayoutsPage() {
         ) : (
           <div className="flex flex-col items-center justify-center py-12">
             <DollarSign className="h-12 w-12 text-muted-foreground/30 mb-4" />
-            <p className="text-muted-foreground">No payouts to display</p>
+            <p className="text-muted-foreground">No bank payouts to display</p>
             <p className="text-sm text-muted-foreground">
-              Payouts will appear when investments are completed
+              Bank payouts will appear when investments are completed
             </p>
           </div>
         )}

@@ -10,6 +10,7 @@ import {
   updatePassword,
 } from "./auth.controller";
 import { protect } from "@/middlewares/auth.middleware";
+import { profilePhotoUpload } from "@/middlewares/upload.middleware";
 
 const router = Router();
 
@@ -21,7 +22,7 @@ router.post("/activate", activateAdmin);
 
 // Protected routes
 router.get("/me", protect, getMe);
-router.patch("/update-profile", protect, updateProfile);
+router.patch("/update-profile", protect, profilePhotoUpload, updateProfile);
 router.patch("/update-password", protect, updatePassword);
 
 export default router;

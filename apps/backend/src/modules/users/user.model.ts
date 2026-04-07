@@ -1,6 +1,13 @@
 import mongoose, { Schema, Document } from "mongoose";
 import bcrypt from "bcryptjs";
 
+export interface IUserBankAccount {
+  accountName: string;
+  bankName: string;
+  bankCode?: string;
+  accountNumber: string;
+}
+
 export interface IUser extends Document {
   tenantId?: mongoose.Types.ObjectId;
   name: string;
@@ -9,6 +16,8 @@ export interface IUser extends Document {
   role: "investor" | "admin" | "super_admin";
   country?: string;
   photo?: string;
+  photoPublicId?: string;
+  bankAccount?: IUserBankAccount;
   isVerified: boolean;
   watchlist: mongoose.Types.ObjectId[];
   passwordResetToken?: string;
@@ -32,6 +41,17 @@ const UserSchema = new Schema<IUser>(
     },
     country: { type: String },
     photo: { type: String },
+    photoPublicId: { type: String },
+    bankAccount: {
+      _id: false,
+      type: {
+        accountName: { type: String, trim: true },
+        bankName: { type: String, trim: true },
+        bankCode: { type: String, trim: true },
+        accountNumber: { type: String, trim: true },
+      },
+      default: undefined,
+    },
     isVerified: { type: Boolean, default: false },
     watchlist: [{ type: Schema.Types.ObjectId, ref: "Farm", default: [] }],
     passwordResetToken: { type: String },

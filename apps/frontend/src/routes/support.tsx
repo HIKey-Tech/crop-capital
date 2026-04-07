@@ -18,7 +18,7 @@ const faqs = [
   },
   {
     q: 'How does the subscription tier system work?',
-    a: 'Each tenant is assigned a subscription tier that controls which features are enabled — such as KYC, Wallet services, and Advanced Analytics. Tiers can be upgraded or downgraded from the operator console without redeployment.',
+    a: 'Each tenant is assigned a subscription tier that controls which features are enabled — such as KYC, investor returns tracking, and advanced analytics. Tiers can be upgraded or downgraded from the operator console without redeployment.',
   },
   {
     q: 'What does RBAC governance cover?',

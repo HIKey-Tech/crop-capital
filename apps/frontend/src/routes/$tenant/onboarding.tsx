@@ -2,8 +2,10 @@ import { useEffect, useMemo, useState } from 'react'
 import { Link, createFileRoute, useNavigate } from '@tanstack/react-router'
 import {
   BadgeCheck,
+  Building2,
   ChevronRight,
   CircleUserRound,
+  Landmark,
   ShieldCheck,
   Sprout,
   Target,
@@ -22,7 +24,12 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { useTenant } from '@/contexts/tenant'
-import { useCurrentUser, useUpdateProfile } from '@/hooks/use-auth'
+import {
+  useCurrentUser,
+  usePaystackAccountResolution,
+  usePaystackBanks,
+  useUpdateProfile,
+} from '@/hooks/use-auth'
 
 export const Route = createFileRoute('/$tenant/onboarding')({
   component: OnboardingPage,
@@ -99,6 +106,10 @@ function OnboardingPage() {
   const [step, setStep] = useState(1)
   const [fullName, setFullName] = useState('')
   const [country, setCountry] = useState('')
+  const [accountName, setAccountName] = useState('')
+  const [bankName, setBankName] = useState('')
+  const [bankCode, setBankCode] = useState('')
+  const [accountNumber, setAccountNumber] = useState('')
   const [goal, setGoal] = useState<OnboardingGoal | null>(null)
   const [experience, setExperience] = useState<ExperienceLevel | null>(null)
   const [termsAccepted, setTermsAccepted] = useState(false)
@@ -109,12 +120,27 @@ function OnboardingPage() {
     () => getOnboardingStorageKey(tenantParam, currentUser?._id),
     [tenantParam, currentUser?._id],
   )
+  const { data: bankDirectory, isLoading: isBanksLoading } =
+    usePaystackBanks(country)
+  const bankOptions = bankDirectory?.banks ?? []
+  const normalizedAccountNumber = accountNumber.replace(/\s+/g, '')
+  const requiresResolvedAccount = Boolean(bankCode.trim())
+  const { data: resolvedAccount, isFetching: isResolvingAccount } =
+    usePaystackAccountResolution(
+      bankCode,
+      normalizedAccountNumber,
+      requiresResolvedAccount,
+    )
 
   useEffect(() => {
     if (!currentUser) return
 
     setFullName(currentUser.name)
     setCountry(currentUser.country ?? '')
+    setAccountName(currentUser.bankAccount?.accountName ?? currentUser.name)
+    setBankName(currentUser.bankAccount?.bankName ?? '')
+    setBankCode(currentUser.bankAccount?.bankCode ?? '')
+    setAccountNumber(currentUser.bankAccount?.accountNumber ?? '')
 
     if (typeof window === 'undefined') return
 
@@ -131,6 +157,85 @@ function OnboardingPage() {
       localStorage.removeItem(storageKey)
     }
   }, [currentUser, storageKey])
+
+  useEffect(() => {
+    if (bankCode || !bankName || bankOptions.length === 0) {
+      return
+    }
+
+    const matchingBank = bankOptions.find(
+      (bank) => bank.name.toLowerCase() === bankName.trim().toLowerCase(),
+    )
+
+    if (matchingBank) {
+      setBankCode(matchingBank.code)
+    }
+  }, [bankCode, bankName, bankOptions])
+
+  useEffect(() => {
+    if (isBanksLoading || !bankCode) {
+      return
+    }
+
+    const matchingBank = bankOptions.find((bank) => bank.code === bankCode)
+
+    if (!matchingBank) {
+      setBankCode('')
+    }
+  }, [bankCode, bankOptions, isBanksLoading])
+
+  useEffect(() => {
+    if (!requiresResolvedAccount) {
+      return
+    }
+
+    if (normalizedAccountNumber.length < 6) {
+      setAccountName('')
+      return
+    }
+
+    if (resolvedAccount?.resolved && resolvedAccount.accountName) {
+      const verifiedAccountName = resolvedAccount.accountName
+
+      setAccountName((currentName) =>
+        currentName === verifiedAccountName ? currentName : verifiedAccountName,
+      )
+      return
+    }
+
+    if (resolvedAccount && !resolvedAccount.resolved && accountName) {
+      setAccountName('')
+    }
+  }, [
+    accountName,
+    normalizedAccountNumber,
+    requiresResolvedAccount,
+    resolvedAccount,
+  ])
+
+  const handleBankNameChange = (value: string) => {
+    setBankName(value)
+
+    const matchingBank = bankOptions.find(
+      (bank) => bank.name.toLowerCase() === value.trim().toLowerCase(),
+    )
+
+    setBankCode(matchingBank?.code ?? '')
+
+    if (matchingBank) {
+      setAccountName('')
+    }
+  }
+
+  const handleAccountNumberChange = (value: string) => {
+    const sanitizedValue = value.replace(/[^\d\s]/g, '')
+
+    setAccountNumber(sanitizedValue)
+
+    if (requiresResolvedAccount) {
+      setAccountName('')
+    }
+  }
 
   const persistDraft = (overrides?: Partial<StoredOnboardingState>) => {
     if (typeof window === 'undefined' || !currentUser) return
@@ -182,10 +287,40 @@ function OnboardingPage() {
         return
       }
 
+      if (!accountName.trim() || !bankName.trim() || !accountNumber.trim()) {
+        toast.error('Bank payout details are required to continue')
+        return
+      }
+
+      if (bankOptions.length > 0 && bankName.trim() && !bankCode.trim()) {
+        toast.error(
+          'Choose a bank from the Paystack suggestions before continuing',
+        )
+        return
+      }
+
+      if (bankCode.trim() && !resolvedAccount?.resolved) {
+        toast.error(
+          'Enter a valid account number so Paystack can verify the payout account',
+        )
+        return
+      }
+
       try {
         await updateProfile.mutateAsync({
           name: fullName.trim(),
           country: country.trim(),
+          bankAccount: {
+            accountName:
+              bankCode.trim() &&
+              resolvedAccount?.resolved &&
+              resolvedAccount.accountName
+                ? resolvedAccount.accountName.trim()
+                : accountName.trim(),
+            bankName: bankName.trim(),
+            bankCode: bankCode.trim() || undefined,
+            accountNumber: accountNumber.replace(/\s+/g, ''),
+          },
         })
         persistDraft()
       } catch (error) {
@@ -432,9 +567,103 @@ function OnboardingPage() {
                   </Select>
                 </div>
 
+                <div className="grid gap-4 md:grid-cols-2">
+                  <div className="space-y-2 md:col-span-2">
+                    <Label htmlFor="onboarding-account-name">
+                      Account Name
+                    </Label>
+                    <div className="relative">
+                      <Landmark className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        id="onboarding-account-name"
+                        placeholder="Name on your bank account"
+                        value={accountName}
+                        onChange={(event) => setAccountName(event.target.value)}
+                        className="pl-9"
+                        readOnly={requiresResolvedAccount}
+                      />
+                    </div>
+                    {requiresResolvedAccount ? (
+                      <p className="text-xs text-muted-foreground">
+                        {isResolvingAccount
+                          ? 'Verifying account name with Paystack...'
+                          : resolvedAccount?.resolved &&
+                              resolvedAccount.accountName
+                            ? `Verified by Paystack as ${resolvedAccount.accountName}.`
+                            : normalizedAccountNumber.length >= 6
+                              ? 'We could not verify this account number yet.'
+                              : 'Enter the account number to verify the payout account automatically.'}
+                      </p>
+                    ) : null}
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="onboarding-bank-name">Bank Name</Label>
+                    <div className="relative">
+                      <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        id="onboarding-bank-name"
+                        placeholder={
+                          bankOptions.length > 0
+                            ? 'Type or choose a bank'
+                            : 'e.g. Ecobank'
+                        }
+                        value={bankName}
+                        onChange={(event) =>
+                          handleBankNameChange(event.target.value)
+                        }
+                        list={
+                          bankOptions.length > 0
+                            ? 'onboarding-bank-options'
+                            : undefined
+                        }
+                        className="pl-9"
+                      />
+                    </div>
+                    {bankOptions.length > 0 ? (
+                      <>
+                        <datalist id="onboarding-bank-options">
+                          {bankOptions.map((bank) => (
+                            <option key={bank.code} value={bank.name} />
+                          ))}
+                        </datalist>
+                        <p className="text-xs text-muted-foreground">
+                          Suggestions loaded from Paystack for{' '}
+                          {country || 'your country'}.
+                        </p>
+                      </>
+                    ) : country.trim() ? (
+                      <p className="text-xs text-muted-foreground">
+                        {isBanksLoading
+                          ? 'Checking Paystack bank support for this country...'
+                          : 'No Paystack bank directory is available for this country yet. You can enter the bank name manually.'}
+                      </p>
+                    ) : null}
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="onboarding-account-number">
+                      Account Number
+                    </Label>
+                    <div className="relative">
+                      <Landmark className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        id="onboarding-account-number"
+                        inputMode="numeric"
+                        placeholder="6 to 20 digits"
+                        value={accountNumber}
+                        onChange={(event) =>
+                          handleAccountNumberChange(event.target.value)
+                        }
+                        className="pl-9"
+                      />
+                    </div>
+                  </div>
+                </div>
+
                 <div className="rounded-xl border border-border bg-muted/30 p-4 text-sm text-muted-foreground">
-                  This step updates your tenant-linked profile using the same
-                  account you just created.
+                  This step updates your tenant-linked profile and stores the
+                  bank account that should receive investment returns.
                 </div>
               </div>
             )}

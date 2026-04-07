@@ -28,6 +28,53 @@ const assertPasswordRequirements = (password: string) => {
   }
 };
 
+interface BankAccountInput {
+  accountName?: string;
+  bankName?: string;
+  bankCode?: string;
+  accountNumber?: string;
+}
+
+const normalizeBankAccount = (bankAccount?: BankAccountInput) => {
+  if (!bankAccount) {
+    return undefined;
+  }
+
+  const normalized: {
+    accountName: string;
+    bankName: string;
+    bankCode?: string;
+    accountNumber: string;
+  } = {
+    accountName: bankAccount.accountName?.trim() ?? "",
+    bankName: bankAccount.bankName?.trim() ?? "",
+    bankCode: bankAccount.bankCode?.trim() ?? "",
+    accountNumber: bankAccount.accountNumber?.replace(/\s+/g, "") ?? "",
+  };
+
+  const populatedFieldCount = Object.values(normalized).filter(Boolean).length;
+
+  if (populatedFieldCount === 0) {
+    return undefined;
+  }
+
+  if (populatedFieldCount !== 3) {
+    throw new Error(
+      "Account name, bank name, and account number are all required for bank payouts",
+    );
+  }
+
+  if (!/^\d{6,20}$/.test(normalized.accountNumber)) {
+    throw new Error("Account number must be 6 to 20 digits");
+  }
+
+  if (!normalized.bankCode) {
+    delete normalized.bankCode;
+  }
+
+  return normalized;
+};
+
 export const createToken = (
   userId: string,
   role: string,
@@ -159,14 +206,29 @@ export const resetPassword = async (
 
 export const updateUserProfile = async (
   userId: string,
-  data: { name?: string; country?: string; photo?: string },
+  data: {
+    name?: string;
+    country?: string;
+    photo?: string;
+    photoPublicId?: string;
+    removePhoto?: boolean;
+    bankAccount?: BankAccountInput;
+  },
 ) => {
   const user = await User.findById(userId);
   if (!user) throw new Error("User not found");
 
   if (data.name) user.name = data.name;
   if (data.country) user.country = data.country;
+  if (data.removePhoto) {
+    user.photo = undefined;
+    user.photoPublicId = undefined;
+  }
   if (data.photo) user.photo = data.photo;
+  if (data.photoPublicId) user.photoPublicId = data.photoPublicId;
+  if (Object.prototype.hasOwnProperty.call(data, "bankAccount")) {
+    user.bankAccount = normalizeBankAccount(data.bankAccount);
+  }
 
   await user.save();
   return user;

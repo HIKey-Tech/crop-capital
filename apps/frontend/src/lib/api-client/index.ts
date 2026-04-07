@@ -1,8 +1,10 @@
 import type {
   ActivateAdminResponse,
+  AddFarmUpdateRequest,
   ActivitiesListResponse,
   AuthResponse,
   CreateFarmRequest,
+  CreateFarmMultipartRequest,
   CreateTenantRequest,
   DeleteTenantResponse,
   FarmResponse,
@@ -20,10 +22,14 @@ import type {
   KycSubmitResponse,
   LoginRequest,
   RegisterRequest,
+  AccountResolutionResponse,
+  BanksListResponse,
   TenantBootstrapResponse,
   TenantMutationResponse,
   TenantsListResponse,
   UpdateTenantRequest,
+  UpdateProfileRequest,
+  UpdateFarmRequest,
   UserDetailResponse,
   UserStatsResponse,
   UsersListResponse,
@@ -148,10 +154,15 @@ export async function request<T>(
   options: RequestInit = {},
 ): Promise<T> {
   const token = getAuthToken()
+  const isFormDataBody =
+    typeof FormData !== 'undefined' && options.body instanceof FormData
 
   const headers: Record<string, string> = {
-    'Content-Type': 'application/json',
     ...(options.headers as Record<string, string>),
+  }
+
+  if (!isFormDataBody && !headers['Content-Type']) {
+    headers['Content-Type'] = 'application/json'
   }
 
   if (token) {
@@ -175,6 +186,31 @@ export async function request<T>(
   }
 
   return data
+}
+
+function appendFarmFields(
+  formData: FormData,
+  data: Partial<CreateFarmRequest>,
+) {
+  if (data.name != null) formData.append('name', data.name)
+  if (data.location != null) formData.append('location', data.location)
+  if (data.currency != null) formData.append('currency', data.currency)
+  if (data.investmentGoal != null) {
+    formData.append('investmentGoal', String(data.investmentGoal))
+  }
+  if (data.minimumInvestment != null) {
+    formData.append('minimumInvestment', String(data.minimumInvestment))
+  }
+  if (data.roi != null) formData.append('roi', String(data.roi))
+  if (data.durationMonths != null) {
+    formData.append('durationMonths', String(data.durationMonths))
+  }
+  if (data.coordinates?.latitude != null) {
+    formData.append('latitude', String(data.coordinates.latitude))
+  }
+  if (data.coordinates?.longitude != null) {
+    formData.append('longitude', String(data.coordinates.longitude))
+  }
 }
 
 export const tenantApi = {
@@ -256,18 +292,41 @@ export const authApi = {
     return request<{ success: boolean; user: AuthResponse['user'] }>('/auth/me')
   },
 
-  updateProfile: async (data: {
-    name?: string
-    country?: string
-    photo?: string
-  }) => {
+  updateProfile: async (data: UpdateProfileRequest) => {
+    const formData = new FormData()
+    if (data.name != null) formData.append('name', data.name)
+    if (data.country != null) formData.append('country', data.country)
+    if (data.photo instanceof File) {
+      formData.append('photo', data.photo)
+    }
+    if (data.removePhoto) {
+      formData.append('removePhoto', 'true')
+    }
+    if (data.bankAccount) {
+      if (data.bankAccount.accountName != null) {
+        formData.append('bankAccount.accountName', data.bankAccount.accountName)
+      }
+      if (data.bankAccount.bankName != null) {
+        formData.append('bankAccount.bankName', data.bankAccount.bankName)
+      }
+      if (data.bankAccount.bankCode != null) {
+        formData.append('bankAccount.bankCode', data.bankAccount.bankCode)
+      }
+      if (data.bankAccount.accountNumber != null) {
+        formData.append(
+          'bankAccount.accountNumber',
+          data.bankAccount.accountNumber,
+        )
+      }
+    }
+
     return request<{
       success: boolean
       message: string
       user: AuthResponse['user']
     }>('/auth/update-profile', {
       method: 'PATCH',
-      body: JSON.stringify(data),
+      body: formData,
     })
   },
 
@@ -323,6 +382,25 @@ export const authApi = {
   },
 }
 
+export const paymentsApi = {
+  getBanks: async (country: string): Promise<BanksListResponse> => {
+    const searchParams = new URLSearchParams({ country })
+    return request<BanksListResponse>(
+      `/payments/banks?${searchParams.toString()}`,
+    )
+  },
+
+  resolveAccount: async (
+    bankCode: string,
+    accountNumber: string,
+  ): Promise<AccountResolutionResponse> => {
+    const searchParams = new URLSearchParams({ bankCode, accountNumber })
+    return request<AccountResolutionResponse>(
+      `/payments/resolve-account?${searchParams.toString()}`,
+    )
+  },
+}
+
 // Farms API
 export const farmsApi = {
   getAll: async (): Promise<FarmsListResponse> => {
@@ -333,20 +411,41 @@ export const farmsApi = {
     return request<FarmResponse>(`/farms/${id}`)
   },
 
-  create: async (data: CreateFarmRequest): Promise<FarmResponse> => {
+  create: async (
+    payload: CreateFarmMultipartRequest,
+  ): Promise<FarmResponse> => {
+    const formData = new FormData()
+    appendFarmFields(formData, payload.data)
+    payload.images.forEach((image) => {
+      formData.append('images', image)
+    })
+
     return request<FarmResponse>('/farms', {
       method: 'POST',
-      body: JSON.stringify(data),
+      body: formData,
     })
   },
 
   update: async (
     id: string,
-    data: Partial<CreateFarmRequest>,
+    payload: UpdateFarmRequest,
   ): Promise<FarmResponse> => {
+    const formData = new FormData()
+    appendFarmFields(formData, payload.data)
+
+    if (payload.hasImageChanges) {
+      formData.append('hasImageChanges', 'true')
+      payload.retainedImagePublicIds?.forEach((publicId) => {
+        formData.append('retainedImagePublicIds', publicId)
+      })
+      payload.newImages?.forEach((image) => {
+        formData.append('images', image)
+      })
+    }
+
     return request<FarmResponse>(`/farms/${id}`, {
       method: 'PATCH',
-      body: JSON.stringify(data),
+      body: formData,
     })
   },
 
@@ -358,11 +457,17 @@ export const farmsApi = {
 
   addUpdate: async (
     id: string,
-    update: { stage: string; image?: string },
+    update: AddFarmUpdateRequest,
   ): Promise<FarmResponse> => {
+    const formData = new FormData()
+    formData.append('stage', update.stage)
+    if (update.image) {
+      formData.append('image', update.image)
+    }
+
     return request<FarmResponse>(`/farms/${id}/updates`, {
       method: 'POST',
-      body: JSON.stringify(update),
+      body: formData,
     })
   },
 }
@@ -464,16 +569,30 @@ export const kycApi = {
   },
 
   submit: async (data: KycSubmitRequest): Promise<KycSubmitResponse> => {
+    const formData = new FormData()
+    formData.append('documentType', data.documentType)
+    formData.append('documentImage', data.documentImage)
+    if (data.selfieImage) {
+      formData.append('selfieImage', data.selfieImage)
+    }
+
     return request<KycSubmitResponse>('/kyc/submit', {
       method: 'POST',
-      body: JSON.stringify(data),
+      body: formData,
     })
   },
 
   resubmit: async (data: KycSubmitRequest): Promise<KycSubmitResponse> => {
+    const formData = new FormData()
+    formData.append('documentType', data.documentType)
+    formData.append('documentImage', data.documentImage)
+    if (data.selfieImage) {
+      formData.append('selfieImage', data.selfieImage)
+    }
+
     return request<KycSubmitResponse>('/kyc/resubmit', {
       method: 'PUT',
-      body: JSON.stringify(data),
+      body: formData,
     })
   },
 

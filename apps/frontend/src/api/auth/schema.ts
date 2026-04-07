@@ -23,8 +23,8 @@ export const passwordConfirmationSchema = z
 
 // Auth schemas
 export const loginSchema = z.object({
-  email: z.email('Please enter a valid email address'),
-  password: passwordSchema,
+  email: z.string().email('Please enter a valid email address'),
+  password: z.string().min(1, 'Password is required'),
 })
 
 export const registerSchema = z

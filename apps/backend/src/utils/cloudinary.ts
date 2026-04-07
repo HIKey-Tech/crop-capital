@@ -35,6 +35,47 @@ export async function uploadImage(
   }
 }
 
+export async function uploadImageBuffer(
+  fileBuffer: Buffer,
+  folder: string = "farms",
+): Promise<UploadResult> {
+  try {
+    const result = await new Promise<{
+      secure_url: string;
+      public_id: string;
+    }>((resolve, reject) => {
+      const stream = cloudinary.uploader.upload_stream(
+        {
+          folder,
+          resource_type: "image",
+          transformation: [
+            { width: 1200, height: 800, crop: "limit" },
+            { quality: "auto", fetch_format: "auto" },
+          ],
+        },
+        (error, uploadResult) => {
+          if (error || !uploadResult) {
+            reject(error ?? new Error("Failed to upload image"));
+            return;
+          }
+
+          resolve(uploadResult);
+        },
+      );
+
+      stream.end(fileBuffer);
+    });
+
+    return {
+      url: result.secure_url,
+      publicId: result.public_id,
+    };
+  } catch (error) {
+    console.error("Cloudinary upload error:", error);
+    throw new Error("Failed to upload image");
+  }
+}
+
 /**
  * Delete an image from Cloudinary
  * @param publicId - Cloudinary public_id of the image to delete

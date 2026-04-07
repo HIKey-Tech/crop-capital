@@ -56,8 +56,8 @@ export function useNotifications() {
           result.push({
             id: `${inv._id}-payout`,
             type: 'payout',
-            title: 'ROI Payout Received',
-            message: `You have received ${formatCurrency(roiAmount, currency)} returns from ${farm.name || 'your investment'}.`,
+            title: 'Return Paid to Bank',
+            message: `${formatCurrency(roiAmount, currency)} in returns from ${farm.name || 'your investment'} has been sent for direct bank payout.`,
             date: inv.updatedAt,
             investmentId: inv._id,
           })
