@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { createFileRoute } from '@tanstack/react-router'
+import { Link, createFileRoute } from '@tanstack/react-router'
 import { toast } from 'sonner'
 import {
   Building2,
@@ -25,6 +25,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { useTenant } from '@/contexts/tenant'
+import { useViewMode } from '@/contexts/view-mode'
 import {
   usePaystackAccountResolution,
   usePaystackBanks,
@@ -38,6 +39,7 @@ export const Route = createFileRoute('/$tenant/_authenticated/settings/')({
 function ProfileSettingsPage() {
   const { user } = Route.useRouteContext()
   const { tenant } = useTenant()
+  const { viewMode } = useViewMode()
   const { mutate: updateProfile, isPending } = useUpdateProfile()
   const [selectedPhoto, setSelectedPhoto] = useState<File | null>(null)
   const [previewPhotoUrl, setPreviewPhotoUrl] = useState<string | null>(null)
@@ -464,7 +466,23 @@ function ProfileSettingsPage() {
           </div>
         </section>
 
-        <div className="flex justify-end pt-4">
+        <div className="flex flex-col gap-3 pt-4 sm:flex-row sm:items-center sm:justify-between">
+          {viewMode === 'investor' ? (
+            <p className="text-sm text-muted-foreground">
+              Need help with your account?{' '}
+              <Link
+                to="/$tenant/support"
+                params={{ tenant: tenant.slug }}
+                className="font-medium text-foreground underline underline-offset-4 hover:text-primary"
+              >
+                Visit support
+              </Link>
+              .
+            </p>
+          ) : (
+            <div />
+          )}
+
           <Button type="submit" disabled={isPending}>
             {isPending ? (
               'Saving...'
@@ -476,18 +494,6 @@ function ProfileSettingsPage() {
           </Button>
         </div>
       </form>
-
-      <section className="rounded-2xl border border-border bg-card p-5 shadow-sm">
-        <h3 className="text-base font-semibold text-foreground">Support</h3>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Need help with your {tenant.displayName} account?
-        </p>
-        <div className="mt-4 space-y-2 text-sm text-muted-foreground">
-          <div>{tenant.supportEmail}</div>
-          <div>{tenant.supportPhone}</div>
-          {tenant.supportWhatsapp && <div>{tenant.supportWhatsapp}</div>}
-        </div>
-      </section>
     </div>
   )
 }
