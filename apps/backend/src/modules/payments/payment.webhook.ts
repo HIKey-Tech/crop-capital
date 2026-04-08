@@ -53,6 +53,26 @@ interface PaystackWebhookEvent {
   };
 }
 
+interface TransferWebhookEvent {
+  event: "transfer.success" | "transfer.failed" | "transfer.reversed";
+  data: {
+    id: number;
+    reference: string;
+    amount: number;
+    currency: string;
+    status: "success" | "failed" | "reversed" | "otp";
+    reason?: string;
+    recipient: {
+      recipient_code: string;
+      name: string;
+      details: {
+        account_number: string;
+        bank_name: string;
+      };
+    };
+  };
+}
+
 export const paystackWebhook = async (
   req: Request,
   res: Response,
@@ -87,6 +107,19 @@ export const paystackWebhook = async (
 
       case "charge.failed":
         tenantId = await handleChargeFailed(event.data);
+        break;
+
+      case "transfer.success":
+        await handleTransferSuccess(
+          (event as unknown as TransferWebhookEvent).data,
+        );
+        break;
+
+      case "transfer.failed":
+      case "transfer.reversed":
+        await handleTransferFailed(
+          (event as unknown as TransferWebhookEvent).data,
+        );
         break;
 
       default:
@@ -143,6 +176,9 @@ async function handleChargeSuccess(
   // Update investment
   investment.status = "completed";
   investment.paystackReference = reference;
+  const maturity = new Date(data.paid_at ?? Date.now());
+  maturity.setMonth(maturity.getMonth() + investment.durationMonths);
+  investment.maturityDate = maturity;
   await investment.save();
   const currency = investment.currency || data.currency || "NGN";
 
@@ -249,3 +285,192 @@ async function handleChargeFailed(
   console.log(`Payment failed for investment ${investment._id}`);
   return investment.tenantId?.toString();
 }
+
+async function handleTransferSuccess(
+  data: TransferWebhookEvent["data"],
+): Promise<void> {
+  const investment = await Investment.findOne({
+    payoutReference: data.reference,
+  });
+  if (!investment) {
+    console.warn(
+      `transfer.success — no investment found for reference ${data.reference}`,
+    );
+    return;
+  }
+
+  if (investment.roiPaid) {
+    console.log(`ROI already marked paid for investment ${investment._id}`);
+    return;
+  }
+
+  investment.roiPaid = true;
+  await investment.save();
+
+  const currency = investment.currency || data.currency || "NGN";
+  const amount = data.amount / 100;
+
+  const investor = await User.findById(investment.investor);
+  if (investor) {
+    await sendEmail(
+      investor.email,
+      "Your ROI Has Been Paid! 🎉",
+      `<h1>ROI Payout Successful</h1>
+        <p>Great news! Your investment return of ${formatMoney(amount, currency)} has been successfully transferred to your bank account.</p>
+        <p><strong>Transfer Details:</strong></p>
+        <ul>
+          <li>Amount: ${formatMoney(amount, currency)}</li>
+          <li>Reference: ${data.reference}</li>
+          <li>Recipient: ${data.recipient.name} — ${data.recipient.details.bank_name} ${data.recipient.details.account_number}</li>
+        </ul>
+        <p>Thank you for investing with CropCapital!</p>`,
+    );
+  }
+
+  logActivity({
+    type: "roi_paid",
+    title: "ROI Payout Successful",
+    description: `ROI of ${formatMoney(amount, currency)} paid to ${investor?.name ?? "investor"}`,
+    actor: investment.investor as any,
+    resourceId: investment._id,
+    resourceType: "Investment",
+    tenantId: investment.tenantId?.toString(),
+  });
+
+  console.log(
+    `ROI paid for investment ${investment._id}. Reference: ${data.reference}`,
+  );
+}
+
+async function handleTransferFailed(
+  data: TransferWebhookEvent["data"],
+): Promise<void> {
+  const investment = await Investment.findOne({
+    payoutReference: data.reference,
+  });
+  if (!investment) {
+    console.warn(
+      `transfer.failed/reversed — no investment found for reference ${data.reference}`,
+    );
+    return;
+  }
+
+  const currency = investment.currency || data.currency || "NGN";
+  const amount = data.amount / 100;
+  const eventLabel = data.status === "reversed" ? "reversed" : "failed";
+
+  const investor = await User.findById(investment.investor);
+  if (investor) {
+    await sendEmail(
+      investor.email,
+      "ROI Payout Issue — We're On It",
+      `<h1>ROI Transfer ${eventLabel.charAt(0).toUpperCase() + eventLabel.slice(1)}</h1>
+        <p>We encountered an issue processing your ROI payout of ${formatMoney(amount, currency)}.</p>
+        <p>Our team will retry the transfer automatically. If this persists, please contact support.</p>
+        <p><strong>Reference:</strong> ${data.reference}</p>`,
+    );
+  }
+
+  logActivity({
+    type: "investment_failed",
+    title: `ROI Payout ${eventLabel}`,
+    description: `ROI transfer ${eventLabel} for investment ${investment._id}. Reference: ${data.reference}`,
+    actor: investment.investor as any,
+    resourceId: investment._id,
+    resourceType: "Investment",
+    tenantId: investment.tenantId?.toString(),
+  });
+
+  console.error(
+    `ROI transfer ${eventLabel} for investment ${investment._id}. Reference: ${data.reference}`,
+  );
+}
+
+interface TransferApprovalRequest {
+  transfer_code: string;
+  amount: number; // kobo
+  currency: string;
+  reference: string;
+  reason?: string;
+  recipient: {
+    recipient_code: string;
+    name: string;
+    details: {
+      account_number: string;
+      bank_name: string;
+    };
+  };
+}
+
+/**
+ * Paystack transfer approval endpoint.
+ *
+ * Paystack POSTs here before executing each transfer when the Approval URL
+ * is configured in the dashboard. We run fraud checks and respond with
+ * { status: true } to approve or { status: false } to reject.
+ *
+ * Checks performed:
+ * 1. Reference must match a known investment payoutReference (not a phantom payout)
+ * 2. Amount (kobo) must match the investment's projectedReturn within a 1-kobo tolerance
+ * 3. Recipient code must match the stored payoutRecipientCode
+ * 4. Investment must be completed, not already paid, and past maturity
+ */
+export const paystackTransferApproval = async (req: Request, res: Response) => {
+  const body = req.body as TransferApprovalRequest;
+  const { reference, amount, recipient } = body;
+
+  const reject = (reason: string) => {
+    console.warn(
+      `Transfer approval REJECTED — ${reason}. Reference: ${reference}`,
+    );
+    return res.status(200).json({ status: false });
+  };
+
+  if (!reference) {
+    return reject("missing reference in request body");
+  }
+
+  const investment = await Investment.findOne({ payoutReference: reference });
+  if (!investment) {
+    return reject(`no investment found for payout reference ${reference}`);
+  }
+
+  // Guard: already paid (duplicate approval attempt)
+  if (investment.roiPaid) {
+    return reject(`investment ${investment._id} is already marked roiPaid`);
+  }
+
+  // Guard: investment must be completed and past maturity date
+  if (investment.status !== "completed") {
+    return reject(
+      `investment ${investment._id} status is ${investment.status}, not completed`,
+    );
+  }
+  if (!investment.maturityDate || investment.maturityDate > new Date()) {
+    return reject(`investment ${investment._id} has not yet matured`);
+  }
+
+  // Guard: recipient code must match what we stored — prevents tampered recipient
+  if (
+    investment.payoutRecipientCode &&
+    recipient?.recipient_code !== investment.payoutRecipientCode
+  ) {
+    return reject(
+      `recipient code mismatch: expected ${investment.payoutRecipientCode}, got ${recipient?.recipient_code}`,
+    );
+  }
+
+  // Guard: amount in kobo must match projectedReturn (within 1 kobo for rounding)
+  const expectedKobo = Math.round(investment.projectedReturn() * 100);
+  if (Math.abs(amount - expectedKobo) > 1) {
+    return reject(
+      `amount mismatch: expected ${expectedKobo} kobo, got ${amount} kobo for investment ${investment._id}`,
+    );
+  }
+
+  console.log(
+    `Transfer approval APPROVED for investment ${investment._id}. Reference: ${reference}`,
+  );
+
+  return res.status(200).json({ status: true });
+};

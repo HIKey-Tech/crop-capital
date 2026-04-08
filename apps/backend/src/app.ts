@@ -10,7 +10,10 @@ import userRoutes from "./modules/users/user.routes";
 import kycRoutes from "./modules/kyc/kyc.routes";
 import activityRoutes from "./modules/activities/activity.routes";
 import tenantRoutes from "./modules/tenants/tenant.routes";
-import { paystackWebhook } from "./modules/payments/payment.webhook";
+import {
+  paystackWebhook,
+  paystackTransferApproval,
+} from "./modules/payments/payment.webhook";
 import paymentRoutes from "./modules/payments/payment.routes";
 import { ALLOWED_ORIGINS } from "./config/env";
 import { portNumbers } from "get-port";
@@ -76,6 +79,13 @@ app.post(
   "/api/webhooks/paystack",
   express.json({ limit: JSON_BODY_LIMIT }),
   paystackWebhook,
+);
+
+/* Paystack Transfer Approval URL */
+app.post(
+  "/api/webhooks/paystack/approve-transfer",
+  express.json({ limit: JSON_BODY_LIMIT }),
+  paystackTransferApproval,
 );
 
 /* Parse JSON for all other routes */

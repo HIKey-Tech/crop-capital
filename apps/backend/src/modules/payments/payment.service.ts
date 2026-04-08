@@ -279,3 +279,116 @@ export function validateWebhookSignature(
     .digest("hex");
   return hash === signature;
 }
+
+// ─── Transfer / Payout ────────────────────────────────────────────────────────
+
+export interface PaystackRecipient {
+  recipientCode: string;
+  name: string;
+  accountNumber: string;
+  bankCode: string;
+  currency: string;
+}
+
+interface CreateRecipientResponse {
+  status: boolean;
+  message: string;
+  data: {
+    recipient_code: string;
+    name: string;
+    details: {
+      account_number: string;
+      bank_code: string;
+    };
+    currency: string;
+  };
+}
+
+interface InitiateTransferResponse {
+  status: boolean;
+  message: string;
+  data: {
+    reference: string;
+    status: "pending" | "success" | "failed" | "reversed" | "otp";
+    transfer_code: string;
+    amount: number;
+    currency: string;
+    recipient: string;
+  };
+}
+
+/**
+ * Create (or reuse) a Paystack transfer recipient for a bank account.
+ * accountName should be the verified name on the account.
+ */
+export async function createTransferRecipient(opts: {
+  name: string;
+  accountNumber: string;
+  bankCode: string;
+  currency?: string;
+}): Promise<PaystackRecipient> {
+  const response = await fetch(`${PAYSTACK_BASE_URL}/transferrecipient`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${PAYSTACK_SECRET_KEY}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      type: "nuban",
+      name: opts.name,
+      account_number: opts.accountNumber,
+      bank_code: opts.bankCode,
+      currency: opts.currency ?? "NGN",
+    }),
+  });
+
+  const payload = (await response.json()) as CreateRecipientResponse;
+
+  if (!response.ok || !payload.status) {
+    throw new Error(payload.message || "Failed to create transfer recipient");
+  }
+
+  return {
+    recipientCode: payload.data.recipient_code,
+    name: payload.data.name,
+    accountNumber: payload.data.details.account_number,
+    bankCode: payload.data.details.bank_code,
+    currency: payload.data.currency,
+  };
+}
+
+/**
+ * Initiate a Paystack transfer (disbursement) to a recipient.
+ * amount is in the major currency unit (e.g. NGN, not kobo).
+ */
+export async function initiateTransfer(opts: {
+  recipientCode: string;
+  amount: number;
+  currency?: string;
+  reference: string;
+  reason?: string;
+}): Promise<InitiateTransferResponse["data"]> {
+  const response = await fetch(`${PAYSTACK_BASE_URL}/transfer`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${PAYSTACK_SECRET_KEY}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      source: "balance",
+      recipient: opts.recipientCode,
+      amount: Math.round(opts.amount * 100), // kobo
+      currency: opts.currency ?? "NGN",
+      reference: opts.reference,
+      reason: opts.reason ?? "Investment ROI payout",
+    }),
+  });
+
+  const payload = (await response.json()) as InitiateTransferResponse;
+
+  if (!response.ok || !payload.status) {
+    throw new Error(payload.message || "Failed to initiate transfer");
+  }
+
+  return payload.data;
+}

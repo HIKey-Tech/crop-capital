@@ -19,8 +19,11 @@ export interface IInvestment extends Document {
   roi: number;
   durationMonths: number;
   roiPaid: boolean;
+  payoutReference?: string;
+  payoutRecipientCode?: string;
   paystackReference?: string;
   paystackAccessCode?: string;
+  maturityDate?: Date;
   status: "pending" | "completed" | "cancelled";
   createdAt: Date;
   updatedAt: Date;
@@ -43,8 +46,11 @@ const InvestmentSchema = new Schema<IInvestment>(
     },
     roi: { type: Number, required: true },
     roiPaid: { type: Boolean, default: false },
+    payoutReference: { type: String },
+    payoutRecipientCode: { type: String },
     paystackReference: { type: String },
     paystackAccessCode: { type: String },
+    maturityDate: { type: Date },
     durationMonths: { type: Number, required: true },
     status: {
       type: String,
