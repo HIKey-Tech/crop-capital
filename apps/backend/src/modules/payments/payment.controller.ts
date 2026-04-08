@@ -1,6 +1,27 @@
 import { Request, Response, NextFunction } from "express";
 import { AppError } from "@/utils/AppError";
-import { listBanks, resolveAccountNumber } from "./payment.service";
+import {
+  listBanks,
+  listSupportedCountries,
+  resolveAccountNumber,
+} from "./payment.service";
+
+export const getCountries = async (
+  _req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const countries = await listSupportedCountries();
+
+    res.status(200).json({
+      success: true,
+      countries,
+    });
+  } catch (err: any) {
+    next(new AppError(err.message || "Failed to fetch countries", 400));
+  }
+};
 
 export const getBanks = async (
   req: Request,

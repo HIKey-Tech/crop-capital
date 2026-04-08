@@ -14,8 +14,8 @@ const seedData = async () => {
       name: "Admin User",
       email: "admin@cropcapital.com",
       password: "admin123",
-      role: "admin",
-      country: "Liberia",
+      role: "admin" as const,
+      country: "Nigeria",
       isVerified: true,
     };
 
@@ -24,6 +24,8 @@ const seedData = async () => {
       admin.password = adminData.password;
       admin.markModified("password"); // Ensure password is hashed
       admin.name = adminData.name;
+      admin.role = adminData.role;
+      admin.country = adminData.country;
       admin.isVerified = true;
       await admin.save();
       console.log("✅ Updated admin user password");
@@ -38,24 +40,24 @@ const seedData = async () => {
         name: "John Doe",
         email: "john@example.com",
         password: "password123",
-        role: "investor",
-        country: "United States",
+        role: "investor" as const,
+        country: "Ghana",
         isVerified: true,
       },
       {
         name: "Jane Smith",
         email: "jane@example.com",
         password: "password123",
-        role: "investor",
-        country: "United Kingdom",
+        role: "investor" as const,
+        country: "Nigeria",
         isVerified: true,
       },
       {
         name: "Samuel Johnson",
         email: "samuel@example.com",
         password: "password123",
-        role: "investor",
-        country: "Ghana",
+        role: "investor" as const,
+        country: "Kenya",
         isVerified: false,
       },
     ];
@@ -67,6 +69,8 @@ const seedData = async () => {
         investor.password = investorData.password;
         investor.markModified("password"); // Ensure password is hashed
         investor.name = investorData.name;
+        investor.country = investorData.country;
+        investor.isVerified = investorData.isVerified;
         await investor.save();
         investors.push(investor);
         console.log(`✅ Updated investor: ${investorData.email}`);

@@ -24,6 +24,13 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { useTenant } from '@/contexts/tenant'
 import { useViewMode } from '@/contexts/view-mode'
 import {
@@ -31,19 +38,34 @@ import {
   usePaystackBanks,
   useUpdateProfile,
 } from '@/hooks/use-auth'
+import { api } from '@/lib/api-builder'
 
 export const Route = createFileRoute('/$tenant/_authenticated/settings/')({
+  loader: async ({ context }) => {
+    const response = await context.queryClient.ensureQueryData({
+      queryKey: api.payments.countries.$use(),
+      queryFn: () => api.$use.payments.countries(),
+      staleTime: 1000 * 60 * 60,
+    })
+
+    return {
+      countryOptions: response.countries,
+    }
+  },
   component: ProfileSettingsPage,
 })
 
 function ProfileSettingsPage() {
   const { user } = Route.useRouteContext()
+  const { countryOptions } = Route.useLoaderData()
   const { tenant } = useTenant()
   const { viewMode } = useViewMode()
   const { mutate: updateProfile, isPending } = useUpdateProfile()
+
   const [selectedPhoto, setSelectedPhoto] = useState<File | null>(null)
   const [previewPhotoUrl, setPreviewPhotoUrl] = useState<string | null>(null)
   const [removePhoto, setRemovePhoto] = useState(false)
+
   const photoInputRef = useRef<HTMLInputElement | null>(null)
 
   const form = useForm({
@@ -115,7 +137,9 @@ function ProfileSettingsPage() {
     }
 
     if (normalizedAccountNumber.length < 6) {
-      form.setFieldValue('accountName', '')
+      if (form.values.accountName) {
+        form.setFieldValue('accountName', '')
+      }
       return
     }
 
@@ -142,17 +166,50 @@ function ProfileSettingsPage() {
   ])
 
   const handleBankNameChange = (value: string) => {
+    const normalizedValue = value.trim().toLowerCase()
     form.setFieldValue('bankName', value)
 
     const matchingBank = bankOptions.find(
-      (bank) => bank.name.toLowerCase() === value.trim().toLowerCase(),
+      (bank) => bank.name.toLowerCase() === normalizedValue,
     )
 
-    form.setFieldValue('bankCode', matchingBank?.code ?? '')
+    const nextBankCode = matchingBank?.code ?? ''
+    const bankChanged =
+      form.values.bankCode !== nextBankCode ||
+      form.values.bankName.trim().toLowerCase() !== normalizedValue
 
-    if (matchingBank) {
+    form.setFieldValue('bankCode', nextBankCode)
+
+    if (bankChanged) {
+      form.setFieldValue('accountNumber', '')
       form.setFieldValue('accountName', '')
     }
+  }
+
+  const handleBankSelect = (code: string) => {
+    const bank = bankOptions.find((b) => b.code === code)
+    if (!bank) return
+
+    const bankChanged =
+      form.values.bankCode !== bank.code || form.values.bankName !== bank.name
+
+    form.setFieldValue('bankName', bank.name)
+    form.setFieldValue('bankCode', bank.code)
+
+    if (bankChanged) {
+      form.setFieldValue('accountNumber', '')
+      form.setFieldValue('accountName', '')
+    }
+  }
+
+  const handleCountryChange = (value: string) => {
+    if (form.values.country === value) return
+
+    form.setFieldValue('country', value)
+    form.setFieldValue('bankName', '')
+    form.setFieldValue('bankCode', '')
+    form.setFieldValue('accountNumber', '')
+    form.setFieldValue('accountName', '')
   }
 
   const handleAccountNumberChange = (value: string) => {
@@ -192,14 +249,12 @@ function ProfileSettingsPage() {
       values.bankName.trim() &&
       !values.bankCode.trim()
     ) {
-      toast.error('Choose a bank from the Paystack suggestions before saving')
+      toast.error('Choose a bank from the list before saving')
       return
     }
 
     if (values.bankCode.trim() && !resolvedAccount?.resolved) {
-      toast.error(
-        'Enter a valid account number so Paystack can verify the payout account',
-      )
+      toast.error('Enter a valid account number to verify this payout account')
       return
     }
 
@@ -362,13 +417,25 @@ function ProfileSettingsPage() {
           <Label htmlFor="country">Country</Label>
           <div className="relative">
             <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              id="country"
-              {...form.getInputProps('country')}
-              className="pl-9"
-              placeholder="Enter your country"
-            />
+            <Select
+              value={form.values.country}
+              onValueChange={handleCountryChange}
+            >
+              <SelectTrigger id="country" className="w-full pl-9">
+                <SelectValue placeholder="Select your country" />
+              </SelectTrigger>
+              <SelectContent>
+                {countryOptions.map((country) => (
+                  <SelectItem key={country.isoCode} value={country.name}>
+                    {country.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
+          <p className="text-xs text-muted-foreground">
+            Choose your country to load the supported banks for payouts.
+          </p>
         </div>
 
         <section className="rounded-2xl border border-border bg-card p-5 shadow-sm space-y-4">
@@ -381,68 +448,51 @@ function ProfileSettingsPage() {
             </p>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="accountName">Account Name</Label>
-            <div className="relative">
-              <Landmark className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                id="accountName"
-                {...form.getInputProps('accountName')}
-                className="pl-9"
-                placeholder="Name on your bank account"
-                readOnly={requiresResolvedAccount}
-              />
-            </div>
-            {requiresResolvedAccount ? (
-              <p className="text-xs text-muted-foreground">
-                {isResolvingAccount
-                  ? 'Verifying account name with Paystack...'
-                  : resolvedAccount?.resolved && resolvedAccount.accountName
-                    ? `Verified by Paystack as ${resolvedAccount.accountName}.`
-                    : normalizedAccountNumber.length >= 6
-                      ? 'We could not verify this account number yet.'
-                      : 'Enter the account number to verify the payout account automatically.'}
-              </p>
-            ) : null}
-          </div>
-
           <div className="grid gap-4 md:grid-cols-2">
             <div className="space-y-2">
               <Label htmlFor="bankName">Bank Name</Label>
-              <div className="relative">
-                <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  id="bankName"
-                  value={form.values.bankName}
-                  onChange={(event) => handleBankNameChange(event.target.value)}
-                  className="pl-9"
-                  placeholder={
-                    bankOptions.length > 0
-                      ? 'Type or choose a bank'
-                      : 'e.g. Access Bank'
-                  }
-                  list={
-                    bankOptions.length > 0 ? 'settings-bank-options' : undefined
-                  }
-                />
-              </div>
               {bankOptions.length > 0 ? (
-                <>
-                  <datalist id="settings-bank-options">
-                    {bankOptions.map((bank) => (
-                      <option key={bank.code} value={bank.name} />
-                    ))}
-                  </datalist>
-                  <p className="text-xs text-muted-foreground">
-                    Suggestions loaded from Paystack for{' '}
-                    {form.values.country || 'your country'}.
-                  </p>
-                </>
+                <div className="relative">
+                  <Building2 className="absolute left-3 top-1/2 z-10 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Select
+                    value={form.values.bankCode}
+                    onValueChange={handleBankSelect}
+                  >
+                    <SelectTrigger id="bankName" className="w-full pl-9">
+                      <SelectValue placeholder="Select your bank" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {bankOptions.map((bank) => (
+                        <SelectItem key={bank.code} value={bank.code}>
+                          {bank.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              ) : (
+                <div className="relative">
+                  <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    id="bankName"
+                    value={form.values.bankName}
+                    onChange={(event) =>
+                      handleBankNameChange(event.target.value)
+                    }
+                    className="pl-9"
+                    placeholder="e.g. Access Bank"
+                  />
+                </div>
+              )}
+              {bankOptions.length > 0 ? (
+                <p className="text-xs text-muted-foreground">
+                  Select the account that should receive your returns.
+                </p>
               ) : form.values.country.trim() ? (
                 <p className="text-xs text-muted-foreground">
                   {isBanksLoading
-                    ? 'Checking Paystack bank support for this country...'
-                    : 'No Paystack bank directory is available for this country yet. You can enter the bank name manually.'}
+                    ? 'Loading available banks for this country...'
+                    : 'We could not load a bank list for this country yet. You can enter the bank name manually.'}
                 </p>
               ) : null}
             </div>
@@ -463,6 +513,33 @@ function ProfileSettingsPage() {
                 />
               </div>
             </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="accountName">Account Name</Label>
+            <div className="relative">
+              <Landmark className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                id="accountName"
+                {...form.getInputProps('accountName')}
+                className="pl-9"
+                placeholder="Name on your bank account"
+                readOnly={
+                  isResolvingAccount || (resolvedAccount?.resolved ?? false)
+                }
+              />
+            </div>
+            {requiresResolvedAccount ? (
+              <p className="text-xs text-muted-foreground">
+                {isResolvingAccount
+                  ? 'Verifying account name...'
+                  : resolvedAccount?.resolved && resolvedAccount.accountName
+                    ? `Verified as ${resolvedAccount.accountName}.`
+                    : normalizedAccountNumber.length >= 6
+                      ? 'Could not verify automatically — enter the account name manually.'
+                      : 'Enter the account number to verify the payout account automatically.'}
+              </p>
+            ) : null}
           </div>
         </section>
 

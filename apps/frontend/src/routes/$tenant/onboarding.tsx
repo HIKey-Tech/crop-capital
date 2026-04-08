@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, createFileRoute, useNavigate } from '@tanstack/react-router'
 import {
   BadgeCheck,
@@ -12,7 +12,6 @@ import {
 } from 'lucide-react'
 import { toast } from 'sonner'
 
-import { countries } from '@/components/layout/auth-layout'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -30,21 +29,25 @@ import {
   usePaystackBanks,
   useUpdateProfile,
 } from '@/hooks/use-auth'
+import { api } from '@/lib/api-builder'
 
 export const Route = createFileRoute('/$tenant/onboarding')({
+  loader: async ({ context }) => {
+    const response = await context.queryClient.ensureQueryData({
+      queryKey: api.payments.countries.$use(),
+      queryFn: () => api.$use.payments.countries(),
+      staleTime: 1000 * 60 * 60,
+    })
+
+    return {
+      countryOptions: response.countries,
+    }
+  },
   component: OnboardingPage,
 })
 
 type OnboardingGoal = 'income' | 'growth' | 'balanced'
 type ExperienceLevel = 'first-time' | 'some-experience' | 'advanced'
-
-interface StoredOnboardingState {
-  completed: boolean
-  goal?: OnboardingGoal
-  experience?: ExperienceLevel
-  termsAccepted?: boolean
-  updatedAt?: string
-}
 
 const goalOptions: Array<{
   value: OnboardingGoal
@@ -90,11 +93,9 @@ const experienceOptions: Array<{
   },
 ]
 
-const getOnboardingStorageKey = (tenantSlug: string, userId?: string) =>
-  `tenant-onboarding:${tenantSlug}:${userId ?? 'guest'}`
-
 function OnboardingPage() {
   const { tenant: tenantParam } = Route.useParams()
+  const { countryOptions } = Route.useLoaderData()
   const { tenant } = useTenant()
   const { data: currentUserData, isLoading: isUserLoading } = useCurrentUser()
   const updateProfile = useUpdateProfile()
@@ -116,10 +117,6 @@ function OnboardingPage() {
   const [isCompleted, setIsCompleted] = useState(false)
 
   const progress = (step / totalSteps) * 100
-  const storageKey = useMemo(
-    () => getOnboardingStorageKey(tenantParam, currentUser?._id),
-    [tenantParam, currentUser?._id],
-  )
   const { data: bankDirectory, isLoading: isBanksLoading } =
     usePaystackBanks(country)
   const bankOptions = bankDirectory?.banks ?? []
@@ -141,22 +138,11 @@ function OnboardingPage() {
     setBankName(currentUser.bankAccount?.bankName ?? '')
     setBankCode(currentUser.bankAccount?.bankCode ?? '')
     setAccountNumber(currentUser.bankAccount?.accountNumber ?? '')
-
-    if (typeof window === 'undefined') return
-
-    const rawState = localStorage.getItem(storageKey)
-    if (!rawState) return
-
-    try {
-      const savedState = JSON.parse(rawState) as StoredOnboardingState
-      setGoal(savedState.goal ?? null)
-      setExperience(savedState.experience ?? null)
-      setTermsAccepted(Boolean(savedState.termsAccepted))
-      setIsCompleted(Boolean(savedState.completed))
-    } catch {
-      localStorage.removeItem(storageKey)
-    }
-  }, [currentUser, storageKey])
+    setGoal(currentUser.onboarding?.goal ?? null)
+    setExperience(currentUser.onboarding?.experience ?? null)
+    setTermsAccepted(Boolean(currentUser.onboarding?.termsAccepted))
+    setIsCompleted(Boolean(currentUser.onboarding?.completedAt))
+  }, [currentUser])
 
   useEffect(() => {
     if (bankCode || !bankName || bankOptions.length === 0) {
@@ -190,7 +176,7 @@ function OnboardingPage() {
     }
 
     if (normalizedAccountNumber.length < 6) {
-      setAccountName('')
+      if (accountName) setAccountName('')
       return
     }
 
@@ -214,17 +200,49 @@ function OnboardingPage() {
   ])
 
   const handleBankNameChange = (value: string) => {
+    const normalizedValue = value.trim().toLowerCase()
     setBankName(value)
 
     const matchingBank = bankOptions.find(
-      (bank) => bank.name.toLowerCase() === value.trim().toLowerCase(),
+      (bank) => bank.name.toLowerCase() === normalizedValue,
     )
 
-    setBankCode(matchingBank?.code ?? '')
+    const nextBankCode = matchingBank?.code ?? ''
+    const bankChanged =
+      bankCode !== nextBankCode ||
+      bankName.trim().toLowerCase() !== normalizedValue
 
-    if (matchingBank) {
+    setBankCode(nextBankCode)
+
+    if (bankChanged) {
+      setAccountNumber('')
       setAccountName('')
     }
+  }
+
+  const handleBankSelect = (code: string) => {
+    const bank = bankOptions.find((b) => b.code === code)
+    if (!bank) return
+
+    const bankChanged = bankCode !== bank.code || bankName !== bank.name
+
+    setBankName(bank.name)
+    setBankCode(bank.code)
+
+    if (bankChanged) {
+      setAccountNumber('')
+      setAccountName('')
+    }
+  }
+
+  const handleCountryChange = (value: string) => {
+    if (country === value) return
+
+    setCountry(value)
+    setBankName('')
+    setBankCode('')
+    setAccountNumber('')
+    setAccountName('')
   }
 
   const handleAccountNumberChange = (value: string) => {
@@ -237,34 +255,21 @@ function OnboardingPage() {
     }
   }
 
-  const persistDraft = (overrides?: Partial<StoredOnboardingState>) => {
-    if (typeof window === 'undefined' || !currentUser) return
-
-    localStorage.setItem(
-      storageKey,
-      JSON.stringify({
-        completed: false,
-        goal: goal ?? undefined,
-        experience: experience ?? undefined,
-        termsAccepted,
-        updatedAt: new Date().toISOString(),
-        ...overrides,
-      } satisfies StoredOnboardingState),
-    )
-  }
-
-  const finishOnboarding = () => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem(
-        storageKey,
-        JSON.stringify({
-          completed: true,
-          goal: goal ?? undefined,
-          experience: experience ?? undefined,
+  const finishOnboarding = async () => {
+    try {
+      await updateProfile.mutateAsync({
+        onboarding: {
           termsAccepted: true,
-          updatedAt: new Date().toISOString(),
-        } satisfies StoredOnboardingState),
+          completedAt: new Date().toISOString(),
+        },
+      })
+    } catch (error) {
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : 'Failed to complete onboarding',
       )
+      return
     }
 
     setIsCompleted(true)
@@ -293,15 +298,13 @@ function OnboardingPage() {
       }
 
       if (bankOptions.length > 0 && bankName.trim() && !bankCode.trim()) {
-        toast.error(
-          'Choose a bank from the Paystack suggestions before continuing',
-        )
+        toast.error('Choose a bank from the list before continuing')
         return
       }
 
       if (bankCode.trim() && !resolvedAccount?.resolved) {
         toast.error(
-          'Enter a valid account number so Paystack can verify the payout account',
+          'Enter a valid account number to verify this payout account',
         )
         return
       }
@@ -322,7 +325,8 @@ function OnboardingPage() {
             accountNumber: accountNumber.replace(/\s+/g, ''),
           },
         })
-        persistDraft()
+        setStep((currentStep) => Math.min(currentStep + 1, totalSteps))
+        return
       } catch (error) {
         toast.error(
           error instanceof Error
@@ -339,7 +343,18 @@ function OnboardingPage() {
         return
       }
 
-      persistDraft()
+      try {
+        await updateProfile.mutateAsync({
+          onboarding: { goal, experience },
+        })
+      } catch (error) {
+        toast.error(
+          error instanceof Error
+            ? error.message
+            : 'Failed to save your preferences',
+        )
+        return
+      }
     }
 
     if (step === 3) {
@@ -553,90 +568,71 @@ function OnboardingPage() {
 
                 <div className="space-y-2">
                   <Label>Where are you based?</Label>
-                  <Select value={country} onValueChange={setCountry}>
-                    <SelectTrigger>
+                  <Select value={country} onValueChange={handleCountryChange}>
+                    <SelectTrigger className="w-full">
                       <SelectValue placeholder="Select your country" />
                     </SelectTrigger>
                     <SelectContent>
-                      {countries.map((option) => (
-                        <SelectItem key={option} value={option}>
-                          {option}
+                      {countryOptions.map((option) => (
+                        <SelectItem key={option.isoCode} value={option.name}>
+                          {option.name}
                         </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
+                  <p className="text-xs text-muted-foreground">
+                    Choose your country to load the supported banks for payouts.
+                  </p>
                 </div>
 
                 <div className="grid gap-4 md:grid-cols-2">
-                  <div className="space-y-2 md:col-span-2">
-                    <Label htmlFor="onboarding-account-name">
-                      Account Name
-                    </Label>
-                    <div className="relative">
-                      <Landmark className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                      <Input
-                        id="onboarding-account-name"
-                        placeholder="Name on your bank account"
-                        value={accountName}
-                        onChange={(event) => setAccountName(event.target.value)}
-                        className="pl-9"
-                        readOnly={requiresResolvedAccount}
-                      />
-                    </div>
-                    {requiresResolvedAccount ? (
-                      <p className="text-xs text-muted-foreground">
-                        {isResolvingAccount
-                          ? 'Verifying account name with Paystack...'
-                          : resolvedAccount?.resolved &&
-                              resolvedAccount.accountName
-                            ? `Verified by Paystack as ${resolvedAccount.accountName}.`
-                            : normalizedAccountNumber.length >= 6
-                              ? 'We could not verify this account number yet.'
-                              : 'Enter the account number to verify the payout account automatically.'}
-                      </p>
-                    ) : null}
-                  </div>
-
                   <div className="space-y-2">
                     <Label htmlFor="onboarding-bank-name">Bank Name</Label>
-                    <div className="relative">
-                      <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                      <Input
-                        id="onboarding-bank-name"
-                        placeholder={
-                          bankOptions.length > 0
-                            ? 'Type or choose a bank'
-                            : 'e.g. Ecobank'
-                        }
-                        value={bankName}
-                        onChange={(event) =>
-                          handleBankNameChange(event.target.value)
-                        }
-                        list={
-                          bankOptions.length > 0
-                            ? 'onboarding-bank-options'
-                            : undefined
-                        }
-                        className="pl-9"
-                      />
-                    </div>
                     {bankOptions.length > 0 ? (
-                      <>
-                        <datalist id="onboarding-bank-options">
-                          {bankOptions.map((bank) => (
-                            <option key={bank.code} value={bank.name} />
-                          ))}
-                        </datalist>
-                        <p className="text-xs text-muted-foreground">
-                          Suggestions loaded from Paystack for{' '}
-                          {country || 'your country'}.
-                        </p>
-                      </>
+                      <div className="relative">
+                        <Building2 className="absolute left-3 top-1/2 z-10 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <Select
+                          value={bankCode}
+                          onValueChange={handleBankSelect}
+                        >
+                          <SelectTrigger
+                            id="onboarding-bank-name"
+                            className="w-full pl-9"
+                          >
+                            <SelectValue placeholder="Select your bank" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {bankOptions.map((bank) => (
+                              <SelectItem key={bank.code} value={bank.code}>
+                                {bank.name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    ) : (
+                      <div className="relative">
+                        <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <Input
+                          id="onboarding-bank-name"
+                          placeholder="e.g. Ecobank"
+                          value={bankName}
+                          onChange={(event) =>
+                            handleBankNameChange(event.target.value)
+                          }
+                          className="pl-9"
+                        />
+                      </div>
+                    )}
+                    {bankOptions.length > 0 ? (
+                      <p className="text-xs text-muted-foreground">
+                        Select the account that should receive your returns.
+                      </p>
                     ) : country.trim() ? (
                       <p className="text-xs text-muted-foreground">
                         {isBanksLoading
-                          ? 'Checking Paystack bank support for this country...'
-                          : 'No Paystack bank directory is available for this country yet. You can enter the bank name manually.'}
+                          ? 'Loading available banks for this country...'
+                          : 'We could not load a bank list for this country yet. You can enter the bank name manually.'}
                       </p>
                     ) : null}
                   </div>
@@ -658,6 +654,38 @@ function OnboardingPage() {
                         className="pl-9"
                       />
                     </div>
+                  </div>
+
+                  <div className="space-y-2 md:col-span-2">
+                    <Label htmlFor="onboarding-account-name">
+                      Account Name
+                    </Label>
+                    <div className="relative">
+                      <Landmark className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        id="onboarding-account-name"
+                        placeholder="Name on your bank account"
+                        value={accountName}
+                        onChange={(event) => setAccountName(event.target.value)}
+                        className="pl-9"
+                        readOnly={
+                          isResolvingAccount ||
+                          (resolvedAccount?.resolved ?? false)
+                        }
+                      />
+                    </div>
+                    {requiresResolvedAccount ? (
+                      <p className="text-xs text-muted-foreground">
+                        {isResolvingAccount
+                          ? 'Verifying account name...'
+                          : resolvedAccount?.resolved &&
+                              resolvedAccount.accountName
+                            ? `Verified as ${resolvedAccount.accountName}.`
+                            : normalizedAccountNumber.length >= 6
+                              ? 'Could not verify automatically — enter the account name manually.'
+                              : 'Enter the account number to verify the payout account automatically.'}
+                      </p>
+                    ) : null}
                   </div>
                 </div>
 

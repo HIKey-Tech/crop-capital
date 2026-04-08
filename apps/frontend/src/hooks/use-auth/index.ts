@@ -2,11 +2,27 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import type {
   LoginRequest,
+  PaystackBank,
   RegisterRequest,
   UpdateProfileRequest,
 } from '@/types'
 import { api } from '@/lib/api-builder'
 import { clearAuthToken } from '@/lib/api-client'
+
+const dedupePaystackBanks = (banks: Array<PaystackBank>) => {
+  const seen = new Set<string>()
+
+  return banks
+    .filter((bank) => {
+      const key = `${bank.name.trim().toLowerCase()}::${bank.code.trim()}::${(bank.currency ?? '').trim().toLowerCase()}`
+
+      if (seen.has(key)) return false
+
+      seen.add(key)
+      return true
+    })
+    .sort((left, right) => left.name.localeCompare(right.name))
+}
 
 export function useCurrentUser() {
   return useQuery({
@@ -80,6 +96,10 @@ export function usePaystackBanks(country?: string) {
     queryFn: () => api.$use.payments.banks(normalizedCountry),
     enabled: normalizedCountry.length > 0,
     staleTime: 1000 * 60 * 60,
+    select: (response) => ({
+      ...response,
+      banks: dedupePaystackBanks(response.banks),
+    }),
   })
 }
 

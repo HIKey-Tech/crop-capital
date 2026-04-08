@@ -1,10 +1,13 @@
 import type {
+  AccountResolutionResponse,
   ActivateAdminResponse,
-  AddFarmUpdateRequest,
   ActivitiesListResponse,
+  AddFarmUpdateRequest,
   AuthResponse,
-  CreateFarmRequest,
+  BanksListResponse,
+  CountriesListResponse,
   CreateFarmMultipartRequest,
+  CreateFarmRequest,
   CreateTenantRequest,
   DeleteTenantResponse,
   FarmResponse,
@@ -22,14 +25,12 @@ import type {
   KycSubmitResponse,
   LoginRequest,
   RegisterRequest,
-  AccountResolutionResponse,
-  BanksListResponse,
   TenantBootstrapResponse,
   TenantMutationResponse,
   TenantsListResponse,
-  UpdateTenantRequest,
-  UpdateProfileRequest,
   UpdateFarmRequest,
+  UpdateProfileRequest,
+  UpdateTenantRequest,
   UserDetailResponse,
   UserStatsResponse,
   UsersListResponse,
@@ -319,6 +320,23 @@ export const authApi = {
         )
       }
     }
+    if (data.onboarding) {
+      if (data.onboarding.goal != null) {
+        formData.append('onboarding.goal', data.onboarding.goal)
+      }
+      if (data.onboarding.experience != null) {
+        formData.append('onboarding.experience', data.onboarding.experience)
+      }
+      if (data.onboarding.termsAccepted != null) {
+        formData.append(
+          'onboarding.termsAccepted',
+          String(data.onboarding.termsAccepted),
+        )
+      }
+      if (data.onboarding.completedAt != null) {
+        formData.append('onboarding.completedAt', data.onboarding.completedAt)
+      }
+    }
 
     return request<{
       success: boolean
@@ -383,6 +401,10 @@ export const authApi = {
 }
 
 export const paymentsApi = {
+  getCountries: async (): Promise<CountriesListResponse> => {
+    return request<CountriesListResponse>('/payments/countries')
+  },
+
   getBanks: async (country: string): Promise<BanksListResponse> => {
     const searchParams = new URLSearchParams({ country })
     return request<BanksListResponse>(

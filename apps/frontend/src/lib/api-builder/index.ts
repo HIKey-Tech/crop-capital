@@ -4,6 +4,7 @@ import type {
   AccountResolutionResponse,
   AddFarmUpdateRequest,
   BanksListResponse,
+  CountriesListResponse,
   CreateFarmMultipartRequest,
   InvestRequest,
   InviteAdminRequest,
@@ -39,6 +40,7 @@ export const api = createBuilder({
       authApi.updatePassword(data),
   },
   payments: {
+    countries: (): Promise<CountriesListResponse> => paymentsApi.getCountries(),
     banks: (country: string): Promise<BanksListResponse> =>
       paymentsApi.getBanks(country),
     resolveAccount: (

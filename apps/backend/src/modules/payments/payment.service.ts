@@ -55,6 +55,27 @@ interface PaystackBanksResponse {
   data: PaystackBank[];
 }
 
+interface PaystackCountry {
+  id: number;
+  active_for_dashboard_onboarding: boolean;
+  name: string;
+  iso_code: string;
+  default_currency_code: string;
+}
+
+interface PaystackCountriesResponse {
+  status: boolean;
+  message: string;
+  data: PaystackCountry[];
+}
+
+export interface SupportedPaystackCountry {
+  id: number;
+  name: string;
+  isoCode: string;
+  defaultCurrencyCode: string;
+}
+
 interface PaystackResolveAccountResponse {
   status: boolean;
   message: string;
@@ -175,6 +196,34 @@ export async function listBanks(country: string): Promise<PaystackBank[]> {
   const payload = (await response.json()) as PaystackBanksResponse;
 
   return payload.data.filter((bank) => bank.active && !bank.is_deleted);
+}
+
+export async function listSupportedCountries(): Promise<
+  SupportedPaystackCountry[]
+> {
+  const response = await fetch(`${PAYSTACK_BASE_URL}/country`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${PAYSTACK_SECRET_KEY}`,
+    },
+  });
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => null);
+    throw new Error(error?.message || "Failed to fetch Paystack countries");
+  }
+
+  const payload = (await response.json()) as PaystackCountriesResponse;
+
+  return payload.data
+    .filter((country) => country.active_for_dashboard_onboarding)
+    .map((country) => ({
+      id: country.id,
+      name: country.name,
+      isoCode: country.iso_code,
+      defaultCurrencyCode: country.default_currency_code,
+    }))
+    .sort((left, right) => left.name.localeCompare(right.name));
 }
 
 export async function resolveAccountNumber(

@@ -119,6 +119,7 @@ export const getMe = async (
         country: req.user.country,
         photo: req.user.photo,
         bankAccount: req.user.bankAccount,
+        onboarding: req.user.onboarding,
         isVerified: req.user.isVerified,
         createdAt: req.user.createdAt,
       },
@@ -159,6 +160,27 @@ export const updateProfile = async (
         }
       : undefined;
 
+    const onboarding = Object.prototype.hasOwnProperty.call(
+      req.body,
+      "onboarding.goal",
+    )
+      ? {
+          goal: req.body["onboarding.goal"] as
+            | "income"
+            | "growth"
+            | "balanced"
+            | undefined,
+          experience: req.body["onboarding.experience"] as
+            | "first-time"
+            | "some-experience"
+            | "advanced"
+            | undefined,
+          termsAccepted:
+            req.body["onboarding.termsAccepted"] === "true" ? true : undefined,
+          completedAt: req.body["onboarding.completedAt"] as string | undefined,
+        }
+      : undefined;
+
     let photo: string | undefined;
     let photoPublicId: string | undefined;
 
@@ -182,6 +204,7 @@ export const updateProfile = async (
       photoPublicId,
       removePhoto,
       bankAccount,
+      onboarding,
     });
 
     res.status(200).json({
@@ -195,6 +218,7 @@ export const updateProfile = async (
         country: user.country,
         photo: user.photo,
         bankAccount: user.bankAccount,
+        onboarding: user.onboarding,
         isVerified: user.isVerified,
         createdAt: user.createdAt,
       },

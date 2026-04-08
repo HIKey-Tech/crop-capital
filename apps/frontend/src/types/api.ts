@@ -18,6 +18,12 @@ export interface UpdateProfileRequest {
     bankCode?: string
     accountNumber?: string
   }
+  onboarding?: {
+    goal?: 'income' | 'growth' | 'balanced'
+    experience?: 'first-time' | 'some-experience' | 'advanced'
+    termsAccepted?: boolean
+    completedAt?: string
+  }
 }
 
 export interface PaystackBank {
@@ -29,10 +35,22 @@ export interface PaystackBank {
   country?: string
 }
 
+export interface PaystackCountry {
+  id: number
+  name: string
+  isoCode: string
+  defaultCurrencyCode: string
+}
+
 export interface BanksListResponse {
   success: boolean
   supported: boolean
   banks: Array<PaystackBank>
+}
+
+export interface CountriesListResponse {
+  success: boolean
+  countries: Array<PaystackCountry>
 }
 
 export interface AccountResolutionResponse {
@@ -50,6 +68,12 @@ export interface User {
   country?: string
   photo?: string
   bankAccount?: BankAccountDetails
+  onboarding?: {
+    goal?: 'income' | 'growth' | 'balanced'
+    experience?: 'first-time' | 'some-experience' | 'advanced'
+    termsAccepted?: boolean
+    completedAt?: string
+  }
   isVerified: boolean
   createdAt: string
   updatedAt: string

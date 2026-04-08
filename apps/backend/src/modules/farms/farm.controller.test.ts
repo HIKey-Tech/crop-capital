@@ -34,14 +34,14 @@ test("getFarms returns farms sorted by newest first", async () => {
     tenant: {
       _id: "tenant-123",
     },
-  } as Request;
+  } as unknown as Request;
 
   const res = {
     json(payload: unknown) {
       jsonPayload = payload;
       return this;
     },
-  } as Response;
+  } as unknown as Response;
 
   const next = ((error?: unknown) => {
     nextError = error;

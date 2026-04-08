@@ -213,6 +213,12 @@ export const updateUserProfile = async (
     photoPublicId?: string;
     removePhoto?: boolean;
     bankAccount?: BankAccountInput;
+    onboarding?: {
+      goal?: "income" | "growth" | "balanced";
+      experience?: "first-time" | "some-experience" | "advanced";
+      termsAccepted?: boolean;
+      completedAt?: string;
+    };
   },
 ) => {
   const user = await User.findById(userId);
@@ -228,6 +234,15 @@ export const updateUserProfile = async (
   if (data.photoPublicId) user.photoPublicId = data.photoPublicId;
   if (Object.prototype.hasOwnProperty.call(data, "bankAccount")) {
     user.bankAccount = normalizeBankAccount(data.bankAccount);
+  }
+  if (data.onboarding) {
+    user.onboarding = {
+      ...user.onboarding,
+      ...data.onboarding,
+      completedAt: data.onboarding.completedAt
+        ? new Date(data.onboarding.completedAt)
+        : user.onboarding?.completedAt,
+    };
   }
 
   await user.save();

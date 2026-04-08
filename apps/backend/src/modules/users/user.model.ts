@@ -8,6 +8,13 @@ export interface IUserBankAccount {
   accountNumber: string;
 }
 
+export interface IUserOnboarding {
+  goal?: "income" | "growth" | "balanced";
+  experience?: "first-time" | "some-experience" | "advanced";
+  termsAccepted?: boolean;
+  completedAt?: Date;
+}
+
 export interface IUser extends Document {
   tenantId?: mongoose.Types.ObjectId;
   name: string;
@@ -18,6 +25,7 @@ export interface IUser extends Document {
   photo?: string;
   photoPublicId?: string;
   bankAccount?: IUserBankAccount;
+  onboarding?: IUserOnboarding;
   isVerified: boolean;
   watchlist: mongoose.Types.ObjectId[];
   passwordResetToken?: string;
@@ -49,6 +57,19 @@ const UserSchema = new Schema<IUser>(
         bankName: { type: String, trim: true },
         bankCode: { type: String, trim: true },
         accountNumber: { type: String, trim: true },
+      },
+      default: undefined,
+    },
+    onboarding: {
+      _id: false,
+      type: {
+        goal: { type: String, enum: ["income", "growth", "balanced"] },
+        experience: {
+          type: String,
+          enum: ["first-time", "some-experience", "advanced"],
+        },
+        termsAccepted: { type: Boolean },
+        completedAt: { type: Date },
       },
       default: undefined,
     },
