@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
 import { toast } from 'sonner'
 import {
@@ -18,6 +18,12 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import { useTenant } from '@/contexts/tenant'
 import {
   usePaystackAccountResolution,
@@ -36,6 +42,7 @@ function ProfileSettingsPage() {
   const [selectedPhoto, setSelectedPhoto] = useState<File | null>(null)
   const [previewPhotoUrl, setPreviewPhotoUrl] = useState<string | null>(null)
   const [removePhoto, setRemovePhoto] = useState(false)
+  const photoInputRef = useRef<HTMLInputElement | null>(null)
 
   const form = useForm({
     initialValues: {
@@ -225,11 +232,9 @@ function ProfileSettingsPage() {
       .slice(0, 2)
   }
 
-  const displayedPhotoUrl = useMemo(() => {
-    if (previewPhotoUrl) return previewPhotoUrl
-    if (removePhoto) return undefined
-    return user.photo
-  }, [previewPhotoUrl, removePhoto, user.photo])
+  const displayedPhotoUrl = removePhoto
+    ? undefined
+    : previewPhotoUrl || user.photo
 
   const handlePhotoSelected = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
@@ -238,12 +243,17 @@ function ProfileSettingsPage() {
     setSelectedPhoto(file)
     setPreviewPhotoUrl(URL.createObjectURL(file))
     setRemovePhoto(false)
+    event.target.value = ''
   }
 
   const handlePhotoRemoved = () => {
     setSelectedPhoto(null)
     setPreviewPhotoUrl(null)
     setRemovePhoto(Boolean(user.photo))
+  }
+
+  const openPhotoPicker = () => {
+    photoInputRef.current?.click()
   }
 
   return (
@@ -254,15 +264,43 @@ function ProfileSettingsPage() {
             <AvatarImage src={displayedPhotoUrl} alt={user.name} />
             <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
           </Avatar>
-          <label className="absolute -bottom-1 -right-1 flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border border-border bg-background shadow-sm transition hover:bg-accent">
-            <Camera className="h-4 w-4" />
-            <input
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={handlePhotoSelected}
-            />
-          </label>
+          <input
+            ref={photoInputRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={handlePhotoSelected}
+          />
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button
+                type="button"
+                className="absolute -bottom-1 -right-1 flex h-9 w-9 items-center justify-center rounded-full border border-border bg-background shadow-sm transition hover:bg-accent"
+                aria-label={
+                  displayedPhotoUrl
+                    ? 'Change profile photo'
+                    : 'Upload profile photo'
+                }
+              >
+                <Camera className="h-4 w-4" />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-44">
+              <DropdownMenuItem onSelect={openPhotoPicker}>
+                <Camera className="mr-2 h-4 w-4" />
+                {displayedPhotoUrl ? 'Replace photo' : 'Upload photo'}
+              </DropdownMenuItem>
+              {displayedPhotoUrl ? (
+                <DropdownMenuItem
+                  onSelect={handlePhotoRemoved}
+                  className="text-destructive focus:text-destructive"
+                >
+                  <Trash2 className="mr-2 h-4 w-4" />
+                  Remove photo
+                </DropdownMenuItem>
+              ) : null}
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
         <div>
           <h2 className="text-xl font-bold">{user.name}</h2>
@@ -284,27 +322,6 @@ function ProfileSettingsPage() {
               Unverified
             </Badge>
           )}
-          <div className="mt-3 flex gap-2">
-            <Label className="inline-flex cursor-pointer items-center gap-2 rounded-md border border-border px-3 py-2 text-sm text-foreground hover:bg-accent">
-              <Camera className="h-4 w-4" />
-              {user.photo || previewPhotoUrl ? 'Change Photo' : 'Upload Photo'}
-              <input
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={handlePhotoSelected}
-              />
-            </Label>
-            {(user.photo || previewPhotoUrl) && !removePhoto ? (
-              <Button
-                type="button"
-                variant="outline"
-                onClick={handlePhotoRemoved}
-              >
-                <Trash2 className="mr-2 h-4 w-4" /> Remove
-              </Button>
-            ) : null}
-          </div>
         </div>
       </div>
 

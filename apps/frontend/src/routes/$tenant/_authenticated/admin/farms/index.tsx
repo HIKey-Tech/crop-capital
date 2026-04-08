@@ -173,8 +173,6 @@ function AdminFarmPage() {
     },
   ]
 
-  const farms = data?.farms ?? []
-
   if (error) {
     return (
       <div className="flex items-center justify-center h-96">
@@ -211,7 +209,7 @@ function AdminFarmPage() {
       {/* Farms Table */}
       <DataTable
         columns={columns}
-        data={farms}
+        data={data?.farms ?? []}
         loading={isLoading}
         searchPlaceholder="Search farms..."
         pageSize={10}

@@ -304,7 +304,9 @@ export const getFarms = async (
 ) => {
   try {
     const tenantId = req.tenant?._id;
-    const farms = await Farm.find(tenantId ? { tenantId } : {});
+    const farms = await Farm.find(tenantId ? { tenantId } : {}).sort({
+      createdAt: -1,
+    });
     res.json({ success: true, farms });
   } catch (err: any) {
     next(new AppError(err.message, 400));
