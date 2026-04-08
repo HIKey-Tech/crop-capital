@@ -170,7 +170,6 @@ function AddNewInvestment() {
                 <Input
                   id="name"
                   placeholder="Enter farm name"
-                  className="bg-accent"
                   required
                   key={form.key('name')}
                   {...form.getInputProps('name')}
@@ -191,7 +190,6 @@ function AddNewInvestment() {
                 <Input
                   id="location"
                   placeholder="Enter farm location"
-                  className="bg-accent"
                   required
                   key={form.key('location')}
                   {...form.getInputProps('location')}
@@ -224,7 +222,6 @@ function AddNewInvestment() {
                   min="-90"
                   max="90"
                   placeholder="e.g. 6.4281"
-                  className="bg-accent"
                   key={form.key('latitude')}
                   {...form.getInputProps('latitude')}
                 />
@@ -252,7 +249,6 @@ function AddNewInvestment() {
                   min="-180"
                   max="180"
                   placeholder="e.g. -10.7957"
-                  className="bg-accent"
                   key={form.key('longitude')}
                   {...form.getInputProps('longitude')}
                 />
@@ -287,7 +283,7 @@ function AddNewInvestment() {
                     )
                   }
                 >
-                  <SelectTrigger id="currency" className="w-full bg-accent">
+                  <SelectTrigger id="currency" className="w-full">
                     <SelectValue placeholder="Select currency" />
                   </SelectTrigger>
                   <SelectContent>
@@ -317,7 +313,6 @@ function AddNewInvestment() {
                   inputMode="decimal"
                   min="0"
                   placeholder="Enter target amount"
-                  className="bg-accent"
                   required
                   key={form.key('investmentGoal')}
                   {...form.getInputProps('investmentGoal')}
@@ -345,7 +340,6 @@ function AddNewInvestment() {
                   min="0"
                   max="100"
                   placeholder="Enter projected ROI"
-                  className="bg-accent"
                   required
                   key={form.key('roi')}
                   {...form.getInputProps('roi')}
@@ -370,7 +364,6 @@ function AddNewInvestment() {
                   inputMode="decimal"
                   min="0"
                   placeholder="Enter duration in months"
-                  className="bg-accent"
                   required
                   key={form.key('durationMonths')}
                   {...form.getInputProps('durationMonths')}
@@ -394,7 +387,6 @@ function AddNewInvestment() {
                   inputMode="decimal"
                   min="0"
                   placeholder="Enter minimum investment amount"
-                  className="bg-accent"
                   required
                   key={form.key('minimumInvestment')}
                   {...form.getInputProps('minimumInvestment')}

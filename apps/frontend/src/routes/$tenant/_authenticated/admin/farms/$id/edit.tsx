@@ -223,7 +223,6 @@ function EditFarmPage() {
                 </Label>
                 <Input
                   id="name"
-                  className="bg-accent"
                   placeholder="Enter opportunity name"
                   required
                   key={form.key('name')}
@@ -244,7 +243,6 @@ function EditFarmPage() {
                 </Label>
                 <Input
                   id="location"
-                  className="bg-accent"
                   placeholder="Enter farm location"
                   required
                   key={form.key('location')}
@@ -278,7 +276,6 @@ function EditFarmPage() {
                   min="-90"
                   max="90"
                   placeholder="e.g. 6.4281"
-                  className="bg-accent"
                   key={form.key('latitude')}
                   {...form.getInputProps('latitude')}
                 />
@@ -306,7 +303,6 @@ function EditFarmPage() {
                   min="-180"
                   max="180"
                   placeholder="e.g. -10.7957"
-                  className="bg-accent"
                   key={form.key('longitude')}
                   {...form.getInputProps('longitude')}
                 />
@@ -341,7 +337,7 @@ function EditFarmPage() {
                     )
                   }
                 >
-                  <SelectTrigger id="currency" className="w-full bg-accent">
+                  <SelectTrigger id="currency" className="w-full">
                     <SelectValue placeholder="Select currency" />
                   </SelectTrigger>
                   <SelectContent>
@@ -368,7 +364,6 @@ function EditFarmPage() {
                 <Input
                   id="investmentGoal"
                   type="number"
-                  className="bg-accent"
                   placeholder="Enter target amount"
                   required
                   key={form.key('investmentGoal')}
@@ -385,7 +380,6 @@ function EditFarmPage() {
                 <Input
                   id="roi"
                   type="number"
-                  className="bg-accent"
                   placeholder="Enter projected ROI"
                   required
                   key={form.key('roi')}
@@ -402,7 +396,6 @@ function EditFarmPage() {
                 <Input
                   id="durationMonths"
                   type="number"
-                  className="bg-accent"
                   placeholder="Enter duration in months"
                   required
                   key={form.key('durationMonths')}
@@ -419,7 +412,6 @@ function EditFarmPage() {
                 <Input
                   id="minimumInvestment"
                   type="number"
-                  className="bg-accent"
                   placeholder="Enter minimum investment amount"
                   required
                   key={form.key('minimumInvestment')}
@@ -598,7 +590,6 @@ function FarmUpdateForm({ farmId }: { farmId: string }) {
         </Label>
         <Input
           id="update-stage"
-          className="bg-accent"
           placeholder="e.g. Planting Phase Complete, Harvest Season Started..."
           value={stage}
           onChange={(e) => setStage(e.target.value)}
