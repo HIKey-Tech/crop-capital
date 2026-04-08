@@ -22,6 +22,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { Combobox } from '@/components/ui/combobox'
 import { useTenant } from '@/contexts/tenant'
 import {
   useCurrentUser,
@@ -176,7 +177,6 @@ function OnboardingPage() {
     }
 
     if (normalizedAccountNumber.length < 6) {
-      if (accountName) setAccountName('')
       return
     }
 
@@ -189,11 +189,12 @@ function OnboardingPage() {
       return
     }
 
-    if (resolvedAccount && !resolvedAccount.resolved && accountName) {
-      setAccountName('')
+    if (resolvedAccount && !resolvedAccount.resolved && !accountName) {
+      setAccountName(fullName)
     }
   }, [
     accountName,
+    fullName,
     normalizedAccountNumber,
     requiresResolvedAccount,
     resolvedAccount,
@@ -589,27 +590,18 @@ function OnboardingPage() {
                   <div className="space-y-2">
                     <Label htmlFor="onboarding-bank-name">Bank Name</Label>
                     {bankOptions.length > 0 ? (
-                      <div className="relative">
-                        <Building2 className="absolute left-3 top-1/2 z-10 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                        <Select
-                          value={bankCode}
-                          onValueChange={handleBankSelect}
-                        >
-                          <SelectTrigger
-                            id="onboarding-bank-name"
-                            className="w-full pl-9"
-                          >
-                            <SelectValue placeholder="Select your bank" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {bankOptions.map((bank) => (
-                              <SelectItem key={bank.code} value={bank.code}>
-                                {bank.name}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
+                      <Combobox
+                        id="onboarding-bank-name"
+                        options={bankOptions.map((bank) => ({
+                          value: bank.code,
+                          label: bank.name,
+                        }))}
+                        value={bankCode}
+                        onValueChange={handleBankSelect}
+                        placeholder="Select your bank"
+                        searchPlaceholder="Search banks..."
+                        emptyText="No banks found."
+                      />
                     ) : (
                       <div className="relative">
                         <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
