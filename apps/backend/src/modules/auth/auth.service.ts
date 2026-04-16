@@ -157,14 +157,10 @@ export const forgotPassword = async (
   user.passwordResetExpires = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
   await user.save();
 
-  if (!tenantSlug) {
-    throw new Error(
-      "Password reset requires a tenant slug. Request it from the tenant sign-in page.",
-    );
-  }
-
   // Send email
-  const resetPath = `/${tenantSlug}/auth/reset-password?token=${resetToken}`;
+  const resetPath = tenantSlug
+    ? `/${tenantSlug}/auth/reset-password?token=${resetToken}`
+    : `/auth/reset-password?token=${resetToken}`;
   const resetUrl = `${FRONTEND_URL}${resetPath}`;
   const html = `
         <h1>Password Reset Request</h1>

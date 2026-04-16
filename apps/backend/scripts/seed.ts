@@ -14,7 +14,7 @@ const seedData = async () => {
       name: "Admin User",
       email: "admin@cropcapital.com",
       password: "admin123",
-      role: "admin" as const,
+      role: "super_admin" as const,
       country: "Nigeria",
       isVerified: true,
     };

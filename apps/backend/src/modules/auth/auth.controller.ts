@@ -20,6 +20,30 @@ const toOptionalTrimmedString = (value: unknown) => {
   return normalized.length > 0 ? normalized : undefined;
 };
 
+const serializeUser = (user: {
+  _id: unknown;
+  name: string;
+  email: string;
+  role: string;
+  country?: string;
+  photo?: string;
+  bankAccount?: unknown;
+  onboarding?: unknown;
+  isVerified: boolean;
+  createdAt: Date;
+}) => ({
+  _id: user._id,
+  name: user.name,
+  email: user.email,
+  role: user.role,
+  country: user.country,
+  photo: user.photo,
+  bankAccount: user.bankAccount,
+  onboarding: user.onboarding,
+  isVerified: user.isVerified,
+  createdAt: user.createdAt,
+});
+
 export const signup = async (
   req: Request,
   res: Response,
@@ -44,7 +68,12 @@ export const signup = async (
       tenantId,
     });
 
-    res.status(201).json({ success: true, token, refreshToken, user });
+    res.status(201).json({
+      success: true,
+      token,
+      refreshToken,
+      user: serializeUser(user),
+    });
   } catch (err: any) {
     next(new AppError(err.message, 400));
   }
@@ -61,7 +90,12 @@ export const login = async (
     const user = await loginUser(email, password, tenantId);
     const token = createToken(user.id, user.role, tenantId);
     const refreshToken = createRefreshToken(user.id, tenantId);
-    res.status(200).json({ success: true, token, refreshToken, user });
+    res.status(200).json({
+      success: true,
+      token,
+      refreshToken,
+      user: serializeUser(user),
+    });
   } catch (err: any) {
     next(new AppError(err.message, 401));
   }
@@ -111,18 +145,7 @@ export const getMe = async (
 
     res.status(200).json({
       success: true,
-      user: {
-        _id: req.user._id,
-        name: req.user.name,
-        email: req.user.email,
-        role: req.user.role,
-        country: req.user.country,
-        photo: req.user.photo,
-        bankAccount: req.user.bankAccount,
-        onboarding: req.user.onboarding,
-        isVerified: req.user.isVerified,
-        createdAt: req.user.createdAt,
-      },
+      user: serializeUser(req.user),
     });
   } catch (err: any) {
     next(new AppError(err.message, 401));
@@ -210,18 +233,7 @@ export const updateProfile = async (
     res.status(200).json({
       success: true,
       message: "Profile updated successfully",
-      user: {
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-        country: user.country,
-        photo: user.photo,
-        bankAccount: user.bankAccount,
-        onboarding: user.onboarding,
-        isVerified: user.isVerified,
-        createdAt: user.createdAt,
-      },
+      user: serializeUser(user),
     });
   } catch (err: any) {
     next(new AppError(err.message, 400));
@@ -267,9 +279,12 @@ export const activateAdmin = async (
     const user = await activateAdminAccount(token, name, password, tenantId);
     const authToken = createToken(user.id, user.role, tenantId);
     const refreshToken = createRefreshToken(user.id, tenantId);
-    res
-      .status(200)
-      .json({ success: true, token: authToken, refreshToken, user });
+    res.status(200).json({
+      success: true,
+      token: authToken,
+      refreshToken,
+      user: serializeUser(user),
+    });
   } catch (err: any) {
     next(new AppError(err.message, 400));
   }

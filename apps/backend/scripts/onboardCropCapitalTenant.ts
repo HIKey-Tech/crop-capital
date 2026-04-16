@@ -177,6 +177,11 @@ const onboardCropCapitalTenant = async () => {
       WebhookEvent.updateMany({}, { $set: { tenantId: tenantIdString } }),
     ]);
 
+  const demotedSuperAdmins = await User.updateMany(
+    { email: { $ne: superAdminEmail }, role: "super_admin" },
+    { $set: { role: "admin", tenantId } },
+  );
+
   const superAdmin = await User.findOneAndUpdate(
     { email: superAdminEmail },
     { $set: { role: "super_admin", tenantId } },
@@ -191,6 +196,9 @@ const onboardCropCapitalTenant = async () => {
   console.log(`KYC docs assigned: ${kycDocs.modifiedCount}`);
   console.log(`Activities assigned: ${activities.modifiedCount}`);
   console.log(`Webhook events assigned: ${webhookEvents.modifiedCount}`);
+  console.log(
+    `Legacy super admins demoted: ${demotedSuperAdmins.modifiedCount}`,
+  );
   console.log(
     `Super Admin: ${superAdmin?.email ?? "not found"} (${superAdmin?.role ?? "n/a"})`,
   );

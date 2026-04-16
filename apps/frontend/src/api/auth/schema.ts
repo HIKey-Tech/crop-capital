@@ -61,17 +61,20 @@ export const userSchema = z.object({
   _id: z.string(),
   name: z.string(),
   email: z.email(),
-  role: z.enum(['investor', 'admin']),
+  role: z.enum(['investor', 'admin', 'super_admin']),
   country: z.string().optional(),
   photo: z.string().optional(),
+  bankAccount: z.unknown().optional(),
+  onboarding: z.unknown().optional(),
   isVerified: z.boolean(),
   createdAt: z.string(),
-  updatedAt: z.string(),
+  updatedAt: z.string().optional(),
 })
 
 export const authResponseSchema = z.object({
   success: z.boolean(),
   token: z.string(),
+  refreshToken: z.string(),
   user: userSchema,
 })
 
