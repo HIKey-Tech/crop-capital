@@ -251,12 +251,12 @@ function HeroSection() {
   }, [])
 
   const pillarItems = [
-    { label: 'Multi-Tenant', sub: 'Native Architecture', href: '#features' },
-    { label: 'Role-Based', sub: 'Granular Access Control', href: '#features' },
-    { label: 'Config-First', sub: 'Rapid Deployment', href: '#process' },
+    { label: 'Manage Multiple Brands', sub: 'In One Place', href: '#features' },
+    { label: 'Total Control', sub: 'Over Your Team', href: '#features' },
+    { label: 'Set Up and Launch', sub: 'In Minutes', href: '#process' },
     {
-      label: 'Bank-Grade',
-      sub: 'Secure Core Infrastructure',
+      label: 'Safety You',
+      sub: 'Can Trust',
       href: '#security',
     },
   ]
@@ -286,28 +286,32 @@ function HeroSection() {
                 }}
               />
               <span className="text-[11px] font-black uppercase tracking-[0.5em] text-primary">
-                Tenant Launch Infrastructure
+                The Foundation for Your Farming Business
               </span>
             </div>
 
             <h1 className="mb-7">
-              {['Scale Your', 'Agri-Finance', 'Network.'].map((word, i) => (
-                <span key={i} className="block mb-[-0.06em]">
-                  <span
-                    className={cn(
-                      'block text-display text-[clamp(2.6rem,6vw,6.5rem)]',
-                      i === 1 ? 'italic-serif text-primary' : 'text-foreground',
-                    )}
-                    style={{
-                      animation: mounted
-                        ? `slideRevealY 1.1s cubic-bezier(0.19,1,0.22,1) ${300 + i * 200}ms both`
-                        : 'none',
-                    }}
-                  >
-                    {word}
+              {['Grow Your Own', 'Network of', 'Farm Partners.'].map(
+                (word, i) => (
+                  <span key={i} className="block mb-[-0.06em]">
+                    <span
+                      className={cn(
+                        'block text-display text-[clamp(2.6rem,6vw,6.5rem)]',
+                        i === 1
+                          ? 'italic-serif text-primary'
+                          : 'text-foreground',
+                      )}
+                      style={{
+                        animation: mounted
+                          ? `slideRevealY 1.1s cubic-bezier(0.19,1,0.22,1) ${300 + i * 200}ms both`
+                          : 'none',
+                      }}
+                    >
+                      {word}
+                    </span>
                   </span>
-                </span>
-              ))}
+                ),
+              )}
             </h1>
 
             <div
@@ -318,9 +322,10 @@ function HeroSection() {
               }}
             >
               <p className="text-lg text-muted-foreground mb-8 max-w-xl leading-relaxed font-medium">
-                Professional-grade infrastructure to onboard, configure, and
-                operate multiple agricultural investment brands — with absolute
-                confidence.
+                A powerful, all-in-one system to launch and manage your own
+                agricultural investment brand. We give you the tools to sign up
+                users, manage money, and run your business with total peace of
+                mind.
               </p>
               <div className="flex flex-col sm:flex-row gap-5 items-start sm:items-center">
                 <Link to="/auth">
@@ -328,7 +333,7 @@ function HeroSection() {
                     size="lg"
                     className="btn-primary-gradient h-14 px-12 text-sm font-black uppercase tracking-[0.18em] group"
                   >
-                    Platform Access
+                    Open Your Dashboard
                     <ArrowRight className="w-5 h-5 ml-3 group-hover:translate-x-1 transition-transform" />
                   </Button>
                 </Link>
@@ -337,7 +342,7 @@ function HeroSection() {
                   className="flex items-center gap-3 text-[11px] font-bold uppercase tracking-[0.3em] text-muted-foreground hover:text-primary transition-colors group"
                 >
                   <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                  Request Partner Access
+                  Book a Private Walkthrough
                 </a>
               </div>
             </div>
@@ -438,36 +443,36 @@ function FeaturesSection() {
   const features = [
     {
       icon: Building2,
-      label: 'Tenant Architecture',
-      title: 'Lifecycle Management',
-      body: 'Provision new investment brands in minutes. Map dedicated domains, configure unique slugs, and maintain full governance over activation states.',
+      label: 'Brand Launch',
+      title: 'Start New Brands Instantly',
+      body: 'Set up new investment groups in minutes. Give them their own web addresses and unique names. Your brand, ready in no time.',
       bullets: [
         'Automated Domain Routing',
-        'Custom Brand Isolation',
-        'Subscription Tier Engine',
+        'Your Own Logo & Style',
+        'Manage Multiple Groups at Once',
       ],
     },
     {
       icon: Settings2,
-      label: 'Configuration Engine',
-      title: 'Granular Feature Flags',
-      body: 'Deploy updates per tenant without touching code. Toggle KYC validation, returns tracking, or advanced analytics instantly.',
+      label: 'No-Code Updates',
+      title: 'Update Without a Developer',
+      body: 'Change how your groups work without writing code. Turn on ID checks or profit tracking instantly — no engineering required.',
       bullets: [
         'Hot-Swappable Modules',
         'Dynamic Configuration',
-        'A/B Deployment Engine',
+        'See Your Success as it Happens',
       ],
       featured: true,
     },
     {
       icon: ShieldCheck,
-      label: 'Access Control',
-      title: 'Global RBAC Governance',
-      body: 'Secure cross-tenant user mapping. Assign precise roles to investors, local admins, and platform overseers with bulletproof isolation.',
+      label: 'Team Control',
+      title: 'Total Control Over Your Team',
+      body: 'Add staff and decide exactly what each person can do. Investors, admins, and managers — all perfectly organized and securely isolated.',
       bullets: [
         'Zero-Trust Isolation',
         'Cross-Tenant Identity',
-        'Full Activity Auditing',
+        'Automatic Updates for Your Partners',
       ],
     },
   ]
@@ -481,18 +486,21 @@ function FeaturesSection() {
               style={{ animation: 'lineGrowX 1s ease forwards' }}
             />
             <span className="text-[11px] font-black uppercase tracking-[0.5em] text-primary">
-              Operator Toolkit
+              Manager's Control Center
             </span>
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-end">
             <h2 className="text-display text-[clamp(2.8rem,5.5vw,6.5rem)] text-foreground">
-              The Complete
+              Everything You Need.
               <br />
-              <span className="italic-serif text-primary">Command Suite.</span>
+              <span className="italic-serif text-primary">
+                The Control Center.
+              </span>
             </h2>
             <p className="text-xl lg:text-2xl text-muted-foreground max-w-lg leading-relaxed font-medium">
-              Centralized control for high-performance networks. Launch multiple
-              investment sub-brands from a single unified source of truth.
+              One simple dashboard to manage everything. Launch and run
+              different investment groups or projects from one central place
+              without messy paperwork.
             </p>
           </div>
         </FadeIn>
@@ -564,23 +572,23 @@ function ProcessSection() {
   const steps = [
     {
       number: '01',
-      title: 'Create Tenant Profile',
-      desc: 'Define a unique slug, display name, legal entity, and custom domain. Your brand infrastructure, your rules.',
+      title: 'Set Up Your Brand',
+      desc: 'Choose your business name, legal details, and website. Your brand, your rules.',
     },
     {
       number: '02',
-      title: 'Assign Subscription Tier',
-      desc: 'Select from configured tiers to unlock specific modules — KYC, returns tracking, analytics — with zero code changes.',
+      title: 'Unlock Features',
+      desc: 'Choose a plan to instantly get tools like ID verification, returns tracking, and more.',
     },
     {
       number: '03',
-      title: 'Configure Users & Roles',
-      desc: 'Map users across tenant boundaries with granular RBAC. Investors, admins, and overseers perfectly isolated.',
+      title: 'Set Up Your Team',
+      desc: 'Add staff and decide exactly what each person can do. Investors, admins, and managers — all perfectly organized.',
     },
     {
       number: '04',
-      title: 'Deploy in Under 5 Minutes',
-      desc: 'Activate and go live. Your tenant is fully provisioned and accessible on its dedicated domain immediately.',
+      title: 'Launch Instantly',
+      desc: 'Turn your platform on and start your business immediately. Ready in under 5 minutes.',
     },
   ]
   return (
@@ -636,12 +644,12 @@ function SecuritySection() {
   const pillars = [
     {
       icon: Lock,
-      title: 'AES-256 Encryption',
+      title: 'Top-Level Data Protection',
       desc: 'All data encrypted at rest and in transit. No exceptions.',
     },
     {
       icon: Server,
-      title: 'Isolated Infrastructure',
+      title: 'Private Digital Vaults',
       desc: 'Per-tenant data isolation with zero cross-contamination architecture.',
     },
     {
@@ -651,7 +659,7 @@ function SecuritySection() {
     },
     {
       icon: Eye,
-      title: 'Full Audit Trails',
+      title: 'Complete Action Logs',
       desc: 'Every action logged, timestamped, and auditable by authorized personnel.',
     },
     {
@@ -678,13 +686,15 @@ function SecuritySection() {
             <div className="flex items-center gap-4 mb-8">
               <div className="h-px bg-white/20 w-10" />
               <span className="text-[11px] font-black uppercase tracking-[0.5em] text-white/50">
-                Enterprise Security
+                World-Class Security
               </span>
             </div>
             <h2 className="text-display text-[clamp(2.8rem,5.5vw,6rem)] text-white mb-8 text-balance">
-              Bank-Grade Security.
+              World-Class Security.
               <br />
-              <span className="italic-serif text-white/60">By Design.</span>
+              <span className="italic-serif text-white/60">
+                Built to Protect You.
+              </span>
             </h2>
             <p className="text-xl text-white/60 leading-relaxed font-medium mb-12 max-w-lg">
               Security isn't a feature — it's the foundation. Every layer of the
@@ -749,14 +759,14 @@ function TestimonialsSection() {
   const testimonials = [
     {
       quote:
-        'CropCapital cut our brand deployment time from weeks to minutes. We launched three sub-brands across different regions without a single engineering sprint.',
+        'CropCapital helped us launch in minutes. We started three different groups without needing a single tech expert.',
       name: 'Emeka Nwosu',
       role: 'CTO, AgriVenture Capital',
       initial: 'E',
     },
     {
       quote:
-        'The RBAC system is bulletproof. Our compliance team was finally satisfied that investor data is truly isolated between brands. No other platform offered this out of the box.',
+        'The security is unshakeable. All our partner data is kept strictly separate and private.',
       name: 'Zanele Dlamini',
       role: 'COO, Harvest Equity Partners',
       initial: 'Z',
@@ -833,15 +843,15 @@ function CTASection() {
                   </span>
                 </div>
                 <h2 className="text-display text-[clamp(2.8rem,5.5vw,6rem)] text-white mb-6">
-                  Infrastructure
+                  Professional Tools
                   <br />
                   <span className="italic-serif text-white/60">
-                    Built to Scale.
+                    For Agricultural Growth.
                   </span>
                 </h2>
                 <p className="text-xl text-white/55 leading-relaxed font-medium max-w-md">
-                  High-performance teams demand absolute reliability, security,
-                  and the ability to deploy new brands in minutes — not months.
+                  The easiest way to launch and manage your agricultural
+                  investment brand — anywhere in the world.
                 </p>
               </div>
               <div className="flex flex-col gap-5 lg:items-end">
@@ -850,7 +860,7 @@ function CTASection() {
                     size="lg"
                     className="bg-white text-primary hover:bg-white/95 h-14 px-12 text-sm font-black uppercase tracking-[0.2em] shadow-2xl transition-all hover:scale-105 active:scale-95 w-full sm:w-auto"
                   >
-                    Enter Dashboard{' '}
+                    Open Your Dashboard{' '}
                     <ArrowRight className="w-5 h-5 ml-3 inline" />
                   </Button>
                 </Link>
@@ -858,7 +868,7 @@ function CTASection() {
                   href="mailto:support@cropcapital.com"
                   className="text-[11px] font-bold uppercase tracking-[0.3em] text-white/35 hover:text-white/65 transition-colors text-center lg:text-right"
                 >
-                  Request a demo instead
+                  Book a Private Walkthrough
                 </a>
               </div>
             </div>
@@ -900,13 +910,13 @@ function RootRoute() {
                     CropCapital
                   </div>
                   <div className="text-[9px] font-black uppercase tracking-[0.35em] text-primary-foreground/50">
-                    Platform Infrastructure
+                    Professional Tools
                   </div>
                 </div>
               </div>
               <p className="text-secondary-foreground/55 text-lg leading-relaxed mb-10 max-w-sm font-medium">
-                The definitive institutional infrastructure for launching and
-                scaling agricultural investment brands globally.
+                Professional Tools for Agricultural Growth. The easiest way to
+                manage your brand anywhere.
               </p>
               <div className="flex gap-8">
                 {['Twitter', 'LinkedIn'].map((s) => (
@@ -998,7 +1008,7 @@ function RootRoute() {
             </p>
             <div className="flex items-center gap-3 text-[11px] font-bold uppercase tracking-[0.25em] text-primary-foreground/40">
               <div className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
-              All Systems Operational
+              System Status: Secure &amp; Online
             </div>
           </div>
         </div>
