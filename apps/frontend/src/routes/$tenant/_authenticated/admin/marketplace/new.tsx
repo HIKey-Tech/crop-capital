@@ -11,9 +11,17 @@ import type {
 } from '@/api/commodities/schema'
 
 import { createCommoditySchema } from '@/api/commodities/schema'
+import { Breadcrumbs } from '@/components/breadcrumbs'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { useCreateCommodity } from '@/hooks'
 import { currencyOptions } from '@/lib/format-currency'
@@ -106,192 +114,280 @@ function NewCommodityPage() {
   }
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-10">
-      <div className="mb-8 flex items-center gap-4">
+    <div className="max-w-5xl mx-auto py-12 animate-fade-in px-4 sm:px-8">
+      <Breadcrumbs
+        items={[
+          {
+            label: 'Marketplace',
+            to: '/$tenant/admin/marketplace',
+            params: { tenant },
+          },
+          { label: 'New Listing' },
+        ]}
+        className="mb-6"
+      />
+
+      <div className="flex items-center gap-4 mb-10">
         <Link
           to="/$tenant/admin/marketplace"
           params={{ tenant }}
-          className="rounded-lg border border-border p-2"
+          className="p-2 rounded-lg border border-border hover:bg-secondary transition-colors"
         >
           <ArrowLeft className="h-5 w-5" />
         </Link>
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight text-foreground">
-            New marketplace listing
-          </h1>
-          <p className="text-muted-foreground">
-            Add commodity stock, pricing, and buyer-facing details.
-          </p>
-        </div>
+        <h1 className="text-3xl sm:text-4xl font-bold text-foreground tracking-tight">
+          New marketplace listing
+        </h1>
       </div>
 
       <form
-        className="space-y-8 rounded-3xl border border-border bg-card p-6 shadow-sm"
+        className="space-y-0 rounded-2xl border border-border bg-card shadow-sm"
         onSubmit={form.onSubmit(handleSubmit)}
       >
-        <section className="grid gap-6 md:grid-cols-2">
-          <div className="space-y-2">
-            <Label htmlFor="name">Commodity name</Label>
-            <Input
-              id="name"
-              key={form.key('name')}
-              {...form.getInputProps('name')}
-            />
-            {form.errors.name ? (
-              <p className="mt-1 text-sm text-destructive">
-                {form.errors.name}
-              </p>
-            ) : null}
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="category">Category</Label>
-            <Input
-              id="category"
-              key={form.key('category')}
-              {...form.getInputProps('category')}
-            />
-            {form.errors.category ? (
-              <p className="mt-1 text-sm text-destructive">
-                {form.errors.category}
-              </p>
-            ) : null}
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="location">Market location</Label>
-            <Input
-              id="location"
-              key={form.key('location')}
-              {...form.getInputProps('location')}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="unit">Sales unit</Label>
-            <Input
-              id="unit"
-              key={form.key('unit')}
-              {...form.getInputProps('unit')}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="currency">Currency</Label>
-            <select
-              id="currency"
-              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-              value={form.values.currency}
-              onChange={(event) =>
-                form.setFieldValue('currency', event.target.value as any)
-              }
-            >
-              {currencyOptions.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="price">Price per unit</Label>
-            <Input
-              id="price"
-              key={form.key('price')}
-              {...form.getInputProps('price')}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="availableQuantity">Available quantity</Label>
-            <Input
-              id="availableQuantity"
-              key={form.key('availableQuantity')}
-              {...form.getInputProps('availableQuantity')}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="minimumOrderQuantity">Minimum order quantity</Label>
-            <Input
-              id="minimumOrderQuantity"
-              key={form.key('minimumOrderQuantity')}
-              {...form.getInputProps('minimumOrderQuantity')}
-            />
-          </div>
-        </section>
-
-        <section className="space-y-2">
-          <Label htmlFor="description">Description</Label>
-          <Textarea
-            id="description"
-            key={form.key('description')}
-            {...form.getInputProps('description')}
-          />
-        </section>
-
-        <section className="space-y-3">
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className="font-semibold text-foreground">Listing images</h2>
-              <p className="text-sm text-muted-foreground">Up to five images</p>
-            </div>
-            <input
-              type="file"
-              accept="image/*"
-              multiple
-              onChange={handleImageUpload}
-            />
-          </div>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {images.map((image) => (
-              <div
-                key={image.id}
-                className="relative overflow-hidden rounded-2xl border border-border"
-              >
-                <img
-                  src={image.url}
-                  alt="Commodity preview"
-                  className="h-40 w-full object-cover"
-                />
-                <button
-                  type="button"
-                  className="absolute right-2 top-2 rounded-full bg-background/90 p-1"
-                  onClick={() => removeImage(image.id)}
+        <div className="p-8 pb-4">
+          <div className="mb-10">
+            <h2 className="text-lg font-semibold text-foreground mb-6 border-b border-border pb-2">
+              Basic Information
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label
+                  htmlFor="name"
+                  className="mb-2 block font-medium tracking-tight"
                 >
-                  <XCircle className="h-4 w-4" />
-                </button>
+                  Commodity name
+                </Label>
+                <Input
+                  id="name"
+                  key={form.key('name')}
+                  {...form.getInputProps('name')}
+                />
+                {form.errors.name ? (
+                  <p className="mt-1 text-sm text-destructive">
+                    {form.errors.name}
+                  </p>
+                ) : null}
               </div>
-            ))}
+              <div className="space-y-2">
+                <Label
+                  htmlFor="category"
+                  className="mb-2 block font-medium tracking-tight"
+                >
+                  Category
+                </Label>
+                <Input
+                  id="category"
+                  key={form.key('category')}
+                  {...form.getInputProps('category')}
+                />
+                {form.errors.category ? (
+                  <p className="mt-1 text-sm text-destructive">
+                    {form.errors.category}
+                  </p>
+                ) : null}
+              </div>
+              <div className="space-y-2">
+                <Label
+                  htmlFor="location"
+                  className="mb-2 block font-medium tracking-tight"
+                >
+                  Market location
+                </Label>
+                <Input
+                  id="location"
+                  key={form.key('location')}
+                  {...form.getInputProps('location')}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label
+                  htmlFor="unit"
+                  className="mb-2 block font-medium tracking-tight"
+                >
+                  Sales unit
+                </Label>
+                <Input
+                  id="unit"
+                  key={form.key('unit')}
+                  {...form.getInputProps('unit')}
+                />
+              </div>
+            </div>
           </div>
-        </section>
 
-        <section className="flex flex-wrap gap-6 rounded-2xl border border-border bg-background p-4">
-          <label className="flex items-center gap-3 text-sm font-medium text-foreground">
-            <input
-              type="checkbox"
-              checked={form.values.isFeatured}
-              onChange={(event) =>
-                form.setFieldValue('isFeatured', event.currentTarget.checked)
-              }
-            />
-            Feature this listing
-          </label>
-          <label className="flex items-center gap-3 text-sm font-medium text-foreground">
-            <input
-              type="checkbox"
-              checked={form.values.isPublished}
-              onChange={(event) =>
-                form.setFieldValue('isPublished', event.currentTarget.checked)
-              }
-            />
-            Publish immediately
-          </label>
-        </section>
+          <div className="mb-10">
+            <h2 className="text-lg font-semibold text-foreground mb-6 border-b border-border pb-2">
+              Financial Details
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label
+                  htmlFor="currency"
+                  className="mb-2 block font-medium tracking-tight"
+                >
+                  Currency
+                </Label>
+                <Select
+                  value={form.values.currency}
+                  onValueChange={(value) =>
+                    form.setFieldValue('currency', value as any)
+                  }
+                >
+                  <SelectTrigger id="currency" className="w-full">
+                    <SelectValue placeholder="Select currency" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {currencyOptions.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label
+                  htmlFor="price"
+                  className="mb-2 block font-medium tracking-tight"
+                >
+                  Price per unit
+                </Label>
+                <Input
+                  id="price"
+                  key={form.key('price')}
+                  {...form.getInputProps('price')}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label
+                  htmlFor="availableQuantity"
+                  className="mb-2 block font-medium tracking-tight"
+                >
+                  Available quantity
+                </Label>
+                <Input
+                  id="availableQuantity"
+                  key={form.key('availableQuantity')}
+                  {...form.getInputProps('availableQuantity')}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label
+                  htmlFor="minimumOrderQuantity"
+                  className="mb-2 block font-medium tracking-tight"
+                >
+                  Minimum order quantity
+                </Label>
+                <Input
+                  id="minimumOrderQuantity"
+                  key={form.key('minimumOrderQuantity')}
+                  {...form.getInputProps('minimumOrderQuantity')}
+                />
+              </div>
+            </div>
+          </div>
 
-        <div className="flex justify-end gap-3">
-          <Link to="/$tenant/admin/marketplace" params={{ tenant }}>
-            <Button type="button" variant="outline">
-              Cancel
+          <div className="mb-6">
+            <h2 className="text-lg font-semibold text-foreground mb-6 border-b border-border pb-2">
+              Description
+            </h2>
+            <div className="space-y-2">
+              <Label
+                htmlFor="description"
+                className="mb-2 block font-medium tracking-tight"
+              >
+                Description
+              </Label>
+              <Textarea
+                id="description"
+                key={form.key('description')}
+                {...form.getInputProps('description')}
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="px-8 pb-4">
+          <h2 className="text-lg font-semibold text-foreground mb-6 border-b border-border pb-2">
+            Listing images
+          </h2>
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="font-medium text-foreground">Upload images</p>
+                <p className="text-sm text-muted-foreground">
+                  Up to five images
+                </p>
+              </div>
+              <input
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={handleImageUpload}
+              />
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {images.map((image) => (
+                <div
+                  key={image.id}
+                  className="relative overflow-hidden rounded-2xl border border-border"
+                >
+                  <img
+                    src={image.url}
+                    alt="Commodity preview"
+                    className="h-40 w-full object-cover"
+                  />
+                  <button
+                    type="button"
+                    className="absolute right-2 top-2 rounded-full bg-background/90 p-1"
+                    onClick={() => removeImage(image.id)}
+                  >
+                    <XCircle className="h-4 w-4" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div className="px-8 pb-8">
+          <section className="flex flex-wrap gap-6 rounded-2xl border border-border bg-background p-4">
+            <label className="flex items-center gap-3 text-sm font-medium text-foreground">
+              <input
+                type="checkbox"
+                checked={form.values.isFeatured}
+                onChange={(event) =>
+                  form.setFieldValue('isFeatured', event.currentTarget.checked)
+                }
+              />
+              Feature this listing
+            </label>
+            <label className="flex items-center gap-3 text-sm font-medium text-foreground">
+              <input
+                type="checkbox"
+                checked={form.values.isPublished}
+                onChange={(event) =>
+                  form.setFieldValue('isPublished', event.currentTarget.checked)
+                }
+              />
+              Publish immediately
+            </label>
+          </section>
+
+          <div className="flex justify-end gap-3 mt-8">
+            <Link to="/$tenant/admin/marketplace" params={{ tenant }}>
+              <Button type="button" variant="outline">
+                Cancel
+              </Button>
+            </Link>
+            <Button
+              type="submit"
+              disabled={createCommodity.isPending}
+              className="btn-primary-gradient h-12 px-10 text-base font-semibold rounded-lg focus:outline-none shadow disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {createCommodity.isPending ? 'Saving...' : 'Create listing'}
             </Button>
-          </Link>
-          <Button type="submit" disabled={createCommodity.isPending}>
-            {createCommodity.isPending ? 'Saving...' : 'Create listing'}
-          </Button>
+          </div>
         </div>
       </form>
     </div>

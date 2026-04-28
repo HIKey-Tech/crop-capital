@@ -51,9 +51,7 @@ function MarketplaceOrdersPage() {
   if (error) {
     return (
       <div className="flex items-center justify-center h-96">
-        <p className="text-destructive">
-          Failed to load your orders.
-        </p>
+        <p className="text-destructive">Failed to load your orders.</p>
       </div>
     )
   }
@@ -61,8 +59,8 @@ function MarketplaceOrdersPage() {
   const orders = data?.orders ?? []
 
   return (
-    <div className="space-y-6 px-4 pb-10">
-      <header className="space-y-2 pt-4">
+    <div className="space-y-6 px-4 pb-10 animate-fade-in">
+      <header className="space-y-2 pt-6">
         <p className="text-xs text-muted-foreground">
           {tenant.displayName} · Marketplace
         </p>

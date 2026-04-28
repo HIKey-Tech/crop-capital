@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { Link, createFileRoute, useRouter } from '@tanstack/react-router'
-import type { ColumnDef } from '@tanstack/react-table'
 import { MoreHorizontal, Pencil, Plus, Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
+import type { ColumnDef } from '@tanstack/react-table'
 
 import type { Commodity } from '@/types'
 
@@ -182,33 +182,31 @@ function AdminMarketplacePage() {
   }
 
   return (
-    <div className="max-w-screen-2xl mx-auto px-4 pb-10 space-y-8">
-      <header className="pt-6 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <p className="text-xs text-muted-foreground">
-            {tenantConfig.displayName} admin · Marketplace
-          </p>
-          <h1 className="text-3xl font-bold tracking-tight text-foreground">
-            Manage marketplace listings
-          </h1>
-          <p className="text-muted-foreground">
-            Publish commodity inventory, update stock, and keep buyer-facing
-            pricing current.
-          </p>
-        </div>
-
-        <div className="flex gap-3">
-          <Link to="/$tenant/admin/marketplace/orders" params={{ tenant }}>
-            <Button variant="outline">View orders</Button>
-          </Link>
-          <Link to="/$tenant/admin/marketplace/new" params={{ tenant }}>
-            <Button>
-              <Plus className="mr-2 h-4 w-4" />
-              New listing
-            </Button>
-          </Link>
-        </div>
+    <div className="max-w-screen-2xl mx-auto px-4 mb-10 space-y-8 animate-fade-in">
+      <header className="pt-6 pb-2 flex flex-col gap-1">
+        <span className="text-xs text-muted-foreground">
+          {tenantConfig.displayName} admin · Marketplace
+        </span>
+        <h1 className="text-3xl font-bold text-foreground tracking-tight">
+          Manage marketplace listings
+        </h1>
+        <p className="text-base text-muted-foreground max-w-xl">
+          Publish commodity inventory, update stock, and keep buyer-facing
+          pricing current.
+        </p>
       </header>
+
+      <div className="flex items-center justify-between gap-3">
+        <Link to="/$tenant/admin/marketplace/orders" params={{ tenant }}>
+          <Button variant="outline">View orders</Button>
+        </Link>
+        <Link to="/$tenant/admin/marketplace/new" params={{ tenant }}>
+          <Button className="btn-primary-gradient flex items-center px-5 h-11 rounded-lg font-semibold">
+            <Plus className="mr-2 h-4 w-4" />
+            New listing
+          </Button>
+        </Link>
+      </div>
 
       <DataTable
         columns={columns}

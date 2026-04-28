@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useEffect, useMemo, useState } from 'react'
-import { ShoppingBasket, Store, Tag, Truck } from 'lucide-react'
+import { ShoppingBasket, Store, Tag, Trash2, Truck } from 'lucide-react'
 import { toast } from 'sonner'
 
 import type { Commodity } from '@/types'
@@ -10,6 +10,13 @@ import { Button } from '@/components/ui/button'
 import { EmptyState } from '@/components/ui/empty-state'
 import { Input } from '@/components/ui/input'
 import { LoadingSpinner } from '@/components/ui/loading'
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet'
 import { Textarea } from '@/components/ui/textarea'
 import { useTenant } from '@/contexts/tenant'
 import { useCommodities, useCreateCommodityOrder } from '@/hooks'
@@ -34,6 +41,7 @@ function MarketplacePage() {
   const [search, setSearch] = useState('')
   const [category, setCategory] = useState('all')
   const [cart, setCart] = useState<Array<CartItem>>([])
+  const [cartOpen, setCartOpen] = useState(false)
   const [contactPhone, setContactPhone] = useState('')
   const [deliveryAddress, setDeliveryAddress] = useState('')
   const [customerNote, setCustomerNote] = useState('')
@@ -143,6 +151,10 @@ function MarketplacePage() {
     updateCart(listing, nextQuantity)
   }
 
+  const removeFromCart = (listingId: string) => {
+    setCart((current) => current.filter((item) => item.listingId !== listingId))
+  }
+
   const handleCheckout = async () => {
     if (!cartItems.length) {
       toast.error('Add at least one commodity to place an order')
@@ -164,6 +176,7 @@ function MarketplacePage() {
       setContactPhone('')
       setDeliveryAddress('')
       setCustomerNote('')
+      setCartOpen(false)
       toast.success(
         `Order submitted. The ${tenantConfig.displayName} team will be in touch.`,
       )
@@ -188,9 +201,9 @@ function MarketplacePage() {
   }
 
   return (
-    <div className="space-y-8 px-4 pb-10">
-      <section className="rounded-[28px] border border-border bg-card px-6 py-8 shadow-sm sm:px-8">
-        <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+    <div className="space-y-8 px-4 pb-10 animate-fade-in">
+      <section className="rounded-3xl border border-border bg-card px-6 py-8 shadow-sm sm:px-8">
+        <div className="flex flex-col gap-6 xl:flex-row xl:items-end xl:justify-between">
           <div className="max-w-2xl space-y-3">
             <Badge className="w-fit border border-emerald-200 bg-emerald-50 text-emerald-800">
               {tenantConfig.displayName} marketplace
@@ -269,9 +282,9 @@ function MarketplacePage() {
                 return (
                   <article
                     key={commodity._id}
-                    className="overflow-hidden rounded-[28px] border border-border bg-card shadow-sm"
+                    className="overflow-hidden rounded-3xl border border-border bg-card shadow-sm"
                   >
-                    <div className="relative aspect-[4/3] bg-muted">
+                    <div className="relative aspect-4/3 bg-muted">
                       <img
                         src={commodity.images[0]}
                         alt={commodity.name}
@@ -402,98 +415,191 @@ function MarketplacePage() {
           )}
         </section>
 
-        <aside className="space-y-4 xl:sticky xl:top-6 xl:self-start">
-          <div className="rounded-[28px] border border-border bg-card p-5 shadow-sm">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-xl font-semibold text-foreground">
-                  Order cart
-                </h2>
-                <p className="text-sm text-muted-foreground">
-                  Review quantities and submit your order to the tenant team.
-                </p>
-              </div>
-              <ShoppingBasket className="h-5 w-5 text-primary" />
-            </div>
+        <aside className="hidden space-y-4 xl:block xl:sticky xl:top-6 xl:self-start">
+          <CartPanel
+            cartItems={cartItems}
+            subtotal={subtotal}
+            contactPhone={contactPhone}
+            deliveryAddress={deliveryAddress}
+            customerNote={customerNote}
+            isPending={createOrder.isPending}
+            onRemove={removeFromCart}
+            onContactPhoneChange={setContactPhone}
+            onDeliveryAddressChange={setDeliveryAddress}
+            onCustomerNoteChange={setCustomerNote}
+            onCheckout={handleCheckout}
+          />
+        </aside>
+      </div>
 
-            <div className="mt-5 space-y-3">
-              {cartItems.length > 0 ? (
-                cartItems.map((item) => (
-                  <div
-                    key={item.commodity._id}
-                    className="rounded-2xl border border-border bg-background p-3"
-                  >
-                    <div className="flex items-start gap-3">
-                      <img
-                        src={item.commodity.images[0]}
-                        alt={item.commodity.name}
-                        className="h-16 w-16 rounded-xl object-cover"
-                      />
-                      <div className="min-w-0 flex-1">
-                        <p className="font-medium text-foreground">
-                          {item.commodity.name}
-                        </p>
-                        <p className="text-sm text-muted-foreground">
-                          {item.quantity} {item.commodity.unit}
-                        </p>
-                        <p className="mt-1 text-sm font-medium text-foreground">
-                          {formatCurrency(
-                            item.lineTotal,
-                            item.commodity.currency,
-                          )}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <EmptyState
-                  title="Cart is empty"
-                  description="Add marketplace commodities to start an order."
-                  icon={ShoppingBasket}
-                />
-              )}
-            </div>
-
-            <div className="mt-5 border-t border-border pt-5">
-              <div className="flex items-center justify-between text-sm text-muted-foreground">
-                <span>Subtotal</span>
-                <span className="text-base font-semibold text-foreground">
+      {cartItems.length > 0 ? (
+        <Sheet open={cartOpen} onOpenChange={setCartOpen}>
+          <SheetTrigger asChild>
+            <div className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2 xl:hidden">
+              <Button className="btn-primary-gradient h-12 gap-3 rounded-full px-6 shadow-lg">
+                <ShoppingBasket className="h-5 w-5" />
+                <span className="font-semibold">
+                  {cartItems.length} {cartItems.length === 1 ? 'item' : 'items'}
+                </span>
+                <span className="text-white/70">·</span>
+                <span>
                   {cartItems[0]
                     ? formatCurrency(subtotal, cartItems[0].commodity.currency)
-                    : '0'}
+                    : ''}
                 </span>
-              </div>
-
-              <div className="mt-5 space-y-3">
-                <Input
-                  value={contactPhone}
-                  onChange={(event) => setContactPhone(event.target.value)}
-                  placeholder="Contact phone"
-                />
-                <Textarea
-                  value={deliveryAddress}
-                  onChange={(event) => setDeliveryAddress(event.target.value)}
-                  placeholder="Delivery address or pickup instruction"
-                />
-                <Textarea
-                  value={customerNote}
-                  onChange={(event) => setCustomerNote(event.target.value)}
-                  placeholder="Additional note for the seller"
-                />
-              </div>
-
-              <Button
-                type="button"
-                className="mt-5 w-full"
-                disabled={createOrder.isPending || cartItems.length === 0}
-                onClick={handleCheckout}
-              >
-                {createOrder.isPending ? 'Submitting order...' : 'Submit order'}
               </Button>
             </div>
-          </div>
-        </aside>
+          </SheetTrigger>
+          <SheetContent
+            side="bottom"
+            className="max-h-[90dvh] overflow-y-auto rounded-t-3xl px-5 pb-8"
+          >
+            <SheetHeader className="mb-4">
+              <SheetTitle>Order cart</SheetTitle>
+            </SheetHeader>
+            <CartPanel
+              cartItems={cartItems}
+              subtotal={subtotal}
+              contactPhone={contactPhone}
+              deliveryAddress={deliveryAddress}
+              customerNote={customerNote}
+              isPending={createOrder.isPending}
+              onRemove={removeFromCart}
+              onContactPhoneChange={setContactPhone}
+              onDeliveryAddressChange={setDeliveryAddress}
+              onCustomerNoteChange={setCustomerNote}
+              onCheckout={handleCheckout}
+            />
+          </SheetContent>
+        </Sheet>
+      ) : null}
+    </div>
+  )
+}
+
+interface CartPanelProps {
+  cartItems: Array<{
+    commodity: Commodity
+    quantity: number
+    lineTotal: number
+  }>
+  subtotal: number
+  contactPhone: string
+  deliveryAddress: string
+  customerNote: string
+  isPending: boolean
+  onRemove: (listingId: string) => void
+  onContactPhoneChange: (value: string) => void
+  onDeliveryAddressChange: (value: string) => void
+  onCustomerNoteChange: (value: string) => void
+  onCheckout: () => void
+}
+
+function CartPanel({
+  cartItems,
+  subtotal,
+  contactPhone,
+  deliveryAddress,
+  customerNote,
+  isPending,
+  onRemove,
+  onContactPhoneChange,
+  onDeliveryAddressChange,
+  onCustomerNoteChange,
+  onCheckout,
+}: CartPanelProps) {
+  return (
+    <div className="rounded-3xl border border-border bg-card p-5 shadow-sm">
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-xl font-semibold text-foreground">Order cart</h2>
+          <p className="text-sm text-muted-foreground">
+            Review quantities and submit your order to the tenant team.
+          </p>
+        </div>
+        <ShoppingBasket className="h-5 w-5 text-primary" />
+      </div>
+
+      <div className="mt-5 space-y-3">
+        {cartItems.length > 0 ? (
+          cartItems.map((item) => (
+            <div
+              key={item.commodity._id}
+              className="rounded-2xl border border-border bg-background p-3"
+            >
+              <div className="flex items-start gap-3">
+                <img
+                  src={item.commodity.images[0]}
+                  alt={item.commodity.name}
+                  className="h-16 w-16 rounded-xl object-cover"
+                />
+                <div className="min-w-0 flex-1">
+                  <p className="font-medium text-foreground">
+                    {item.commodity.name}
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    {item.quantity} {item.commodity.unit}
+                  </p>
+                  <p className="mt-1 text-sm font-medium text-foreground">
+                    {formatCurrency(item.lineTotal, item.commodity.currency)}
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  aria-label={`Remove ${item.commodity.name}`}
+                  onClick={() => onRemove(item.commodity._id)}
+                  className="rounded-lg p-1 text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
+          ))
+        ) : (
+          <EmptyState
+            title="Cart is empty"
+            description="Add marketplace commodities to start an order."
+            icon={ShoppingBasket}
+          />
+        )}
+      </div>
+
+      <div className="mt-5 border-t border-border pt-5">
+        <div className="flex items-center justify-between text-sm text-muted-foreground">
+          <span>Subtotal</span>
+          <span className="text-base font-semibold text-foreground">
+            {cartItems[0]
+              ? formatCurrency(subtotal, cartItems[0].commodity.currency)
+              : '0'}
+          </span>
+        </div>
+
+        <div className="mt-5 space-y-3">
+          <Input
+            value={contactPhone}
+            onChange={(event) => onContactPhoneChange(event.target.value)}
+            placeholder="Contact phone"
+          />
+          <Textarea
+            value={deliveryAddress}
+            onChange={(event) => onDeliveryAddressChange(event.target.value)}
+            placeholder="Delivery address or pickup instruction"
+          />
+          <Textarea
+            value={customerNote}
+            onChange={(event) => onCustomerNoteChange(event.target.value)}
+            placeholder="Additional note for the seller"
+          />
+        </div>
+
+        <Button
+          type="button"
+          className="mt-5 w-full"
+          disabled={isPending || cartItems.length === 0}
+          onClick={onCheckout}
+        >
+          {isPending ? 'Submitting order...' : 'Submit order'}
+        </Button>
       </div>
     </div>
   )

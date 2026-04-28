@@ -190,7 +190,7 @@ function MarketplaceOrdersPage() {
         <h1 className="text-3xl font-bold tracking-tight text-foreground">
           Review buyer orders
         </h1>
-        <p className="text-muted-foreground">
+        <p className="text-base text-muted-foreground max-w-xl">
           Every order placed from the marketplace arrives here with reserved
           inventory.
         </p>
