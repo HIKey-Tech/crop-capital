@@ -5,7 +5,14 @@ import type {
   AddFarmUpdateRequest,
   AuthResponse,
   BanksListResponse,
+  CommoditiesListResponse,
+  CommodityOrderResponse,
+  CommodityOrdersResponse,
+  CommodityResponse,
   CountriesListResponse,
+  CreateCommodityMultipartRequest,
+  CreateCommodityOrderRequest,
+  CreateCommodityRequest,
   CreateFarmMultipartRequest,
   CreateFarmRequest,
   CreateTenantRequest,
@@ -28,6 +35,8 @@ import type {
   TenantBootstrapResponse,
   TenantMutationResponse,
   TenantsListResponse,
+  UpdateCommodityOrderStatusRequest,
+  UpdateCommodityRequest,
   UpdateFarmRequest,
   UpdateProfileRequest,
   UpdateTenantRequest,
@@ -211,6 +220,31 @@ function appendFarmFields(
   }
   if (data.coordinates?.longitude != null) {
     formData.append('longitude', String(data.coordinates.longitude))
+  }
+}
+
+function appendCommodityFields(
+  formData: FormData,
+  data: Partial<CreateCommodityRequest>,
+) {
+  if (data.name != null) formData.append('name', data.name)
+  if (data.category != null) formData.append('category', data.category)
+  if (data.description != null) formData.append('description', data.description)
+  if (data.location != null) formData.append('location', data.location)
+  if (data.currency != null) formData.append('currency', data.currency)
+  if (data.price != null) formData.append('price', String(data.price))
+  if (data.unit != null) formData.append('unit', data.unit)
+  if (data.availableQuantity != null) {
+    formData.append('availableQuantity', String(data.availableQuantity))
+  }
+  if (data.minimumOrderQuantity != null) {
+    formData.append('minimumOrderQuantity', String(data.minimumOrderQuantity))
+  }
+  if (data.isFeatured != null) {
+    formData.append('isFeatured', String(data.isFeatured))
+  }
+  if (data.isPublished != null) {
+    formData.append('isPublished', String(data.isPublished))
   }
 }
 
@@ -490,6 +524,92 @@ export const farmsApi = {
     return request<FarmResponse>(`/farms/${id}/updates`, {
       method: 'POST',
       body: formData,
+    })
+  },
+}
+
+export const commodityApi = {
+  getAll: async (): Promise<CommoditiesListResponse> => {
+    return request<CommoditiesListResponse>('/commodities')
+  },
+
+  getById: async (id: string): Promise<CommodityResponse> => {
+    return request<CommodityResponse>(`/commodities/${id}`)
+  },
+
+  create: async (
+    payload: CreateCommodityMultipartRequest,
+  ): Promise<CommodityResponse> => {
+    const formData = new FormData()
+    appendCommodityFields(formData, payload.data)
+    payload.images.forEach((image) => {
+      formData.append('images', image)
+    })
+
+    return request<CommodityResponse>('/commodities', {
+      method: 'POST',
+      body: formData,
+    })
+  },
+
+  update: async (
+    id: string,
+    payload: UpdateCommodityRequest,
+  ): Promise<CommodityResponse> => {
+    const formData = new FormData()
+    appendCommodityFields(formData, payload.data)
+
+    if (payload.hasImageChanges) {
+      formData.append('hasImageChanges', 'true')
+      payload.retainedImagePublicIds?.forEach((publicId) => {
+        formData.append('retainedImagePublicIds', publicId)
+      })
+      payload.newImages?.forEach((image) => {
+        formData.append('images', image)
+      })
+    }
+
+    return request<CommodityResponse>(`/commodities/${id}`, {
+      method: 'PATCH',
+      body: formData,
+    })
+  },
+
+  delete: async (
+    id: string,
+  ): Promise<{ success: boolean; message: string }> => {
+    return request<{ success: boolean; message: string }>(
+      `/commodities/${id}`,
+      {
+        method: 'DELETE',
+      },
+    )
+  },
+
+  placeOrder: async (
+    payload: CreateCommodityOrderRequest,
+  ): Promise<CommodityOrderResponse> => {
+    return request<CommodityOrderResponse>('/commodities/orders', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    })
+  },
+
+  getOrders: async (): Promise<CommodityOrdersResponse> => {
+    return request<CommodityOrdersResponse>('/commodities/orders')
+  },
+
+  getMyOrders: async (): Promise<CommodityOrdersResponse> => {
+    return request<CommodityOrdersResponse>('/commodities/orders/me')
+  },
+
+  updateOrderStatus: async (
+    id: string,
+    payload: UpdateCommodityOrderStatusRequest,
+  ): Promise<CommodityOrderResponse> => {
+    return request<CommodityOrderResponse>(`/commodities/orders/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(payload),
     })
   },
 }

@@ -5,6 +5,8 @@ import type {
   AddFarmUpdateRequest,
   BanksListResponse,
   CountriesListResponse,
+  CreateCommodityMultipartRequest,
+  CreateCommodityOrderRequest,
   CreateFarmMultipartRequest,
   InvestRequest,
   InviteAdminRequest,
@@ -16,6 +18,7 @@ import type {
 import {
   activitiesApi,
   authApi,
+  commodityApi,
   farmsApi,
   investmentsApi,
   kycApi,
@@ -58,6 +61,23 @@ export const api = createBuilder({
     delete: (id: string) => farmsApi.delete(id),
     addUpdate: (id: string, update: AddFarmUpdateRequest) =>
       farmsApi.addUpdate(id, update),
+  },
+  commodities: {
+    list: () => commodityApi.getAll(),
+    detail: (id: string) => commodityApi.getById(id),
+    create: (data: CreateCommodityMultipartRequest) =>
+      commodityApi.create(data),
+    update: (id: string, data: Parameters<typeof commodityApi.update>[1]) =>
+      commodityApi.update(id, data),
+    delete: (id: string) => commodityApi.delete(id),
+    placeOrder: (data: CreateCommodityOrderRequest) =>
+      commodityApi.placeOrder(data),
+    orders: () => commodityApi.getOrders(),
+    myOrders: () => commodityApi.getMyOrders(),
+    updateOrderStatus: (
+      id: string,
+      data: Parameters<typeof commodityApi.updateOrderStatus>[1],
+    ) => commodityApi.updateOrderStatus(id, data),
   },
   investments: {
     mine: () => investmentsApi.getMyInvestments(),

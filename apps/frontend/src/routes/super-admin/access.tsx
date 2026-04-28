@@ -1,6 +1,12 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useMemo } from 'react'
-import { Copy, ExternalLink, Globe2, RouteIcon } from 'lucide-react'
+import {
+  Copy,
+  ExternalLink,
+  Globe2,
+  RouteIcon,
+  ShoppingBag,
+} from 'lucide-react'
 import { toast } from 'sonner'
 
 import { Badge } from '@/components/ui/badge'
@@ -113,6 +119,79 @@ function AccessGuidePage() {
                     </p>
                   </div>
                 </div>
+
+                {(tenant.features.marketplace ||
+                  tenant.features.adminMarketplace) && (
+                  <div className="rounded-xl border border-amber-200/70 bg-amber-50/70 p-3">
+                    <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-amber-900">
+                      <ShoppingBag className="h-3.5 w-3.5" />
+                      Marketplace Routes
+                    </div>
+                    <div className="mt-2 space-y-2 text-sm">
+                      {tenant.features.marketplace && (
+                        <div className="space-y-1">
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                              Investor Marketplace
+                            </span>
+                            <Button
+                              variant="ghost"
+                              size="icon-sm"
+                              onClick={() =>
+                                copyToClipboard(access.marketplaceUrl)
+                              }
+                            >
+                              <Copy className="h-3.5 w-3.5" />
+                            </Button>
+                          </div>
+                          <a
+                            href={access.marketplaceUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="inline-flex items-center gap-2 break-all text-sm font-medium text-foreground hover:underline"
+                          >
+                            {access.marketplaceUrl}
+                            <ExternalLink className="h-3.5 w-3.5 shrink-0" />
+                          </a>
+                          <p className="break-all text-xs text-muted-foreground">
+                            Orders: {access.marketplaceOrdersUrl}
+                          </p>
+                        </div>
+                      )}
+
+                      {tenant.features.adminMarketplace && (
+                        <div className="space-y-1 border-t border-amber-200/70 pt-2">
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                              Admin Marketplace
+                            </span>
+                            <Button
+                              variant="ghost"
+                              size="icon-sm"
+                              onClick={() =>
+                                copyToClipboard(access.adminMarketplaceUrl)
+                              }
+                            >
+                              <Copy className="h-3.5 w-3.5" />
+                            </Button>
+                          </div>
+                          <a
+                            href={access.adminMarketplaceUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="inline-flex items-center gap-2 break-all text-sm font-medium text-foreground hover:underline"
+                          >
+                            {access.adminMarketplaceUrl}
+                            <ExternalLink className="h-3.5 w-3.5 shrink-0" />
+                          </a>
+                          <p className="break-all text-xs text-muted-foreground">
+                            Orders: {access.adminMarketplaceOrdersUrl}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
 
                 <div className="rounded-xl border border-dashed border-border p-3 text-xs text-muted-foreground">
                   {tenant.domains.length > 0

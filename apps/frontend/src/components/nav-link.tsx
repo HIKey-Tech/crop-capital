@@ -7,10 +7,21 @@ interface NavLinkProps extends Omit<ComponentProps<typeof Link>, 'className'> {
   className?: string
   activeClassName?: string
   pendingClassName?: string
+  exact?: boolean
 }
 
 const NavLink = forwardRef<HTMLAnchorElement, NavLinkProps>(
-  ({ className, activeClassName, pendingClassName, to, ...props }, ref) => {
+  (
+    {
+      className,
+      activeClassName,
+      pendingClassName,
+      exact = false,
+      to,
+      ...props
+    },
+    ref,
+  ) => {
     return (
       <Link
         ref={ref}
@@ -19,7 +30,7 @@ const NavLink = forwardRef<HTMLAnchorElement, NavLinkProps>(
           className: cn(className, activeClassName),
         }}
         activeOptions={{
-          exact: false,
+          exact,
           includeSearch: false,
         }}
         className={className}

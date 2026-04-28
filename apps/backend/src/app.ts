@@ -4,6 +4,7 @@ import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import { errorHandler } from "./middlewares/error.middleware";
 import authRoutes from "./modules/auth/auth.routes";
+import commodityRoutes from "./modules/commodities/commodity.routes";
 import farmRoutes from "./modules/farms/farm.routes";
 import investmentRoutes from "./modules/investments/investment.routes";
 import userRoutes from "./modules/users/user.routes";
@@ -100,6 +101,7 @@ app.get("/", (_, res) => {
 });
 
 app.use("/api/auth", authRoutes);
+app.use("/api/commodities", commodityRoutes);
 app.use("/api/farms", farmRoutes);
 app.use("/api/investments", investmentRoutes);
 app.use("/api/users", userRoutes);

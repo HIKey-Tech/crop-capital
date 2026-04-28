@@ -3,6 +3,10 @@ import { AppError } from "@/utils/AppError";
 import { Tenant } from "./tenant.model";
 import { User } from "@/modules/users/user.model";
 import { Farm } from "@/modules/farms/farm.model";
+import {
+  Commodity,
+  CommodityOrder,
+} from "@/modules/commodities/commodity.model";
 import { Investment } from "@/modules/investments/investment.model";
 import { KycDocument } from "@/modules/kyc/kyc.model";
 import { Activity } from "@/modules/activities/activity.model";
@@ -241,8 +245,9 @@ export const deleteTenant = async (req: Request, res: Response) => {
   }
 
   const tenantId = tenant._id;
-  const [farms, kycDocuments, users] = await Promise.all([
+  const [farms, commodities, kycDocuments, users] = await Promise.all([
     Farm.find({ tenantId }),
+    Commodity.find({ tenantId }),
     KycDocument.find({ tenantId }),
     User.find({ tenantId }).select("photoPublicId"),
   ]);
@@ -253,6 +258,10 @@ export const deleteTenant = async (req: Request, res: Response) => {
       .map((update) => update.imagePublicId)
       .filter((publicId): publicId is string => Boolean(publicId)),
   ]);
+
+  const commodityImagePublicIds = commodities.flatMap(
+    (commodity) => commodity.imagePublicIds || [],
+  );
 
   const kycImagePublicIds = kycDocuments
     .flatMap((document) => [
@@ -267,8 +276,11 @@ export const deleteTenant = async (req: Request, res: Response) => {
 
   const [
     farmImageCleanup,
+    commodityImageCleanup,
     kycImageCleanup,
     userPhotoCleanup,
+    commodityOrdersResult,
+    commoditiesResult,
     investmentsResult,
     activitiesResult,
     usersResult,
@@ -278,8 +290,11 @@ export const deleteTenant = async (req: Request, res: Response) => {
     tenantDeleteResult,
   ] = await Promise.all([
     deleteImagesBestEffort(farmImagePublicIds),
+    deleteImagesBestEffort(commodityImagePublicIds),
     deleteImagesBestEffort(kycImagePublicIds),
     deleteImagesBestEffort(userPhotoPublicIds),
+    CommodityOrder.deleteMany({ tenantId }),
+    Commodity.deleteMany({ tenantId }),
     Investment.deleteMany({ tenantId }),
     Activity.deleteMany({ tenantId }),
     User.deleteMany({ tenantId }),
@@ -298,12 +313,16 @@ export const deleteTenant = async (req: Request, res: Response) => {
     tenantSlug: tenant.slug,
     usersDeleted: usersResult.deletedCount ?? 0,
     farmsDeleted: farmsResult.deletedCount ?? 0,
+    commoditiesDeleted: commoditiesResult.deletedCount ?? 0,
+    commodityOrdersDeleted: commodityOrdersResult.deletedCount ?? 0,
     investmentsDeleted: investmentsResult.deletedCount ?? 0,
     kycDocumentsDeleted: kycResult.deletedCount ?? 0,
     activitiesDeleted: activitiesResult.deletedCount ?? 0,
     webhookEventsDeleted: webhookEventsResult.deletedCount ?? 0,
     farmImagesDeleted: farmImageCleanup.deleted,
     farmImagesFailed: farmImageCleanup.failed,
+    commodityImagesDeleted: commodityImageCleanup.deleted,
+    commodityImagesFailed: commodityImageCleanup.failed,
     kycImagesDeleted: kycImageCleanup.deleted,
     kycImagesFailed: kycImageCleanup.failed,
     userPhotosDeleted: userPhotoCleanup.deleted,

@@ -107,6 +107,59 @@ export interface FarmUpdate {
   date: string
 }
 
+export type CommodityOrderStatus =
+  | 'pending'
+  | 'confirmed'
+  | 'fulfilled'
+  | 'cancelled'
+
+export interface Commodity {
+  _id: string
+  name: string
+  category: string
+  description?: string
+  location: string
+  currency: CurrencyCode
+  price: number
+  unit: string
+  availableQuantity: number
+  minimumOrderQuantity: number
+  images: Array<string>
+  imagePublicIds: Array<string>
+  isFeatured: boolean
+  isPublished: boolean
+  soldQuantity: number
+  createdAt: string
+  updatedAt: string
+}
+
+export interface CommodityOrderItem {
+  commodity: string
+  name: string
+  unit: string
+  image?: string
+  quantity: number
+  unitPrice: number
+  lineTotal: number
+}
+
+export interface CommodityOrder {
+  _id: string
+  buyer: string | Pick<User, '_id' | 'name' | 'email' | 'photo'>
+  buyerName: string
+  buyerEmail: string
+  contactPhone?: string
+  deliveryAddress?: string
+  customerNote?: string
+  currency: CurrencyCode
+  items: Array<CommodityOrderItem>
+  subtotal: number
+  status: CommodityOrderStatus
+  statusNote?: string
+  createdAt: string
+  updatedAt: string
+}
+
 export interface Investment {
   _id: string
   investor: string | User
@@ -167,6 +220,26 @@ export interface FarmResponse {
   farm: Farm
 }
 
+export interface CommoditiesListResponse {
+  success: boolean
+  commodities: Array<Commodity>
+}
+
+export interface CommodityResponse {
+  success: boolean
+  commodity: Commodity
+}
+
+export interface CommodityOrdersResponse {
+  success: boolean
+  orders: Array<CommodityOrder>
+}
+
+export interface CommodityOrderResponse {
+  success: boolean
+  order: CommodityOrder
+}
+
 export interface LoginRequest {
   email: string
   password: string
@@ -203,11 +276,52 @@ export interface CreateFarmMultipartRequest {
   images: Array<File>
 }
 
+export interface CreateCommodityRequest {
+  name: string
+  category: string
+  description?: string
+  location: string
+  currency: CurrencyCode
+  price: number
+  unit: string
+  availableQuantity: number
+  minimumOrderQuantity: number
+  isFeatured: boolean
+  isPublished: boolean
+}
+
+export interface CreateCommodityMultipartRequest {
+  data: CreateCommodityRequest
+  images: Array<File>
+}
+
 export interface UpdateFarmRequest {
   data: Partial<CreateFarmRequest>
   hasImageChanges?: boolean
   retainedImagePublicIds?: Array<string>
   newImages?: Array<File>
+}
+
+export interface UpdateCommodityRequest {
+  data: Partial<CreateCommodityRequest>
+  hasImageChanges?: boolean
+  retainedImagePublicIds?: Array<string>
+  newImages?: Array<File>
+}
+
+export interface CreateCommodityOrderRequest {
+  items: Array<{
+    listingId: string
+    quantity: number
+  }>
+  contactPhone?: string
+  deliveryAddress?: string
+  customerNote?: string
+}
+
+export interface UpdateCommodityOrderStatusRequest {
+  status: CommodityOrderStatus
+  statusNote?: string
 }
 
 export interface AddFarmUpdateRequest {
@@ -380,10 +494,12 @@ export interface TenantFeatures {
   wallet: boolean
   transactions: boolean
   farms: boolean
+  marketplace: boolean
   news: boolean
   notifications: boolean
   adminPortal: boolean
   adminFarms: boolean
+  adminMarketplace: boolean
   adminInvestors: boolean
   adminTransactions: boolean
   adminPayouts: boolean
@@ -448,12 +564,16 @@ export interface DeleteTenantResponse {
     tenantSlug: string
     usersDeleted: number
     farmsDeleted: number
+    commoditiesDeleted: number
+    commodityOrdersDeleted: number
     investmentsDeleted: number
     kycDocumentsDeleted: number
     activitiesDeleted: number
     webhookEventsDeleted: number
     farmImagesDeleted: number
     farmImagesFailed: number
+    commodityImagesDeleted: number
+    commodityImagesFailed: number
     kycImagesDeleted: number
     kycImagesFailed: number
   }

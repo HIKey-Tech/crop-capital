@@ -299,7 +299,7 @@ function TenantsPage() {
       setTenantPendingDelete(null)
       resetForm()
       toast.success(
-        `Deleted ${tenantPendingDelete.name} and removed ${response.cleanup.usersDeleted} tenant users, ${response.cleanup.farmsDeleted} farms, and ${response.cleanup.investmentsDeleted} investments`,
+        `Deleted ${tenantPendingDelete.name} and removed ${response.cleanup.usersDeleted} tenant users, ${response.cleanup.farmsDeleted} farms, ${response.cleanup.commoditiesDeleted} commodity listings, ${response.cleanup.commodityOrdersDeleted} orders, and ${response.cleanup.investmentsDeleted} investments`,
       )
     } catch (error) {
       console.error(error)
@@ -372,6 +372,12 @@ function TenantsPage() {
               {lastDeletedCleanup.farmsDeleted} farms
             </span>
             <span className="rounded-full border border-emerald-200 bg-background/90 px-2.5 py-1 text-emerald-900">
+              {lastDeletedCleanup.commoditiesDeleted} commodity listings
+            </span>
+            <span className="rounded-full border border-emerald-200 bg-background/90 px-2.5 py-1 text-emerald-900">
+              {lastDeletedCleanup.commodityOrdersDeleted} orders
+            </span>
+            <span className="rounded-full border border-emerald-200 bg-background/90 px-2.5 py-1 text-emerald-900">
               {lastDeletedCleanup.investmentsDeleted} investments
             </span>
             <span className="rounded-full border border-emerald-200 bg-background/90 px-2.5 py-1 text-emerald-900">
@@ -384,13 +390,18 @@ function TenantsPage() {
               {lastDeletedCleanup.farmImagesDeleted} farm images
             </span>
             <span className="rounded-full border border-emerald-200 bg-background/90 px-2.5 py-1 text-emerald-900">
+              {lastDeletedCleanup.commodityImagesDeleted} commodity images
+            </span>
+            <span className="rounded-full border border-emerald-200 bg-background/90 px-2.5 py-1 text-emerald-900">
               {lastDeletedCleanup.kycImagesDeleted} KYC images
             </span>
             {(lastDeletedCleanup.farmImagesFailed > 0 ||
+              lastDeletedCleanup.commodityImagesFailed > 0 ||
               lastDeletedCleanup.kycImagesFailed > 0) && (
               <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-100 border border-amber-200 px-2.5 py-1 text-amber-900">
                 <ShieldAlert className="h-3 w-3" />
                 {lastDeletedCleanup.farmImagesFailed +
+                  lastDeletedCleanup.commodityImagesFailed +
                   lastDeletedCleanup.kycImagesFailed}{' '}
                 asset failures
               </span>
@@ -858,7 +869,7 @@ function TenantsPage() {
             <AlertDialogTitle>Delete Tenant Permanently?</AlertDialogTitle>
             <AlertDialogDescription>
               {tenantPendingDelete
-                ? `Deleting ${tenantPendingDelete.name} will permanently remove every tenant-bound admin, investor membership, farm, investment, KYC record, activity, and webhook event under this tenancy.`
+                ? `Deleting ${tenantPendingDelete.name} will permanently remove every tenant-bound admin, investor membership, farm, commodity listing, marketplace order, investment, KYC record, activity, and webhook event under this tenancy.`
                 : 'Deleting a tenant removes all tenant-bound data.'}
             </AlertDialogDescription>
           </AlertDialogHeader>

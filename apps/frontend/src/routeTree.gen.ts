@@ -46,6 +46,7 @@ import { Route as TenantAuthenticatedWalletIndexRouteImport } from './routes/$te
 import { Route as TenantAuthenticatedTransactionsIndexRouteImport } from './routes/$tenant/_authenticated/transactions/index'
 import { Route as TenantAuthenticatedSettingsIndexRouteImport } from './routes/$tenant/_authenticated/settings/index'
 import { Route as TenantAuthenticatedNotificationsIndexRouteImport } from './routes/$tenant/_authenticated/notifications/index'
+import { Route as TenantAuthenticatedMarketplaceIndexRouteImport } from './routes/$tenant/_authenticated/marketplace/index'
 import { Route as TenantAuthenticatedInvestmentsIndexRouteImport } from './routes/$tenant/_authenticated/investments/index'
 import { Route as TenantAuthenticatedFarmsIndexRouteImport } from './routes/$tenant/_authenticated/farms/index'
 import { Route as TenantAuthenticatedDashboardIndexRouteImport } from './routes/$tenant/_authenticated/dashboard/index'
@@ -54,6 +55,7 @@ import { Route as TenantAuthenticatedSettingsVerificationRouteImport } from './r
 import { Route as TenantAuthenticatedSettingsSecurityRouteImport } from './routes/$tenant/_authenticated/settings/security'
 import { Route as TenantAuthenticatedSettingsNotificationsRouteImport } from './routes/$tenant/_authenticated/settings/notifications'
 import { Route as TenantAuthenticatedPaymentCallbackRouteImport } from './routes/$tenant/_authenticated/payment/callback'
+import { Route as TenantAuthenticatedMarketplaceOrdersRouteImport } from './routes/$tenant/_authenticated/marketplace/orders'
 import { Route as TenantAuthenticatedInvestmentsIdRouteImport } from './routes/$tenant/_authenticated/investments/$id'
 import { Route as TenantAuthenticatedFarmIdRouteImport } from './routes/$tenant/_authenticated/farm/$id'
 import { Route as TenantAuthenticatedAdminTransactionsRouteImport } from './routes/$tenant/_authenticated/admin/transactions'
@@ -62,10 +64,14 @@ import { Route as TenantAuthenticatedAdminPayoutsRouteImport } from './routes/$t
 import { Route as TenantAuthenticatedAdminKycRouteImport } from './routes/$tenant/_authenticated/admin/kyc'
 import { Route as TenantAuthenticatedAdminInvestorsRouteImport } from './routes/$tenant/_authenticated/admin/investors'
 import { Route as TenantAuthenticatedFarmsIdIndexRouteImport } from './routes/$tenant/_authenticated/farms/$id/index'
+import { Route as TenantAuthenticatedAdminMarketplaceIndexRouteImport } from './routes/$tenant/_authenticated/admin/marketplace/index'
 import { Route as TenantAuthenticatedAdminFarmsIndexRouteImport } from './routes/$tenant/_authenticated/admin/farms/index'
 import { Route as TenantAuthenticatedFarmsIdInvestRouteImport } from './routes/$tenant/_authenticated/farms/$id/invest'
 import { Route as TenantAuthenticatedAdminUsersIdRouteImport } from './routes/$tenant/_authenticated/admin/users/$id'
+import { Route as TenantAuthenticatedAdminMarketplaceOrdersRouteImport } from './routes/$tenant/_authenticated/admin/marketplace/orders'
+import { Route as TenantAuthenticatedAdminMarketplaceNewRouteImport } from './routes/$tenant/_authenticated/admin/marketplace/new'
 import { Route as TenantAuthenticatedAdminFarmsNewRouteImport } from './routes/$tenant/_authenticated/admin/farms/new'
+import { Route as TenantAuthenticatedAdminMarketplaceIdEditRouteImport } from './routes/$tenant/_authenticated/admin/marketplace/$id/edit'
 import { Route as TenantAuthenticatedAdminFarmsIdEditRouteImport } from './routes/$tenant/_authenticated/admin/farms/$id/edit'
 import { Route as TenantAuthenticatedAdminFarmsIdAnalyticsRouteImport } from './routes/$tenant/_authenticated/admin/farms/$id/analytics'
 
@@ -263,6 +269,12 @@ const TenantAuthenticatedNotificationsIndexRoute =
     path: '/notifications/',
     getParentRoute: () => TenantAuthenticatedRouteRoute,
   } as any)
+const TenantAuthenticatedMarketplaceIndexRoute =
+  TenantAuthenticatedMarketplaceIndexRouteImport.update({
+    id: '/marketplace/',
+    path: '/marketplace/',
+    getParentRoute: () => TenantAuthenticatedRouteRoute,
+  } as any)
 const TenantAuthenticatedInvestmentsIndexRoute =
   TenantAuthenticatedInvestmentsIndexRouteImport.update({
     id: '/investments/',
@@ -309,6 +321,12 @@ const TenantAuthenticatedPaymentCallbackRoute =
   TenantAuthenticatedPaymentCallbackRouteImport.update({
     id: '/payment/callback',
     path: '/payment/callback',
+    getParentRoute: () => TenantAuthenticatedRouteRoute,
+  } as any)
+const TenantAuthenticatedMarketplaceOrdersRoute =
+  TenantAuthenticatedMarketplaceOrdersRouteImport.update({
+    id: '/marketplace/orders',
+    path: '/marketplace/orders',
     getParentRoute: () => TenantAuthenticatedRouteRoute,
   } as any)
 const TenantAuthenticatedInvestmentsIdRoute =
@@ -359,6 +377,12 @@ const TenantAuthenticatedFarmsIdIndexRoute =
     path: '/farms/$id/',
     getParentRoute: () => TenantAuthenticatedRouteRoute,
   } as any)
+const TenantAuthenticatedAdminMarketplaceIndexRoute =
+  TenantAuthenticatedAdminMarketplaceIndexRouteImport.update({
+    id: '/marketplace/',
+    path: '/marketplace/',
+    getParentRoute: () => TenantAuthenticatedAdminRoute,
+  } as any)
 const TenantAuthenticatedAdminFarmsIndexRoute =
   TenantAuthenticatedAdminFarmsIndexRouteImport.update({
     id: '/farms/',
@@ -377,10 +401,28 @@ const TenantAuthenticatedAdminUsersIdRoute =
     path: '/users/$id',
     getParentRoute: () => TenantAuthenticatedAdminRoute,
   } as any)
+const TenantAuthenticatedAdminMarketplaceOrdersRoute =
+  TenantAuthenticatedAdminMarketplaceOrdersRouteImport.update({
+    id: '/marketplace/orders',
+    path: '/marketplace/orders',
+    getParentRoute: () => TenantAuthenticatedAdminRoute,
+  } as any)
+const TenantAuthenticatedAdminMarketplaceNewRoute =
+  TenantAuthenticatedAdminMarketplaceNewRouteImport.update({
+    id: '/marketplace/new',
+    path: '/marketplace/new',
+    getParentRoute: () => TenantAuthenticatedAdminRoute,
+  } as any)
 const TenantAuthenticatedAdminFarmsNewRoute =
   TenantAuthenticatedAdminFarmsNewRouteImport.update({
     id: '/farms/new',
     path: '/farms/new',
+    getParentRoute: () => TenantAuthenticatedAdminRoute,
+  } as any)
+const TenantAuthenticatedAdminMarketplaceIdEditRoute =
+  TenantAuthenticatedAdminMarketplaceIdEditRouteImport.update({
+    id: '/marketplace/$id/edit',
+    path: '/marketplace/$id/edit',
     getParentRoute: () => TenantAuthenticatedAdminRoute,
   } as any)
 const TenantAuthenticatedAdminFarmsIdEditRoute =
@@ -433,6 +475,7 @@ export interface FileRoutesByFullPath {
   '/$tenant/admin/transactions': typeof TenantAuthenticatedAdminTransactionsRoute
   '/$tenant/farm/$id': typeof TenantAuthenticatedFarmIdRoute
   '/$tenant/investments/$id': typeof TenantAuthenticatedInvestmentsIdRoute
+  '/$tenant/marketplace/orders': typeof TenantAuthenticatedMarketplaceOrdersRoute
   '/$tenant/payment/callback': typeof TenantAuthenticatedPaymentCallbackRoute
   '/$tenant/settings/notifications': typeof TenantAuthenticatedSettingsNotificationsRoute
   '/$tenant/settings/security': typeof TenantAuthenticatedSettingsSecurityRoute
@@ -441,6 +484,7 @@ export interface FileRoutesByFullPath {
   '/$tenant/dashboard/': typeof TenantAuthenticatedDashboardIndexRoute
   '/$tenant/farms/': typeof TenantAuthenticatedFarmsIndexRoute
   '/$tenant/investments/': typeof TenantAuthenticatedInvestmentsIndexRoute
+  '/$tenant/marketplace/': typeof TenantAuthenticatedMarketplaceIndexRoute
   '/$tenant/notifications/': typeof TenantAuthenticatedNotificationsIndexRoute
   '/$tenant/settings/': typeof TenantAuthenticatedSettingsIndexRoute
   '/$tenant/transactions/': typeof TenantAuthenticatedTransactionsIndexRoute
@@ -450,12 +494,16 @@ export interface FileRoutesByFullPath {
   '/$tenant/auth/sign-in/': typeof TenantAuthSignInIndexRoute
   '/$tenant/auth/sign-up/': typeof TenantAuthSignUpIndexRoute
   '/$tenant/admin/farms/new': typeof TenantAuthenticatedAdminFarmsNewRoute
+  '/$tenant/admin/marketplace/new': typeof TenantAuthenticatedAdminMarketplaceNewRoute
+  '/$tenant/admin/marketplace/orders': typeof TenantAuthenticatedAdminMarketplaceOrdersRoute
   '/$tenant/admin/users/$id': typeof TenantAuthenticatedAdminUsersIdRoute
   '/$tenant/farms/$id/invest': typeof TenantAuthenticatedFarmsIdInvestRoute
   '/$tenant/admin/farms/': typeof TenantAuthenticatedAdminFarmsIndexRoute
+  '/$tenant/admin/marketplace/': typeof TenantAuthenticatedAdminMarketplaceIndexRoute
   '/$tenant/farms/$id/': typeof TenantAuthenticatedFarmsIdIndexRoute
   '/$tenant/admin/farms/$id/analytics': typeof TenantAuthenticatedAdminFarmsIdAnalyticsRoute
   '/$tenant/admin/farms/$id/edit': typeof TenantAuthenticatedAdminFarmsIdEditRoute
+  '/$tenant/admin/marketplace/$id/edit': typeof TenantAuthenticatedAdminMarketplaceIdEditRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -488,6 +536,7 @@ export interface FileRoutesByTo {
   '/$tenant/admin/transactions': typeof TenantAuthenticatedAdminTransactionsRoute
   '/$tenant/farm/$id': typeof TenantAuthenticatedFarmIdRoute
   '/$tenant/investments/$id': typeof TenantAuthenticatedInvestmentsIdRoute
+  '/$tenant/marketplace/orders': typeof TenantAuthenticatedMarketplaceOrdersRoute
   '/$tenant/payment/callback': typeof TenantAuthenticatedPaymentCallbackRoute
   '/$tenant/settings/notifications': typeof TenantAuthenticatedSettingsNotificationsRoute
   '/$tenant/settings/security': typeof TenantAuthenticatedSettingsSecurityRoute
@@ -496,6 +545,7 @@ export interface FileRoutesByTo {
   '/$tenant/dashboard': typeof TenantAuthenticatedDashboardIndexRoute
   '/$tenant/farms': typeof TenantAuthenticatedFarmsIndexRoute
   '/$tenant/investments': typeof TenantAuthenticatedInvestmentsIndexRoute
+  '/$tenant/marketplace': typeof TenantAuthenticatedMarketplaceIndexRoute
   '/$tenant/notifications': typeof TenantAuthenticatedNotificationsIndexRoute
   '/$tenant/settings': typeof TenantAuthenticatedSettingsIndexRoute
   '/$tenant/transactions': typeof TenantAuthenticatedTransactionsIndexRoute
@@ -505,12 +555,16 @@ export interface FileRoutesByTo {
   '/$tenant/auth/sign-in': typeof TenantAuthSignInIndexRoute
   '/$tenant/auth/sign-up': typeof TenantAuthSignUpIndexRoute
   '/$tenant/admin/farms/new': typeof TenantAuthenticatedAdminFarmsNewRoute
+  '/$tenant/admin/marketplace/new': typeof TenantAuthenticatedAdminMarketplaceNewRoute
+  '/$tenant/admin/marketplace/orders': typeof TenantAuthenticatedAdminMarketplaceOrdersRoute
   '/$tenant/admin/users/$id': typeof TenantAuthenticatedAdminUsersIdRoute
   '/$tenant/farms/$id/invest': typeof TenantAuthenticatedFarmsIdInvestRoute
   '/$tenant/admin/farms': typeof TenantAuthenticatedAdminFarmsIndexRoute
+  '/$tenant/admin/marketplace': typeof TenantAuthenticatedAdminMarketplaceIndexRoute
   '/$tenant/farms/$id': typeof TenantAuthenticatedFarmsIdIndexRoute
   '/$tenant/admin/farms/$id/analytics': typeof TenantAuthenticatedAdminFarmsIdAnalyticsRoute
   '/$tenant/admin/farms/$id/edit': typeof TenantAuthenticatedAdminFarmsIdEditRoute
+  '/$tenant/admin/marketplace/$id/edit': typeof TenantAuthenticatedAdminMarketplaceIdEditRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -550,6 +604,7 @@ export interface FileRoutesById {
   '/$tenant/_authenticated/admin/transactions': typeof TenantAuthenticatedAdminTransactionsRoute
   '/$tenant/_authenticated/farm/$id': typeof TenantAuthenticatedFarmIdRoute
   '/$tenant/_authenticated/investments/$id': typeof TenantAuthenticatedInvestmentsIdRoute
+  '/$tenant/_authenticated/marketplace/orders': typeof TenantAuthenticatedMarketplaceOrdersRoute
   '/$tenant/_authenticated/payment/callback': typeof TenantAuthenticatedPaymentCallbackRoute
   '/$tenant/_authenticated/settings/notifications': typeof TenantAuthenticatedSettingsNotificationsRoute
   '/$tenant/_authenticated/settings/security': typeof TenantAuthenticatedSettingsSecurityRoute
@@ -558,6 +613,7 @@ export interface FileRoutesById {
   '/$tenant/_authenticated/dashboard/': typeof TenantAuthenticatedDashboardIndexRoute
   '/$tenant/_authenticated/farms/': typeof TenantAuthenticatedFarmsIndexRoute
   '/$tenant/_authenticated/investments/': typeof TenantAuthenticatedInvestmentsIndexRoute
+  '/$tenant/_authenticated/marketplace/': typeof TenantAuthenticatedMarketplaceIndexRoute
   '/$tenant/_authenticated/notifications/': typeof TenantAuthenticatedNotificationsIndexRoute
   '/$tenant/_authenticated/settings/': typeof TenantAuthenticatedSettingsIndexRoute
   '/$tenant/_authenticated/transactions/': typeof TenantAuthenticatedTransactionsIndexRoute
@@ -567,12 +623,16 @@ export interface FileRoutesById {
   '/$tenant/auth/sign-in/': typeof TenantAuthSignInIndexRoute
   '/$tenant/auth/sign-up/': typeof TenantAuthSignUpIndexRoute
   '/$tenant/_authenticated/admin/farms/new': typeof TenantAuthenticatedAdminFarmsNewRoute
+  '/$tenant/_authenticated/admin/marketplace/new': typeof TenantAuthenticatedAdminMarketplaceNewRoute
+  '/$tenant/_authenticated/admin/marketplace/orders': typeof TenantAuthenticatedAdminMarketplaceOrdersRoute
   '/$tenant/_authenticated/admin/users/$id': typeof TenantAuthenticatedAdminUsersIdRoute
   '/$tenant/_authenticated/farms/$id/invest': typeof TenantAuthenticatedFarmsIdInvestRoute
   '/$tenant/_authenticated/admin/farms/': typeof TenantAuthenticatedAdminFarmsIndexRoute
+  '/$tenant/_authenticated/admin/marketplace/': typeof TenantAuthenticatedAdminMarketplaceIndexRoute
   '/$tenant/_authenticated/farms/$id/': typeof TenantAuthenticatedFarmsIdIndexRoute
   '/$tenant/_authenticated/admin/farms/$id/analytics': typeof TenantAuthenticatedAdminFarmsIdAnalyticsRoute
   '/$tenant/_authenticated/admin/farms/$id/edit': typeof TenantAuthenticatedAdminFarmsIdEditRoute
+  '/$tenant/_authenticated/admin/marketplace/$id/edit': typeof TenantAuthenticatedAdminMarketplaceIdEditRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -613,6 +673,7 @@ export interface FileRouteTypes {
     | '/$tenant/admin/transactions'
     | '/$tenant/farm/$id'
     | '/$tenant/investments/$id'
+    | '/$tenant/marketplace/orders'
     | '/$tenant/payment/callback'
     | '/$tenant/settings/notifications'
     | '/$tenant/settings/security'
@@ -621,6 +682,7 @@ export interface FileRouteTypes {
     | '/$tenant/dashboard/'
     | '/$tenant/farms/'
     | '/$tenant/investments/'
+    | '/$tenant/marketplace/'
     | '/$tenant/notifications/'
     | '/$tenant/settings/'
     | '/$tenant/transactions/'
@@ -630,12 +692,16 @@ export interface FileRouteTypes {
     | '/$tenant/auth/sign-in/'
     | '/$tenant/auth/sign-up/'
     | '/$tenant/admin/farms/new'
+    | '/$tenant/admin/marketplace/new'
+    | '/$tenant/admin/marketplace/orders'
     | '/$tenant/admin/users/$id'
     | '/$tenant/farms/$id/invest'
     | '/$tenant/admin/farms/'
+    | '/$tenant/admin/marketplace/'
     | '/$tenant/farms/$id/'
     | '/$tenant/admin/farms/$id/analytics'
     | '/$tenant/admin/farms/$id/edit'
+    | '/$tenant/admin/marketplace/$id/edit'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -668,6 +734,7 @@ export interface FileRouteTypes {
     | '/$tenant/admin/transactions'
     | '/$tenant/farm/$id'
     | '/$tenant/investments/$id'
+    | '/$tenant/marketplace/orders'
     | '/$tenant/payment/callback'
     | '/$tenant/settings/notifications'
     | '/$tenant/settings/security'
@@ -676,6 +743,7 @@ export interface FileRouteTypes {
     | '/$tenant/dashboard'
     | '/$tenant/farms'
     | '/$tenant/investments'
+    | '/$tenant/marketplace'
     | '/$tenant/notifications'
     | '/$tenant/settings'
     | '/$tenant/transactions'
@@ -685,12 +753,16 @@ export interface FileRouteTypes {
     | '/$tenant/auth/sign-in'
     | '/$tenant/auth/sign-up'
     | '/$tenant/admin/farms/new'
+    | '/$tenant/admin/marketplace/new'
+    | '/$tenant/admin/marketplace/orders'
     | '/$tenant/admin/users/$id'
     | '/$tenant/farms/$id/invest'
     | '/$tenant/admin/farms'
+    | '/$tenant/admin/marketplace'
     | '/$tenant/farms/$id'
     | '/$tenant/admin/farms/$id/analytics'
     | '/$tenant/admin/farms/$id/edit'
+    | '/$tenant/admin/marketplace/$id/edit'
   id:
     | '__root__'
     | '/'
@@ -729,6 +801,7 @@ export interface FileRouteTypes {
     | '/$tenant/_authenticated/admin/transactions'
     | '/$tenant/_authenticated/farm/$id'
     | '/$tenant/_authenticated/investments/$id'
+    | '/$tenant/_authenticated/marketplace/orders'
     | '/$tenant/_authenticated/payment/callback'
     | '/$tenant/_authenticated/settings/notifications'
     | '/$tenant/_authenticated/settings/security'
@@ -737,6 +810,7 @@ export interface FileRouteTypes {
     | '/$tenant/_authenticated/dashboard/'
     | '/$tenant/_authenticated/farms/'
     | '/$tenant/_authenticated/investments/'
+    | '/$tenant/_authenticated/marketplace/'
     | '/$tenant/_authenticated/notifications/'
     | '/$tenant/_authenticated/settings/'
     | '/$tenant/_authenticated/transactions/'
@@ -746,12 +820,16 @@ export interface FileRouteTypes {
     | '/$tenant/auth/sign-in/'
     | '/$tenant/auth/sign-up/'
     | '/$tenant/_authenticated/admin/farms/new'
+    | '/$tenant/_authenticated/admin/marketplace/new'
+    | '/$tenant/_authenticated/admin/marketplace/orders'
     | '/$tenant/_authenticated/admin/users/$id'
     | '/$tenant/_authenticated/farms/$id/invest'
     | '/$tenant/_authenticated/admin/farms/'
+    | '/$tenant/_authenticated/admin/marketplace/'
     | '/$tenant/_authenticated/farms/$id/'
     | '/$tenant/_authenticated/admin/farms/$id/analytics'
     | '/$tenant/_authenticated/admin/farms/$id/edit'
+    | '/$tenant/_authenticated/admin/marketplace/$id/edit'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -1034,6 +1112,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TenantAuthenticatedNotificationsIndexRouteImport
       parentRoute: typeof TenantAuthenticatedRouteRoute
     }
+    '/$tenant/_authenticated/marketplace/': {
+      id: '/$tenant/_authenticated/marketplace/'
+      path: '/marketplace'
+      fullPath: '/$tenant/marketplace/'
+      preLoaderRoute: typeof TenantAuthenticatedMarketplaceIndexRouteImport
+      parentRoute: typeof TenantAuthenticatedRouteRoute
+    }
     '/$tenant/_authenticated/investments/': {
       id: '/$tenant/_authenticated/investments/'
       path: '/investments'
@@ -1088,6 +1173,13 @@ declare module '@tanstack/react-router' {
       path: '/payment/callback'
       fullPath: '/$tenant/payment/callback'
       preLoaderRoute: typeof TenantAuthenticatedPaymentCallbackRouteImport
+      parentRoute: typeof TenantAuthenticatedRouteRoute
+    }
+    '/$tenant/_authenticated/marketplace/orders': {
+      id: '/$tenant/_authenticated/marketplace/orders'
+      path: '/marketplace/orders'
+      fullPath: '/$tenant/marketplace/orders'
+      preLoaderRoute: typeof TenantAuthenticatedMarketplaceOrdersRouteImport
       parentRoute: typeof TenantAuthenticatedRouteRoute
     }
     '/$tenant/_authenticated/investments/$id': {
@@ -1146,6 +1238,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TenantAuthenticatedFarmsIdIndexRouteImport
       parentRoute: typeof TenantAuthenticatedRouteRoute
     }
+    '/$tenant/_authenticated/admin/marketplace/': {
+      id: '/$tenant/_authenticated/admin/marketplace/'
+      path: '/marketplace'
+      fullPath: '/$tenant/admin/marketplace/'
+      preLoaderRoute: typeof TenantAuthenticatedAdminMarketplaceIndexRouteImport
+      parentRoute: typeof TenantAuthenticatedAdminRoute
+    }
     '/$tenant/_authenticated/admin/farms/': {
       id: '/$tenant/_authenticated/admin/farms/'
       path: '/farms'
@@ -1167,11 +1266,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TenantAuthenticatedAdminUsersIdRouteImport
       parentRoute: typeof TenantAuthenticatedAdminRoute
     }
+    '/$tenant/_authenticated/admin/marketplace/orders': {
+      id: '/$tenant/_authenticated/admin/marketplace/orders'
+      path: '/marketplace/orders'
+      fullPath: '/$tenant/admin/marketplace/orders'
+      preLoaderRoute: typeof TenantAuthenticatedAdminMarketplaceOrdersRouteImport
+      parentRoute: typeof TenantAuthenticatedAdminRoute
+    }
+    '/$tenant/_authenticated/admin/marketplace/new': {
+      id: '/$tenant/_authenticated/admin/marketplace/new'
+      path: '/marketplace/new'
+      fullPath: '/$tenant/admin/marketplace/new'
+      preLoaderRoute: typeof TenantAuthenticatedAdminMarketplaceNewRouteImport
+      parentRoute: typeof TenantAuthenticatedAdminRoute
+    }
     '/$tenant/_authenticated/admin/farms/new': {
       id: '/$tenant/_authenticated/admin/farms/new'
       path: '/farms/new'
       fullPath: '/$tenant/admin/farms/new'
       preLoaderRoute: typeof TenantAuthenticatedAdminFarmsNewRouteImport
+      parentRoute: typeof TenantAuthenticatedAdminRoute
+    }
+    '/$tenant/_authenticated/admin/marketplace/$id/edit': {
+      id: '/$tenant/_authenticated/admin/marketplace/$id/edit'
+      path: '/marketplace/$id/edit'
+      fullPath: '/$tenant/admin/marketplace/$id/edit'
+      preLoaderRoute: typeof TenantAuthenticatedAdminMarketplaceIdEditRouteImport
       parentRoute: typeof TenantAuthenticatedAdminRoute
     }
     '/$tenant/_authenticated/admin/farms/$id/edit': {
@@ -1255,10 +1375,14 @@ interface TenantAuthenticatedAdminRouteChildren {
   TenantAuthenticatedAdminTransactionsRoute: typeof TenantAuthenticatedAdminTransactionsRoute
   TenantAuthenticatedAdminIndexRoute: typeof TenantAuthenticatedAdminIndexRoute
   TenantAuthenticatedAdminFarmsNewRoute: typeof TenantAuthenticatedAdminFarmsNewRoute
+  TenantAuthenticatedAdminMarketplaceNewRoute: typeof TenantAuthenticatedAdminMarketplaceNewRoute
+  TenantAuthenticatedAdminMarketplaceOrdersRoute: typeof TenantAuthenticatedAdminMarketplaceOrdersRoute
   TenantAuthenticatedAdminUsersIdRoute: typeof TenantAuthenticatedAdminUsersIdRoute
   TenantAuthenticatedAdminFarmsIndexRoute: typeof TenantAuthenticatedAdminFarmsIndexRoute
+  TenantAuthenticatedAdminMarketplaceIndexRoute: typeof TenantAuthenticatedAdminMarketplaceIndexRoute
   TenantAuthenticatedAdminFarmsIdAnalyticsRoute: typeof TenantAuthenticatedAdminFarmsIdAnalyticsRoute
   TenantAuthenticatedAdminFarmsIdEditRoute: typeof TenantAuthenticatedAdminFarmsIdEditRoute
+  TenantAuthenticatedAdminMarketplaceIdEditRoute: typeof TenantAuthenticatedAdminMarketplaceIdEditRoute
 }
 
 const TenantAuthenticatedAdminRouteChildren: TenantAuthenticatedAdminRouteChildren =
@@ -1273,13 +1397,21 @@ const TenantAuthenticatedAdminRouteChildren: TenantAuthenticatedAdminRouteChildr
     TenantAuthenticatedAdminIndexRoute: TenantAuthenticatedAdminIndexRoute,
     TenantAuthenticatedAdminFarmsNewRoute:
       TenantAuthenticatedAdminFarmsNewRoute,
+    TenantAuthenticatedAdminMarketplaceNewRoute:
+      TenantAuthenticatedAdminMarketplaceNewRoute,
+    TenantAuthenticatedAdminMarketplaceOrdersRoute:
+      TenantAuthenticatedAdminMarketplaceOrdersRoute,
     TenantAuthenticatedAdminUsersIdRoute: TenantAuthenticatedAdminUsersIdRoute,
     TenantAuthenticatedAdminFarmsIndexRoute:
       TenantAuthenticatedAdminFarmsIndexRoute,
+    TenantAuthenticatedAdminMarketplaceIndexRoute:
+      TenantAuthenticatedAdminMarketplaceIndexRoute,
     TenantAuthenticatedAdminFarmsIdAnalyticsRoute:
       TenantAuthenticatedAdminFarmsIdAnalyticsRoute,
     TenantAuthenticatedAdminFarmsIdEditRoute:
       TenantAuthenticatedAdminFarmsIdEditRoute,
+    TenantAuthenticatedAdminMarketplaceIdEditRoute:
+      TenantAuthenticatedAdminMarketplaceIdEditRoute,
   }
 
 const TenantAuthenticatedAdminRouteWithChildren =
@@ -1293,10 +1425,12 @@ interface TenantAuthenticatedRouteRouteChildren {
   TenantAuthenticatedNewsRoute: typeof TenantAuthenticatedNewsRoute
   TenantAuthenticatedFarmIdRoute: typeof TenantAuthenticatedFarmIdRoute
   TenantAuthenticatedInvestmentsIdRoute: typeof TenantAuthenticatedInvestmentsIdRoute
+  TenantAuthenticatedMarketplaceOrdersRoute: typeof TenantAuthenticatedMarketplaceOrdersRoute
   TenantAuthenticatedPaymentCallbackRoute: typeof TenantAuthenticatedPaymentCallbackRoute
   TenantAuthenticatedDashboardIndexRoute: typeof TenantAuthenticatedDashboardIndexRoute
   TenantAuthenticatedFarmsIndexRoute: typeof TenantAuthenticatedFarmsIndexRoute
   TenantAuthenticatedInvestmentsIndexRoute: typeof TenantAuthenticatedInvestmentsIndexRoute
+  TenantAuthenticatedMarketplaceIndexRoute: typeof TenantAuthenticatedMarketplaceIndexRoute
   TenantAuthenticatedNotificationsIndexRoute: typeof TenantAuthenticatedNotificationsIndexRoute
   TenantAuthenticatedTransactionsIndexRoute: typeof TenantAuthenticatedTransactionsIndexRoute
   TenantAuthenticatedWalletIndexRoute: typeof TenantAuthenticatedWalletIndexRoute
@@ -1313,6 +1447,8 @@ const TenantAuthenticatedRouteRouteChildren: TenantAuthenticatedRouteRouteChildr
     TenantAuthenticatedFarmIdRoute: TenantAuthenticatedFarmIdRoute,
     TenantAuthenticatedInvestmentsIdRoute:
       TenantAuthenticatedInvestmentsIdRoute,
+    TenantAuthenticatedMarketplaceOrdersRoute:
+      TenantAuthenticatedMarketplaceOrdersRoute,
     TenantAuthenticatedPaymentCallbackRoute:
       TenantAuthenticatedPaymentCallbackRoute,
     TenantAuthenticatedDashboardIndexRoute:
@@ -1320,6 +1456,8 @@ const TenantAuthenticatedRouteRouteChildren: TenantAuthenticatedRouteRouteChildr
     TenantAuthenticatedFarmsIndexRoute: TenantAuthenticatedFarmsIndexRoute,
     TenantAuthenticatedInvestmentsIndexRoute:
       TenantAuthenticatedInvestmentsIndexRoute,
+    TenantAuthenticatedMarketplaceIndexRoute:
+      TenantAuthenticatedMarketplaceIndexRoute,
     TenantAuthenticatedNotificationsIndexRoute:
       TenantAuthenticatedNotificationsIndexRoute,
     TenantAuthenticatedTransactionsIndexRoute:

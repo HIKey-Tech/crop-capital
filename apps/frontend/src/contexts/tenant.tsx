@@ -10,10 +10,12 @@ interface TenantFeatures {
   wallet: boolean
   transactions: boolean
   farms: boolean
+  marketplace: boolean
   news: boolean
   notifications: boolean
   adminPortal: boolean
   adminFarms: boolean
+  adminMarketplace: boolean
   adminInvestors: boolean
   adminTransactions: boolean
   adminPayouts: boolean
@@ -70,10 +72,12 @@ const defaultTenantConfig: TenantConfig = {
     wallet: true,
     transactions: true,
     farms: true,
+    marketplace: true,
     news: true,
     notifications: true,
     adminPortal: true,
     adminFarms: true,
+    adminMarketplace: true,
     adminInvestors: true,
     adminTransactions: true,
     adminPayouts: true,

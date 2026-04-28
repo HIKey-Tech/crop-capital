@@ -28,10 +28,12 @@ export interface ITenantFeatures {
   wallet: boolean;
   transactions: boolean;
   farms: boolean;
+  marketplace: boolean;
   news: boolean;
   notifications: boolean;
   adminPortal: boolean;
   adminFarms: boolean;
+  adminMarketplace: boolean;
   adminInvestors: boolean;
   adminTransactions: boolean;
   adminPayouts: boolean;
@@ -55,10 +57,12 @@ const featureDefaults: ITenantFeatures = {
   wallet: true,
   transactions: true,
   farms: true,
+  marketplace: true,
   news: true,
   notifications: true,
   adminPortal: true,
   adminFarms: true,
+  adminMarketplace: true,
   adminInvestors: true,
   adminTransactions: true,
   adminPayouts: true,
@@ -91,6 +95,7 @@ const TenantSchema = new Schema<ITenant>(
       wallet: { type: Boolean, default: featureDefaults.wallet },
       transactions: { type: Boolean, default: featureDefaults.transactions },
       farms: { type: Boolean, default: featureDefaults.farms },
+      marketplace: { type: Boolean, default: featureDefaults.marketplace },
       news: { type: Boolean, default: featureDefaults.news },
       notifications: {
         type: Boolean,
@@ -98,6 +103,10 @@ const TenantSchema = new Schema<ITenant>(
       },
       adminPortal: { type: Boolean, default: featureDefaults.adminPortal },
       adminFarms: { type: Boolean, default: featureDefaults.adminFarms },
+      adminMarketplace: {
+        type: Boolean,
+        default: featureDefaults.adminMarketplace,
+      },
       adminInvestors: {
         type: Boolean,
         default: featureDefaults.adminInvestors,

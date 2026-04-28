@@ -20,6 +20,7 @@ const imageUpload = multer({
 });
 
 export const farmImagesUpload = imageUpload.array("images", 5);
+export const commodityImagesUpload = imageUpload.array("images", 5);
 export const farmUpdateImageUpload = imageUpload.single("image");
 export const profilePhotoUpload = imageUpload.single("photo");
 export const kycImagesUpload = imageUpload.fields([

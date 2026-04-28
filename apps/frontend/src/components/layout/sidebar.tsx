@@ -10,6 +10,7 @@ import {
   Search,
   Settings,
   Shield,
+  ShoppingBasket,
   Users,
   Wallet,
   X,
@@ -52,6 +53,19 @@ const investorNavItems = [
     feature: 'farms' as const,
   },
   {
+    to: '/$tenant/marketplace',
+    label: 'Marketplace',
+    icon: ShoppingBasket,
+    feature: 'marketplace' as const,
+    exact: true,
+  },
+  {
+    to: '/$tenant/marketplace/orders',
+    label: 'Orders',
+    icon: Receipt,
+    feature: 'marketplace' as const,
+  },
+  {
     to: '/$tenant/news',
     label: 'News & Updates',
     icon: Newspaper,
@@ -73,6 +87,12 @@ const adminNavItems = [
     label: 'Farms',
     icon: FolderOpen,
     feature: 'adminFarms' as const,
+  },
+  {
+    to: '/$tenant/admin/marketplace',
+    label: 'Marketplace',
+    icon: ShoppingBasket,
+    feature: 'adminMarketplace' as const,
   },
   {
     to: '/$tenant/admin/investors',
@@ -97,6 +117,12 @@ const adminNavItems = [
     label: 'KYC Review',
     icon: FileBarChart,
     feature: 'adminKyc' as const,
+  },
+  {
+    to: '/$tenant/admin/marketplace/orders',
+    label: 'Orders',
+    icon: Receipt,
+    feature: 'adminMarketplace' as const,
   },
   {
     to: '/$tenant/admin/reports',
@@ -190,6 +216,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
               <NavLink
                 key={item.to}
                 to={item.to}
+                exact={'exact' in item ? item.exact : false}
                 onClick={onClose}
                 className="nav-link"
                 activeClassName="active"
