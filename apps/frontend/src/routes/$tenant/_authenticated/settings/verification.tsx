@@ -72,14 +72,14 @@ function VerificationPage() {
 
   const kyc = data?.kyc
 
-  async function handleDocumentUpload(e: React.ChangeEvent<HTMLInputElement>) {
+  function handleDocumentUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
     if (!file) return
     setDocumentPreview(URL.createObjectURL(file))
     form.setFieldValue('documentImage', file)
   }
 
-  async function handleSelfieUpload(e: React.ChangeEvent<HTMLInputElement>) {
+  function handleSelfieUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
     if (!file) return
     setSelfiePreview(URL.createObjectURL(file))

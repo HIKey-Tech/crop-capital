@@ -35,9 +35,7 @@ function summarizePayouts(
   rows: Array<PayoutRow>,
   selector: (row: PayoutRow) => number,
 ) {
-  const currencies = Array.from(
-    new Set(rows.map((row) => row.currency || 'NGN')),
-  )
+  const currencies = Array.from(new Set(rows.map((row) => row.currency)))
 
   if (rows.length === 0) {
     return {

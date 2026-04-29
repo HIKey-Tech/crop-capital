@@ -1,7 +1,7 @@
 import { createBuilder } from '@ibnlanre/builder'
 import type {
-  ActivateAdminRequest,
   AccountResolutionResponse,
+  ActivateAdminRequest,
   AddFarmUpdateRequest,
   BanksListResponse,
   CountriesListResponse,

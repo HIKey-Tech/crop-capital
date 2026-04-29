@@ -1,8 +1,8 @@
 import { Link, createFileRoute } from '@tanstack/react-router'
 import {
   ArrowUpRight,
-  Landmark,
   DollarSign,
+  Landmark,
   TrendingUp,
   Wallet as WalletIcon,
 } from 'lucide-react'
@@ -43,7 +43,7 @@ function summarizeAmounts(
   selector: (investment: Investment) => number,
 ) {
   const currencies = Array.from(
-    new Set(investments.map((investment) => investment.currency || 'NGN')),
+    new Set(investments.map((investment) => investment.currency)),
   )
 
   if (investments.length === 0) {
