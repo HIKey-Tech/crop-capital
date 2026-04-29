@@ -12,7 +12,8 @@ export const Route = createFileRoute('/$tenant/_authenticated/notifications/')({
 
 function NotificationsPage() {
   const { tenant } = Route.useParams()
-  const { notifications, isLoading, error } = useNotifications()
+  const { notifications, isLoading, error, unreadCount, markAllAsRead } =
+    useNotifications()
 
   if (isLoading) {
     return (
@@ -66,6 +67,11 @@ function NotificationsPage() {
             Stay updated on your investments and account activity.
           </p>
         </div>
+        {unreadCount > 0 && (
+          <Button variant="outline" size="sm" onClick={markAllAsRead}>
+            Mark all as read
+          </Button>
+        )}
       </div>
 
       <div className="space-y-4">

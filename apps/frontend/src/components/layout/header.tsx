@@ -26,7 +26,7 @@ interface HeaderProps {
 export function Header({ onMenuClick }: HeaderProps) {
   const { user } = useRouteContext({ from: '/$tenant/_authenticated' })
   const params = useParams({ strict: false })
-  const { notifications, unreadCount } = useNotifications()
+  const { notifications, unreadCount, markAllAsRead } = useNotifications()
   const { mutate: logout } = useLogout()
   const { tenant } = useTenant()
   const { viewMode } = useViewMode()
@@ -86,8 +86,16 @@ export function Header({ onMenuClick }: HeaderProps) {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-72">
-            <div className="px-3 py-2 border-b border-border">
+            <div className="px-3 py-2 border-b border-border flex items-center justify-between gap-2">
               <p className="font-semibold">Notifications</p>
+              {unreadCount > 0 && (
+                <button
+                  onClick={markAllAsRead}
+                  className="text-xs text-primary hover:underline shrink-0"
+                >
+                  Mark all as read
+                </button>
+              )}
             </div>
             {recentNotifications.length > 0 ? (
               <>

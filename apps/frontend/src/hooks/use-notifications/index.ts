@@ -1,7 +1,26 @@
-import { useMemo } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import type { Farm, Investment } from '@/types'
 import { useMyInvestments } from '@/hooks/use-investments'
 import { formatCurrency } from '@/lib/format-currency'
+
+const READ_KEY = 'crop-capital:read-notifications'
+
+function getReadIds(): Set<string> {
+  try {
+    const raw = localStorage.getItem(READ_KEY)
+    return raw ? new Set(JSON.parse(raw) as Array<string>) : new Set()
+  } catch {
+    return new Set()
+  }
+}
+
+function persistReadIds(ids: Set<string>) {
+  try {
+    localStorage.setItem(READ_KEY, JSON.stringify(Array.from(ids)))
+  } catch {
+    // storage unavailable — degrade silently
+  }
+}
 
 export interface Notification {
   id: string
@@ -14,6 +33,7 @@ export interface Notification {
 
 export function useNotifications() {
   const { data, isLoading, error } = useMyInvestments()
+  const [readIds, setReadIds] = useState<Set<string>>(getReadIds)
 
   const notifications = useMemo(() => {
     if (!data?.investments) return []
@@ -75,10 +95,22 @@ export function useNotifications() {
     return notifs
   }, [data])
 
+  const markAllAsRead = useCallback(() => {
+    const next = new Set(notifications.map((n) => n.id))
+    persistReadIds(next)
+    setReadIds(next)
+  }, [notifications])
+
+  const unreadCount = useMemo(
+    () => notifications.filter((n) => !readIds.has(n.id)).length,
+    [notifications, readIds],
+  )
+
   return {
     notifications,
     isLoading,
     error,
-    unreadCount: notifications.length,
+    unreadCount,
+    markAllAsRead,
   }
 }
