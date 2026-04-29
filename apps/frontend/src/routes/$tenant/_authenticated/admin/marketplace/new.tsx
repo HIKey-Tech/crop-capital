@@ -1,8 +1,18 @@
-import { useState } from 'react'
+import { inflect } from 'inflection'
+import { useCallback, useRef, useState } from 'react'
 import { Link, createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useForm } from '@mantine/form'
 import { zodResolver } from 'mantine-form-zod-resolver'
-import { ArrowLeft, XCircle } from 'lucide-react'
+import {
+  ArrowLeft,
+  Eye,
+  EyeOff,
+  ImagePlus,
+  MapPin,
+  ShoppingCart,
+  Sparkles,
+  X,
+} from 'lucide-react'
 import { toast } from 'sonner'
 
 import type {
@@ -24,7 +34,36 @@ import {
 } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { useCreateCommodity } from '@/hooks'
-import { currencyOptions } from '@/lib/format-currency'
+import { currencyOptions, formatCurrency } from '@/lib/format-currency'
+
+const UNIT_OPTIONS = [
+  'Bag',
+  'Kg',
+  'Ton',
+  'Painter',
+  '5L Gallon',
+  '20L Gallon',
+  'Litre',
+  'Piece',
+  'Carton',
+  'Bundle',
+  'Crate',
+  'Dozen',
+]
+
+const CATEGORY_OPTIONS = [
+  'Grains & Cereals',
+  'Seafood & Fish',
+  'Oils & Fats',
+  'Nuts & Seeds',
+  'Dried Vegetables',
+  'Spices & Herbs',
+  'Tubers & Roots',
+  'Fruits',
+  'Livestock',
+  'Processed Foods',
+  'Other',
+]
 
 export const Route = createFileRoute(
   '/$tenant/_authenticated/admin/marketplace/new',
@@ -43,6 +82,8 @@ function NewCommodityPage() {
   const navigate = useNavigate()
   const createCommodity = useCreateCommodity()
   const [images, setImages] = useState<Array<ImagePreview>>([])
+  const [isDragging, setIsDragging] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const form = useForm<
     CreateCommodityFormValues,
@@ -58,36 +99,59 @@ function NewCommodityPage() {
       images: [],
       price: '',
       availableQuantity: '',
-      minimumOrderQuantity: '1',
+      minimumOrderQuantity: '',
       isFeatured: false,
-      isPublished: true,
+      isPublished: false,
     },
     validate: zodResolver(createCommoditySchema),
     transformValues: (values) => createCommoditySchema.parse(values),
   })
 
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (!event.target.files?.length) return
+  const addFiles = useCallback(
+    (files: Array<File>) => {
+      const remaining = 5 - images.length
+      const next = files
+        .filter((f: File) => f.type.startsWith('image/'))
+        .slice(0, remaining)
+        .map((file, i) => ({
+          id: Date.now() + i,
+          url: URL.createObjectURL(file),
+          file,
+        }))
+      if (!next.length) return
+      setImages((curr) => [...curr, ...next])
+      next.forEach((img) => form.insertListItem('images', img.url))
+      form.clearFieldError('images')
+    },
+    [images.length],
+  )
 
-    const files = Array.from(event.target.files)
-    const remaining = 5 - images.length
-    const nextImages = files.slice(0, remaining).map((file, index) => ({
-      id: Date.now() + index,
-      url: URL.createObjectURL(file),
-      file,
-    }))
-
-    setImages((current) => [...current, ...nextImages])
-    nextImages.forEach((image) => form.insertListItem('images', image.url))
-    form.clearFieldError('images')
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files?.length) return
+    addFiles(Array.from(e.target.files))
+    e.target.value = ''
   }
 
   const removeImage = (id: number) => {
-    const index = images.findIndex((image) => image.id === id)
+    const index = images.findIndex((img) => img.id === id)
     if (index < 0) return
-
-    setImages((current) => current.filter((image) => image.id !== id))
+    setImages((curr) => curr.filter((img) => img.id !== id))
     form.removeListItem('images', index)
+  }
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault()
+    setIsDragging(true)
+  }
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    if (!e.currentTarget.contains(e.relatedTarget as Node)) setIsDragging(false)
+  }
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault()
+    setIsDragging(false)
+    addFiles(Array.from(e.dataTransfer.files))
   }
 
   const handleSubmit = async (values: CreateCommodityInput) => {
@@ -95,26 +159,34 @@ function NewCommodityPage() {
       toast.error('Add at least one image before publishing a commodity')
       return
     }
-
     try {
       await createCommodity.mutateAsync({
-        data: {
-          ...values,
-          description: values.description || undefined,
-        },
-        images: images.map((image) => image.file),
+        data: { ...values, description: values.description || undefined },
+        images: images.map((img) => img.file),
       })
-
       toast.success('Commodity listing created')
       navigate({ to: '/$tenant/admin/marketplace', params: { tenant } })
-    } catch (createError) {
-      console.error('Failed to create commodity', createError)
+    } catch (err) {
+      console.error('Failed to create commodity', err)
       toast.error('Could not create listing')
     }
   }
 
+  const {
+    name,
+    price,
+    currency,
+    unit,
+    location,
+    isPublished,
+    isFeatured,
+    availableQuantity,
+    minimumOrderQuantity,
+  } = form.values
+  const previewPrice = price && !isNaN(Number(price)) ? Number(price) : null
+
   return (
-    <div className="max-w-5xl mx-auto py-12 animate-fade-in px-4 sm:px-8">
+    <div className="max-w-screen-xl mx-auto py-8 animate-fade-in px-4 sm:px-8 mb-16">
       <Breadcrumbs
         items={[
           {
@@ -127,266 +199,469 @@ function NewCommodityPage() {
         className="mb-6"
       />
 
-      <div className="flex items-center gap-4 mb-10">
+      <div className="flex items-center gap-4 mb-8">
         <Link
           to="/$tenant/admin/marketplace"
           params={{ tenant }}
-          className="p-2 rounded-lg border border-border hover:bg-secondary transition-colors"
+          className="p-2 rounded-lg border border-border hover:bg-secondary transition-colors hover:text-white"
         >
           <ArrowLeft className="h-5 w-5" />
         </Link>
-        <h1 className="text-3xl sm:text-4xl font-bold text-foreground tracking-tight">
-          New marketplace listing
-        </h1>
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight">
+            New marketplace listing
+          </h1>
+          <p className="text-sm text-muted-foreground mt-0.5">
+            The preview on the right updates as you fill in details.
+          </p>
+        </div>
       </div>
 
       <form
-        className="space-y-0 rounded-2xl border border-border bg-card shadow-sm"
-        onSubmit={form.onSubmit(handleSubmit)}
+        onSubmit={form.onSubmit(handleSubmit, () => {
+          requestAnimationFrame(() => {
+            document
+              .querySelector('[aria-invalid="true"]')
+              ?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+          })
+        })}
       >
-        <div className="p-8 pb-4">
-          <div className="mb-10">
-            <h2 className="text-lg font-semibold text-foreground mb-6 border-b border-border pb-2">
-              Basic Information
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <Label
-                  htmlFor="name"
-                  className="mb-2 block font-medium tracking-tight"
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+          {/* ── Main form ── */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Images */}
+            <section className="rounded-2xl border border-border bg-card p-6">
+              <h2 className="text-sm font-semibold text-foreground mb-4 uppercase tracking-wider">
+                Product images
+              </h2>
+
+              {images.length < 5 ? (
+                <div
+                  onDragOver={handleDragOver}
+                  onDragLeave={handleDragLeave}
+                  onDrop={handleDrop}
+                  onClick={() => fileInputRef.current?.click()}
+                  className={`cursor-pointer flex flex-col items-center justify-center gap-2 border-2 border-dashed rounded-xl py-10 transition-colors ${
+                    isDragging
+                      ? 'border-primary bg-primary/5'
+                      : 'border-border hover:border-primary/40 hover:bg-muted/30'
+                  }`}
                 >
-                  Commodity name
+                  <ImagePlus className="h-8 w-8 text-muted-foreground" />
+                  <p className="text-sm font-medium text-foreground">
+                    Drop images here or{' '}
+                    <span className="text-primary underline underline-offset-2">
+                      browse
+                    </span>
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    Up to {5 - images.length} more · JPEG, PNG, WebP
+                  </p>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    className="sr-only"
+                    onChange={handleImageUpload}
+                  />
+                </div>
+              ) : null}
+
+              {images.length > 0 ? (
+                <div className="grid grid-cols-3 sm:grid-cols-5 gap-3 mt-4">
+                  {images.map((img, i) => (
+                    <div
+                      key={img.id}
+                      className="relative group aspect-square rounded-xl overflow-hidden border border-border"
+                    >
+                      <img
+                        src={img.url}
+                        alt=""
+                        className="w-full h-full object-cover"
+                      />
+                      {i === 0 ? (
+                        <span className="absolute bottom-1 left-1 text-[10px] bg-black/60 text-white px-1.5 py-0.5 rounded-md">
+                          Cover
+                        </span>
+                      ) : null}
+                      <button
+                        type="button"
+                        onClick={() => removeImage(img.id)}
+                        className="absolute top-1 right-1 rounded-full bg-black/60 p-0.5 opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        <X className="h-3 w-3 text-white" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              ) : null}
+
+              {form.errors.images ? (
+                <p className="mt-2 text-sm text-destructive">
+                  {form.errors.images}
+                </p>
+              ) : null}
+            </section>
+
+            {/* Product details */}
+            <section className="rounded-2xl border border-border bg-card p-6 space-y-5">
+              <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+                Product details
+              </h2>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <div className="space-y-1.5">
+                  <Label htmlFor="name">Product name</Label>
+                  <Input
+                    id="name"
+                    placeholder="e.g. Oron Crayfish"
+                    aria-invalid={!!form.errors.name}
+                    key={form.key('name')}
+                    {...form.getInputProps('name')}
+                  />
+                  {form.errors.name ? (
+                    <p className="text-sm text-destructive">
+                      {form.errors.name}
+                    </p>
+                  ) : null}
+                </div>
+
+                <div className="space-y-1.5">
+                  <Label htmlFor="category">Category</Label>
+                  <Select
+                    value={form.values.category}
+                    onValueChange={(v) => form.setFieldValue('category', v)}
+                  >
+                    <SelectTrigger
+                      id="category"
+                      className="w-full"
+                      aria-invalid={!!form.errors.category}
+                    >
+                      <SelectValue placeholder="Select a category" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {CATEGORY_OPTIONS.map((cat) => (
+                        <SelectItem key={cat} value={cat}>
+                          {cat}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {form.errors.category ? (
+                    <p className="text-sm text-destructive">
+                      {form.errors.category}
+                    </p>
+                  ) : null}
+                </div>
+
+                <div className="space-y-1.5">
+                  <Label htmlFor="location">Market location</Label>
+                  <Input
+                    id="location"
+                    placeholder="e.g. Ikeja 1"
+                    key={form.key('location')}
+                    {...form.getInputProps('location')}
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-1.5">
+                <Label htmlFor="description">
+                  Description{' '}
+                  <span className="text-muted-foreground font-normal">
+                    (optional)
+                  </span>
                 </Label>
-                <Input
-                  id="name"
-                  key={form.key('name')}
-                  {...form.getInputProps('name')}
+                <Textarea
+                  id="description"
+                  placeholder="Quality grade, origin, storage requirements…"
+                  className="min-h-24 resize-y"
+                  key={form.key('description')}
+                  {...form.getInputProps('description')}
                 />
-                {form.errors.name ? (
-                  <p className="mt-1 text-sm text-destructive">
-                    {form.errors.name}
+              </div>
+            </section>
+
+            {/* Pricing & stock */}
+            <section className="rounded-2xl border border-border bg-card p-6 space-y-5">
+              <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+                Pricing & stock
+              </h2>
+
+              <div className="space-y-1.5">
+                <Label>Price per unit</Label>
+                {previewPrice && unit ? (
+                  <p className="text-xs text-muted-foreground">
+                    Buyers see this as{' '}
+                    <span className="font-medium text-foreground">
+                      {formatCurrency(previewPrice, currency)} / {unit}
+                    </span>
                   </p>
                 ) : null}
-              </div>
-              <div className="space-y-2">
-                <Label
-                  htmlFor="category"
-                  className="mb-2 block font-medium tracking-tight"
-                >
-                  Category
-                </Label>
-                <Input
-                  id="category"
-                  key={form.key('category')}
-                  {...form.getInputProps('category')}
-                />
-                {form.errors.category ? (
-                  <p className="mt-1 text-sm text-destructive">
-                    {form.errors.category}
+                <div className="flex gap-2">
+                  <Select
+                    value={form.values.currency}
+                    onValueChange={(v) =>
+                      form.setFieldValue('currency', v as any)
+                    }
+                  >
+                    <SelectTrigger className="w-28 shrink-0">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {currencyOptions.map((opt) => (
+                        <SelectItem key={opt.value} value={opt.value}>
+                          {opt.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <Input
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    placeholder="0.00"
+                    aria-invalid={!!form.errors.price}
+                    className="flex-1 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                    key={form.key('price')}
+                    {...form.getInputProps('price')}
+                  />
+                  <Select
+                    value={form.values.unit}
+                    onValueChange={(v) => form.setFieldValue('unit', v)}
+                  >
+                    <SelectTrigger
+                      className="w-36 shrink-0"
+                      aria-invalid={!!form.errors.unit}
+                    >
+                      <SelectValue placeholder="Unit" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {UNIT_OPTIONS.map((u) => (
+                        <SelectItem key={u} value={u}>
+                          {u}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                {form.errors.price ? (
+                  <p className="text-sm text-destructive">
+                    {form.errors.price}
                   </p>
                 ) : null}
+                {form.errors.unit ? (
+                  <p className="text-sm text-destructive">{form.errors.unit}</p>
+                ) : null}
               </div>
-              <div className="space-y-2">
-                <Label
-                  htmlFor="location"
-                  className="mb-2 block font-medium tracking-tight"
-                >
-                  Market location
-                </Label>
-                <Input
-                  id="location"
-                  key={form.key('location')}
-                  {...form.getInputProps('location')}
-                />
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <div className="space-y-1.5">
+                  <Label htmlFor="availableQuantity">Available stock</Label>
+                  <div className="relative">
+                    <Input
+                      id="availableQuantity"
+                      type="number"
+                      min="0"
+                      placeholder="0"
+                      aria-invalid={!!form.errors.availableQuantity}
+                      key={form.key('availableQuantity')}
+                      {...form.getInputProps('availableQuantity')}
+                      className={`[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none${unit ? ' pr-16' : ''}`}
+                    />
+                    {unit ? (
+                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground pointer-events-none">
+                        {inflect(unit, Number(availableQuantity) || 0)}
+                      </span>
+                    ) : null}
+                  </div>
+                  {form.errors.availableQuantity ? (
+                    <p className="text-sm text-destructive">
+                      {form.errors.availableQuantity}
+                    </p>
+                  ) : null}
+                </div>
+
+                <div className="space-y-1.5">
+                  <Label htmlFor="minimumOrderQuantity">Minimum order</Label>
+                  <div className="relative">
+                    <Input
+                      id="minimumOrderQuantity"
+                      type="number"
+                      min="1"
+                      placeholder="1"
+                      aria-invalid={!!form.errors.minimumOrderQuantity}
+                      key={form.key('minimumOrderQuantity')}
+                      {...form.getInputProps('minimumOrderQuantity')}
+                      className={`[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none${unit ? ' pr-16' : ''}`}
+                    />
+                    {unit ? (
+                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground pointer-events-none">
+                        {inflect(unit, Number(minimumOrderQuantity) || 1)}
+                      </span>
+                    ) : null}
+                  </div>
+                  {form.errors.minimumOrderQuantity ? (
+                    <p className="text-sm text-destructive">
+                      {form.errors.minimumOrderQuantity}
+                    </p>
+                  ) : null}
+                </div>
               </div>
-              <div className="space-y-2">
-                <Label
-                  htmlFor="unit"
-                  className="mb-2 block font-medium tracking-tight"
-                >
-                  Sales unit
-                </Label>
-                <Input
-                  id="unit"
-                  key={form.key('unit')}
-                  {...form.getInputProps('unit')}
-                />
-              </div>
-            </div>
+            </section>
           </div>
 
-          <div className="mb-10">
-            <h2 className="text-lg font-semibold text-foreground mb-6 border-b border-border pb-2">
-              Financial Details
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <Label
-                  htmlFor="currency"
-                  className="mb-2 block font-medium tracking-tight"
-                >
-                  Currency
-                </Label>
-                <Select
-                  value={form.values.currency}
-                  onValueChange={(value) =>
-                    form.setFieldValue('currency', value as any)
-                  }
-                >
-                  <SelectTrigger id="currency" className="w-full">
-                    <SelectValue placeholder="Select currency" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {currencyOptions.map((option) => (
-                      <SelectItem key={option.value} value={option.value}>
-                        {option.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-2">
-                <Label
-                  htmlFor="price"
-                  className="mb-2 block font-medium tracking-tight"
-                >
-                  Price per unit
-                </Label>
-                <Input
-                  id="price"
-                  key={form.key('price')}
-                  {...form.getInputProps('price')}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label
-                  htmlFor="availableQuantity"
-                  className="mb-2 block font-medium tracking-tight"
-                >
-                  Available quantity
-                </Label>
-                <Input
-                  id="availableQuantity"
-                  key={form.key('availableQuantity')}
-                  {...form.getInputProps('availableQuantity')}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label
-                  htmlFor="minimumOrderQuantity"
-                  className="mb-2 block font-medium tracking-tight"
-                >
-                  Minimum order quantity
-                </Label>
-                <Input
-                  id="minimumOrderQuantity"
-                  key={form.key('minimumOrderQuantity')}
-                  {...form.getInputProps('minimumOrderQuantity')}
-                />
-              </div>
-            </div>
-          </div>
-
-          <div className="mb-6">
-            <h2 className="text-lg font-semibold text-foreground mb-6 border-b border-border pb-2">
-              Description
-            </h2>
-            <div className="space-y-2">
-              <Label
-                htmlFor="description"
-                className="mb-2 block font-medium tracking-tight"
-              >
-                Description
-              </Label>
-              <Textarea
-                id="description"
-                key={form.key('description')}
-                {...form.getInputProps('description')}
-              />
-            </div>
-          </div>
-        </div>
-
-        <div className="px-8 pb-4">
-          <h2 className="text-lg font-semibold text-foreground mb-6 border-b border-border pb-2">
-            Listing images
-          </h2>
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="font-medium text-foreground">Upload images</p>
-                <p className="text-sm text-muted-foreground">
-                  Up to five images
+          {/* ── Sidebar ── */}
+          <div className="lg:sticky lg:top-6 space-y-4">
+            {/* Live buyer preview */}
+            <section className="rounded-2xl border border-border bg-card overflow-hidden">
+              <div className="px-4 py-3 border-b border-border">
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                  Buyer preview
                 </p>
               </div>
-              <input
-                type="file"
-                accept="image/*"
-                multiple
-                onChange={handleImageUpload}
-              />
-            </div>
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {images.map((image) => (
-                <div
-                  key={image.id}
-                  className="relative overflow-hidden rounded-2xl border border-border"
-                >
-                  <img
-                    src={image.url}
-                    alt="Commodity preview"
-                    className="h-40 w-full object-cover"
-                  />
-                  <button
-                    type="button"
-                    className="absolute right-2 top-2 rounded-full bg-background/90 p-1"
-                    onClick={() => removeImage(image.id)}
-                  >
-                    <XCircle className="h-4 w-4" />
-                  </button>
+              <div className="p-4">
+                <div className="rounded-xl border border-border overflow-hidden">
+                  <div className="aspect-square bg-muted flex items-center justify-center">
+                    {images[0] ? (
+                      <img
+                        src={images[0].url}
+                        alt=""
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="flex flex-col items-center gap-1.5 text-muted-foreground/40">
+                        <ImagePlus className="h-8 w-8" />
+                        <p className="text-xs">No image yet</p>
+                      </div>
+                    )}
+                  </div>
+                  <div className="p-3 space-y-1">
+                    <p className="font-semibold text-sm text-foreground line-clamp-2">
+                      {name || (
+                        <span className="text-muted-foreground italic font-normal">
+                          Product name
+                        </span>
+                      )}
+                    </p>
+                    {previewPrice ? (
+                      <p className="text-xs font-medium text-emerald-600">
+                        {formatCurrency(previewPrice, currency)}
+                        {unit ? ` / ${unit}` : ''}
+                      </p>
+                    ) : (
+                      <p className="text-xs text-muted-foreground italic">
+                        Set a price
+                      </p>
+                    )}
+                    {location ? (
+                      <p className="flex items-center gap-1 text-xs text-muted-foreground">
+                        <MapPin className="h-3 w-3 shrink-0" />
+                        {location}
+                      </p>
+                    ) : null}
+                    <div className="pt-1.5">
+                      <div className="h-8 rounded-lg bg-emerald-600 flex items-center justify-center gap-1.5 text-xs text-white font-medium">
+                        <ShoppingCart className="h-3.5 w-3.5" />
+                        Add to Cart
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              ))}
-            </div>
-          </div>
-        </div>
+              </div>
+            </section>
 
-        <div className="px-8 pb-8">
-          <section className="flex flex-wrap gap-6 rounded-2xl border border-border bg-background p-4">
-            <label className="flex items-center gap-3 text-sm font-medium text-foreground">
-              <input
-                type="checkbox"
-                checked={form.values.isFeatured}
-                onChange={(event) =>
-                  form.setFieldValue('isFeatured', event.currentTarget.checked)
-                }
-              />
-              Feature this listing
-            </label>
-            <label className="flex items-center gap-3 text-sm font-medium text-foreground">
-              <input
-                type="checkbox"
-                checked={form.values.isPublished}
-                onChange={(event) =>
-                  form.setFieldValue('isPublished', event.currentTarget.checked)
-                }
-              />
-              Publish immediately
-            </label>
-          </section>
+            {/* Visibility */}
+            <section className="rounded-2xl border border-border bg-card p-4 space-y-3">
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                Visibility
+              </p>
+              <button
+                type="button"
+                onClick={() => form.setFieldValue('isPublished', !isPublished)}
+                className={`w-full flex items-center justify-between gap-3 rounded-xl border px-4 py-3 text-sm font-medium transition-colors ${
+                  isPublished
+                    ? 'border-emerald-200 bg-emerald-50 text-emerald-900'
+                    : 'border-border bg-background text-foreground hover:bg-muted/50'
+                }`}
+              >
+                <span className="flex items-center gap-2">
+                  {isPublished ? (
+                    <Eye className="h-4 w-4 text-emerald-600" />
+                  ) : (
+                    <EyeOff className="h-4 w-4 text-muted-foreground" />
+                  )}
+                  {isPublished
+                    ? 'Live — visible to buyers'
+                    : 'Draft — not visible yet'}
+                </span>
+                <div
+                  className={`h-5 w-9 rounded-full transition-colors relative shrink-0 ${
+                    isPublished ? 'bg-emerald-500' : 'bg-muted'
+                  }`}
+                >
+                  <span
+                    className={`absolute left-0.5 top-0.5 h-4 w-4 rounded-full bg-white shadow transition-transform ${
+                      isPublished ? 'translate-x-4' : 'translate-x-0'
+                    }`}
+                  />
+                </div>
+              </button>
 
-          <div className="flex justify-end gap-3 mt-8">
-            <Link to="/$tenant/admin/marketplace" params={{ tenant }}>
-              <Button type="button" variant="outline">
-                Cancel
+              <button
+                type="button"
+                onClick={() => form.setFieldValue('isFeatured', !isFeatured)}
+                className={`w-full flex items-center justify-between gap-3 rounded-xl border px-4 py-3 text-sm font-medium transition-colors ${
+                  isFeatured
+                    ? 'border-amber-200 bg-amber-50 text-amber-900'
+                    : 'border-border bg-background text-foreground hover:bg-muted/50'
+                }`}
+              >
+                <span className="flex items-center gap-2">
+                  <Sparkles
+                    className={`h-4 w-4 ${isFeatured ? 'text-amber-500' : 'text-muted-foreground'}`}
+                  />
+                  {isFeatured ? 'Featured listing' : 'Not featured'}
+                </span>
+                <div
+                  className={`h-5 w-9 rounded-full transition-colors relative shrink-0 ${
+                    isFeatured ? 'bg-amber-400' : 'bg-muted'
+                  }`}
+                >
+                  <span
+                    className={`absolute left-0.5 top-0.5 h-4 w-4 rounded-full bg-white shadow transition-transform ${
+                      isFeatured ? 'translate-x-4' : 'translate-x-0'
+                    }`}
+                  />
+                </div>
+              </button>
+            </section>
+
+            {/* Actions */}
+            <div className="flex flex-col gap-2">
+              <Button
+                type="submit"
+                disabled={createCommodity.isPending}
+                className="w-full h-11 text-sm font-semibold btn-primary-gradient"
+              >
+                {createCommodity.isPending
+                  ? 'Saving…'
+                  : isPublished
+                    ? 'Publish listing'
+                    : 'Save as draft'}
               </Button>
-            </Link>
-            <Button
-              type="submit"
-              disabled={createCommodity.isPending}
-              className="btn-primary-gradient h-12 px-10 text-base font-semibold rounded-lg focus:outline-none shadow disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {createCommodity.isPending ? 'Saving...' : 'Create listing'}
-            </Button>
+              <Button
+                asChild
+                type="button"
+                variant="ghost"
+                className="w-full h-10 text-sm"
+              >
+                <Link to="/$tenant/admin/marketplace" params={{ tenant }}>
+                  Cancel
+                </Link>
+              </Button>
+            </div>
           </div>
         </div>
       </form>
