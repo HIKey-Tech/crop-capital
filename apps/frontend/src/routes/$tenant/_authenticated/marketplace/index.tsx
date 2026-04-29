@@ -1,8 +1,12 @@
+import { useForm } from '@mantine/form'
 import { createFileRoute } from '@tanstack/react-router'
 import { useEffect, useMemo, useState } from 'react'
 import { ShoppingBasket, Store, Tag, Trash2, Truck } from 'lucide-react'
+import { zodResolver } from 'mantine-form-zod-resolver'
 import { toast } from 'sonner'
+import { z } from 'zod'
 
+import type { UseFormReturnType } from '@mantine/form'
 import type { Commodity } from '@/types'
 
 import { Badge } from '@/components/ui/badge'
@@ -26,6 +30,14 @@ export const Route = createFileRoute('/$tenant/_authenticated/marketplace/')({
   component: MarketplacePage,
 })
 
+const checkoutSchema = z.object({
+  contactPhone: z.string(),
+  deliveryAddress: z.string(),
+  customerNote: z.string(),
+})
+
+type CheckoutValues = z.infer<typeof checkoutSchema>
+
 interface CartItem {
   listingId: string
   quantity: number
@@ -42,9 +54,11 @@ function MarketplacePage() {
   const [category, setCategory] = useState('all')
   const [cart, setCart] = useState<Array<CartItem>>([])
   const [cartOpen, setCartOpen] = useState(false)
-  const [contactPhone, setContactPhone] = useState('')
-  const [deliveryAddress, setDeliveryAddress] = useState('')
-  const [customerNote, setCustomerNote] = useState('')
+
+  const form = useForm<CheckoutValues>({
+    initialValues: { contactPhone: '', deliveryAddress: '', customerNote: '' },
+    validate: zodResolver(checkoutSchema),
+  })
 
   useEffect(() => {
     const saved = window.localStorage.getItem(cartStorageKey)
@@ -162,7 +176,9 @@ function MarketplacePage() {
     }
 
     try {
-      await createOrder.mutateAsync({
+      const { contactPhone, deliveryAddress, customerNote } = form.values
+
+      const response = await createOrder.mutateAsync({
         items: cartItems.map((item) => ({
           listingId: item.commodity._id,
           quantity: item.quantity,
@@ -173,13 +189,15 @@ function MarketplacePage() {
       })
 
       setCart([])
-      setContactPhone('')
-      setDeliveryAddress('')
-      setCustomerNote('')
+      form.reset()
       setCartOpen(false)
-      toast.success(
-        `Order submitted. The ${tenantConfig.displayName} team will be in touch.`,
-      )
+
+      if (response.authorizationUrl) {
+        window.location.href = response.authorizationUrl
+        return
+      }
+
+      toast.error('Payment initialization failed. Please try again.')
     } catch (checkoutError) {
       console.error('Failed to place marketplace order', checkoutError)
       toast.error(
@@ -419,14 +437,9 @@ function MarketplacePage() {
           <CartPanel
             cartItems={cartItems}
             subtotal={subtotal}
-            contactPhone={contactPhone}
-            deliveryAddress={deliveryAddress}
-            customerNote={customerNote}
+            form={form}
             isPending={createOrder.isPending}
             onRemove={removeFromCart}
-            onContactPhoneChange={setContactPhone}
-            onDeliveryAddressChange={setDeliveryAddress}
-            onCustomerNoteChange={setCustomerNote}
             onCheckout={handleCheckout}
           />
         </aside>
@@ -460,14 +473,9 @@ function MarketplacePage() {
             <CartPanel
               cartItems={cartItems}
               subtotal={subtotal}
-              contactPhone={contactPhone}
-              deliveryAddress={deliveryAddress}
-              customerNote={customerNote}
+              form={form}
               isPending={createOrder.isPending}
               onRemove={removeFromCart}
-              onContactPhoneChange={setContactPhone}
-              onDeliveryAddressChange={setDeliveryAddress}
-              onCustomerNoteChange={setCustomerNote}
               onCheckout={handleCheckout}
             />
           </SheetContent>
@@ -484,28 +492,18 @@ interface CartPanelProps {
     lineTotal: number
   }>
   subtotal: number
-  contactPhone: string
-  deliveryAddress: string
-  customerNote: string
+  form: UseFormReturnType<CheckoutValues>
   isPending: boolean
   onRemove: (listingId: string) => void
-  onContactPhoneChange: (value: string) => void
-  onDeliveryAddressChange: (value: string) => void
-  onCustomerNoteChange: (value: string) => void
   onCheckout: () => void
 }
 
 function CartPanel({
   cartItems,
   subtotal,
-  contactPhone,
-  deliveryAddress,
-  customerNote,
+  form,
   isPending,
   onRemove,
-  onContactPhoneChange,
-  onDeliveryAddressChange,
-  onCustomerNoteChange,
   onCheckout,
 }: CartPanelProps) {
   return (
@@ -576,18 +574,15 @@ function CartPanel({
 
         <div className="mt-5 space-y-3">
           <Input
-            value={contactPhone}
-            onChange={(event) => onContactPhoneChange(event.target.value)}
+            {...form.getInputProps('contactPhone')}
             placeholder="Contact phone"
           />
           <Textarea
-            value={deliveryAddress}
-            onChange={(event) => onDeliveryAddressChange(event.target.value)}
+            {...form.getInputProps('deliveryAddress')}
             placeholder="Delivery address or pickup instruction"
           />
           <Textarea
-            value={customerNote}
-            onChange={(event) => onCustomerNoteChange(event.target.value)}
+            {...form.getInputProps('customerNote')}
             placeholder="Additional note for the seller"
           />
         </div>

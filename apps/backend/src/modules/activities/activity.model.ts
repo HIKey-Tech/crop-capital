@@ -16,7 +16,8 @@ export type ActivityType =
   | "kyc_rejected"
   | "roi_paid"
   | "user_promoted_to_admin"
-  | "user_demoted_to_investor";
+  | "user_demoted_to_investor"
+  | "order_confirmed";
 
 export interface IActivity extends Document {
   tenantId?: mongoose.Types.ObjectId;
@@ -27,7 +28,13 @@ export interface IActivity extends Document {
   actor?: mongoose.Types.ObjectId;
   /** Optional related resource (farm, investment, etc.) */
   resourceId?: mongoose.Types.ObjectId;
-  resourceType?: "Farm" | "Investment" | "User" | "KycDocument" | "Tenant";
+  resourceType?:
+    | "Farm"
+    | "Investment"
+    | "User"
+    | "KycDocument"
+    | "Tenant"
+    | "CommodityOrder";
   /** Arbitrary extra data (amounts, names, etc.) */
   metadata?: Record<string, unknown>;
   createdAt: Date;
@@ -57,6 +64,7 @@ const ActivitySchema = new Schema<IActivity>(
         "roi_paid",
         "user_promoted_to_admin",
         "user_demoted_to_investor",
+        "order_confirmed",
       ],
       index: true,
     },
@@ -66,7 +74,14 @@ const ActivitySchema = new Schema<IActivity>(
     resourceId: { type: Schema.Types.ObjectId },
     resourceType: {
       type: String,
-      enum: ["Farm", "Investment", "User", "KycDocument", "Tenant"],
+      enum: [
+        "Farm",
+        "Investment",
+        "User",
+        "KycDocument",
+        "Tenant",
+        "CommodityOrder",
+      ],
     },
     metadata: { type: Schema.Types.Mixed },
   },

@@ -54,6 +54,8 @@ export interface ICommodityOrder extends Document {
   subtotal: number;
   status: CommodityOrderStatus;
   statusNote?: string;
+  paystackReference?: string;
+  paystackAccessCode?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -130,6 +132,8 @@ const CommodityOrderSchema = new Schema<ICommodityOrder>(
       required: true,
     },
     statusNote: { type: String },
+    paystackReference: { type: String },
+    paystackAccessCode: { type: String },
   },
   { timestamps: true },
 );

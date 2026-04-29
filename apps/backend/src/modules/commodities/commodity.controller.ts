@@ -1,6 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import { AppError } from "@/utils/AppError";
 import { uploadImageBuffer, deleteImage } from "@/utils/cloudinary";
+import { initializeTransaction } from "@/modules/payments/payment.service";
+import { FRONTEND_URL } from "@/config/env";
 import {
   Commodity,
   CommodityOrder,
@@ -531,7 +533,71 @@ export const createCommodityOrder = async (
       status: "pending",
     });
 
-    res.status(201).json({ success: true, order });
+    let authorizationUrl: string;
+    try {
+      const callbackUrl = `${FRONTEND_URL}/${req.tenant?.slug}/payment/callback?type=order`;
+      const paystackResponse = await initializeTransaction(
+        req.user!.email,
+        subtotal,
+        {
+          orderId: order._id.toString(),
+          tenantId: tenantId?.toString(),
+          tenantSlug: req.tenant?.slug,
+        },
+        firstCommodity.currency,
+        callbackUrl,
+      );
+
+      order.paystackReference = paystackResponse.data.reference;
+      order.paystackAccessCode = paystackResponse.data.access_code;
+      await order.save();
+
+      authorizationUrl = paystackResponse.data.authorization_url;
+    } catch (paystackErr) {
+      // Rollback quantity decrements and remove the order
+      await Promise.all(
+        orderItems.map(({ commodity, quantity }) =>
+          Commodity.findByIdAndUpdate(commodity._id, {
+            $inc: { availableQuantity: quantity, soldQuantity: -quantity },
+          }),
+        ),
+      );
+      await CommodityOrder.findByIdAndDelete(order._id);
+
+      return next(
+        new AppError("Payment initialization failed. Please try again.", 502),
+      );
+    }
+
+    res.status(201).json({ success: true, order, authorizationUrl });
+  } catch (err: unknown) {
+    if (err instanceof AppError) return next(err);
+    next(
+      new AppError(
+        err instanceof Error ? err.message : "Unexpected error",
+        500,
+      ),
+    );
+  }
+};
+
+export const verifyCommodityOrderPayment = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { reference } = req.params;
+    if (!reference)
+      return next(new AppError("Payment reference is required", 400));
+
+    const order = await CommodityOrder.findOne({
+      paystackReference: reference,
+    });
+    if (!order)
+      return next(new AppError("Order not found for this reference", 404));
+
+    res.json({ success: true, order });
   } catch (err: unknown) {
     if (err instanceof AppError) return next(err);
     next(

@@ -595,6 +595,14 @@ export const commodityApi = {
     })
   },
 
+  verifyOrderPayment: async (
+    reference: string,
+  ): Promise<CommodityOrderResponse> => {
+    return request<CommodityOrderResponse>(
+      `/commodities/orders/verify/${reference}`,
+    )
+  },
+
   getOrders: async (): Promise<CommodityOrdersResponse> => {
     return request<CommodityOrdersResponse>('/commodities/orders')
   },

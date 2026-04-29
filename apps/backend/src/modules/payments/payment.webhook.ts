@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { validateWebhookSignature } from "./payment.service";
 import { Investment } from "../investments/investment.model";
+import { CommodityOrder } from "../commodities/commodity.model";
 import { IFarm } from "../farms/farm.model";
 import { User } from "../users/user.model";
 import { sendEmail } from "@/utils/email";
@@ -41,6 +42,7 @@ interface PaystackWebhookEvent {
     channel: string;
     metadata: {
       investmentId?: string;
+      orderId?: string;
       tenantId?: string;
       tenantSlug?: string;
       [key: string]: unknown;
@@ -147,9 +149,92 @@ async function handleChargeSuccess(
 ): Promise<string | undefined> {
   const { reference, metadata, amount } = data;
 
-  if (!metadata?.investmentId) {
-    console.log("No investmentId in metadata, skipping...");
+  if (!metadata?.investmentId && !metadata?.orderId) {
+    console.log("No investmentId or orderId in metadata, skipping...");
     return undefined;
+  }
+
+  if (metadata?.orderId) {
+    const order = await CommodityOrder.findById(metadata.orderId);
+    if (!order) {
+      console.error(`CommodityOrder not found: ${metadata.orderId}`);
+      return undefined;
+    }
+
+    const orderTenantId = order.tenantId?.toString();
+
+    if (order.status !== "confirmed") {
+      order.status = "confirmed";
+      order.paystackReference = reference;
+      await order.save();
+      console.log(`CommodityOrder ${order._id} confirmed via Paystack webhook`);
+
+      const currency = order.currency || data.currency || "NGN";
+      const itemLines = order.items
+        .map(
+          (item) =>
+            `<li>${item.name} — ${item.quantity} ${item.unit} × ${formatMoney(item.unitPrice, currency)} = ${formatMoney(item.lineTotal, currency)}</li>`,
+        )
+        .join("");
+
+      // Notify buyer
+      const buyer = await User.findById(order.buyer);
+      if (buyer) {
+        await sendEmail(
+          buyer.email,
+          "Your order has been confirmed! 🎉",
+          `<h1>Order Confirmed</h1>
+          <p>Hi ${buyer.name}, your payment of ${formatMoney(order.subtotal, currency)} has been received and your order is now confirmed.</p>
+          <p><strong>Order Summary:</strong></p>
+          <ul>${itemLines}</ul>
+          <p><strong>Total: ${formatMoney(order.subtotal, currency)}</strong></p>
+          ${order.deliveryAddress ? `<p><strong>Delivery address:</strong> ${order.deliveryAddress}</p>` : ""}
+          <p>The team will be in touch regarding fulfilment.</p>`,
+        );
+      }
+
+      // Notify all tenant admins
+      const admins = await User.find({
+        ...(orderTenantId ? { tenantId: orderTenantId } : {}),
+        role: "admin",
+      });
+      await Promise.all(
+        admins.map((admin) =>
+          sendEmail(
+            admin.email,
+            `New marketplace order — ${formatMoney(order.subtotal, currency)}`,
+            `<h1>New Order Received</h1>
+            <p>A new marketplace order has been paid and confirmed.</p>
+            <p><strong>Buyer:</strong> ${order.buyerName ?? buyer?.name ?? "Unknown"} (${order.buyerEmail ?? buyer?.email ?? ""})</p>
+            ${order.contactPhone ? `<p><strong>Contact phone:</strong> ${order.contactPhone}</p>` : ""}
+            ${order.deliveryAddress ? `<p><strong>Delivery address:</strong> ${order.deliveryAddress}</p>` : ""}
+            ${order.customerNote ? `<p><strong>Note:</strong> ${order.customerNote}</p>` : ""}
+            <p><strong>Items:</strong></p>
+            <ul>${itemLines}</ul>
+            <p><strong>Total: ${formatMoney(order.subtotal, currency)}</strong></p>
+            <p>Reference: ${reference}</p>`,
+          ),
+        ),
+      );
+
+      logActivity({
+        type: "order_confirmed",
+        title: "Marketplace Order Confirmed",
+        description: `${order.buyerName ?? "A buyer"} placed an order worth ${formatMoney(order.subtotal, currency)}`,
+        actor: order.buyer as any,
+        resourceId: order._id,
+        resourceType: "CommodityOrder",
+        metadata: {
+          subtotal: order.subtotal,
+          currency,
+          itemCount: order.items.length,
+          reference,
+        },
+        tenantId: orderTenantId,
+      });
+    }
+
+    return orderTenantId;
   }
 
   const investment = await Investment.findOne({

@@ -72,6 +72,8 @@ export const api = createBuilder({
     delete: (id: string) => commodityApi.delete(id),
     placeOrder: (data: CreateCommodityOrderRequest) =>
       commodityApi.placeOrder(data),
+    verifyOrderPayment: (reference: string) =>
+      commodityApi.verifyOrderPayment(reference),
     orders: () => commodityApi.getOrders(),
     myOrders: () => commodityApi.getMyOrders(),
     updateOrderStatus: (

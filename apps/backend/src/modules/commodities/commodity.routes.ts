@@ -16,6 +16,7 @@ import {
   listCommodityOrders,
   updateCommodity,
   updateCommodityOrderStatus,
+  verifyCommodityOrderPayment,
 } from "./commodity.controller";
 
 const router = Router();
@@ -34,6 +35,14 @@ router.get(
   restrictTo("investor", "admin"),
   requireAnyTenantFeature(["marketplace", "adminMarketplace"]),
   listMyCommodityOrders,
+);
+
+router.get(
+  "/orders/verify/:reference",
+  protect,
+  restrictTo("investor", "admin"),
+  requireAnyTenantFeature(["marketplace", "adminMarketplace"]),
+  verifyCommodityOrderPayment,
 );
 
 router.get(

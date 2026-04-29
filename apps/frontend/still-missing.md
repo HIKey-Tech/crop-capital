@@ -1,19 +1,22 @@
 ## 🚨 Critical Missing Features
 
-### **1. Investment/Payment Flow** (HIGHEST PRIORITY)
-- ❌ **Investment Checkout Process** - Multi-step payment flow when user clicks "Invest Now"
+### **1. Investment/Payment Flow** ✅ COMPLETE
+
+- ✅ **Investment Checkout Process** - Multi-step payment flow via Paystack
   - Step 1: Amount selection (custom or preset)
-  - Step 2: Payment method (Paystack integration)
-  - Step 3: Confirmation & receipt
-  - This is **CRITICAL** - users can't actually invest without this!
+  - Step 2: Paystack payment redirect
+  - Step 3: Confirmation & receipt (callback page)
+- ✅ **Marketplace Checkout** - Commodity orders also use Paystack
 
 ### **2. Notifications System**
+
 - ❌ **Notifications Center/Inbox** - `/notifications` route
   - The walkthrough mentions notification **settings**, but not the actual notifications page
   - Users need to see: "Farm X reached funding goal", "ROI payment received", "New farm update"
   - Mark as read/unread, filter by type
 
 ### **3. Admin Features**
+
 - ❌ **Farm Analytics Dashboard** - `/admin/farms/:id/analytics`
   - Investor breakdown (who invested how much)
   - Investment timeline chart
@@ -34,30 +37,36 @@
   - Early withdrawal handling before maturity
 
 ### **4. Dashboard Enhancements**
+
 - ⚠️ **Portfolio Allocation Chart** - Visual breakdown of investment distribution
 - ⚠️ **Recent Activity Feed** - Last 5-10 actions (investments, ROI received, farm updates)
 
 ### **5. Farm Details Enhancements**
+
 - ⚠️ **Farm Documents Section** - Contracts, licenses, certifications (PDF downloads)
 - ⚠️ **Investor Q&A / Comments** - Community discussion/questions about the farm
 
 ### **6. Data Export Features**
+
 - ⚠️ **Transaction Receipt Download** (mentioned as "mock" - needs real PDF generation)
 - ⚠️ **Investment Statement Download** (PDF/Excel)
 - ⚠️ **Admin Reports Export** (CSV/PDF for analytics)
 
 ### **7. Error Handling & UX**
+
 - ❌ **Error Boundary Component** - Graceful app crash handling
 - ⚠️ **Comprehensive Loading States** - Verify all pages have proper skeletons
 - ⚠️ **Comprehensive Empty States** - Verify all lists handle empty data properly
 
 ### **8. Real-time Features** (Nice to have)
+
 - ❌ **Live Investment Progress** - WebSocket updates when farm funding increases
 - ❌ **Push Notifications** - Browser notifications for important events
 
 ## 📋 Verification Needed
 
 The walkthrough claims these were added, but we should verify:
+
 1. ✅ Check if loading skeletons are actually on all pages
 2. ✅ Check if empty states are implemented everywhere
 3. ✅ Verify the "receipt download mock" actually exists

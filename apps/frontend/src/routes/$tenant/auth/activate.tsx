@@ -5,6 +5,7 @@ import { CheckCircle2, Eye, EyeOff } from 'lucide-react'
 import { zodResolver } from 'mantine-form-zod-resolver'
 import { useState } from 'react'
 import { toast } from 'sonner'
+import { z } from 'zod'
 
 import {
   PASSWORD_REQUIREMENTS_HINT,
@@ -18,11 +19,9 @@ import { useTenant } from '@/contexts/tenant'
 
 export const Route = createFileRoute('/$tenant/auth/activate')({
   component: ActivateAdminPage,
-  validateSearch: (search: Record<string, unknown>) => {
-    return {
-      token: (search.token as string) || '',
-    }
-  },
+  validateSearch: z.object({
+    token: z.string().catch(''),
+  }),
 })
 
 function ActivateAdminPage() {

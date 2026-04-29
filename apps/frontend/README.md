@@ -58,7 +58,7 @@ This is a **crowdfunding/investment platform for agricultural projects (farms)**
 | ------------ | ------------------------------------------------------------------------------ |
 | **Frontend** | React 19, TanStack Router, TanStack Query, Tailwind CSS 4, Radix UI, Vite      |
 | **Backend**  | Express 5, TypeScript, Mongoose/MongoDB                                        |
-| **Payments** | ⚠️ Currently Stripe (needs migration to **Paystack**)                          |
+| **Payments** | ✅ Paystack integration (investments + marketplace)                            |
 | **Other**    | Cloudinary (images), Nodemailer (emails), node-cron (scheduled ROI processing) |
 
 ---
@@ -71,7 +71,7 @@ This is a **crowdfunding/investment platform for agricultural projects (farms)**
 - **Users** - Investor and admin roles, email verification
 - **Farms** - CRUD operations, investment tracking, progress updates
 - **Investments** - Investment records, ROI calculation, status tracking
-- **Payments** - ⚠️ Stripe integration (needs Paystack replacement)
+- **Payments** - ✅ Paystack integration (investments + marketplace)
 - **Workers** - Scheduled ROI processing via cron jobs
 
 ### Frontend App

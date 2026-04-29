@@ -93,6 +93,13 @@ export function useCreateCommodityOrder() {
   })
 }
 
+export function useVerifyOrderPayment() {
+  return useMutation({
+    mutationFn: (reference: string) =>
+      api.$use.commodities.verifyOrderPayment(reference),
+  })
+}
+
 export function useUpdateCommodityOrderStatus() {
   const queryClient = useQueryClient()
 

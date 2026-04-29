@@ -156,6 +156,7 @@ export interface CommodityOrder {
   subtotal: number
   status: CommodityOrderStatus
   statusNote?: string
+  paystackReference?: string
   createdAt: string
   updatedAt: string
 }
@@ -238,6 +239,7 @@ export interface CommodityOrdersResponse {
 export interface CommodityOrderResponse {
   success: boolean
   order: CommodityOrder
+  authorizationUrl?: string
 }
 
 export interface LoginRequest {

@@ -1,25 +1,21 @@
 import { useEffect, useState } from 'react'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { CheckCircle, Loader2, XCircle } from 'lucide-react'
+import { z } from 'zod'
 
 import { Button } from '@/components/ui/button'
-import { useVerifyPayment } from '@/hooks'
+import { useVerifyOrderPayment, useVerifyPayment } from '@/hooks'
 
-interface PaymentCallbackSearch {
-  reference?: string
-  trxref?: string
-}
+const paymentCallbackSearch = z.object({
+  reference: z.string().optional(),
+  trxref: z.string().optional(),
+  type: z.enum(['order', 'investment']).optional(),
+})
 
 export const Route = createFileRoute(
   '/$tenant/_authenticated/payment/callback',
 )({
-  validateSearch: (search: Record<string, unknown>): PaymentCallbackSearch => {
-    return {
-      reference:
-        typeof search.reference === 'string' ? search.reference : undefined,
-      trxref: typeof search.trxref === 'string' ? search.trxref : undefined,
-    }
-  },
+  validateSearch: paymentCallbackSearch,
   component: PaymentCallbackPage,
 })
 
@@ -30,10 +26,12 @@ function PaymentCallbackPage() {
   const navigate = useNavigate()
   const [status, setStatus] = useState<PaymentStatus>('verifying')
   const verifyPayment = useVerifyPayment()
+  const verifyOrderPayment = useVerifyOrderPayment()
 
   const search = Route.useSearch()
   const reference = search.reference
-  const trxref = search.trxref // Paystack sometimes uses trxref
+  const trxref = search.trxref
+  const isOrder = search.type === 'order'
 
   useEffect(() => {
     const paymentReference = reference || trxref
@@ -43,14 +41,21 @@ function PaymentCallbackPage() {
       return
     }
 
-    verifyPayment.mutate(paymentReference, {
-      onSuccess: () => {
-        setStatus('success')
-      },
-      onError: () => {
-        setStatus('failed')
-      },
-    })
+    if (isOrder) {
+      verifyOrderPayment.mutate(paymentReference, {
+        onSuccess: () => setStatus('success'),
+        onError: () => setStatus('failed'),
+      })
+    } else {
+      verifyPayment.mutate(paymentReference, {
+        onSuccess: () => {
+          setStatus('success')
+        },
+        onError: () => {
+          setStatus('failed')
+        },
+      })
+    }
   }, [reference, trxref])
 
   if (status === 'verifying') {
@@ -79,27 +84,63 @@ function PaymentCallbackPage() {
           <h1 className="text-3xl font-bold text-foreground">
             Payment Successful!
           </h1>
-          <p className="text-muted-foreground">
-            Your investment has been confirmed. You can track its progress in
-            your investments dashboard.
-          </p>
+          {isOrder ? (
+            <p className="text-muted-foreground">
+              Your order has been confirmed. You can track its status in your
+              orders dashboard.
+            </p>
+          ) : (
+            <p className="text-muted-foreground">
+              Your investment has been confirmed. You can track its progress in
+              your investments dashboard.
+            </p>
+          )}
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <Button
-              onClick={() =>
-                navigate({ to: '/$tenant/investments', params: { tenant } })
-              }
-              className="btn-primary-gradient"
-            >
-              View My Investments
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() =>
-                navigate({ to: '/$tenant/farms', params: { tenant } })
-              }
-            >
-              Explore More Farms
-            </Button>
+            {isOrder ? (
+              <>
+                <Button
+                  onClick={() =>
+                    navigate({
+                      to: '/$tenant/marketplace/orders',
+                      params: { tenant },
+                    })
+                  }
+                  className="btn-primary-gradient"
+                >
+                  View My Orders
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() =>
+                    navigate({
+                      to: '/$tenant/marketplace',
+                      params: { tenant },
+                    })
+                  }
+                >
+                  Continue Shopping
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button
+                  onClick={() =>
+                    navigate({ to: '/$tenant/investments', params: { tenant } })
+                  }
+                  className="btn-primary-gradient"
+                >
+                  View My Investments
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() =>
+                    navigate({ to: '/$tenant/farms', params: { tenant } })
+                  }
+                >
+                  Explore More Farms
+                </Button>
+              </>
+            )}
           </div>
         </div>
       </div>

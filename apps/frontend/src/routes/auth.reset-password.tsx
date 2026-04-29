@@ -5,6 +5,7 @@ import { zodResolver } from 'mantine-form-zod-resolver'
 import { ArrowLeft, CheckCircle2, Eye, EyeOff, Lock } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'sonner'
+import { z } from 'zod'
 
 import {
   PASSWORD_REQUIREMENTS_HINT,
@@ -17,8 +18,8 @@ import { Label } from '@/components/ui/label'
 
 export const Route = createFileRoute('/auth/reset-password')({
   component: PlatformResetPasswordPage,
-  validateSearch: (search: Record<string, unknown>) => ({
-    token: (search.token as string) || '',
+  validateSearch: z.object({
+    token: z.string().catch(''),
   }),
 })
 
