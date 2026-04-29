@@ -1,6 +1,13 @@
 import { useState } from 'react'
 import { Link, createFileRoute, useRouter } from '@tanstack/react-router'
-import { MoreHorizontal, Pencil, Plus, Trash2 } from 'lucide-react'
+import {
+  MoreHorizontal,
+  Pencil,
+  Plus,
+  ShoppingBasket,
+  Trash2,
+} from 'lucide-react'
+import { inflect } from 'inflection'
 import { toast } from 'sonner'
 import type { ColumnDef } from '@tanstack/react-table'
 
@@ -26,8 +33,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+
 import { useTenant } from '@/contexts/tenant'
-import { useCommodities, useDeleteCommodity } from '@/hooks'
+import { useCommodities, useCommodityOrders, useDeleteCommodity } from '@/hooks'
 import { formatCurrency } from '@/lib/format-currency'
 
 export const Route = createFileRoute(
@@ -40,8 +48,12 @@ function AdminMarketplacePage() {
   const { tenant } = Route.useParams()
   const { tenant: tenantConfig } = useTenant()
   const { data, isLoading, error } = useCommodities()
+  const { data: ordersData } = useCommodityOrders()
   const deleteCommodity = useDeleteCommodity()
   const router = useRouter()
+
+  const pendingOrderCount =
+    ordersData?.orders.filter(({ status }) => status === 'pending').length ?? 0
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [commodityToDelete, setCommodityToDelete] = useState<{
@@ -195,6 +207,22 @@ function AdminMarketplacePage() {
           pricing current.
         </p>
       </header>
+
+      {pendingOrderCount > 0 ? (
+        <Link
+          to="/$tenant/admin/marketplace/orders"
+          params={{ tenant }}
+          className="flex items-center gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900 hover:bg-amber-100 transition-colors"
+        >
+          <ShoppingBasket className="h-4 w-4 shrink-0 text-amber-600" />
+          <span>
+            <span className="font-semibold">
+              {pendingOrderCount} {inflect('order', pendingOrderCount)}
+            </span>{' '}
+            awaiting payment — stock is reserved.
+          </span>
+        </Link>
+      ) : null}
 
       <div className="flex items-center justify-between gap-3">
         <Link to="/$tenant/admin/marketplace/orders" params={{ tenant }}>

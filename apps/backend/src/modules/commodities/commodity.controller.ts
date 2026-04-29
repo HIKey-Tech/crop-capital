@@ -3,6 +3,8 @@ import { AppError } from "@/utils/AppError";
 import { uploadImageBuffer, deleteImage } from "@/utils/cloudinary";
 import { initializeTransaction } from "@/modules/payments/payment.service";
 import { FRONTEND_URL } from "@/config/env";
+import { sendEmail } from "@/utils/email";
+import { User } from "@/modules/users/user.model";
 import {
   Commodity,
   CommodityOrder,
@@ -553,6 +555,37 @@ export const createCommodityOrder = async (
       await order.save();
 
       authorizationUrl = paystackResponse.data.authorization_url;
+
+      // Notify all tenant admins that a new order has been placed and stock reserved
+      void User.find({ ...(tenantId ? { tenantId } : {}), role: "admin" }).then(
+        (admins) => {
+          const itemLines = order.items
+            .map(
+              (item) =>
+                `<tr><td style="padding:4px 8px">${item.name}</td><td style="padding:4px 8px">${item.quantity} ${item.unit}</td></tr>`,
+            )
+            .join("");
+
+          const subject = `New marketplace order from ${order.buyerName}`;
+          const html = `
+            <h2>New Order — Awaiting Payment</h2>
+            <p><strong>${order.buyerName}</strong> (${order.buyerEmail}) has placed an order and is being redirected to pay.</p>
+            <table border="1" cellspacing="0" cellpadding="0" style="border-collapse:collapse">
+              <thead><tr><th style="padding:4px 8px">Item</th><th style="padding:4px 8px">Qty</th></tr></thead>
+              <tbody>${itemLines}</tbody>
+            </table>
+            <p>Stock has been reserved. The order will be confirmed automatically once payment is received, or released if payment is abandoned within 30 minutes.</p>
+          `;
+
+          return Promise.all(
+            admins.map((admin) =>
+              sendEmail(admin.email, subject, html).catch((err) =>
+                console.error(`Failed to notify admin ${admin.email}:`, err),
+              ),
+            ),
+          );
+        },
+      );
     } catch (paystackErr) {
       // Rollback quantity decrements and remove the order
       await Promise.all(

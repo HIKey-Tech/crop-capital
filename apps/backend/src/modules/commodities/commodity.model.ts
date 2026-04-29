@@ -140,6 +140,8 @@ const CommodityOrderSchema = new Schema<ICommodityOrder>(
 
 CommodityOrderSchema.index({ tenantId: 1, createdAt: -1 });
 CommodityOrderSchema.index({ tenantId: 1, status: 1, createdAt: -1 });
+// Cross-tenant index used by the stale-order expiry cron (queries without tenantId)
+CommodityOrderSchema.index({ status: 1, createdAt: 1 });
 
 export const Commodity = mongoose.model<ICommodity>(
   "Commodity",
