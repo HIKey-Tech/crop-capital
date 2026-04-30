@@ -576,18 +576,18 @@ function MarketplaceSection() {
   const pillars = [
     {
       icon: Store,
-      title: 'Launch branded storefronts',
-      desc: 'Give every tenant a buyer-facing marketplace where commodity listings, pricing, and availability live inside their own brand.',
+      title: 'Sell through your own branded market',
+      desc: 'Open a buyer-facing marketplace under your own tenant brand so customers discover, browse, and order agricultural products without leaving your ecosystem.',
     },
     {
       icon: ShoppingBasket,
-      title: 'Run operator-side listing control',
-      desc: 'Admins can publish listings, manage stock, set minimum order quantities, and keep commercial inventory aligned with field operations.',
+      title: 'Turn inventory into active revenue',
+      desc: 'List commodities, manage stock, set pricing, and define minimum order quantities so your team can convert available supply into structured sales.',
     },
     {
       icon: Truck,
-      title: 'Track orders through fulfillment',
-      desc: 'Orders, delivery details, and payment flow stay inside the same platform so teams can move from discovery to settlement without duct tape.',
+      title: 'Keep orders and fulfillment in one flow',
+      desc: 'Handle checkout, delivery details, and order tracking inside the same platform your team already uses for operations, investors, and reporting.',
     },
   ]
 
@@ -609,23 +609,23 @@ function MarketplaceSection() {
               </span>
             </div>
             <h2 className="text-display text-[clamp(2.8rem,5.5vw,6rem)] text-white mb-6">
-              Add a built-in
+              With built-in
               <br />
               <span className="italic-serif text-white/60">
-                marketplace engine.
+                marketplace capabilities,
               </span>
             </h2>
             <p className="text-xl text-white/60 leading-relaxed font-medium max-w-xl mb-10">
-              CropCapital is not only for investor onboarding and portfolio
-              administration. Tenants can also open a commerce surface for
-              commodity sales, manage listings from the admin side, and keep
-              order flow inside the same operating stack.
+              CropCapital does more than handle onboarding and portfolio
+              administration. As a tenant on the platform, you can publish
+              listings, attract buyers, and run commodity orders through a
+              branded marketplace built for your own operation.
             </p>
 
             <div className="flex flex-col gap-5 items-start">
               <Link to="/auth">
                 <Button className="bg-white text-primary hover:bg-white/95 h-12 px-10 text-xs font-black uppercase tracking-[0.2em] shadow-xl transition-all hover:scale-105 active:scale-95">
-                  Explore The Platform
+                  See Tenant Capabilities
                   <ArrowRight className="w-4 h-4 ml-3" />
                 </Button>
               </Link>
@@ -633,7 +633,7 @@ function MarketplaceSection() {
                 <div className="border border-white/10 bg-white/5 px-5 py-4">
                   <div className="text-2xl font-black text-white mb-1">2x</div>
                   <div className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40">
-                    Marketplace surfaces
+                    Branded marketplace surfaces
                   </div>
                 </div>
                 <div className="border border-white/10 bg-white/5 px-5 py-4">
@@ -641,7 +641,7 @@ function MarketplaceSection() {
                     1 stack
                   </div>
                   <div className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40">
-                    Listings, orders, and checkout
+                    Sales, orders, and operations
                   </div>
                 </div>
               </div>
