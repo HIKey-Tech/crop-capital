@@ -12,6 +12,9 @@ import {
   Server,
   Settings2,
   ShieldCheck,
+  ShoppingBasket,
+  Store,
+  Truck,
   X,
   Zap,
 } from 'lucide-react'
@@ -129,6 +132,7 @@ function Navbar() {
 
   const navLinks = [
     { name: 'Features', href: '#features' },
+    { name: 'Marketplace', href: '#marketplace' },
     { name: 'How It Works', href: '#process' },
     { name: 'Security', href: '#security' },
     { name: 'Support', href: 'mailto:support@cropcapital.com' },
@@ -137,35 +141,35 @@ function Navbar() {
   return (
     <nav
       className={cn(
-        'fixed top-0 left-0 right-0 z-50 transition-all duration-500 px-0 sm:px-8 py-7',
+        'fixed top-0 left-0 right-0 z-50 transition-all duration-500 py-7',
         isScrolled
           ? 'bg-background/95 backdrop-blur-2xl border-b border-border py-5 shadow-sm'
           : 'bg-transparent',
       )}
     >
-      <div className="premium-container flex items-center justify-between">
-        <div className="flex items-center gap-3 group cursor-pointer">
+      <div className="premium-container grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-4 xl:gap-8">
+        <div className="flex items-center gap-3 group cursor-pointer shrink-0">
           <div className="w-10 h-10 bg-primary flex items-center justify-center transition-all duration-300 group-hover:scale-105">
             <span className="text-primary-foreground font-black text-sm tracking-tighter">
               CC
             </span>
           </div>
           <div className="hidden sm:flex flex-col">
-            <span className="text-base font-black uppercase tracking-[0.22em] text-foreground leading-none">
+            <span className="text-base font-black uppercase tracking-[0.16em] xl:tracking-[0.22em] text-foreground leading-none whitespace-nowrap">
               CropCapital
             </span>
-            <span className="text-[9px] font-bold uppercase tracking-[0.35em] text-primary/70 leading-none mt-0.5">
+            <span className="text-[9px] font-bold uppercase tracking-[0.28em] xl:tracking-[0.35em] text-primary/70 leading-none mt-0.5 whitespace-nowrap">
               Platform
             </span>
           </div>
         </div>
 
-        <div className="hidden lg:flex items-center gap-10">
+        <div className="hidden lg:flex min-w-0 items-center justify-center gap-4 xl:gap-8 px-4 xl:px-8">
           {navLinks.map((link) => (
             <a
               key={link.name}
               href={link.href}
-              className="text-[11px] font-bold uppercase tracking-[0.35em] text-muted-foreground hover:text-primary transition-colors relative group"
+              className="text-[10px] xl:text-[11px] font-bold uppercase tracking-[0.24em] xl:tracking-[0.32em] text-muted-foreground hover:text-primary transition-colors relative group whitespace-nowrap"
             >
               {link.name}
               <span className="absolute -bottom-1 left-0 h-px w-0 bg-primary group-hover:w-full transition-all duration-300" />
@@ -173,7 +177,7 @@ function Navbar() {
           ))}
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3 xl:gap-4 shrink-0 justify-self-end">
           <Link to="/auth" className="hidden sm:block">
             <Button variant="ghost" className="font-bold text-sm px-6 h-10">
               Sign In
@@ -567,6 +571,115 @@ function FeaturesSection() {
   )
 }
 
+// --- Marketplace Section ---
+function MarketplaceSection() {
+  const pillars = [
+    {
+      icon: Store,
+      title: 'Launch branded storefronts',
+      desc: 'Give every tenant a buyer-facing marketplace where commodity listings, pricing, and availability live inside their own brand.',
+    },
+    {
+      icon: ShoppingBasket,
+      title: 'Run operator-side listing control',
+      desc: 'Admins can publish listings, manage stock, set minimum order quantities, and keep commercial inventory aligned with field operations.',
+    },
+    {
+      icon: Truck,
+      title: 'Track orders through fulfillment',
+      desc: 'Orders, delivery details, and payment flow stay inside the same platform so teams can move from discovery to settlement without duct tape.',
+    },
+  ]
+
+  return (
+    <section
+      id="marketplace"
+      className="section-spacing bg-primary text-primary-foreground relative overflow-hidden"
+    >
+      <div className="absolute inset-0 dot-grid opacity-[0.06]" />
+      <div className="absolute -left-40 top-10 size-120 rounded-full bg-white/5 blur-[140px]" />
+      <div className="absolute -right-24 bottom-0 size-96 rounded-full bg-white/6 blur-[180px]" />
+      <div className="premium-container relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
+          <FadeIn className="lg:col-span-5">
+            <div className="flex items-center gap-4 mb-6">
+              <div className="h-px bg-white/20 w-10" />
+              <span className="text-[11px] font-black uppercase tracking-[0.5em] text-white/55">
+                Commerce Layer
+              </span>
+            </div>
+            <h2 className="text-display text-[clamp(2.8rem,5.5vw,6rem)] text-white mb-6">
+              Add a built-in
+              <br />
+              <span className="italic-serif text-white/60">
+                marketplace engine.
+              </span>
+            </h2>
+            <p className="text-xl text-white/60 leading-relaxed font-medium max-w-xl mb-10">
+              CropCapital is not only for investor onboarding and portfolio
+              administration. Tenants can also open a commerce surface for
+              commodity sales, manage listings from the admin side, and keep
+              order flow inside the same operating stack.
+            </p>
+
+            <div className="flex flex-col gap-5 items-start">
+              <Link to="/auth">
+                <Button className="bg-white text-primary hover:bg-white/95 h-12 px-10 text-xs font-black uppercase tracking-[0.2em] shadow-xl transition-all hover:scale-105 active:scale-95">
+                  Explore The Platform
+                  <ArrowRight className="w-4 h-4 ml-3" />
+                </Button>
+              </Link>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-xl">
+                <div className="border border-white/10 bg-white/5 px-5 py-4">
+                  <div className="text-2xl font-black text-white mb-1">2x</div>
+                  <div className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40">
+                    Marketplace surfaces
+                  </div>
+                </div>
+                <div className="border border-white/10 bg-white/5 px-5 py-4">
+                  <div className="text-2xl font-black text-white mb-1">
+                    1 stack
+                  </div>
+                  <div className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40">
+                    Listings, orders, and checkout
+                  </div>
+                </div>
+              </div>
+            </div>
+          </FadeIn>
+
+          <div className="lg:col-span-7 grid grid-cols-1 gap-px bg-border border border-border">
+            {pillars.map((pillar, index) => {
+              const Icon = pillar.icon
+
+              return (
+                <FadeIn key={pillar.title} delay={index * 140} direction="up">
+                  <div className="bg-background p-8 md:p-10 lg:p-12 grid grid-cols-1 md:grid-cols-[auto_1fr_auto] gap-6 items-start feature-card border-0">
+                    <div className="w-12 h-12 bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                      <Icon className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-black text-foreground mb-3 uppercase tracking-tight">
+                        {pillar.title}
+                      </h3>
+                      <p className="text-base text-muted-foreground leading-relaxed font-medium max-w-2xl">
+                        {pillar.desc}
+                      </p>
+                    </div>
+                    <div className="hidden md:block text-[clamp(2.4rem,4vw,4rem)] font-black text-primary/10 leading-none select-none">
+                      0{index + 1}
+                    </div>
+                  </div>
+                </FadeIn>
+              )
+            })}
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
 // --- Process Section ---
 function ProcessSection() {
   const steps = [
@@ -888,6 +1001,7 @@ function RootRoute() {
         <HeroSection />
         <StatsBar />
         <FeaturesSection />
+        <MarketplaceSection />
         <ProcessSection />
         <SecuritySection />
         <TestimonialsSection />
@@ -938,6 +1052,7 @@ function RootRoute() {
               <ul className="space-y-4 text-secondary-foreground/50 font-bold text-base">
                 {[
                   { label: 'Features', href: '#features' },
+                  { label: 'Marketplace', href: '#marketplace' },
                   { label: 'How It Works', href: '#process' },
                   { label: 'Security', href: '#security' },
                 ].map((i) => (

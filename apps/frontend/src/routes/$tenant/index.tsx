@@ -82,11 +82,11 @@ function Navbar({ tenant, tenantParam }: { tenant: any; tenantParam: string }) {
           : 'bg-transparent',
       )}
     >
-      <div className="premium-container flex items-center justify-between">
+      <div className="premium-container grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-4 xl:gap-8">
         <Link
           to="/$tenant"
           params={{ tenant: tenantParam }}
-          className="flex items-center gap-3 group"
+          className="flex items-center gap-3 group shrink-0"
         >
           <div className="w-10 h-10 bg-primary flex items-center justify-center transition-all duration-300 group-hover:bg-primary/80">
             <span className="text-primary-foreground font-black text-sm">
@@ -94,21 +94,21 @@ function Navbar({ tenant, tenantParam }: { tenant: any; tenantParam: string }) {
             </span>
           </div>
           <div className="hidden sm:flex flex-col">
-            <span className="text-base font-black uppercase tracking-[0.2em] text-foreground leading-none">
+            <span className="text-base font-black uppercase tracking-[0.14em] xl:tracking-[0.2em] text-foreground leading-none whitespace-nowrap">
               {tenant.displayName}
             </span>
-            <span className="text-[9px] font-bold uppercase tracking-[0.3em] text-primary/60 leading-none mt-0.5">
+            <span className="text-[9px] font-bold uppercase tracking-[0.24em] xl:tracking-[0.3em] text-primary/60 leading-none mt-0.5 whitespace-nowrap">
               Agricultural Finance
             </span>
           </div>
         </Link>
 
-        <div className="hidden lg:flex items-center gap-10">
+        <div className="hidden lg:flex min-w-0 items-center justify-center gap-4 xl:gap-8 px-4 xl:px-8">
           {navLinks.map((item) => (
             <a
               key={item}
               href={`#${item.toLowerCase()}`}
-              className="text-[11px] font-bold uppercase tracking-[0.35em] text-muted-foreground hover:text-primary transition-all relative group"
+              className="text-[10px] xl:text-[11px] font-bold uppercase tracking-[0.24em] xl:tracking-[0.32em] text-muted-foreground hover:text-primary transition-all relative group whitespace-nowrap"
             >
               {item}
               <span className="absolute -bottom-1 left-0 h-px w-0 bg-primary group-hover:w-full transition-all duration-300" />
@@ -116,7 +116,7 @@ function Navbar({ tenant, tenantParam }: { tenant: any; tenantParam: string }) {
           ))}
         </div>
 
-        <div className="flex items-center gap-5">
+        <div className="flex items-center gap-3 xl:gap-5 shrink-0 justify-self-end">
           <Link
             to="/$tenant/auth"
             params={{ tenant: tenantParam }}

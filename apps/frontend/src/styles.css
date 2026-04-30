@@ -243,8 +243,7 @@
     );
 
     --shadow-card:
-      0 1px 3px 0 hsl(40 20% 10% / 0.05),
-      0 1px 2px -1px hsl(40 20% 10% / 0.05);
+      0 1px 3px 0 hsl(40 20% 10% / 0.05), 0 1px 2px -1px hsl(40 20% 10% / 0.05);
 
     --shadow-card-hover:
       0 4px 6px -1px hsl(40 20% 10% / 0.08),
@@ -516,7 +515,7 @@
   }
 
   .premium-container {
-    @apply container mx-auto px-6 sm:px-10 lg:px-16 max-w-7xl;
+    @apply container mx-auto px-6 sm:px-10 lg:px-16 max-w-368;
   }
 
   .section-spacing {
