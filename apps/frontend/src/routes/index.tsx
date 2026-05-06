@@ -12,7 +12,6 @@ import {
   Server,
   Settings2,
   ShieldCheck,
-  ShoppingBasket,
   Store,
   Truck,
   X,
@@ -23,6 +22,10 @@ import { Button } from '@/components/ui/button'
 import { FadeIn } from '@/components/fade-in'
 import { useInView } from '@/hooks/use-in-view'
 import { cn } from '@/lib/utils'
+
+// import farmCassava from '@/assets/farm-cassava.jpg'
+import farmPalmTrees from '@/assets/farm-palm-trees.jpg'
+import farmWheat from '@/assets/farm-wheat.jpg'
 
 export const Route = createFileRoute('/')({
   component: RootRoute,
@@ -573,23 +576,43 @@ function FeaturesSection() {
 
 // --- Marketplace Section ---
 function MarketplaceSection() {
-  const pillars = [
+  const commodities = [
+    // {
+    //   name: 'Cassava Flour Batch',
+    //   category: 'Processed Foods',
+    //   location: 'Owerri Cluster',
+    //   price: '₦18,500',
+    //   unit: '25kg Bag',
+    //   stock: '420 bags available',
+    //   minOrder: 'Min. 5 bags',
+    //   image: farmCassava,
+    //   featured: true,
+    // },
     {
-      icon: Store,
-      title: 'Sell through your own branded market',
-      desc: 'Open a buyer-facing marketplace under your own tenant brand so customers discover, browse, and order agricultural products without leaving your ecosystem.',
+      name: 'Plateau Wheat Grain',
+      category: 'Grains & Cereals',
+      location: 'Northern Highlands',
+      price: '₦42,000',
+      unit: '50kg Sack',
+      stock: '180 sacks available',
+      minOrder: 'Min. 2 sacks',
+      image: farmWheat,
+      featured: false,
     },
     {
-      icon: ShoppingBasket,
-      title: 'Turn inventory into active revenue',
-      desc: 'List commodities, manage stock, set pricing, and define minimum order quantities so your team can convert available supply into structured sales.',
-    },
-    {
-      icon: Truck,
-      title: 'Keep orders and fulfillment in one flow',
-      desc: 'Handle checkout, delivery details, and order tracking inside the same platform your team already uses for operations, investors, and reporting.',
+      name: 'Palm Oil Gallons',
+      category: 'Oils & Fats',
+      location: 'Kano Distribution Hub',
+      price: '₦9,800',
+      unit: '5L Gallon',
+      stock: '760 gallons available',
+      minOrder: 'Min. 12 gallons',
+      image: farmPalmTrees,
+      featured: true,
     },
   ]
+
+  const categories = ['All', 'Grains', 'Oils', 'Processed']
 
   return (
     <section
@@ -609,17 +632,16 @@ function MarketplaceSection() {
               </span>
             </div>
             <h2 className="text-display text-[clamp(2.8rem,5.5vw,6rem)] text-white mb-6">
-              With built-in
+              In-app
               <br />
-              <span className="italic-serif text-white/60">
-                marketplace capabilities,
-              </span>
+              <span className="italic-serif text-white/60">Marketplace</span>
             </h2>
             <p className="text-xl text-white/60 leading-relaxed font-medium max-w-xl mb-10">
               CropCapital does more than handle onboarding and portfolio
-              administration. As a tenant on the platform, you can publish
-              listings, attract buyers, and run commodity orders through a
-              branded marketplace built for your own operation.
+              administration. As a tenant, your business can publish commodity
+              listings, show pricing and availability, and give buyers a branded
+              marketplace experience without building a separate commerce
+              product.
             </p>
 
             <div className="flex flex-col gap-5 items-start">
@@ -631,9 +653,9 @@ function MarketplaceSection() {
               </Link>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-xl">
                 <div className="border border-white/10 bg-white/5 px-5 py-4">
-                  <div className="text-2xl font-black text-white mb-1">2x</div>
+                  <div className="text-2xl font-black text-white mb-1">24</div>
                   <div className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40">
-                    Branded marketplace surfaces
+                    Live commodity listings
                   </div>
                 </div>
                 <div className="border border-white/10 bg-white/5 px-5 py-4">
@@ -648,32 +670,120 @@ function MarketplaceSection() {
             </div>
           </FadeIn>
 
-          <div className="lg:col-span-7 grid grid-cols-1 gap-px bg-border border border-border">
-            {pillars.map((pillar, index) => {
-              const Icon = pillar.icon
-
-              return (
-                <FadeIn key={pillar.title} delay={index * 140} direction="up">
-                  <div className="bg-background p-8 md:p-10 lg:p-12 grid grid-cols-1 md:grid-cols-[auto_1fr_auto] gap-6 items-start feature-card border-0">
-                    <div className="w-12 h-12 bg-primary/10 text-primary flex items-center justify-center shrink-0">
-                      <Icon className="w-5 h-5" />
+          <FadeIn className="lg:col-span-7" direction="right" delay={180}>
+            <div className="overflow-hidden border border-white/10 bg-background text-foreground shadow-2xl shadow-black/20">
+              <div className="border-b border-border bg-card px-5 py-4 sm:px-6">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                  <div>
+                    <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.32em] text-primary">
+                      <Store className="h-3.5 w-3.5" /> Tenant Marketplace
+                    </div>
+                    <h3 className="mt-2 text-xl font-black uppercase tracking-tight text-foreground">
+                      HarvestLane Market
+                    </h3>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3 text-right">
+                    <div>
+                      <div className="text-2xl font-black text-foreground">
+                        24
+                      </div>
+                      <div className="text-[9px] font-black uppercase tracking-[0.24em] text-muted-foreground">
+                        Listings
+                      </div>
                     </div>
                     <div>
-                      <h3 className="text-xl font-black text-foreground mb-3 uppercase tracking-tight">
-                        {pillar.title}
-                      </h3>
-                      <p className="text-base text-muted-foreground leading-relaxed font-medium max-w-2xl">
-                        {pillar.desc}
-                      </p>
-                    </div>
-                    <div className="hidden md:block text-[clamp(2.4rem,4vw,4rem)] font-black text-primary/10 leading-none select-none">
-                      0{index + 1}
+                      <div className="text-2xl font-black text-foreground">
+                        6
+                      </div>
+                      <div className="text-[9px] font-black uppercase tracking-[0.24em] text-muted-foreground">
+                        Categories
+                      </div>
                     </div>
                   </div>
-                </FadeIn>
-              )
-            })}
-          </div>
+                </div>
+
+                <div className="mt-5 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                  <div className="border border-border bg-background px-4 py-3 text-sm font-medium text-muted-foreground md:min-w-64">
+                    Search commodity, category, or market
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {categories.map((category, index) => (
+                      <span
+                        key={category}
+                        className={cn(
+                          'border px-3 py-2 text-[10px] font-black uppercase tracking-[0.24em]',
+                          index === 0
+                            ? 'border-primary bg-primary text-primary-foreground'
+                            : 'border-border bg-background text-muted-foreground',
+                        )}
+                      >
+                        {category}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 gap-px bg-border p-px md:grid-cols-2">
+                {commodities.map((commodity) => (
+                  <article key={commodity.name} className="bg-card">
+                    <div className="relative aspect-4/3 overflow-hidden bg-muted">
+                      <img
+                        src={commodity.image}
+                        alt=""
+                        className="h-full w-full object-cover transition-transform duration-700 hover:scale-105"
+                        style={{ filter: 'saturate(0.55) brightness(0.82)' }}
+                      />
+                      <div className="absolute left-3 top-3 flex flex-wrap gap-2">
+                        {commodity.featured ? (
+                          <span className="bg-background/90 px-2.5 py-1 text-[9px] font-black uppercase tracking-[0.22em] text-foreground">
+                            Featured
+                          </span>
+                        ) : null}
+                        <span className="bg-background/90 px-2.5 py-1 text-[9px] font-black uppercase tracking-[0.22em] text-foreground">
+                          {commodity.category}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="space-y-4 p-5">
+                      <div>
+                        <h4 className="text-lg font-black uppercase tracking-tight text-foreground">
+                          {commodity.name}
+                        </h4>
+                        <p className="mt-1 text-sm text-muted-foreground">
+                          {commodity.location}
+                        </p>
+                      </div>
+
+                      <div>
+                        <div className="text-2xl font-black text-foreground">
+                          {commodity.price}
+                          <span className="text-sm font-bold text-muted-foreground">
+                            {' '}
+                            / {commodity.unit}
+                          </span>
+                        </div>
+                        <div className="mt-2 flex items-center gap-2 text-xs font-bold text-muted-foreground">
+                          <Truck className="h-3.5 w-3.5 text-primary" />
+                          {commodity.stock}
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-between border-t border-border pt-4">
+                        <span className="text-xs font-bold text-muted-foreground">
+                          {commodity.minOrder}
+                        </span>
+                        <span className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.24em] text-primary">
+                          <Eye className="h-3.5 w-3.5" /> Catalog
+                        </span>
+                      </div>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </div>
+          </FadeIn>
         </div>
       </div>
     </section>
