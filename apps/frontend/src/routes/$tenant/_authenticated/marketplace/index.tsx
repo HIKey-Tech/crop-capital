@@ -158,6 +158,19 @@ function MarketplacePage() {
   }
 
   const addToCart = (listing: Commodity) => {
+    if (!cartItems.length) {
+      updateCart(listing, listing.minimumOrderQuantity)
+      return
+    }
+
+    const [cartItem] = cartItems
+    const existingCurrency = cartItem.commodity.currency
+
+    if (existingCurrency !== listing.currency) {
+      toast.error('Cart items must use the same currency')
+      return
+    }
+
     const existing = cart.find((item) => item.listingId === listing._id)
     const minimum = Math.max(1, listing.minimumOrderQuantity)
     const nextQuantity = existing ? existing.quantity + 1 : minimum
@@ -168,6 +181,8 @@ function MarketplacePage() {
   const removeFromCart = (listingId: string) => {
     setCart((current) => current.filter((item) => item.listingId !== listingId))
   }
+
+  const getCommodityImage = (commodity: Commodity) => commodity.images[0]
 
   const handleCheckout = async () => {
     if (!cartItems.length) {
@@ -303,11 +318,17 @@ function MarketplacePage() {
                     className="overflow-hidden rounded-3xl border border-border bg-card shadow-sm"
                   >
                     <div className="relative aspect-4/3 bg-muted">
-                      <img
-                        src={commodity.images[0]}
-                        alt={commodity.name}
-                        className="h-full w-full object-cover"
-                      />
+                      {getCommodityImage(commodity) ? (
+                        <img
+                          src={getCommodityImage(commodity)}
+                          alt={commodity.name}
+                          className="h-full w-full object-cover"
+                        />
+                      ) : (
+                        <div className="flex h-full w-full items-center justify-center bg-muted text-muted-foreground">
+                          <Store className="h-10 w-10" />
+                        </div>
+                      )}
                       <div className="absolute left-4 top-4 flex gap-2">
                         {commodity.isFeatured ? (
                           <Badge className="bg-background/90 text-foreground">
@@ -512,7 +533,7 @@ function CartPanel({
         <div>
           <h2 className="text-xl font-semibold text-foreground">Order cart</h2>
           <p className="text-sm text-muted-foreground">
-            Review quantities and submit your order to the tenant team.
+            Review quantities and submit your order to the operations team.
           </p>
         </div>
         <ShoppingBasket className="h-5 w-5 text-primary" />
@@ -526,11 +547,17 @@ function CartPanel({
               className="rounded-2xl border border-border bg-background p-3"
             >
               <div className="flex items-start gap-3">
-                <img
-                  src={item.commodity.images[0]}
-                  alt={item.commodity.name}
-                  className="h-16 w-16 rounded-xl object-cover"
-                />
+                {item.commodity.images[0] ? (
+                  <img
+                    src={item.commodity.images[0]}
+                    alt={item.commodity.name}
+                    className="h-16 w-16 rounded-xl object-cover"
+                  />
+                ) : (
+                  <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-xl bg-muted text-muted-foreground">
+                    <Store className="h-5 w-5" />
+                  </div>
+                )}
                 <div className="min-w-0 flex-1">
                   <p className="font-medium text-foreground">
                     {item.commodity.name}

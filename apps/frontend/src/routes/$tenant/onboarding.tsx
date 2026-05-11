@@ -274,7 +274,7 @@ function OnboardingPage() {
     }
 
     setIsCompleted(true)
-    toast.success('Onboarding complete. Your tenant workspace is ready.')
+    toast.success('Onboarding complete. Your workspace is ready.')
     navigate({
       to: '/$tenant/dashboard',
       params: { tenant: tenantParam },
@@ -360,7 +360,7 @@ function OnboardingPage() {
 
     if (step === 3) {
       if (!termsAccepted) {
-        toast.error('Accept the tenant terms to finish onboarding')
+        toast.error('Accept the terms to finish onboarding')
         return
       }
 
@@ -377,11 +377,11 @@ function OnboardingPage() {
         <div className="w-full max-w-lg rounded-3xl border border-border bg-white p-8 text-center shadow-xl">
           <BadgeCheck className="mx-auto h-12 w-12 text-primary" />
           <h1 className="mt-4 text-2xl font-bold tracking-tight text-foreground">
-            Create your tenant account first
+            Create your account first
           </h1>
           <p className="mt-2 text-sm text-muted-foreground">
             Onboarding for {tenant.displayName} becomes available after you
-            create or sign in to your tenant-linked account.
+            create or sign in to your account.
           </p>
           <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center">
             <Button asChild className="btn-primary-gradient">
@@ -412,8 +412,8 @@ function OnboardingPage() {
             {tenant.displayName} is ready for you
           </h1>
           <p className="mt-3 text-sm text-muted-foreground">
-            Your tenant profile and onboarding preferences are saved. Continue
-            to the dashboard to explore farms, investments, and updates from{' '}
+            Your profile and onboarding preferences are saved. Continue to the
+            dashboard to explore farms, investments, and updates from{' '}
             {tenant.displayName}.
           </p>
 
@@ -472,7 +472,7 @@ function OnboardingPage() {
         <section className="rounded-4xl border border-border/60 bg-[radial-gradient(circle_at_top_left,rgba(33,134,65,0.14),transparent_38%),linear-gradient(135deg,rgba(255,255,255,0.98),rgba(244,248,243,0.92))] p-8 shadow-xl">
           <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-primary">
             <Sprout className="h-3.5 w-3.5" />
-            Tenant Onboarding
+            Investor Onboarding
           </div>
           <h1 className="mt-5 text-4xl font-bold tracking-tight text-foreground">
             {tenant.heroTitle}
@@ -488,7 +488,7 @@ function OnboardingPage() {
                 Complete your profile
               </h2>
               <p className="mt-1 text-sm text-muted-foreground">
-                Confirm the basics for this tenant-linked account.
+                Confirm the basics for your account.
               </p>
             </div>
             <div className="rounded-2xl border border-border bg-white/80 p-4 shadow-sm">
@@ -518,10 +518,11 @@ function OnboardingPage() {
             </div>
             <ul className="mt-3 space-y-3 text-sm text-muted-foreground">
               <li>
-                1. Your profile stays accurate for this tenant experience.
+                1. Your profile stays accurate for this investment workspace.
               </li>
               <li>
-                2. Your onboarding preferences are stored for this tenant only.
+                2. Your onboarding preferences stay scoped to{' '}
+                {tenant.displayName}.
               </li>
               <li>
                 3. You land on the dashboard ready to browse farms and invest
@@ -539,7 +540,7 @@ function OnboardingPage() {
               {step === 3 && <ShieldCheck />}
             </div>
             <h1 className="mb-2 text-2xl font-bold tracking-tight">
-              {step === 1 && 'Complete your tenant profile'}
+              {step === 1 && 'Complete your profile'}
               {step === 2 && 'Choose your investing style'}
               {step === 3 && 'Secure your account setup'}
             </h1>
@@ -682,8 +683,8 @@ function OnboardingPage() {
                 </div>
 
                 <div className="rounded-xl border border-border bg-muted/30 p-4 text-sm text-muted-foreground">
-                  This step updates your tenant-linked profile and stores the
-                  bank account that should receive investment returns.
+                  This step updates your profile and stores the bank account
+                  that should receive investment returns.
                 </div>
               </div>
             )}
@@ -750,15 +751,14 @@ function OnboardingPage() {
             {step === 3 && (
               <div className="space-y-6 animate-slide-in-right text-center">
                 <p className="text-sm text-muted-foreground">
-                  Almost done. Review the tenant terms before entering your
-                  dashboard.
+                  Almost done. Review the terms before entering your dashboard.
                 </p>
                 <div className="h-36 overflow-y-auto rounded-lg border bg-gray-50 p-4 text-left text-xs text-muted-foreground">
                   <p className="mb-1 font-semibold">Terms of Service</p>
                   <p>
                     By using {tenant.displayName}, you agree to operate within
-                    the tenant&apos;s published investment rules, disclosure
-                    model, and risk statements.
+                    the published investment rules, disclosure model, and risk
+                    statements.
                   </p>
                   <p className="mt-2">
                     1. Agriculture and commodity-linked projects involve
@@ -766,7 +766,7 @@ function OnboardingPage() {
                   </p>
                   <p className="mt-2">
                     2. Your access, profile, and investment activity remain
-                    scoped to this tenant experience.
+                    scoped to this investment workspace.
                   </p>
                 </div>
                 <div className="flex items-center justify-center gap-2">

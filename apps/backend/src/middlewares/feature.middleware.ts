@@ -1,11 +1,16 @@
 import { NextFunction, Request, Response } from "express";
 import { AppError } from "@/utils/AppError";
-import { ITenantFeatures } from "@/modules/tenants/tenant.model";
+import {
+  featureDefaults,
+  ITenantFeatures,
+} from "@/modules/tenants/tenant.model";
 
 type TenantFeatureKey = keyof ITenantFeatures;
 
 const isFeatureEnabled = (req: Request, feature: TenantFeatureKey): boolean => {
-  return Boolean(req.tenant?.features?.[feature]);
+  if (!req.tenant) return false;
+
+  return req.tenant.features?.[feature] ?? featureDefaults[feature];
 };
 
 const featureDisabledError = (

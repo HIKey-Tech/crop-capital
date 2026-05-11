@@ -52,7 +52,7 @@ export interface ITenant extends Document {
   updatedAt: Date;
 }
 
-const featureDefaults: ITenantFeatures = {
+export const featureDefaults: ITenantFeatures = {
   investments: true,
   wallet: true,
   transactions: true,
