@@ -1183,23 +1183,22 @@ function RootRoute() {
                 Support
               </h4>
               <ul className="space-y-4 text-secondary-foreground/50 font-bold text-base">
-                {[
-                  { label: 'Help Center', href: '/support' },
-                  {
-                    label: 'Contact Us',
-                    href: 'mailto:support@cropcapital.com',
-                  },
-                  { label: 'System Status', href: '#' },
-                ].map((i) => (
-                  <li key={i.label}>
-                    <a
-                      href={i.href}
-                      className="hover:text-primary-foreground transition-colors"
-                    >
-                      {i.label}
-                    </a>
-                  </li>
-                ))}
+                <li>
+                  <Link
+                    to="/support"
+                    className="hover:text-primary-foreground transition-colors"
+                  >
+                    Help Center
+                  </Link>
+                </li>
+                <li>
+                  <a
+                    href="mailto:info@hikey.com.ng"
+                    className="hover:text-primary-foreground transition-colors"
+                  >
+                    Contact Us
+                  </a>
+                </li>
               </ul>
             </div>
 
@@ -1208,20 +1207,30 @@ function RootRoute() {
                 Legal
               </h4>
               <ul className="space-y-4 text-secondary-foreground/50 font-bold text-base">
-                {[
-                  { label: 'Privacy Policy', href: '/privacy' },
-                  { label: 'Terms of Service', href: '/terms' },
-                  { label: 'Platform Compliance', href: '#' },
-                ].map((i) => (
-                  <li key={i.label}>
-                    <a
-                      href={i.href}
-                      className="hover:text-primary-foreground transition-colors"
-                    >
-                      {i.label}
-                    </a>
-                  </li>
-                ))}
+                <li>
+                  <Link
+                    to="/privacy"
+                    className="hover:text-primary-foreground transition-colors"
+                  >
+                    Privacy Policy
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/terms"
+                    className="hover:text-primary-foreground transition-colors"
+                  >
+                    Terms of Service
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/support"
+                    className="hover:text-primary-foreground transition-colors"
+                  >
+                    Platform Compliance
+                  </Link>
+                </li>
               </ul>
             </div>
           </div>

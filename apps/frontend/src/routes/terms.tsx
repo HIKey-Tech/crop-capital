@@ -134,18 +134,18 @@ function TermsPage() {
               © {new Date().getFullYear()} CropCapital Global Infrastructure
             </p>
             <div className="flex gap-8">
-              <a
-                href="/privacy"
+              <Link
+                to="/privacy"
                 className="text-[11px] font-black uppercase tracking-[0.3em] text-muted-foreground hover:text-primary transition-colors"
               >
                 Privacy Policy
-              </a>
-              <a
-                href="/support"
+              </Link>
+              <Link
+                to="/support"
                 className="text-[11px] font-black uppercase tracking-[0.3em] text-muted-foreground hover:text-primary transition-colors"
               >
                 Support
-              </a>
+              </Link>
             </div>
           </div>
         </div>
