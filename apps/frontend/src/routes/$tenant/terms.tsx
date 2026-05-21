@@ -154,13 +154,6 @@ function TermsPage() {
               >
                 Support
               </Link>
-              <Link
-                to="/$tenant/disclosures"
-                params={{ tenant: tenantParam }}
-                className="text-[11px] font-black uppercase tracking-[0.3em] text-muted-foreground hover:text-primary transition-colors"
-              >
-                Disclosures
-              </Link>
             </div>
           </div>
         </div>
