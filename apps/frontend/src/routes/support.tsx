@@ -201,7 +201,7 @@ function SupportPage() {
                 WAT. Average response time is under 4 hours.
               </p>
             </div>
-            <a href="mailto:info@hikey.com.ng">
+            <a href="mailto:support@cropcapital.com">
               <Button
                 size="lg"
                 className="btn-primary-gradient h-14 px-12 text-sm font-black uppercase tracking-[0.18em] whitespace-nowrap"
@@ -213,7 +213,7 @@ function SupportPage() {
 
           <div className="mt-16 pt-16 border-t border-border flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
             <p className="text-sm font-bold text-muted-foreground uppercase tracking-[0.2em]">
-              © {new Date().getFullYear()} Hikey. All rights reserved.
+              © {new Date().getFullYear()} CropCapital Global Infrastructure
             </p>
             <div className="flex gap-8">
               <Link
